@@ -31,6 +31,42 @@ struct NSCertInfo final
 
 static Warden::unordered_map<NSCertInfo *> certmap;
 
+/* Fingerprints added with CERT ADD <fingerprint> while not connected with that
+ * certificate. Fingerprints are public, so adding one straight to the list
+ * would let anyone tie someone else's certificate to their own account (and
+ * have its owner auto-logged into it), or block its owner from adding it
+ * anywhere. A pending entry does neither: it reserves nothing, logs nobody in,
+ * and only becomes a real entry when a client using that certificate logs in
+ * to the same account some other way, i.e. with its password (anope/anope#326).
+ * Pending entries are short-lived and kept in memory only.
+ */
+struct PendingCert final
+{
+	uint64_t account;
+	Warden::string fingerprint;
+	Warden::string creator;
+	time_t expires;
+};
+static std::vector<PendingCert> pendingcerts;
+
+static Warden::string NormaliseFingerprint(const Warden::string &fp)
+{
+	Warden::string out;
+	for (const auto chr : fp)
+	{
+		if (chr != ':')
+			out.push_back(Warden::tolower(chr));
+	}
+	return out;
+}
+
+static void PurgePendingCerts()
+{
+	pendingcerts.erase(std::remove_if(pendingcerts.begin(), pendingcerts.end(), [](const PendingCert &pc) {
+		return pc.expires <= Warden::CurTime || !NickCore::FindId(pc.account);
+	}), pendingcerts.end());
+}
+
 struct CertServiceImpl final
 	: NickServ::CertService
 {
@@ -292,11 +328,63 @@ class CommandNSCert final
 	: public Command
 {
 private:
+	void DoAddPending(CommandSource &source, NickCore *nc, const Warden::string &fingerprint)
+	{
+		const auto certfp = NormaliseFingerprint(fingerprint);
+		if (certfp.length() < 32 || certfp.find_first_not_of("0123456789abcdef") != Warden::string::npos)
+		{
+			source.Reply(_("\002%s\002 is not a valid certificate fingerprint."), fingerprint.c_str());
+			return;
+		}
+
+		auto *cl = nc->Require<NickServ::CertList>(NICKSERV_CERT_EXT);
+		for (unsigned i = 0; i < cl->GetCertCount(); ++i)
+		{
+			if (NormaliseFingerprint(cl->GetCert(i)->fingerprint) == certfp)
+			{
+				source.Reply(_("Fingerprint \002%s\002 already present on %s's certificate list."), certfp.c_str(), nc->display.c_str());
+				return;
+			}
+		}
+
+		PurgePendingCerts();
+		const auto pending = std::count_if(pendingcerts.begin(), pendingcerts.end(), [nc](const PendingCert &pc) {
+			return pc.account == nc->GetId();
+		});
+		const auto max = Config->GetModule(this->owner).Get<unsigned>("max", "5");
+		if (cl->GetCertCount() + pending >= max)
+		{
+			source.Reply(max, N_("The maximum of %u certificate entry has been reached.", "The maximum of %u certificate entries has been reached."),
+				max);
+			return;
+		}
+
+		const auto expiry = Config->GetModule(this->owner).Get<time_t>("pendingexpiry", "1h");
+		auto it = std::find_if(pendingcerts.begin(), pendingcerts.end(), [nc, &certfp](const PendingCert &pc) {
+			return pc.account == nc->GetId() && pc.fingerprint == certfp;
+		});
+		if (it != pendingcerts.end())
+			it->expires = Warden::CurTime + expiry;
+		else
+			pendingcerts.push_back({ nc->GetId(), certfp, source.GetNick(), Warden::CurTime + expiry });
+
+		Log(LOG_COMMAND, source, this) << "to ADD pending certificate fingerprint " << certfp << " to " << nc->display;
+		source.Reply(_("Fingerprint \002%s\002 is pending. To confirm it, connect using that certificate and identify to \002%s\002 with your password within %s."),
+			certfp.c_str(), nc->display.c_str(), Warden::Duration(expiry, source.GetAccount()).c_str());
+	}
+
 	void DoAdd(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		auto *nc = FindTarget(source, params.size() == 3 ? params[1] : "", true);
 		if (!nc)
 			return;
+
+		// A user giving a fingerprint for their own account: make it pending.
+		if (params.size() == 2 && nc == source.GetAccount())
+		{
+			this->DoAddPending(source, nc, params[1]);
+			return;
+		}
 
 		const auto certfp = FindFingerprint(source, params, nc, false);
 		if (certfp.empty())
@@ -342,6 +430,20 @@ private:
 			return;
 
 		auto *cl = nc->Require<NickServ::CertList>(NICKSERV_CERT_EXT);
+		const auto pendingfp = NormaliseFingerprint(certfp);
+		const auto pendingend = std::remove_if(pendingcerts.begin(), pendingcerts.end(), [nc, &pendingfp](const PendingCert &pc) {
+			return pc.account == nc->GetId() && pc.fingerprint == pendingfp;
+		});
+		const auto removed = pendingend != pendingcerts.end();
+		pendingcerts.erase(pendingend, pendingcerts.end());
+		if (removed && !cl->FindCert(certfp))
+		{
+			cl->Check();
+			Log(nc == source.GetAccount() ? LOG_COMMAND : LOG_ADMIN, source, this) << "to DELETE pending certificate fingerprint " << pendingfp << " from " << nc->display;
+			source.Reply(_("Pending fingerprint \002%s\002 deleted from %s's certificate list."), pendingfp.c_str(), nc->display.c_str());
+			return;
+		}
+
 		if (!cl->FindCert(certfp))
 		{
 			source.Reply(_("\002%s\002 not found on %s's certificate list."), certfp.c_str(), nc->display.c_str());
@@ -360,10 +462,19 @@ private:
 		if (!nc)
 			return;
 
+		PurgePendingCerts();
+		std::vector<const PendingCert *> pending;
+		for (const auto &pc : pendingcerts)
+		{
+			if (pc.account == nc->GetId())
+				pending.push_back(&pc);
+		}
+
 		auto *cl = nc->GetExt<NickServ::CertList>(NICKSERV_CERT_EXT);
 		if (!cl || !cl->GetCertCount())
 		{
 			source.Reply(_("%s's certificate list is empty."), nc->display.c_str());
+			this->SendPending(source, pending);
 			return;
 		}
 
@@ -411,6 +522,16 @@ private:
 
 		source.Reply(_("Certificate list for %s:"), nc->display.c_str());
 		list.SendTo(source);
+		this->SendPending(source, pending);
+	}
+
+	void SendPending(CommandSource &source, const std::vector<const PendingCert *> &pending)
+	{
+		for (const auto *pc : pending)
+		{
+			source.Reply(_("Pending: \002%s\002 -- added by %s, expires in %s"), pc->fingerprint.c_str(), pc->creator.c_str(),
+				Warden::Duration(pc->expires - Warden::CurTime, source.GetAccount()).c_str());
+		}
 	}
 
 	Warden::string FindFingerprint(CommandSource &source, const std::vector<Warden::string> &params, const NickCore *nc, bool del)
@@ -472,7 +593,7 @@ public:
 	CommandNSCert(Module *creator) : Command(creator, "nickserv/cert", 1, 3)
 	{
 		this->SetDesc(_("Modify the nickname client certificate list"));
-		this->SetSyntax(_("ADD [\037nickname\037 \037fingerprint\037]"));
+		this->SetSyntax(_("ADD [[\037nickname\037] \037fingerprint\037]"));
 		this->SetSyntax(_("DEL [\037nickname\037] \037fingerprint\037"));
 		this->SetSyntax(_("LIST [\037nickname\037]"));
 		this->SetSyntax(_("VIEW [\037nickname\037]"));
@@ -510,6 +631,11 @@ public:
 
 		examples.AddEntry("ADD", _(
 			"Adds your current fingerprint to your certificate list."
+		));
+		examples.AddEntry(_("ADD \037fingerprint\037"), _(
+			"Adds \037fingerprint\037 to your certificate list as pending. It becomes active "
+			"once you connect using that certificate and identify with your password before it "
+			"expires. Until then it does not log anyone in."
 		));
 		examples.AddEntry(_("ADD \037nickname\037 \037fingerprint\037"), _(
 			"Adds the specified \037fingerprint\037 to the certificate list of \037nickname\037."
@@ -692,10 +818,58 @@ public:
 			throw ModuleException("Your IRCd does not support ssl client certificates");
 	}
 
+	void ConfirmPending(User *u)
+	{
+		auto *nc = u->Account();
+		if (!nc || u->fingerprint.empty() || pendingcerts.empty())
+			return;
+
+		PurgePendingCerts();
+		const auto certfp = NormaliseFingerprint(u->fingerprint);
+		auto it = std::find_if(pendingcerts.begin(), pendingcerts.end(), [nc, &certfp](const PendingCert &pc) {
+			return pc.account == nc->GetId() && pc.fingerprint == certfp;
+		});
+		if (it == pendingcerts.end())
+			return;
+
+		const auto creator = it->creator;
+		pendingcerts.erase(it);
+
+		auto *NickServ = Config->GetClient("NickServ");
+		if (certmap.find(u->fingerprint) != certmap.end())
+		{
+			u->SendMessage(NickServ, _("Your pending certificate fingerprint \002%s\002 could not be confirmed because it is already in use."), u->fingerprint.c_str());
+			return;
+		}
+
+		auto *cl = certs.Require(nc);
+		const auto max = Config->GetModule(this).Get<unsigned>("max", "5");
+		if (cl->GetCertCount() >= max)
+		{
+			u->SendMessage(NickServ, _("Your pending certificate fingerprint \002%s\002 could not be confirmed because your certificate list is full."), u->fingerprint.c_str());
+			return;
+		}
+
+		auto *cert = cl->AddCert(u->fingerprint);
+		cert->created = Warden::CurTime;
+		cert->creator = creator;
+
+		u->SendMessage(NickServ, _("Your pending certificate fingerprint \002%s\002 has been confirmed and added to your certificate list."), u->fingerprint.c_str());
+		Log(NickServ) << u->GetMask() << " confirmed pending certificate fingerprint " << u->fingerprint << " for account " << nc->display;
+	}
+
+	void OnUserLogin(User *u) override
+	{
+		ConfirmPending(u);
+	}
+
 	void OnFingerprint(User *u) override
 	{
 		if (u->IsIdentified())
+		{
+			ConfirmPending(u);
 			return;
+		}
 
 		NickCore *nc = cs.FindAccountFromCert(u->fingerprint);
 		if (!CanLogin(u, nc))
