@@ -13,6 +13,8 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
+#include <unordered_set>
+
 #include "module.h"
 #include "modules/chanserv/service.h"
 #include "modules/nickserv/service.h"
@@ -238,15 +240,36 @@ public:
 		this->SetDesc(_("Forbid usage of nicknames, channels, and emails"));
 		this->SetSyntax(_("ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [+\037expiry\037] \037entry\037 \037reason\037"));
 		this->SetSyntax(_("DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER} \037entry\037"));
-		this->SetSyntax("LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER}");
+		this->SetSyntax(_("LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [\037from\037-\037to\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params_) override
 	{
 		if (!OperServ::forbid_service)
 		{
 			source.Reply(TRY_AGAIN_LATER, source.command.nobreak().c_str());
 			return;
+		}
+
+		/* "LIST [type] [from-to]" allows the type to be omitted (list all
+		 * types), which means the range can land right after LIST instead
+		 * of after the type -- eg. "FORBID LIST 15-30". Peel a trailing
+		 * range off by shape before doing the normal positional parsing
+		 * below, same as os_list_paged does, and remember it separately so
+		 * it doesn't get mistaken for the type.
+		 */
+		std::vector<Warden::string> params = params_;
+		Warden::string rangearg;
+		if (params.size() > 1 && params[0].equals_ci("LIST") && params.back().find('-') != Warden::string::npos)
+		{
+			Warden::string n1, n2;
+			sepstream(params.back(), '-').GetToken(n1, 0);
+			sepstream(params.back(), '-').GetToken(n2, 1);
+			if (Warden::TryConvert<unsigned>(n1).has_value() && Warden::TryConvert<unsigned>(n2).has_value())
+			{
+				rangearg = params.back();
+				params.pop_back();
+			}
 		}
 
 		const Warden::string &command = params[0];
@@ -433,6 +456,25 @@ public:
 				source.Reply(_("Forbid list is empty."));
 			else
 			{
+				unsigned from = 0, to = 0;
+				if (!rangearg.empty())
+				{
+					Warden::string n1, n2;
+					sepstream(rangearg, '-').GetToken(n1, 0);
+					sepstream(rangearg, '-').GetToken(n2, 1);
+
+					auto num1 = Warden::TryConvert<unsigned>(n1);
+					auto num2 = Warden::TryConvert<unsigned>(n2);
+					if (!num1.has_value() || !num2.has_value())
+					{
+						source.Reply(_("Incorrect range specified. The correct syntax is \037from\037-\037to\037."));
+						return;
+					}
+
+					from = num1.value();
+					to = num2.value();
+				}
+
 				ListFormatter list(source.GetAccount());
 				list.AddColumn(_("Mask")).AddColumn(_("Type")).AddColumn(_("Creator")).AddColumn(_("Expires")).AddColumn(_("Reason"));
 				list.SetFlexible([](ListFormatter::ListEntry &row)
@@ -442,7 +484,14 @@ public:
 						: _("\002{mask}\002 on {type} -- created by {creator}; expires in {expires} ({reason})");
 				});
 
-				size_t shown = 0;
+				/* An explicit range is the oper's own paging mechanism, so it isn't
+				 * additionally capped by listmax -- only the default (unbounded)
+				 * listing is.
+				 */
+				const auto listmax = Config->GetModule(this->owner).Get<unsigned>("listmax", "50");
+				const auto cap = (from || to) ? 0 : listmax;
+
+				size_t matched = 0, shown = 0, shown_from = 0, shown_to = 0;
 				for (auto *forbid : forbids)
 				{
 					if (ftype != OperServ::FT_SIZE && ftype != forbid->type)
@@ -452,6 +501,17 @@ public:
 					if (stype == OperServ::FT_SIZE)
 						continue;
 
+					++matched;
+
+					if (from || to)
+					{
+						if (matched < from || matched > to)
+							continue;
+					}
+
+					if (cap && shown >= cap)
+						continue;
+
 					ListFormatter::ListEntry entry;
 					entry["Mask"] = forbid->mask;
 					entry["Type"] = stype;
@@ -459,10 +519,14 @@ public:
 					entry["Expires"] = forbid->expires ? Warden::strftime(forbid->expires, NULL, true).c_str() : TIME_NEVER;
 					entry["Reason"] = forbid->reason;
 					list.AddEntry(entry);
+
+					if (!shown)
+						shown_from = matched;
+					shown_to = matched;
 					++shown;
 				}
 
-				if (!shown)
+				if (!matched)
 				{
 					source.Reply(_("There are no forbids of type %s."), subcommand.upper().c_str());
 				}
@@ -471,10 +535,10 @@ public:
 					source.Reply(_("Forbid list:"));
 					list.SendTo(source);
 
-					if (shown >= forbids.size())
+					if (shown >= matched)
 						source.Reply(_("End of forbid list."));
 					else
-						source.Reply(_("End of forbid list - %zu/%zu entries shown."), shown, forbids.size());
+						source.Reply(_("End of forbid list - %zu/%zu entries shown (%zu-%zu)."), shown, matched, shown_from, shown_to);
 				}
 			}
 		}
@@ -489,6 +553,11 @@ public:
 		source.Reply(_(
 			"Forbid allows you to forbid usage of certain nicknames, channels, "
 			"and email addresses. Wildcards are accepted for all entries."
+			"\n\n"
+			"When listing forbids, an optional \037from\037-\037to\037 range "
+			"(eg. \002101-210\002) may be given to page through large forbid "
+			"lists. Without a range, the default (unranged) list is capped "
+			"by the listmax configuration option."
 		));
 
 		const Warden::string &regexengine = Config->GetBlock("options").Get<const Warden::string>("regexengine");
@@ -549,20 +618,39 @@ public:
 				Log(this) << "Unable to read " << filestr << ", ignoring.";
 				continue;
 			}
+			// Masks of this type that already exist, so each line's duplicate
+			// check is O(1). Calling FindForbidExact per line scanned the whole
+			// list every time, making a reload O(n^2): ~12-15 s for a 10k-line
+			// file, with services frozen meanwhile (anope/anope#625).
+			//
+			// The key is upper(): FindForbidExact matches with equals_ci, which
+			// compares through the casemap's upper table, and upper() uses the
+			// same table. So two masks get the same key exactly when
+			// FindForbidExact would call them equal, under any casemap.
+			// (Hashing with Warden::hash_ci would not: it hashes lower(), which
+			// can disagree with equals_ci for some casemaps.)
+			// GetForbids() also expires stale forbids first, like
+			// FindForbidExact did, so expired entries don't count as duplicates.
+			std::unordered_set<std::string> existing;
+			for (const auto *forbid : forbidService.GetForbids())
+			{
+				if (forbid->type == type)
+					existing.insert(forbid->mask.upper().str());
+			}
+
 			for (Warden::string forbidstr; std::getline(file, forbidstr.str()); )
 			{
 				forbidstr = forbidstr.trim();
 				if (forbidstr.empty())
 					continue;
 
-				auto *forbid = forbidService.FindForbidExact(forbidstr, type);
-				if (forbid != nullptr)
+				if (!existing.insert(forbidstr.upper().str()).second)
 				{
 					Log(this) << "Forbid on " << forbidstr << " already exists, ignoring.";
 					continue;
 				}
 
-				forbid = new ForbidDataFile(type, filestr, forbidstr, reasonstr);
+				auto *forbid = new ForbidDataFile(type, filestr, forbidstr, reasonstr);
 				forbidService.AddForbid(forbid);
 				fileforbids.push_back(forbid);
 				Log(LOG_DEBUG) << "Added a file forbid on " << forbidstr << ": " << reasonstr;
