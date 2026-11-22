@@ -74,14 +74,62 @@ public:
 	void SendSVSKill(const MessageSource &source, User *targ, const Warden::string &reason) override { hybrid->SendSVSKill(source, targ, reason); }
 	void SendGlobalNotice(BotInfo *bi, const Server *dest, const Warden::string &msg) override { hybrid->SendGlobalNotice(bi, dest, msg); }
 	void SendGlobalPrivmsg(BotInfo *bi, const Server *dest, const Warden::string &msg) override { hybrid->SendGlobalPrivmsg(bi, dest, msg); }
-	void SendSGLine(User *u, const XLine *x) override { hybrid->SendSGLine(u, x); }
-	void SendSGLineDel(const XLine *x) override { hybrid->SendSGLineDel(x); }
-	void SendAkill(User *u, XLine *x) override { hybrid->SendAkill(u, x); }
-	void SendAkillDel(const XLine *x) override { hybrid->SendAkillDel(x); }
 	void SendJoin(User *user, Channel *c, const ChannelStatus *status) override { hybrid->SendJoin(user, c, status); }
 	void SendServer(const Server *server) override { hybrid->SendServer(server); }
 	void SendChannel(Channel *c) override { hybrid->SendChannel(c); }
 	bool IsIdentValid(const Warden::string &ident) override { return hybrid->IsIdentValid(ident); }
+
+	// Solanum ignores KLINE and XLINE (and their ENCAP forms) unless they come
+	// from a user, so these are sent from OperServ rather than the services
+	// server like ircd-hybrid accepts. Hybrid's versions never reached Solanum.
+	void SendAkill(User *u, XLine *x) override
+	{
+		if (x->IsRegex() || x->HasNickOrReal())
+		{
+			if (!u)
+			{
+				// Just added and contains a nick and/or realname: ban the matching users.
+				for (const auto &[_, user] : UserListByNick)
+					if (x->manager->Check(user, x))
+						this->SendAkill(user, x);
+				return;
+			}
+
+			const XLine *old = x;
+			if (old->manager->HasEntry("*@" + u->host))
+				return;
+
+			// We can't KLINE a nick or realname, so add an akill for *@host instead.
+			auto *xline = new XLine("*@" + u->host, old->by, old->expires, old->reason, old->id);
+			old->manager->AddXLine(xline);
+			x = xline;
+
+			Log(Config->GetClient("OperServ"), "akill") << "AKILL: Added an akill for " << x->mask << " because " << u->GetMask() << "#"
+				<< u->realname << " matches " << old->mask;
+		}
+
+		time_t timeleft = x->expires ? x->expires - Warden::CurTime : x->expires;
+		Uplink::Send(FindIntroduced(), "ENCAP", '*', "KLINE", timeleft, x->GetUser(), x->GetHost(), x->GetReason());
+	}
+
+	void SendAkillDel(const XLine *x) override
+	{
+		if (x->IsRegex() || x->HasNickOrReal())
+			return;
+
+		Uplink::Send(FindIntroduced(), "ENCAP", '*', "UNKLINE", x->GetUser(), x->GetHost());
+	}
+
+	void SendSGLine(User *, const XLine *x) override
+	{
+		time_t timeleft = x->expires ? x->expires - Warden::CurTime : x->expires;
+		Uplink::Send(FindIntroduced(), "ENCAP", '*', "XLINE", timeleft, x->mask, 2, x->GetReason());
+	}
+
+	void SendSGLineDel(const XLine *x) override
+	{
+		Uplink::Send(FindIntroduced(), "ENCAP", '*', "UNXLINE", x->mask);
+	}
 
 	// Formerly in the ratbox module.
 	void SendGlobops(const MessageSource &source, const Warden::string &buf) override
