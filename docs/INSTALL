@@ -19,7 +19,11 @@ Note: You should also read the README and FAQ files!
     The very first thing you need to do is to get the Warden package (if not
     already done). You can find it at:
 
-        https://www.anope.org/
+        https://github.com/TehPeGaSuS/warden/releases
+
+    or clone it with git:
+
+        git clone https://github.com/TehPeGaSuS/warden.git
 
     Warden requires cmake to build. You can check if CMake is already
     installed on your system using the command:
@@ -103,8 +107,9 @@ Note: You should also read the README and FAQ files!
     to launch Warden with ./warden -debug -nofork to see any errors that it
     encounters, and try to correct them.
 
-    If you need help to solve errors, feel free to subscribe to the Warden
-    mailing list and ask there. See the README file for details.
+    If you need help to solve errors, ask at
+    https://github.com/TehPeGaSuS/warden/discussions and include the output of
+    ./warden --support.
 
 5) Setting up a crontab
 

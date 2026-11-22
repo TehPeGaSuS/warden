@@ -19,7 +19,7 @@ Note : Vous devrez également lire les fichiers README et FAQ !
     La première chose que vous devez faire est d'obtenir le package Warden
     (si ce n'est déjà fait). Vous pouvez le trouver ici :
 
-        https://www.anope.org/
+        https://github.com/TehPeGaSuS/warden/releases
 
     Warden nécessite cmake pour être compilé. Vous pouvez vérifier si CMake
     est déjà installé sur votre système avec la commande :

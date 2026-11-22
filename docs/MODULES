@@ -87,9 +87,10 @@ Warden Modules
 
 5) More Modules
 
-    You can download more useful modules from https://modules.anope.org/. Just
+    Many modules written for Anope 2.1 work with Warden after renaming
+    Anope:: to Warden:: (see https://github.com/TehPeGaSuS/warden/wiki/Coming-from-Anope). Just
     grab the module file (usually with a .cpp extension). Place the module
-    file in your modules (warden-1.9.x/modules/third) folder; although any of
+    file in your modules (modules/third) folder; although any of
     the other folders within the modules directory will work.
 
     The new modules need to be compiled and installed before you can make
@@ -115,14 +116,14 @@ Warden Modules
 
 7) Information for Developers
 
-    There are a number of useful documents on the Warden Wiki. The Warden Wiki
-    can be reached at:
+    There are a number of useful documents on the Warden wiki:
 
-    * https://wiki.anope.org/
+    * https://github.com/TehPeGaSuS/warden/wiki
 
 8) Modules Repository
 
-    You can find modules at https://modules.anope.org/
+    Anope's module site (https://modules.anope.org/) lists modules written
+    for Anope; many can be adapted for Warden as described above.
 
-    These modules are 3rd party and as such are not supported by the Warden Team.
-    Contact the Module Author directly with problems, not the Warden Team.
+    Third-party modules are not supported by the Warden team. Contact the
+    module author directly with problems.
