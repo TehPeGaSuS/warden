@@ -242,6 +242,14 @@ private:
 			return;
 		}
 
+		// A plain nick deletes that bot. Wildcards, a comma list or !exclusions
+		// delete every matching bot at once (anope/anope#315).
+		if (nick.find_first_of("*?,!") != Warden::string::npos)
+		{
+			this->DoMassDel(source, nick);
+			return;
+		}
+
 		BotInfo *bi = BotInfo::Find(nick, true);
 		if (!bi)
 		{
@@ -262,13 +270,80 @@ private:
 		source.Reply(_("Bot \002%s\002 has been deleted."), nick.c_str());
 		delete bi;
 	}
+
+	void DoMassDel(CommandSource &source, const Warden::string &masklist)
+	{
+		std::vector<Warden::string> include, exclude;
+		commasepstream sep(masklist);
+		for (Warden::string mask; sep.GetToken(mask); )
+		{
+			if (mask.empty())
+				continue;
+			if (mask[0] == '!')
+			{
+				if (mask.length() > 1)
+					exclude.push_back(mask.substr(1));
+			}
+			else
+				include.push_back(mask);
+		}
+
+		if (include.empty())
+		{
+			source.Reply(_("You must give at least one bot nick or mask to delete."));
+			return;
+		}
+
+		auto matches = [](const Warden::string &botnick, const std::vector<Warden::string> &masks) {
+			for (const auto &mask : masks)
+			{
+				if (Warden::Match(botnick, mask))
+					return true;
+			}
+			return false;
+		};
+
+		std::vector<BotInfo *> victims;
+		unsigned skipped = 0;
+		for (const auto &[_, bi] : *BotListByNick)
+		{
+			if (!matches(bi->nick, include) || matches(bi->nick, exclude))
+				continue;
+			if (bi->conf)
+				++skipped;
+			else
+				victims.push_back(bi);
+		}
+
+		if (victims.empty())
+		{
+			if (skipped)
+				source.Reply(_("No deletable bots match \002%s\002 (%u configuration bots skipped)."), masklist.c_str(), skipped);
+			else
+				source.Reply(_("No bots match \002%s\002."), masklist.c_str());
+			return;
+		}
+
+		for (auto *bi : victims)
+		{
+			FOREACH_MOD(OnBotDelete, (bi));
+			Log(LOG_ADMIN, source, this) << "DEL " << bi->nick << " (mask " << masklist << ")";
+			delete bi;
+		}
+
+		if (skipped)
+			source.Reply(_("Deleted \002%zu\002 bots matching \002%s\002 (%u configuration bots skipped)."), victims.size(), masklist.c_str(), skipped);
+		else
+			source.Reply(_("Deleted \002%zu\002 bots matching \002%s\002."), victims.size(), masklist.c_str());
+	}
+
 public:
 	CommandBSBot(Module *creator) : Command(creator, "botserv/bot", 1, 6)
 	{
 		this->SetDesc(_("Maintain network bot list"));
 		this->SetSyntax(_("\002ADD \037nick\037 \037user\037 \037host\037 \037real\037\002"));
 		this->SetSyntax(_("\002CHANGE \037oldnick\037 \037newnick\037 [\037user\037 [\037host\037 [\037real\037]]]\002"));
-		this->SetSyntax(_("\002DEL \037nick\037\002"));
+		this->SetSyntax(_("\002DEL {\037nick\037|\037mask\037[,\037mask\037...][,!\037mask\037...]}\002"));
 	}
 
 	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
@@ -358,7 +433,10 @@ public:
 				"or realname of a bot without deleting it (and "
 				"all the data associated with it)."
 				"\n\n"
-				"\002%s\033DEL\002 removes the given bot from the bot list."
+				"\002%s\033DEL\002 removes the given bot from the bot list. It also "
+				"accepts wildcard masks, separated by commas, to remove many bots at "
+				"once; a mask starting with \002!\002 keeps the bots it matches. "
+				"Bots defined in the configuration are never removed."
 				"\n\n"
 				"\002Note\002: You cannot create a bot with a nick that is "
 				"currently registered. If an unregistered user is currently "
@@ -383,6 +461,10 @@ public:
 			))
 			.AddEntry("DEL Mahoro", _(
 				"Deletes a bot called \035Mahoro\035."
+			))
+			.AddEntry("DEL *,!Chii,!Mahoro", _(
+				"Deletes every bot except \035Chii\035, \035Mahoro\035 and the bots "
+				"defined in the configuration."
 			))
 			.SendTo(source);
 
