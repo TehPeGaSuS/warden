@@ -33,7 +33,42 @@ class NSRecoverRequest final
 	Command *cmd;
 	Warden::string user;
 
+	// Log the user running the command in to the account, switching away from
+	// the account they are on now. Opers recovering by privilege alone only get
+	// logged in if they are not identified yet.
+	void LogInAs(NickCore *nc)
+	{
+		auto *su = source.GetUser();
+		auto *old = su->Account();
+		if (!nc || old == nc || (old && !proven))
+			return;
+
+		if (old)
+		{
+			IRCD->SendLogout(su);
+			su->RemoveMode(source.service, "REGISTERED");
+			su->Logout();
+			FOREACH_MOD(OnNickLogout, (su));
+		}
+		su->Login(nc);
+
+		if (old)
+		{
+			Log(LOG_COMMAND, source, cmd) << "and switched from " << old->display << " to " << nc->display;
+			source.Reply(_("You are now logged in as \002%s\002 (was \002%s\002)."), nc->display.c_str(), old->display.c_str());
+		}
+		else
+		{
+			Log(LOG_COMMAND, source, cmd) << "and was automatically identified to " << nc->display;
+			source.Reply(_("You have been logged in as \002%s\002."), nc->display.c_str());
+		}
+	}
+
 public:
+	// Whether the user proved they own the account (password, cert or already
+	// identified to it) rather than using the nickserv/recover privilege.
+	bool proven = true;
+
 	NSRecoverRequest(Module *o, CommandSource &src, Command *c, const Warden::string &nick, const Warden::string &pass)
 		: IdentifyRequest(o, nick, pass, src.ip)
 		, source(src)
@@ -50,25 +85,29 @@ public:
 
 		Log(LOG_COMMAND, source, cmd) << "for " << na->nick;
 
-		/* Nick is being held by us, release it */
-		if (na->HasExt("HELD"))
+		/* Nobody is on the nick: release any hold, log in and take the nick. */
+		if (!u)
 		{
-			NickServ::service->Release(na);
-			source.Reply(_("Services' hold on \002%s\002 has been released."), na->nick.c_str());
-		}
-		else if (!u)
-		{
-			source.Reply(_("No one is using your nick, and services are not holding it."));
+			if (na->HasExt("HELD"))
+			{
+				NickServ::service->Release(na);
+				source.Reply(_("Services' hold on \002%s\002 has been released."), na->nick.c_str());
+			}
+
+			LogInAs(na->nc);
+
+			if (source.GetUser()->nick.equals_ci(na->nick))
+				;
+			else if (IRCD->CanSVSNick)
+				IRCD->SendForceNickChange(source.GetUser(), na->nick, Warden::CurTime);
+			else
+				source.Reply(_("The nick \002%s\002 is free; use \002/NICK %s\002 to take it."), na->nick.c_str(), na->nick.c_str());
 		}
 		// If the user being recovered is identified for the account of the nick then the user is the
 		// same person that is executing the command, so kill them off (old GHOST command).
 		else if (u->Account() == na->nc)
 		{
-			if (!source.GetAccount())
-			{
-				source.GetUser()->Login(u->Account());
-				Log(LOG_COMMAND, source, cmd) << "and was automatically identified to " << u->Account()->display;
-			}
+			LogInAs(u->Account());
 
 			if (Config->GetModule("ns_recover").Get<bool>("restoreonrecover"))
 			{
@@ -98,12 +137,7 @@ public:
 		/* User is not identified or not identified to the same account as the person using this command */
 		else
 		{
-			if (!source.GetAccount())
-			{
-				source.GetUser()->Login(na->nc); // Identify the user using the command if they arent identified
-				Log(LOG_COMMAND, source, cmd) << "and was automatically identified to " << na->nick << " (" << na->nc->display << ")";
-				source.Reply(_("You have been logged in as \002%s\002."), na->nc->display.c_str());
-			}
+			LogInAs(na->nc);
 
 			u->SendMessage(source.service, _("This nickname has been recovered by %s."), source.GetNick().c_str());
 
@@ -193,8 +227,9 @@ public:
 		if (source.GetUser() && !source.GetUser()->fingerprint.empty() && cl && cl->FindCert(source.GetUser()->fingerprint))
 			ok = true;
 
-		if (source.HasPriv("nickserv/recover"))
-			ok = true;
+		bool bypriv = false;
+		if (!ok && source.HasPriv("nickserv/recover"))
+			ok = bypriv = true;
 
 		if (!ok && !pass.empty())
 		{
@@ -205,6 +240,7 @@ public:
 		else
 		{
 			NSRecoverRequest req(owner, source, this, na->nick, pass);
+			req.proven = !bypriv;
 
 			if (ok)
 				req.OnSuccess(na);
@@ -223,7 +259,12 @@ public:
 			"will be released. If another user is holding your nick "
 			"and is identified they will be killed (similar to the old "
 			"GHOST command). If they are not identified they will be "
-			"forced off of the nick."
+			"forced off of the nick. If nobody is using the nick you "
+			"are moved to it."
+			"\n\n"
+			"You are then logged in to the nick's account. If you were "
+			"logged in to a different account, you are logged out of it "
+			"first, so this also switches between accounts."
 		));
 		return true;
 	}
