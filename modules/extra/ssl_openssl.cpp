@@ -29,6 +29,8 @@
 #include <openssl/err.h>
 #include <openssl/crypto.h>
 #include <openssl/evp.h>
+#include <openssl/sha.h>
+#include <openssl/x509.h>
 
 static SSL_CTX *server_ctx, *client_ctx;
 
@@ -233,6 +235,60 @@ public:
 	}
 };
 
+/* Checks the uplink's public key against uplink:spkifp, if set (anope/anope#370).
+ * Returns an error message, or an empty string if the link may go ahead.
+ */
+static Warden::string CheckUplinkSPKI(Socket *s, const Warden::string &actual)
+{
+	if (s != UplinkSock)
+		return "";
+
+	const auto &pins = Config->GetBlock("uplink", Warden::CurrentUplink).Get<const Warden::string>("spkifp");
+	if (pins.empty())
+		return "";
+
+	if (actual.empty())
+		return "Unable to read the uplink's public key to check uplink:spkifp";
+
+	spacesepstream sep(pins);
+	for (Warden::string pin; sep.GetToken(pin); )
+	{
+		if (pin == actual)
+		{
+			Log(LOG_DEBUG) << "Uplink public key matches uplink:spkifp (" << actual << ")";
+			return "";
+		}
+	}
+
+	return "The uplink's public key fingerprint " + actual + " does not match uplink:spkifp; refusing to link";
+}
+
+// Base64 of the SHA-256 of the peer certificate's SubjectPublicKeyInfo, the
+// same format as UnrealIRCd's spkifp.
+static Warden::string GetPeerSPKIFP(SSL *ssl)
+{
+#if OPENSSL_VERSION_NUMBER >= 0x30000000L
+	X509 *cert = SSL_get1_peer_certificate(ssl);
+#else
+	X509 *cert = SSL_get_peer_certificate(ssl);
+#endif
+	if (!cert)
+		return "";
+
+	Warden::string result;
+	unsigned char *der = nullptr;
+	const int len = i2d_X509_PUBKEY(X509_get_X509_PUBKEY(cert), &der);
+	if (len > 0)
+	{
+		unsigned char md[SHA256_DIGEST_LENGTH];
+		SHA256(der, len, md);
+		result = Warden::B64Encode(Warden::string(reinterpret_cast<const char *>(md), sizeof(md)));
+		OPENSSL_free(der);
+	}
+	X509_free(cert);
+	return result;
+}
+
 MySSLService::MySSLService(Module *o, const Warden::string &n) : SSLService(o, n)
 {
 }
@@ -435,6 +491,15 @@ SocketFlag SSLSocketIO::FinishConnect(ConnectionSocket *s)
 	}
 	else
 	{
+		const auto spkierr = CheckUplinkSPKI(s, GetPeerSPKIFP(io->sslsock));
+		if (!spkierr.empty())
+		{
+			s->OnError(spkierr);
+			s->flags[SF_CONNECTING] = false;
+			s->flags[SF_DEAD] = true;
+			return SF_DEAD;
+		}
+
 		s->flags[SF_CONNECTING] = false;
 		s->flags[SF_CONNECTED] = true;
 		SocketEngine::Change(s, false, SF_WRITABLE);
