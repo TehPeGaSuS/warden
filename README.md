@@ -20,6 +20,7 @@ Warden is a clean break: it has its own name, namespace, binary and config file 
 | 1 | UnrealIRCd 6 | Tested on every release and run in production |
 | 2 | InspIRCd 4, Solanum, ircd-hybrid 8.2, ngIRCd | Best effort: tested, fixed when they break |
 | Unsupported | Everything else inherited from Anope (e.g. plexus) | Still in the tree, never tested, may be removed |
+| Removed | ircd-ratbox | No release since 3.0.10 (January 2016). Solanum, which descends from it, is supported |
 
 Windows builds are inherited from Anope and **unsupported**: they may work, but nobody tests them.
 

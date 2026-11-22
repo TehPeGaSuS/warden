@@ -8645,7 +8645,7 @@ msgstr "Ați fost invitat(ă) în %s de către %s."
 msgid "You have been invited to %s."
 msgstr "Ați fost invitat(ă) în %s."
 
-#: ../modules/nickserv/ns_recover.cpp ../modules/protocol/ratbox.cpp
+#: ../modules/nickserv/ns_recover.cpp
 #, c-format
 msgid "You have been logged in as %s."
 msgstr "Ați fost identificat(ă) ca fiind %s."

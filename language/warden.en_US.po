@@ -8250,7 +8250,7 @@ msgstr ""
 msgid "You have been invited to %s."
 msgstr ""
 
-#: ../modules/nickserv/ns_recover.cpp ../modules/protocol/ratbox.cpp
+#: ../modules/nickserv/ns_recover.cpp
 #, c-format
 msgid "You have been logged in as %s."
 msgstr ""

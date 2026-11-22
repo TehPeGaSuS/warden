@@ -8648,7 +8648,7 @@ msgstr "Foste convidado(a) para %s por %s."
 msgid "You have been invited to %s."
 msgstr "Foste convidado(a) para %s."
 
-#: ../modules/nickserv/ns_recover.cpp ../modules/protocol/ratbox.cpp
+#: ../modules/nickserv/ns_recover.cpp
 #, c-format
 msgid "You have been logged in as %s."
 msgstr "Fizeste login como %s."

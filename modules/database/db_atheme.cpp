@@ -466,7 +466,7 @@ private:
 			if (locks & 0x2000000u)
 				data->mlocks.emplace_back("DELAYJOIN", set);
 		}
-		else if (IRCD->owner->name != "ratbox")
+		else
 		{
 			Log(this) << "Unable to import mode locks for " << IRCD->GetProtocolName();
 		}
