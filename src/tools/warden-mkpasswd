@@ -117,12 +117,12 @@ if config:
             password = "{password_hash}"
             password_hash = "{algorithm}"
 
-        For use in an jsonrpc/xmlrpc token:
+        For use in an jsonrpc token:
             token = "{password_hash}"
             token_hash = "{algorithm}"
         """).lstrip())
 else:
-    print(f"The {algorithm} algorithm can not be used in an oper or a jsonrpc/xmlrpc token.")
+    print(f"The {algorithm} algorithm can not be used in an oper or a jsonrpc token.")
     print()
 
 print(f"Make sure you have the {module} module loaded!");

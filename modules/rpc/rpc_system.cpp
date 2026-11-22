@@ -46,13 +46,10 @@ public:
 		// * Boolean false
 		// * Doubles
 		// * Signed integer that can fit into a 32-bit type.
-		// * Signed integer that needs a 64-bit type (not supported by some
-		//   XML-RPC clients).
+		// * Signed integer that needs a 64-bit type.
 		// * Unsigned integer that can fit into a 32-bit signed type.
-		// * Unsigned integer that needs a 64-bit signed type (not supported by
-		//   some XML-RPC clients).
-		// * Unsigned integer that needs a 64-bit unsigned type (converted to a
-		//   string when using the xmlrpc module).
+		// * Unsigned integer that needs a 64-bit signed type.
+		// * Unsigned integer that needs a 64-bit unsigned type.
 
 		auto &root = request.Root();
 

@@ -45,7 +45,7 @@ The example configuration includes the other `*.example.conf` files. To change o
 
 ### Coming from Anope
 
-Warden reads an existing `anope.conf` and `anope.json` if `warden.conf` / `warden.json` are not there, and warns you to rename them. The RPC interface also accepts the old `anope.*` method names for now, so tools like MagIRC keep working.
+Warden reads an existing `anope.conf` and `anope.json` if `warden.conf` / `warden.json` are not there, and warns you to rename them. The RPC interface also accepts the old `anope.*` method names for now, so tools like MagIRC keep working. XML-RPC has been removed; use the `jsonrpc` module instead.
 
 ## Extra modules
 

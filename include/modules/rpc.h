@@ -33,7 +33,7 @@ namespace RPC
 	/** Represents possible types of RPC value. */
 	using ValueUnion = std::variant<Array, Map, Warden::string, std::nullptr_t, bool, double, int64_t, uint64_t>;
 
-	/** Represents standard RPC errors from the JSON-RPC and XML-RPC specifications. */
+	/** Represents standard RPC errors from the JSON-RPC specification. */
 	enum Error
 		: int64_t
 	{
