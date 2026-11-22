@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,7 +16,7 @@
 #pragma once
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "serialize.h"
 #include "service.h"
 
@@ -32,12 +33,12 @@ enum
  */
 struct CoreExport Privilege final
 {
-	Anope::string name;
-	Anope::string desc;
+	Warden::string name;
+	Warden::string desc;
 	/* Rank relative to other privileges */
 	int rank;
 
-	Privilege(const Anope::string &name, const Anope::string &desc, int rank);
+	Privilege(const Warden::string &name, const Warden::string &desc, int rank);
 	bool operator==(const Privilege &other) const;
 };
 
@@ -47,7 +48,7 @@ class CoreExport PrivilegeManager final
 public:
 	static void AddPrivilege(Privilege p);
 	static void RemovePrivilege(Privilege &p);
-	static Privilege *FindPrivilege(const Anope::string &name);
+	static Privilege *FindPrivilege(const Warden::string &name);
 	static std::vector<Privilege> &GetPrivileges();
 	static void ClearPrivileges();
 };
@@ -59,7 +60,7 @@ class CoreExport AccessProvider
 	: public Service
 {
 public:
-	AccessProvider(Module *owner, const Anope::string &name);
+	AccessProvider(Module *owner, const Warden::string &name);
 	virtual ~AccessProvider();
 
 	/** Creates a new ChanAccess entry using this provider.
@@ -67,8 +68,8 @@ public:
 	 */
 	virtual ChanAccess *Create() = 0;
 
-	virtual void GetAccess(CommandSource& source, const Privilege *p, Anope::map<Anope::string> &access) = 0;
-	static void SendAccess(CommandSource &source, const Anope::string &pname);
+	virtual void GetAccess(CommandSource& source, const Privilege *p, Warden::map<Warden::string> &access) = 0;
+	static void SendAccess(CommandSource &source, const Warden::string &pname);
 
 private:
 	static std::list<AccessProvider *> Providers;
@@ -90,7 +91,7 @@ public:
 	};
 
 private:
-	Anope::string mask;
+	Warden::string mask;
 	/* account this access entry is for, if any */
 	Serialize::Reference<NickCore> nc;
 
@@ -101,16 +102,16 @@ public:
 	AccessProvider *provider;
 	/* Channel this access entry is on */
 	Serialize::Reference<ChannelInfo> ci;
-	Anope::string creator;
-	Anope::string description;
+	Warden::string creator;
+	Warden::string description;
 	time_t last_seen;
 	time_t created;
 
 	ChanAccess(AccessProvider *p);
 	virtual ~ChanAccess();
 
-	void SetMask(const Anope::string &mask, ChannelInfo *ci);
-	const Anope::string &Mask() const;
+	void SetMask(const Warden::string &mask, ChannelInfo *ci);
+	const Warden::string &Mask() const;
 	NickCore *GetAccount() const;
 
 	static const unsigned int MAX_DEPTH = 4;
@@ -125,18 +126,18 @@ public:
 	/** Check if this access entry has the given privilege.
 	 * @param name The privilege name
 	 */
-	virtual bool HasPriv(const Anope::string &name) const = 0;
+	virtual bool HasPriv(const Warden::string &name) const = 0;
 
 	/** Serialize the access given by this access entry into a human
 	 * readable form. chanserv/access will return a number, chanserv/xop
 	 * will be AOP, SOP, etc.
 	 */
-	virtual Anope::string AccessSerialize() const = 0;
+	virtual Warden::string AccessSerialize() const = 0;
 
 	/** Unserialize this access entry from the given data. This data
 	 * will be fetched from AccessSerialize.
 	 */
-	virtual void AccessUnserialize(const Anope::string &data) = 0;
+	virtual void AccessUnserialize(const Warden::string &data) = 0;
 
 	/* Comparison operators to other Access entries */
 	virtual bool operator>(const ChanAccess &other) const;
@@ -168,7 +169,7 @@ public:
 	 * @param priv The privilege
 	 * @return true if any entry has the given privilege
 	 */
-	bool HasPriv(const Anope::string &priv) const;
+	bool HasPriv(const Warden::string &priv) const;
 
 	/** Get the "highest" access entry from this group of entries.
 	 * The highest entry is determined by the entry that has the privilege

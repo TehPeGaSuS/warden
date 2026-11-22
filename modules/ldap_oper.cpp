@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,7 +17,7 @@
 #include "modules/ldap.h"
 
 static std::set<Oper *> my_opers;
-static Anope::string opertype_attribute;
+static Warden::string opertype_attribute;
 
 class IdentifyInterface final
 	: public LDAPInterface
@@ -39,7 +40,7 @@ public:
 		{
 			const LDAPAttributes &attr = r.get(0);
 
-			const Anope::string &opertype = attr.get(opertype_attribute);
+			const Warden::string &opertype = attr.get(opertype_attribute);
 
 			OperType *ot = OperType::Find(opertype);
 			if (ot != NULL && (nc->o == NULL || ot != nc->o->ot))
@@ -87,12 +88,12 @@ class LDAPOper final
 {
 	ServiceReference<LDAPProvider> ldap;
 
-	Anope::string binddn;
-	Anope::string password;
-	Anope::string basedn;
-	Anope::string filter;
+	Warden::string binddn;
+	Warden::string password;
+	Warden::string basedn;
+	Warden::string filter;
 public:
-	LDAPOper(const Anope::string &modname, const Anope::string &creator) :
+	LDAPOper(const Warden::string &modname, const Warden::string &creator) :
 		Module(modname, creator, EXTRA | VENDOR), ldap("LDAPProvider", "ldap/main")
 	{
 
@@ -102,11 +103,11 @@ public:
 	{
 		const auto &config = Config->GetModule(this);
 
-		this->binddn = config.Get<const Anope::string>("binddn");
-		this->password = config.Get<const Anope::string>("password");
-		this->basedn = config.Get<const Anope::string>("basedn");
-		this->filter = config.Get<const Anope::string>("filter");
-		opertype_attribute = config.Get<const Anope::string>("opertype_attribute");
+		this->binddn = config.Get<const Warden::string>("binddn");
+		this->password = config.Get<const Warden::string>("password");
+		this->basedn = config.Get<const Warden::string>("basedn");
+		this->filter = config.Get<const Warden::string>("filter");
+		opertype_attribute = config.Get<const Warden::string>("opertype_attribute");
 
 		for (const auto *oper : my_opers)
 			delete oper;
@@ -124,13 +125,13 @@ public:
 
 			if (!this->binddn.empty())
 			{
-				auto bdn = Anope::Template(this->binddn, {
+				auto bdn = Warden::Template(this->binddn, {
 					{ "account", this->ldap->EscapeDN(u->Account()->display) },
 				});
 				this->ldap->Bind(NULL, bdn, this->password.c_str());
 			}
 
-			auto af = Anope::Template(this->filter, {
+			auto af = Warden::Template(this->filter, {
 				{ "account", this->ldap->EscapeSF(u->Account()->display) },
 			});
 			this->ldap->Search(new IdentifyInterface(this, u), this->basedn, af);

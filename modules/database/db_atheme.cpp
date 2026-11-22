@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -42,7 +43,7 @@ private:
 	spacesepstream stream;
 
 public:
-	AthemeRow(const Anope::string &str)
+	AthemeRow(const Warden::string &str)
 		: stream(str)
 	{
 	}
@@ -53,9 +54,9 @@ public:
 	}
 
 	// Retrieves the next parameter.
-	Anope::string Get()
+	Warden::string Get()
 	{
-		Anope::string token;
+		Warden::string token;
 		if (!stream.GetToken(token))
 			error++;
 		return token;
@@ -65,17 +66,17 @@ public:
 	template<typename Numeric>
 	std::enable_if_t<std::is_arithmetic_v<Numeric>, Numeric> GetNum()
 	{
-		return Anope::Convert<Numeric>(Get(), 0);
+		return Warden::Convert<Numeric>(Get(), 0);
 	}
 
 	// Retrieves the entire row.
-	Anope::string GetRow()
+	Warden::string GetRow()
 	{
 		return stream.GetString();
 	}
 
 	// Retrieves the remaining data in the row.
-	Anope::string GetRemaining(bool allow_empty = false)
+	Warden::string GetRemaining(bool allow_empty = false)
 	{
 		auto remaining = stream.GetRemaining();
 		if (remaining.empty() && !allow_empty)
@@ -93,11 +94,11 @@ public:
 struct ModeLockData final
 {
 	char letter;
-	Anope::string name;
-	Anope::string value;
+	Warden::string name;
+	Warden::string value;
 	bool set;
 
-	ModeLockData(const Anope::string &n, bool s, const Anope::string &v = "")
+	ModeLockData(const Warden::string &n, bool s, const Warden::string &v = "")
 		: letter(0)
 		, name(n)
 		, value(v)
@@ -105,14 +106,14 @@ struct ModeLockData final
 	{
 	}
 
-	ModeLockData(char l, const Anope::string &v = "")
+	ModeLockData(char l, const Warden::string &v = "")
 		: letter(l)
 		, value(v)
 		, set(true)
 	{
 	}
 
-	Anope::string str() const
+	Warden::string str() const
 	{
 		std::stringstream buf;
 		buf << '+' << (name.empty() ? letter : name);
@@ -125,7 +126,7 @@ struct ModeLockData final
 struct FounderSuccessorCandidate
 {
 	// Flags ranked from founder down, for successor candidate ranking
-	static const Anope::string FLAG_PRIORITY;
+	static const Warden::string FLAG_PRIORITY;
 
 	NickCore* nc;
 	size_t priority;
@@ -138,7 +139,7 @@ struct FounderSuccessorCandidate
 	{
 	}
 
-	FounderSuccessorCandidate(NickCore *c, const Anope::string &flags, time_t m)
+	FounderSuccessorCandidate(NickCore *c, const Warden::string &flags, time_t m)
 		: nc(c)
 		, priority(FLAG_PRIORITY.find_first_of(flags))
 		, mtime(m)
@@ -153,41 +154,41 @@ struct FounderSuccessorCandidate
 	FounderSuccessorCandidate& operator=(const FounderSuccessorCandidate& other) = default;
 };
 
-const Anope::string FounderSuccessorCandidate::FLAG_PRIORITY = "FSRsaOoHh";
+const Warden::string FounderSuccessorCandidate::FLAG_PRIORITY = "FSRsaOoHh";
 
 struct ChannelData final
 {
-	Anope::unordered_map<ChanServ::AutoKick *> akicks;
-	Anope::string bot;
+	Warden::unordered_map<ChanServ::AutoKick *> akicks;
+	Warden::string bot;
 	FounderSuccessorCandidate founder_candidate;
-	Anope::string info_adder;
-	Anope::string info_message;
+	Warden::string info_adder;
+	Warden::string info_message;
 	time_t info_ts = 0;
 	std::vector<ModeLockData> mlocks;
 	FounderSuccessorCandidate successor_candidate;
-	Anope::string suspend_by;
-	Anope::string suspend_reason;
+	Warden::string suspend_by;
+	Warden::string suspend_reason;
 	time_t suspend_ts = 0;
 };
 
 struct UserData final
 {
-	Anope::map<Anope::string> ajoins;
-	Anope::string info_adder;
-	Anope::string info_message;
+	Warden::map<Warden::string> ajoins;
+	Warden::string info_adder;
+	Warden::string info_message;
 	time_t info_ts = 0;
-	Anope::string last_quit;
-	Anope::string last_userhost;
-	Anope::string last_userhost_real;
+	Warden::string last_quit;
+	Warden::string last_userhost;
+	Warden::string last_userhost_real;
 	bool noexpire = false;
 	bool protect = false;
 	std::optional<time_t> protectafter;
-	Anope::string suspend_by;
-	Anope::string suspend_reason;
+	Warden::string suspend_by;
+	Warden::string suspend_reason;
 	time_t suspend_ts = 0;
-	Anope::string vhost;
-	Anope::string vhost_creator;
-	Anope::map<Anope::string> vhost_nick;
+	Warden::string vhost;
+	Warden::string vhost_creator;
+	Warden::map<Warden::string> vhost_nick;
 	time_t vhost_ts = 0;
 };
 
@@ -203,15 +204,15 @@ class DBAtheme final
 private:
 	ServiceReference<AccessProvider> accessprov;
 	PrimitiveExtensibleItem<ChannelData> chandata;
-	std::map<Anope::string, char> flags;
+	std::map<Warden::string, char> flags;
 	PrimitiveExtensibleItem<UserData> userdata;
 	ServiceReference<XLineManager> sglinemgr;
 	ServiceReference<XLineManager> snlinemgr;
 	ServiceReference<XLineManager> sqlinemgr;
-	Anope::map<Anope::string> csmiscdata;
-	Anope::map<Anope::string> nsmiscdata;
+	Warden::map<Warden::string> csmiscdata;
+	Warden::map<Warden::string> nsmiscdata;
 
-	Anope::map<std::function<bool(DBAtheme*,AthemeRow&)>> rowhandlers = {
+	Warden::map<std::function<bool(DBAtheme*,AthemeRow&)>> rowhandlers = {
 		{ "AC",         &DBAtheme::HandleIgnore    },
 		{ "AR",         &DBAtheme::HandleIgnore    },
 		{ "BE",         &DBAtheme::HandleBE        },
@@ -274,7 +275,7 @@ private:
 		{ "XL",         &DBAtheme::HandleXL        },
 	};
 
-	static void RemoveAll(Anope::string& in, const Anope::string& unwanted)
+	static void RemoveAll(Warden::string& in, const Warden::string& unwanted)
 	{
 			auto it = std::remove_if(in.begin(), in.end(), [&](char c){
 					return unwanted.find_first_of(c) != unwanted.npos;
@@ -282,10 +283,10 @@ private:
 			in.erase(it, in.end());
 	}
 
-	static bool RemoveFirstOccurrence(Anope::string& in, char c)
+	static bool RemoveFirstOccurrence(Warden::string& in, char c)
 	{
 		auto pos = in.find(c);
-		if (pos != Anope::string::npos)
+		if (pos != Warden::string::npos)
 		{
 			in.erase(pos, 1);
 			return true;
@@ -293,7 +294,7 @@ private:
 		return false;
 	}
 
-	bool ApplyAccess(Anope::string &in, char flag, Anope::string &out, std::initializer_list<const char*> privs)
+	bool ApplyAccess(Warden::string &in, char flag, Warden::string &out, std::initializer_list<const char*> privs)
 	{
 		const bool flag_found = RemoveFirstOccurrence(in, flag);
 		if (flag_found)
@@ -310,10 +311,10 @@ private:
 		return flag_found;
 	}
 
-	void ApplyFlags(Extensible *ext, Anope::string &flags, char flag, const char *extname, bool extend = true)
+	void ApplyFlags(Extensible *ext, Warden::string &flags, char flag, const char *extname, bool extend = true)
 	{
 		auto pos = flags.find(flag);
-		auto has_flag = (pos != Anope::string::npos);
+		auto has_flag = (pos != Warden::string::npos);
 
 		if (has_flag == extend)
 			ext->Extend<bool>(extname);
@@ -324,7 +325,7 @@ private:
 			flags.erase(pos, 1);
 	}
 
-	void ApplyLocks(ChannelInfo *ci, unsigned locks, const Anope::string &limit, const Anope::string &key, bool set)
+	void ApplyLocks(ChannelInfo *ci, unsigned locks, const Warden::string &limit, const Warden::string &key, bool set)
 	{
 		auto *data = chandata.Require(ci);
 
@@ -471,13 +472,13 @@ private:
 		}
 	}
 
-	void ApplyPassword(NickCore *nc, Anope::string &flags, const Anope::string &pass)
+	void ApplyPassword(NickCore *nc, Warden::string &flags, const Warden::string &pass)
 	{
 		auto pos = flags.find('C');
-		if (pos == Anope::string::npos)
+		if (pos == Warden::string::npos)
 		{
 			// Password is unencrypted so we can use it.
-			Anope::Encrypt(pass, nc->pass);
+			Warden::Encrypt(pass, nc->pass);
 			return;
 		}
 
@@ -487,7 +488,7 @@ private:
 		// Atheme supports several password hashing methods. We can only import
 		// some of them currently.
 		//
-		// anope-enc-sha256  Converted to enc_sha256
+		// warden-enc-sha256  Converted to enc_sha256
 		// argon2            Converted to enc_argon2
 		// base64            Converted to the first encryption algorithm
 		// bcrypt            Converted to enc_bcrypt
@@ -506,9 +507,9 @@ private:
 		if (pass.compare(0, 18, "$anope$enc_sha256$", 18) == 0)
 		{
 			auto sep = pass.find('$', 18);
-			auto iv = Anope::B64Decode(pass.substr(18, sep - 18));
-			auto pw = Anope::B64Decode(pass.substr(sep + 1));
-			nc->pass = "sha256:" + Anope::Hex(pw) + ":" + Anope::Hex(iv);
+			auto iv = Warden::B64Decode(pass.substr(18, sep - 18));
+			auto pw = Warden::B64Decode(pass.substr(sep + 1));
+			nc->pass = "sha256:" + Warden::Hex(pw) + ":" + Warden::Hex(iv);
 		}
 
 		else if (pass.compare(0, 9, "$argon2d$", 9) == 0)
@@ -522,8 +523,8 @@ private:
 
 		else if (pass.compare(0, 8, "$base64$", 8) == 0)
 		{
-			auto rawpass = Anope::B64Decode(pass.substr(8));
-			Anope::Encrypt(rawpass, nc->pass);
+			auto rawpass = Warden::B64Decode(pass.substr(8));
+			Warden::Encrypt(rawpass, nc->pass);
 		}
 
 		else if (pass.compare(0, 8, "$rawmd5$", 8) == 0)
@@ -548,11 +549,11 @@ private:
 		{
 			// Generate a new password as we can't use the old one.
 			auto maxpasslen = Config->GetModule("nickserv").Get<unsigned>("maxpasslen", "50");
-			Anope::Encrypt(Anope::Random(maxpasslen), nc->pass);
+			Warden::Encrypt(Warden::Random(maxpasslen), nc->pass);
 
 			// If the password is set to * then an external service is being used for authentication.
 			if (pass != "*")
-				Log(this) << "Unable to convert the password for " << nc->display << " as Anope does not support the format!";
+				Log(this) << "Unable to convert the password for " << nc->display << " as Warden does not support the format!";
 		}
 
 	}
@@ -669,7 +670,7 @@ private:
 		auto *data = chandata.Require(ci);
 
 		auto *nc = NickCore::Find(mask);
-		if (flags.find('b') != Anope::string::npos)
+		if (flags.find('b') != Warden::string::npos)
 		{
 			if (!ChanServ::akick_service)
 			{
@@ -691,7 +692,7 @@ private:
 		}
 
 		auto originalflags = flags;
-		Anope::string accessflags;
+		Warden::string accessflags;
 		ApplyAccess(flags, 'A', accessflags, { "ACCESS_LIST" });
 		ApplyAccess(flags, 'a', accessflags, { "AUTOPROTECT", "PROTECT", "PROTECTME" });
 		ApplyAccess(flags, 'e', accessflags, { "GETKEY", "NOKICK", "UNBANME" });
@@ -791,7 +792,7 @@ private:
 		exception->mask = ip;
 		exception->limit = allowed;
 		exception->who = "Unknown";
-		exception->time = Anope::CurTime;
+		exception->time = Warden::CurTime;
 		exception->expires = expires;
 		exception->reason = reason;
 		OperServ::session_service->AddException(exception);
@@ -899,7 +900,7 @@ private:
 
 		auto *ni = OperServ::news_service->CreateNewsItem();
 		ni->type = OperServ::NEWS_LOGON;
-		ni->text = Anope::Format("[%s] %s", subject.c_str(), body.c_str());
+		ni->text = Warden::Format("[%s] %s", subject.c_str(), body.c_str());
 		ni->who = setter;
 		ni->time = ts;
 		OperServ::news_service->AddNewsItem(ni);
@@ -925,7 +926,7 @@ private:
 
 		auto *ni = OperServ::news_service->CreateNewsItem();
 		ni->type = OperServ::NEWS_OPER;
-		ni->text = Anope::Format("[%s] %s", subject.c_str(), body.c_str());
+		ni->text = Warden::Format("[%s] %s", subject.c_str(), body.c_str());
 		ni->who = setter;
 		ni->time = ts;
 		OperServ::news_service->AddNewsItem(ni);
@@ -938,7 +939,7 @@ private:
 		return true;
 	}
 
-	bool HandleIgnoreMetadata(const Anope::string &target, const Anope::string &key, const Anope::string &value)
+	bool HandleIgnoreMetadata(const Warden::string &target, const Warden::string &key, const Warden::string &value)
 	{
 		Log(LOG_DEBUG_3) << "Intentionally ignoring Atheme database metadata for " << target << ": " << key << " = " << value;
 		return true;
@@ -975,14 +976,14 @@ private:
 		ApplyFlags(ci, flags, 'z', "SECUREOPS");
 
 		auto pos = flags.find('a');
-		if (pos != Anope::string::npos)
+		if (pos != Warden::string::npos)
 		{
 			ci->SetLevel("ACCESS_CHANGE", 0);
 			flags.erase(pos, 1);
 		}
 
 		pos = flags.find('f');
-		if (pos != Anope::string::npos)
+		if (pos != Warden::string::npos)
 		{
 			auto *kd = ci->Require<BotServ::KickerData>(BOTSERV_KICKER_DATA_EXT);
 			if (kd)
@@ -1000,7 +1001,7 @@ private:
 		}
 
 		pos = flags.find('g');
-		if (pos != Anope::string::npos)
+		if (pos != Warden::string::npos)
 		{
 			auto *bi = Config->GetClient("ChanServ");
 			if (bi)
@@ -1113,7 +1114,7 @@ private:
 		else if (key == "private:close:reason")
 			data->suspend_reason = value;
 		else if (key == "private:close:timestamp")
-			data->suspend_ts = Anope::Convert<time_t>(value, 0);
+			data->suspend_ts = Warden::Convert<time_t>(value, 0);
 		else if (key == "private:entrymsg")
 		{
 			auto *eml = ci->Require<ChanServ::EntryMessageList>(CHANSERV_ENTRY_MESSAGE_EXT);
@@ -1127,7 +1128,7 @@ private:
 			msg->chan = ci->name;
 			msg->creator = "Unknown";
 			msg->message = value;
-			msg->when = Anope::CurTime;
+			msg->when = Warden::CurTime;
 			(*eml)->push_back(msg);
 		}
 		else if (key == "private:klinechan:closer")
@@ -1135,17 +1136,17 @@ private:
 		else if (key == "private:klinechan:reason")
 			data->suspend_reason = value;
 		else if (key == "private:klinechan:timestamp")
-			data->suspend_ts = Anope::Convert<time_t>(value, 0);
+			data->suspend_ts = Warden::Convert<time_t>(value, 0);
 		else if (key == "private:mark:reason")
 			data->info_message = value;
 		else if (key == "private:mark:setter")
 			data->info_adder = value;
 		else if (key == "private:mark:timestamp")
-			data->info_ts = Anope::Convert<time_t>(value, 0);
+			data->info_ts = Warden::Convert<time_t>(value, 0);
 		else if (key == "private:mlockext")
 		{
 			spacesepstream mlocks(value);
-			for (Anope::string mlock; mlocks.GetToken(mlock); )
+			for (Warden::string mlock; mlocks.GetToken(mlock); )
 				data->mlocks.emplace_back(mlock[0], mlock.substr(1));
 		}
 		else if (key == "private:templates")
@@ -1155,13 +1156,13 @@ private:
 		else if (key == "private:topic:text")
 			ci->last_topic = value;
 		else if (key == "private:topic:ts")
-			ci->last_topic_time = Anope::Convert<time_t>(value, 0);
+			ci->last_topic_time = Warden::Convert<time_t>(value, 0);
 		else if (key.compare(0, 14, "private:stats:", 14) == 0)
 			return HandleIgnoreMetadata(ci->name, key, value);
-		else if (key.find(':') == Anope::string::npos)
+		else if (key.find(':') == Warden::string::npos)
 		{
 			// Make a guess that there could be a ChanServ SET MISC entry w/the mystery key's exact (uppercase) name
-			const Anope::string name = CHANSERV_SET_MISC_PREFIX + key.upper();
+			const Warden::string name = CHANSERV_SET_MISC_PREFIX + key.upper();
 			ExtensibleRef<MiscData> extref(name);
 			if (!extref)
 			{
@@ -1184,7 +1185,7 @@ private:
 				return true;
 			}
 
-			const Anope::string name = CHANSERV_SET_MISC_PREFIX + it->second;
+			const Warden::string name = CHANSERV_SET_MISC_PREFIX + it->second;
 			ExtensibleRef<MiscData> extref(name);
 			if (!extref)
 			{
@@ -1229,7 +1230,7 @@ private:
 		else if (key == "private:mark:setter")
 			forbid->creator = value;
 		else if (key == "private:mark:timestamp")
-			forbid->created = Anope::Convert<time_t>(value, 0);
+			forbid->created = Warden::Convert<time_t>(value, 0);
 		else
 			Log(this) << "Unknown forbidden nick metadata for " << forbid->mask << ": " << key << " = " << value;
 
@@ -1254,10 +1255,10 @@ private:
 		if (key == "private:autojoin")
 		{
 			commasepstream autojoins(value, true);
-			for (Anope::string autojoin; autojoins.GetToken(autojoin); )
+			for (Warden::string autojoin; autojoins.GetToken(autojoin); )
 			{
 				spacesepstream entry(autojoin);
-				Anope::string cname, ckey;
+				Warden::string cname, ckey;
 				if (entry.GetToken(cname))
 					entry.GetToken(ckey);
 				data->ajoins[cname] = ckey;
@@ -1266,13 +1267,13 @@ private:
 		else if (key == "private:doenforce")
 			data->protect = true;
 		else if (key == "private:enforcetime")
-			data->protectafter = Anope::TryConvert<time_t>(value);
+			data->protectafter = Warden::TryConvert<time_t>(value);
 		else if (key == "private:freeze:freezer")
 			data->suspend_by = value;
 		else if (key == "private:freeze:reason")
 			data->suspend_reason = value;
 		else if (key == "private:freeze:timestamp")
-			data->suspend_ts = Anope::Convert<time_t>(value, 0);
+			data->suspend_ts = Warden::Convert<time_t>(value, 0);
 		else if (key == "private:host:actual")
 			data->last_userhost_real = value;
 		else if (key == "private:host:vhost")
@@ -1290,7 +1291,7 @@ private:
 		else if (key == "private:mark:setter")
 			data->info_adder = value;
 		else if (key == "private:mark:timestamp")
-			data->info_ts = Anope::Convert<time_t>(value, 0);
+			data->info_ts = Warden::Convert<time_t>(value, 0);
 		else if (key == "private:sendpass:sender")
 			return HandleIgnoreMetadata(nc->display, key, value);
 		else if (key == "private:sendpass:timestamp")
@@ -1304,13 +1305,13 @@ private:
 		else if (key == "private:usercloak-assigner")
 			data->vhost_creator = value;
 		else if (key == "private:usercloak-timestamp")
-			data->vhost_ts = Anope::Convert<time_t>(value, 0);
+			data->vhost_ts = Warden::Convert<time_t>(value, 0);
 		else if (key.compare(0, 18, "private:usercloak:", 18) == 0)
 			data->vhost_nick[key.substr(18)] = value;
-		else if (key.find(':') == Anope::string::npos)
+		else if (key.find(':') == Warden::string::npos)
 		{
 			// Make a guess that there could be a NickServ SET MISC entry w/the mystery key's exact (uppercase) name
-			const Anope::string name = NICKSERV_SET_MISC_PREFIX + key.upper();
+			const Warden::string name = NICKSERV_SET_MISC_PREFIX + key.upper();
 			ExtensibleRef<MiscData> extref(name);
 			if (!extref)
 			{
@@ -1333,7 +1334,7 @@ private:
 				return true;
 			}
 
-			const Anope::string name = NICKSERV_SET_MISC_PREFIX + it->second;
+			const Warden::string name = NICKSERV_SET_MISC_PREFIX + it->second;
 			ExtensibleRef<MiscData> extref(name);
 			if (!extref)
 			{
@@ -1532,14 +1533,14 @@ private:
 		ApplyFlags(nc, flags, 's', "HIDE_EMAIL");
 		ApplyFlags(nc, flags, 'W', "UNCONFIRMED");
 
-		// If an Atheme account was awaiting confirmation but Anope is not
+		// If an Atheme account was awaiting confirmation but Warden is not
 		// configured to use confirmation then autoconfirm it.
-		const auto &nsregister = Config->GetModule("ns_register").Get<const Anope::string>("registration");
+		const auto &nsregister = Config->GetModule("ns_register").Get<const Warden::string>("registration");
 		if (nsregister.equals_ci("none"))
 			nc->Shrink<bool>("UNCONFIRMED");
 
 		auto pos = flags.find('h');
-		if (pos != Anope::string::npos)
+		if (pos != Warden::string::npos)
 		{
 			userdata.Require(nc)->noexpire = true;
 			flags.erase(pos, 1);
@@ -1681,7 +1682,7 @@ private:
 	}
 
 public:
-	DBAtheme(const Anope::string &modname, const Anope::string &creator)
+	DBAtheme(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, DATABASE | VENDOR)
 		, accessprov("AccessProvider", "access/flags")
 		, chandata(this, "ATHEME_CHANDATA")
@@ -1696,37 +1697,37 @@ public:
 	{
 		const auto &modconf = conf.GetModule(this);
 
-		Anope::map<Anope::string> tmp_csmiscdata;
+		Warden::map<Warden::string> tmp_csmiscdata;
 		for (const auto &[_,  data] : modconf.GetBlocks("cs_set_misc"))
 		{
-			const auto &anope = data.Get<const Anope::string>("anope");
-			const auto &atheme = data.Get<const Anope::string>("atheme");
-			if (anope.empty())
-				throw ConfigException(this->name + " missing cs_set_misc anope config entry" + (atheme.empty() ? "" : (" for atheme entry " + atheme)));
+			const auto &warden = data.Get<const Warden::string>("warden");
+			const auto &atheme = data.Get<const Warden::string>("atheme");
+			if (warden.empty())
+				throw ConfigException(this->name + " missing cs_set_misc warden config entry" + (atheme.empty() ? "" : (" for atheme entry " + atheme)));
 			else if (atheme.empty())
-				throw ConfigException(this->name + " missing cs_set_misc atheme config entry for anope entry " + anope);
+				throw ConfigException(this->name + " missing cs_set_misc atheme config entry for warden entry " + warden);
 			else
-				tmp_csmiscdata[atheme] = anope.upper();
+				tmp_csmiscdata[atheme] = warden.upper();
 		}
 
-		Anope::map<Anope::string> tmp_nsmiscdata;
+		Warden::map<Warden::string> tmp_nsmiscdata;
 		for (const auto &[_,  data] : modconf.GetBlocks("ns_set_misc"))
 		{
-			const auto &anope = data.Get<const Anope::string>("anope");
-			const auto &atheme = data.Get<const Anope::string>("atheme");
-			if (anope.empty())
-				throw ConfigException(this->name + "missing ns_set_misc anope config entry" + (atheme.empty() ? "" : (" for atheme entry " + atheme)));
+			const auto &warden = data.Get<const Warden::string>("warden");
+			const auto &atheme = data.Get<const Warden::string>("atheme");
+			if (warden.empty())
+				throw ConfigException(this->name + "missing ns_set_misc warden config entry" + (atheme.empty() ? "" : (" for atheme entry " + atheme)));
 			else if (atheme.empty())
-				throw ConfigException(this->name + " missing ns_set_misc atheme config entry for anope entry " + anope);
+				throw ConfigException(this->name + " missing ns_set_misc atheme config entry for warden entry " + warden);
 			else
-				tmp_nsmiscdata[atheme] = anope.upper();
+				tmp_nsmiscdata[atheme] = warden.upper();
 		}
 
-		std::map<Anope::string, char> tmp_flags;
+		std::map<Warden::string, char> tmp_flags;
 		for (const auto &[_,  priv] : conf.GetBlocks("privilege"))
 		{
-			const Anope::string &name = priv.Get<const Anope::string>("name");
-			const Anope::string &value = priv.Get<const Anope::string>("flag");
+			const Warden::string &name = priv.Get<const Warden::string>("name");
+			const Warden::string &value = priv.Get<const Warden::string>("flag");
 			if (!name.empty() && !value.empty())
 				tmp_flags[name] = value[0];
 		}
@@ -1738,7 +1739,7 @@ public:
 
 	EventReturn OnLoadDatabase() override
 	{
-		const auto dbname = Anope::ExpandData(Config->GetModule(this).Get<const Anope::string>("database", "atheme.db"));
+		const auto dbname = Warden::ExpandData(Config->GetModule(this).Get<const Warden::string>("database", "atheme.db"));
 		std::ifstream fd(dbname.str());
 		if (!fd.is_open())
 		{
@@ -1746,7 +1747,7 @@ public:
 			return EVENT_STOP;
 		}
 
-		for (Anope::string buf; std::getline(fd, buf.str()); )
+		for (Warden::string buf; std::getline(fd, buf.str()); )
 		{
 			AthemeRow row(buf);
 
@@ -1831,7 +1832,7 @@ public:
 						if (!key.empty())
 						{
 							Channel *c = Channel::Find(channel);
-							Anope::string k;
+							Warden::string k;
 							if (c && c->GetParam("KEY", k) && key != k)
 							{
 								Log(this) << "Skipping ajoin with incorrect key for channel " << channel
@@ -1940,7 +1941,7 @@ public:
 				ml->SetMLock(mh, mlock.set, mlock.value, "Unknown");
 			}
 		}
-		Anope::SaveDatabases();
+		Warden::SaveDatabases();
 	}
 };
 

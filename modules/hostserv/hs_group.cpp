@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -45,9 +46,9 @@ public:
 		this->SetDesc(_("Sync the vhost for all nicks in an account"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -64,7 +65,7 @@ public:
 			source.Reply(HOST_NOT_ASSIGNED);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -85,7 +86,7 @@ class HSGroup final
 	bool synconset;
 
 public:
-	HSGroup(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	HSGroup(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandhsgroup(this)
 	{
 		if (!IRCD || !IRCD->CanSetVHost)

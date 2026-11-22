@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -17,7 +18,7 @@
 
 namespace
 {
-	Anope::string TypeToString(BotServ::BadWordType bw)
+	Warden::string TypeToString(BotServ::BadWordType bw)
 	{
 		switch (bw)
 		{
@@ -33,7 +34,7 @@ namespace
 		return ""; // Should never happen.
 	}
 
-	BotServ::BadWordType StringToType(const Anope::string &bw)
+	BotServ::BadWordType StringToType(const Warden::string &bw)
 	{
 		if (bw.equals_ci("ANY") || bw.equals_ci("0"))
 			return BotServ::BW_ANY;
@@ -86,14 +87,14 @@ struct BadWordsImpl final
 	Serialize::Checker<list> badwords;
 
 	BadWordsImpl(Extensible *obj)
-		: ci(anope_dynamic_static_cast<ChannelInfo *>(obj))
+		: ci(warden_dynamic_static_cast<ChannelInfo *>(obj))
 		, badwords(BOTSERV_BAD_WORDS_TYPE)
 	{
 	}
 
 	~BadWordsImpl() override;
 
-	BotServ::BadWord *AddBadWord(const Anope::string &word, BotServ::BadWordType type) override
+	BotServ::BadWord *AddBadWord(const Warden::string &word, BotServ::BadWordType type) override
 	{
 		auto *bw = new BadWordImpl();
 		bw->chan = ci->name;
@@ -178,7 +179,7 @@ Serializable *BadWordTypeImpl::Unserialize(Serializable *obj, Serialize::Data &d
 
 	BadWordImpl *bw;
 	if (obj)
-		bw = anope_dynamic_static_cast<BadWordImpl *>(obj);
+		bw = warden_dynamic_static_cast<BadWordImpl *>(obj);
 	else
 		bw = new BadWordImpl();
 	bw->chan = ci->name;
@@ -200,10 +201,10 @@ class BadwordsDelCallback final
 	BotServ::BadWords *bw;
 	Command *c;
 	unsigned deleted = 0;
-	Anope::string lastdeleted;
+	Warden::string lastdeleted;
 	bool override = false;
 public:
-	BadwordsDelCallback(CommandSource &_source, ChannelInfo *_ci, Command *_c, const Anope::string &list) : NumberList(list, true), source(_source), ci(_ci), c(_c)
+	BadwordsDelCallback(CommandSource &_source, ChannelInfo *_ci, Command *_c, const Warden::string &list) : NumberList(list, true), source(_source), ci(_ci), c(_c)
 	{
 		if (!source.AccessFor(ci).HasPriv("BADWORDS") && source.HasPriv("botserv/administration"))
 			this->override = true;
@@ -244,7 +245,7 @@ class CommandBSBadwords final
 	: public Command
 {
 private:
-	void DoList(CommandSource &source, ChannelInfo *ci, const Anope::string &word)
+	void DoList(CommandSource &source, ChannelInfo *ci, const Warden::string &word)
 	{
 		bool override = !source.AccessFor(ci).HasPriv("BADWORDS");
 		Log(override ? LOG_OVERRIDE : LOG_COMMAND, source, this, ci) << "LIST";
@@ -259,7 +260,7 @@ private:
 			source.Reply(_("%s bad words list is empty."), ci->name.c_str());
 			return;
 		}
-		else if (!word.empty() && word.find_first_not_of("1234567890,-") == Anope::string::npos)
+		else if (!word.empty() && word.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			class BadwordsListCallback final
 				: public NumberList
@@ -267,7 +268,7 @@ private:
 				ListFormatter &list;
 				BotServ::BadWords *bw;
 			public:
-				BadwordsListCallback(ListFormatter &_list, BotServ::BadWords *_bw, const Anope::string &numlist) : NumberList(numlist, false), list(_list), bw(_bw)
+				BadwordsListCallback(ListFormatter &_list, BotServ::BadWords *_bw, const Warden::string &numlist) : NumberList(numlist, false), list(_list), bw(_bw)
 				{
 				}
 
@@ -278,7 +279,7 @@ private:
 
 					const auto *b = bw->GetBadWord(Number - 1);
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(Number);
+					entry["Number"] = Warden::ToString(Number);
 					entry["Word"] = b->word;
 					entry["Type"] = TypeToString(b->type);
 					this->list.AddEntry(entry);
@@ -293,11 +294,11 @@ private:
 			{
 				const auto *b = bw->GetBadWord(i);
 
-				if (!word.empty() && !Anope::Match(b->word, word))
+				if (!word.empty() && !Warden::Match(b->word, word))
 					continue;
 
 				ListFormatter::ListEntry entry;
-				entry["Number"] = Anope::ToString(i + 1);
+				entry["Number"] = Warden::ToString(i + 1);
 				entry["Word"] = b->word;
 				entry["Type"] =  TypeToString(b->type);
 				list.AddEntry(entry);
@@ -314,16 +315,16 @@ private:
 		}
 	}
 
-	void DoAdd(CommandSource &source, ChannelInfo *ci, const Anope::string &word)
+	void DoAdd(CommandSource &source, ChannelInfo *ci, const Warden::string &word)
 	{
 		size_t pos = word.rfind(' ');
 		auto bwtype = BotServ::BW_ANY;
-		Anope::string realword = word;
+		Warden::string realword = word;
 		auto *badwords = ci->Require<BotServ::BadWords>(BOTSERV_BAD_WORDS_EXT);
 
-		if (pos != Anope::string::npos)
+		if (pos != Warden::string::npos)
 		{
-			Anope::string opt = word.substr(pos + 1);
+			Warden::string opt = word.substr(pos + 1);
 			if (!opt.empty())
 				bwtype = StringToType(opt);
 			realword = word.substr(0, pos);
@@ -356,7 +357,7 @@ private:
 		source.Reply(_("\002%s\002 added to %s bad words list."), realword.c_str(), ci->name.c_str());
 	}
 
-	void DoDelete(CommandSource &source, ChannelInfo *ci, const Anope::string &word)
+	void DoDelete(CommandSource &source, ChannelInfo *ci, const Warden::string &word)
 	{
 		auto *badwords = ci->GetExt<BotServ::BadWords>(BOTSERV_BAD_WORDS_EXT);
 
@@ -367,7 +368,7 @@ private:
 		}
 
 		/* Special case: is it a number/list?  Only do search if it isn't. */
-		if (!word.empty() && isdigit(word[0]) && word.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (!word.empty() && isdigit(word[0]) && word.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			BadwordsDelCallback list(source, ci, this, word);
 			list.Process();
@@ -423,10 +424,10 @@ public:
 		this->SetSyntax(_("\037channel\037 CLEAR"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[1];
-		const Anope::string &word = params.size() > 2 ? params[2] : "";
+		const Warden::string &cmd = params[1];
+		const Warden::string &word = params.size() > 2 ? params[2] : "";
 		bool need_args = cmd.equals_ci("LIST") || cmd.equals_ci("CLEAR");
 
 		if (!need_args && word.empty())
@@ -448,7 +449,7 @@ public:
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -466,7 +467,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -552,7 +553,7 @@ class BSBadwords final
 	BadWordTypeImpl badword_type;
 
 public:
-	BSBadwords(const Anope::string &modname, const Anope::string &creator)
+	BSBadwords(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandbsbadwords(this)
 		, badwords(this, BOTSERV_BAD_WORDS_EXT)

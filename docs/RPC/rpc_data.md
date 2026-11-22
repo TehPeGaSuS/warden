@@ -1,6 +1,6 @@
-# Anope `rpc_data` RPC interface
+# Warden `rpc_data` RPC interface
 
-## `anope.listAccounts`
+## `warden.listAccounts`
 
 Lists all accounts that exist on the network.
 
@@ -20,7 +20,7 @@ Code   | Description
 
 If the detail level is not specified or is "name" then an array of account names.
 
-If the detail level is "full" then a mapping of account names to information about the account. See `anope.account` for more information on the data structure.
+If the detail level is "full" then a mapping of account names to information about the account. See `warden.account` for more information on the data structure.
 
 #### Example
 
@@ -28,7 +28,7 @@ If the detail level is "full" then a mapping of account names to information abo
 ["account1", "account2", "account3"]
 ```
 
-## `anope.account`
+## `warden.account`
 
 Retrieves information about the specified account.
 
@@ -125,7 +125,7 @@ users                  | array[string]  | The IRC users who are currently logged
 	]
 }
 ```
-## `anope.listChannels`
+## `warden.listChannels`
 
 Lists all channels that exist on the network.
 
@@ -145,7 +145,7 @@ Code   | Description
 
 If the detail level is not specified or is "name" then an array of channel names.
 
-If the detail level is "full" then a mapping of channel names to information about the channel. See `anope.channel` for more information on the data structure.
+If the detail level is "full" then a mapping of channel names to information about the channel. See `warden.channel` for more information on the data structure.
 
 #### Example
 
@@ -153,7 +153,7 @@ If the detail level is "full" then a mapping of channel names to information abo
 ["#chan1", "#chan2", "#chan3"]
 ```
 
-## `anope.channel`
+## `warden.channel`
 
 Retrieves information about the specified channel.
 
@@ -206,7 +206,7 @@ users       | array[string] | The users that are current in the channel prefixed
 }
 ```
 
-## `anope.listOpers`
+## `warden.listOpers`
 
 Lists all services operators that exist on the network.
 
@@ -226,7 +226,7 @@ Code   | Description
 
 If the detail level is not specified or is "name" then an array of services operator names.
 
-If the detail level is "full" then a mapping of services operator names to information about the services operator. See `anope.oper` for more information on the data structure.
+If the detail level is "full" then a mapping of services operator names to information about the services operator. See `warden.oper` for more information on the data structure.
 
 #### Example
 
@@ -234,7 +234,7 @@ If the detail level is "full" then a mapping of services operator names to infor
 ["nick1", "nick2", "nick3"]
 ```
 
-## `anope.oper`
+## `warden.oper`
 
 Retrieves information about the specified services operator.
 
@@ -285,7 +285,7 @@ vhost               | string or null        | The vhost of the services operator
 }
 ```
 
-## `anope.listServers`
+## `warden.listServers`
 
 Lists all servers that exist on the network.
 
@@ -305,7 +305,7 @@ Code   | Description
 
 If the detail level is not specified or is "name" then an array of server names.
 
-If the detail level is "full" then a mapping of server names to information about the server. See `anope.server` for more information on the data structure.
+If the detail level is "full" then a mapping of server names to information about the server. See `warden.server` for more information on the data structure.
 
 #### Example
 
@@ -313,7 +313,7 @@ If the detail level is "full" then a mapping of server names to information abou
 ["irc1.example.com", "irc2.example.com", "services.example.com"]
 ```
 
-## `anope.server`
+## `warden.server`
 
 Retrieves information about the specified server.
 
@@ -348,7 +348,7 @@ uplink      | string or null | The server in front of this server or null if it 
 
 ```json
 {
-	"description": "Anope IRC Services",
+	"description": "Warden IRC Services",
 	"downlinks": ["irc.example.com"],
 	"juped": false,
 	"name": "services.example.com",
@@ -359,7 +359,7 @@ uplink      | string or null | The server in front of this server or null if it 
 }
 ```
 
-## `anope.listUsers`
+## `warden.listUsers`
 
 Lists all users that exist on the network.
 
@@ -379,7 +379,7 @@ Code   | Description
 
 If the detail level is not specified or is "name" then an array of user nicknames.
 
-If the detail level is "full" then a mapping of user nicknames to information about the user. See `anope.user` for more information on the data structure.
+If the detail level is "full" then a mapping of user nicknames to information about the user. See `warden.user` for more information on the data structure.
 
 #### Example
 
@@ -387,7 +387,7 @@ If the detail level is "full" then a mapping of user nicknames to information ab
 ["nick1", "nick2", "nick3"]
 ```
 
-## `anope.user`
+## `warden.user`
 
 Retrieves information about the specified user.
 

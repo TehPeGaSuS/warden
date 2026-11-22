@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -45,23 +46,23 @@ public:
 	{
 		if (x->regex)
 		{
-			Anope::string uh = u->GetIdent() + "@" + u->host, nuhr = u->nick + "!" + uh + "#" + u->realname;
+			Warden::string uh = u->GetIdent() + "@" + u->host, nuhr = u->nick + "!" + uh + "#" + u->realname;
 			return x->regex->Matches(uh) || x->regex->Matches(nuhr);
 		}
 
-		if (!x->GetNick().empty() && !Anope::Match(u->nick, x->GetNick()))
+		if (!x->GetNick().empty() && !Warden::Match(u->nick, x->GetNick()))
 			return false;
 
-		if (!x->GetUser().empty() && !Anope::Match(u->GetIdent(), x->GetUser()))
+		if (!x->GetUser().empty() && !Warden::Match(u->GetIdent(), x->GetUser()))
 			return false;
 
-		if (!x->GetReal().empty() && !Anope::Match(u->realname, x->GetReal()))
+		if (!x->GetReal().empty() && !Warden::Match(u->realname, x->GetReal()))
 			return false;
 
 		if (x->c && x->c->match(u->ip))
 			return true;
 
-		if (x->GetHost().empty() || Anope::Match(u->host, x->GetHost()) || Anope::Match(u->ip.addr(), x->GetHost()))
+		if (x->GetHost().empty() || Warden::Match(u->host, x->GetHost()) || Warden::Match(u->ip.addr(), x->GetHost()))
 			return true;
 
 		return false;
@@ -124,14 +125,14 @@ public:
 	{
 		if (x->regex)
 			return x->regex->Matches(u->nick);
-		return Anope::Match(u->nick, x->mask);
+		return Warden::Match(u->nick, x->mask);
 	}
 
 	XLine *CheckChannel(Channel *c)
 	{
 		for (auto *x : this->GetList())
 		{
-			if (!Anope::NoExpire && x->expires && x->expires < Anope::CurTime)
+			if (!Warden::NoExpire && x->expires && x->expires < Warden::CurTime)
 				continue; // Skip expired lines.
 
 			if (x->regex)
@@ -144,7 +145,7 @@ public:
 				if (x->mask.empty() || x->mask[0] != '#')
 					continue;
 
-				if (Anope::Match(c->name, x->mask, false, true))
+				if (Warden::Match(c->name, x->mask, false, true))
 					return x;
 			}
 		}
@@ -187,7 +188,7 @@ public:
 	{
 		if (x->regex)
 			return x->regex->Matches(u->realname);
-		return Anope::Match(u->realname, x->mask, false, true);
+		return Warden::Match(u->realname, x->mask, false, true);
 	}
 };
 
@@ -200,7 +201,7 @@ class OperServCore final
 	SNLineManager snlines;
 
 public:
-	OperServCore(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, PSEUDOCLIENT | VENDOR),
+	OperServCore(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, PSEUDOCLIENT | VENDOR),
 		sglines(this), sqlines(this), snlines(this)
 	{
 
@@ -223,7 +224,7 @@ public:
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		const Anope::string &osnick = conf.GetModule(this).Get<const Anope::string>("client");
+		const Warden::string &osnick = conf.GetModule(this).Get<const Warden::string>("client");
 
 		if (osnick.empty())
 			throw ConfigException(this->name + ": <client> must be defined");
@@ -235,7 +236,7 @@ public:
 		OperServ = bi;
 	}
 
-	EventReturn OnBotPrivmsg(User *u, BotInfo *bi, Anope::string &message, const Anope::map<Anope::string> &tags) override
+	EventReturn OnBotPrivmsg(User *u, BotInfo *bi, Warden::string &message, const Warden::map<Warden::string> &tags) override
 	{
 		if (bi == OperServ && !u->HasMode("OPER") && Config->GetModule(this).Get<bool>("opersonly"))
 		{
@@ -253,13 +254,13 @@ public:
 			Log(server, "squit", OperServ) << "Received SQUIT for juped server " << server->GetName();
 	}
 
-	void OnUserModeSet(const MessageSource &setter, User *u, const Anope::string &mname) override
+	void OnUserModeSet(const MessageSource &setter, User *u, const Warden::string &mname) override
 	{
 		if (mname == "OPER")
 			Log(u, "oper", OperServ) << "is now an IRC operator.";
 	}
 
-	void OnUserModeUnset(const MessageSource &setter, User *u, const Anope::string &mname) override
+	void OnUserModeUnset(const MessageSource &setter, User *u, const Warden::string &mname) override
 	{
 		if (mname == "OPER")
 			Log(u, "oper", OperServ) << "is no longer an IRC operator";
@@ -271,13 +272,13 @@ public:
 			XLineManager::CheckAll(u);
 	}
 
-	void OnUserNickChange(User *u, const Anope::string &oldnick) override
+	void OnUserNickChange(User *u, const Warden::string &oldnick) override
 	{
 		if (!u->HasMode("OPER"))
 			this->sqlines.CheckAllXLines(u);
 	}
 
-	EventReturn OnCheckKick(User *u, Channel *c, Anope::string &mask, Anope::string &reason) override
+	EventReturn OnCheckKick(User *u, Channel *c, Warden::string &mask, Warden::string &reason) override
 	{
 		XLine *x = this->sqlines.CheckChannel(c);
 		if (x)
@@ -290,7 +291,7 @@ public:
 		return EVENT_CONTINUE;
 	}
 
-	EventReturn OnPreHelp(CommandSource &source, const std::vector<Anope::string> &params) override
+	EventReturn OnPreHelp(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!params.empty() || source.c || source.service != *OperServ)
 			return EVENT_CONTINUE;

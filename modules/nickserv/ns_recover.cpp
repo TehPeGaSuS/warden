@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,13 +17,13 @@
 #include "modules/nickserv/cert.h"
 #include "modules/nickserv/service.h"
 
-typedef std::map<Anope::string, ChannelStatus> NSRecoverInfo;
+typedef std::map<Warden::string, ChannelStatus> NSRecoverInfo;
 
 class NSRecoverSvsnick final
 {
 public:
 	Reference<User> from;
-	Anope::string to;
+	Warden::string to;
 };
 
 class NSRecoverRequest final
@@ -30,10 +31,10 @@ class NSRecoverRequest final
 {
 	CommandSource source;
 	Command *cmd;
-	Anope::string user;
+	Warden::string user;
 
 public:
-	NSRecoverRequest(Module *o, CommandSource &src, Command *c, const Anope::string &nick, const Anope::string &pass)
+	NSRecoverRequest(Module *o, CommandSource &src, Command *c, const Warden::string &nick, const Warden::string &pass)
 		: IdentifyRequest(o, nick, pass, src.ip)
 		, source(src)
 		, cmd(c)
@@ -86,13 +87,13 @@ public:
 				source.GetNick().c_str(),
 				source.GetNick().c_str());
 
-			Anope::string buf = source.command.upper() + " command used by " + source.GetNick();
+			Warden::string buf = source.command.upper() + " command used by " + source.GetNick();
 			u->Kill(*source.service, buf);
 
 			source.Reply(_("Ghost with your nick has been killed."));
 
 			if (IRCD->CanSVSNick)
-				IRCD->SendForceNickChange(source.GetUser(), GetAccount(), Anope::CurTime);
+				IRCD->SendForceNickChange(source.GetUser(), GetAccount(), Warden::CurTime);
 		}
 		/* User is not identified or not identified to the same account as the person using this command */
 		else
@@ -159,10 +160,10 @@ public:
 		this->AllowUnregistered(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &nick = params[0];
-		const Anope::string &pass = params.size() > 1 ? params[1] : "";
+		const Warden::string &nick = params[0];
+		const Warden::string &pass = params.size() > 1 ? params[1] : "";
 
 		User *user = User::Find(nick, true);
 
@@ -212,7 +213,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -236,7 +237,7 @@ class NSRecover final
 	PrimitiveExtensibleItem<NSRecoverSvsnick> svsnick;
 
 public:
-	NSRecover(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	NSRecover(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandnsrecover(this), recover(this, "recover"), svsnick(this, "svsnick")
 	{
 
@@ -245,7 +246,7 @@ public:
 
 	}
 
-	void OnUserNickChange(User *u, const Anope::string &oldnick) override
+	void OnUserNickChange(User *u, const Warden::string &oldnick) override
 	{
 		if (Config->GetModule(this).Get<bool>("restoreonrecover"))
 		{
@@ -256,7 +257,7 @@ public:
 				for (auto it = ei->begin(), it_end = ei->end(); it != it_end;)
 				{
 					Channel *c = Channel::Find(it->first);
-					const Anope::string &cname = it->first;
+					const Warden::string &cname = it->first;
 					++it;
 
 					/* User might already be on the channel */
@@ -273,7 +274,7 @@ public:
 			if (svs->from)
 			{
 				// svsnick from to to
-				IRCD->SendForceNickChange(svs->from, svs->to, Anope::CurTime);
+				IRCD->SendForceNickChange(svs->from, svs->to, Warden::CurTime);
 			}
 
 			svsnick.Unset(u);

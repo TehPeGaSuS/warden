@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,9 +19,9 @@ class CommandMSSet final
 	: public Command
 {
 private:
-	void DoNotify(CommandSource &source, const std::vector<Anope::string> &params, MemoInfo *mi)
+	void DoNotify(CommandSource &source, const std::vector<Warden::string> &params, MemoInfo *mi)
 	{
-		const Anope::string &param = params[1];
+		const Warden::string &param = params[1];
 		NickCore *nc = source.nc;
 		BotInfo *MemoServ = Config->GetClient("MemoServ");
 
@@ -71,13 +72,13 @@ private:
 			this->OnSyntaxError(source, "");
 	}
 
-	void DoLimit(CommandSource &source, const std::vector<Anope::string> &params, MemoInfo *mi)
+	void DoLimit(CommandSource &source, const std::vector<Warden::string> &params, MemoInfo *mi)
 	{
 
-		Anope::string p1 = params[1];
-		Anope::string p2 = params.size() > 2 ? params[2] : "";
-		Anope::string p3 = params.size() > 3 ? params[3] : "";
-		Anope::string user, chan;
+		Warden::string p1 = params[1];
+		Warden::string p2 = params.size() > 2 ? params[2] : "";
+		Warden::string p3 = params.size() > 3 ? params[3] : "";
+		Warden::string user, chan;
 		int16_t limit;
 		NickCore *nc = source.nc;
 		ChannelInfo *ci = NULL;
@@ -139,7 +140,7 @@ private:
 					nc->Shrink<bool>("MEMO_HARDMAX");
 			}
 
-			limit = Anope::Convert<int16_t>(p1, -1);
+			limit = Warden::Convert<int16_t>(p1, -1);
 		}
 		else
 		{
@@ -159,7 +160,7 @@ private:
 				return;
 			}
 			int max_memos = Config->GetModule("memoserv").Get<int>("maxmemos");
-			limit = Anope::Convert<int16_t>(p1, -1);
+			limit = Warden::Convert<int16_t>(p1, -1);
 
 			/* The first character is a digit, but we could still go negative
 			 * from overflow... watch out! */
@@ -202,12 +203,12 @@ public:
 		this->SetSyntax(_("\037option\037 \037parameters\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[0];
+		const Warden::string &cmd = params[0];
 		MemoInfo *mi = &source.nc->memos;
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 		else if (cmd.equals_ci("NOTIFY"))
 			return this->DoNotify(source, params, mi);
@@ -219,7 +220,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		if (subcommand.empty())
 		{
@@ -313,7 +314,7 @@ class MSSet final
 	SerializableExtensibleItem<bool> memo_signon, memo_receive, memo_mail, memo_hardmax;
 
 public:
-	MSSet(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	MSSet(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandmsset(this), memo_signon(this, "MEMO_SIGNON"), memo_receive(this, "MEMO_RECEIVE"), memo_mail(this, "MEMO_MAIL"),
 		memo_hardmax(this, "MEMO_HARDMAX")
 	{

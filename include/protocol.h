@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,7 +16,7 @@
 #pragma once
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "service.h"
 #include "modes.h"
 
@@ -24,7 +25,7 @@ class CoreExport ProtocolException final
 	: public ModuleException
 {
 public:
-	ProtocolException(const Anope::string &message)
+	ProtocolException(const Warden::string &message)
 		: ModuleException(message)
 	{
 	}
@@ -34,19 +35,19 @@ public:
 class CoreExport IRCDProto
 	: public Service
 {
-	Anope::string proto_name;
+	Warden::string proto_name;
 
 protected:
-	IRCDProto(Module *creator, const Anope::string &proto_name);
+	IRCDProto(Module *creator, const Warden::string &proto_name);
 public:
 	/** Retrieves the protocol name. */
-	const Anope::string &GetProtocolName() const { return proto_name; }
+	const Warden::string &GetProtocolName() const { return proto_name; }
 
 	virtual ~IRCDProto();
 
-	virtual void SendNotice(const MessageSource &source, const Anope::string &dest, const Anope::string &msg, const Anope::map<Anope::string> &tags = {});
-	virtual void SendPrivmsg(const MessageSource &source, const Anope::string &dest, const Anope::string &msg, const Anope::map<Anope::string> &tags = {});
-	virtual void SendTagmsg(const MessageSource &source, const Anope::string &dest, const Anope::map<Anope::string> &tags);
+	virtual void SendNotice(const MessageSource &source, const Warden::string &dest, const Warden::string &msg, const Warden::map<Warden::string> &tags = {});
+	virtual void SendPrivmsg(const MessageSource &source, const Warden::string &dest, const Warden::string &msg, const Warden::map<Warden::string> &tags = {});
+	virtual void SendTagmsg(const MessageSource &source, const Warden::string &dest, const Warden::map<Warden::string> &tags);
 
 	/** Parses an incoming message from the IRC server.
 	 * @param message The message to parse.
@@ -56,7 +57,7 @@ public:
 	 * @param params The location to store the parameters.
 	 * @return If the message was well formed then true; otherwise, false.
 	 */
-	virtual bool Parse(const Anope::string &message, Anope::map<Anope::string> &tags, Anope::string &source, Anope::string &command, std::vector<Anope::string> &params);
+	virtual bool Parse(const Warden::string &message, Warden::map<Warden::string> &tags, Warden::string &source, Warden::string &command, std::vector<Warden::string> &params);
 
 	/* Populates the tags that should be sent on all messages.
 	 * @param tags The location to store tags.
@@ -64,7 +65,7 @@ public:
 	 * @param command Command name.
 	 * @param params Any extra parameters.
 	 */
-	virtual void PopulateTags(Anope::map<Anope::string> &tags, const MessageSource &source, const Anope::string &command, const std::vector<Anope::string> &params);
+	virtual void PopulateTags(Warden::map<Warden::string> &tags, const MessageSource &source, const Warden::string &command, const std::vector<Warden::string> &params);
 
 	/* Formats an outgoing message so it can be sent to the IRC server.
 	 * @param message The location to store the formatted message.
@@ -74,10 +75,10 @@ public:
 	 * @param params Any extra parameters.
 	 * @return If the message was formatted then true; otherwise, false.
 	 */
-	virtual bool Format(Anope::string &message, const Anope::map<Anope::string> &tags, const MessageSource &source, const Anope::string &command, const std::vector<Anope::string> &params);
+	virtual bool Format(Warden::string &message, const Warden::map<Warden::string> &tags, const MessageSource &source, const Warden::string &command, const std::vector<Warden::string> &params);
 
 	/* Modes used by default by our clients */
-	Anope::string DefaultPseudoclientModes = "+io";
+	Warden::string DefaultPseudoclientModes = "+io";
 
 	/* Can we force change a users's nick? */
 	bool CanSVSNick = false;
@@ -122,7 +123,7 @@ public:
 	bool AmbiguousID = false;
 
 	/** Can we ask the server to remove list modes matching a user? */
-	Anope::map<bool> CanClearModes;
+	Warden::map<bool> CanClearModes;
 
 	/** Can we send tag messages? */
 	bool CanTagMessage = false;
@@ -146,21 +147,21 @@ public:
 	size_t MaxUser = 0;
 
 	/* Retrieves the next free UID or SID */
-	virtual Anope::string UID_Retrieve();
-	virtual Anope::string SID_Retrieve();
+	virtual Warden::string UID_Retrieve();
+	virtual Warden::string SID_Retrieve();
 
 	/** Retrieves advice on what might be the problem when a link fails.
 	 * @param advice The location to store the advice.
 	 */
-	virtual void GetLinkAdvice(std::vector<Anope::string> &advice) { }
+	virtual void GetLinkAdvice(std::vector<Warden::string> &advice) { }
 
 	/** Extracts a timestamp from a string. */
-	virtual time_t ExtractTimestamp(const Anope::string &str);
+	virtual time_t ExtractTimestamp(const Warden::string &str);
 
 	/** Sends an error to the uplink before disconnecting.
 	 * @param reason The error message.
 	 */
-	virtual void SendError(const Anope::string &reason);
+	virtual void SendError(const Warden::string &reason);
 
 	/** Sets the server in NOOP mode. If NOOP mode is enabled, no users
 	 * will be able to oper on the server.
@@ -180,7 +181,7 @@ public:
 	 * @param vident The ident to set
 	 * @param vhost The vhost to set
 	 */
-	virtual void SendVHost(User *u, const Anope::string &vident, const Anope::string &vhost) { }
+	virtual void SendVHost(User *u, const Warden::string &vident, const Warden::string &vhost) { }
 	virtual void SendVHostDel(User *) { }
 
 	/** Sets an akill. This is a recursive function that can be called multiple times
@@ -204,37 +205,37 @@ public:
 	virtual void SendSQLine(User *, const XLine *x) { }
 	virtual void SendSQLineDel(const XLine *x) { }
 
-	virtual void SendKill(const MessageSource &source, const Anope::string &target, const Anope::string &reason);
+	virtual void SendKill(const MessageSource &source, const Warden::string &target, const Warden::string &reason);
 
 	/** Kills a user
 	 * @param source Who is doing the kill
 	 * @param user The user to be killed
 	 * @param msg Kill reason
 	 */
-	virtual void SendSVSKill(const MessageSource &source, User *user, const Anope::string &msg);
+	virtual void SendSVSKill(const MessageSource &source, User *user, const Warden::string &msg);
 
 	virtual void SendMode(const MessageSource &source, Channel *chan, const ModeManager::Change &change);
-	virtual void SendModeInternal(const MessageSource &source, Channel *chan, const Anope::string &modes, const std::vector<Anope::string> &values);
+	virtual void SendModeInternal(const MessageSource &source, Channel *chan, const Warden::string &modes, const std::vector<Warden::string> &values);
 
 	virtual void SendMode(const MessageSource &source, User *u, const ModeManager::Change &change);
-	virtual void SendModeInternal(const MessageSource &source, User *u, const Anope::string &modes, const std::vector<Anope::string> &values);
+	virtual void SendModeInternal(const MessageSource &source, User *u, const Warden::string &modes, const std::vector<Warden::string> &values);
 
 	/** Introduces a client to the rest of the network
 	 * @param u The client to introduce
 	 */
 	virtual void SendClientIntroduction(User *u) = 0;
 
-	virtual void SendKick(const MessageSource &source, const Channel *chan, User *user, const Anope::string &msg);
+	virtual void SendKick(const MessageSource &source, const Channel *chan, User *user, const Warden::string &msg);
 
-	virtual void SendGlobalNotice(BotInfo *bi, const Server *dest, const Anope::string &msg) = 0;
-	virtual void SendGlobalPrivmsg(BotInfo *bi, const Server *desc, const Anope::string &msg) = 0;
+	virtual void SendGlobalNotice(BotInfo *bi, const Server *dest, const Warden::string &msg) = 0;
+	virtual void SendGlobalPrivmsg(BotInfo *bi, const Server *desc, const Warden::string &msg) = 0;
 
-	virtual void SendContextNotice(BotInfo *bi, User *target, Channel *context, const Anope::string &msg, const Anope::map<Anope::string> &tags = {});
-	virtual void SendContextPrivmsg(BotInfo *bi, User *target, Channel *context, const Anope::string &msg, const Anope::map<Anope::string> &tags = {});
+	virtual void SendContextNotice(BotInfo *bi, User *target, Channel *context, const Warden::string &msg, const Warden::map<Warden::string> &tags = {});
+	virtual void SendContextPrivmsg(BotInfo *bi, User *target, Channel *context, const Warden::string &msg, const Warden::map<Warden::string> &tags = {});
 
-	virtual void SendQuit(User *u, const Anope::string &msg = "", const Anope::string &opermsg = "");
-	virtual void SendPing(const Anope::string &servname, const Anope::string &who);
-	virtual void SendPong(const Anope::string &servname, const Anope::string &who);
+	virtual void SendQuit(User *u, const Warden::string &msg = "", const Warden::string &opermsg = "");
+	virtual void SendPing(const Warden::string &servname, const Warden::string &who);
+	virtual void SendPong(const Warden::string &servname, const Warden::string &who);
 
 	/** Joins one of our users to a channel.
 	 * @param u The user to join
@@ -244,7 +245,7 @@ public:
 	 * stacker to be set "soon".
 	 */
 	virtual void SendJoin(User *u, Channel *c, const ChannelStatus *status) = 0;
-	virtual void SendPart(User *u, const Channel *chan, const Anope::string &msg);
+	virtual void SendPart(User *u, const Channel *chan, const Warden::string &msg);
 
 	/** Force joins a user that isn't ours to a channel.
 	 * @param bi The source of the message
@@ -252,7 +253,7 @@ public:
 	 * @param chan The channel to join the user to
 	 * @param key Channel key
 	 */
-	virtual void SendSVSJoin(const MessageSource &source, User *u, const Anope::string &chan, const Anope::string &key) { }
+	virtual void SendSVSJoin(const MessageSource &source, User *u, const Warden::string &chan, const Warden::string &key) { }
 
 	/** Force parts a user that isn't ours from a channel.
 	 * @param source The source of the message
@@ -260,18 +261,18 @@ public:
 	 * @param chan The channel to part the user from
 	 * @param param part reason, some IRCds don't support this
 	 */
-	virtual void SendSVSPart(const MessageSource &source, User *u, const Anope::string &chan, const Anope::string &param) { }
+	virtual void SendSVSPart(const MessageSource &source, User *u, const Warden::string &chan, const Warden::string &param) { }
 
 	virtual void SendInvite(const MessageSource &source, const Channel *c, User *u);
-	virtual void SendGlobops(const MessageSource &source, const Anope::string &msg);
+	virtual void SendGlobops(const MessageSource &source, const Warden::string &msg);
 
 	/** Sends a nick change of one of our clients.
 	 */
-	virtual void SendNickChange(User *u, const Anope::string &newnick);
+	virtual void SendNickChange(User *u, const Warden::string &newnick);
 
 	/** Forces a nick change of a user that isn't ours (SVSNICK)
 	 */
-	virtual void SendForceNickChange(User *u, const Anope::string &newnick, time_t when);
+	virtual void SendForceNickChange(User *u, const Warden::string &newnick, time_t when);
 
 	/** Used to introduce ourselves to our uplink. Usually will SendServer(Me) and any other
 	 * initial handshake requirements.
@@ -284,22 +285,22 @@ public:
 	virtual void SendBOB() { }
 	virtual void SendEOB() { }
 
-	virtual void SendSVSHold(const Anope::string &, time_t) { }
-	virtual void SendSVSHoldDel(const Anope::string &) { }
+	virtual void SendSVSHold(const Warden::string &, time_t) { }
+	virtual void SendSVSHoldDel(const Warden::string &) { }
 
-	virtual void SendSWhois(const MessageSource &source, User *target, const Anope::string &tag, time_t priority, const Anope::string &message) { };
-	virtual void SendSWhoisDel(const MessageSource &source, User *target, const Anope::string &tag, const Anope::string &message) { }
+	virtual void SendSWhois(const MessageSource &source, User *target, const Warden::string &tag, time_t priority, const Warden::string &message) { };
+	virtual void SendSWhoisDel(const MessageSource &source, User *target, const Warden::string &tag, const Warden::string &message) { }
 
 	/** Introduces a server to the uplink
 	 */
 	virtual void SendServer(const Server *) = 0;
-	virtual void SendSquit(Server *, const Anope::string &message);
+	virtual void SendSquit(Server *, const Warden::string &message);
 
-	virtual void SendNumericInternal(unsigned numeric, const Anope::string &dest, const std::vector<Anope::string> &params);
+	virtual void SendNumericInternal(unsigned numeric, const Warden::string &dest, const std::vector<Warden::string> &params);
 	template <typename... Args>
-	void SendNumeric(unsigned numeric, const Anope::string &dest, Args &&...args)
+	void SendNumeric(unsigned numeric, const Warden::string &dest, Args &&...args)
 	{
-		SendNumericInternal(numeric, dest, { Anope::ToString(args)... });
+		SendNumericInternal(numeric, dest, { Warden::ToString(args)... });
 	}
 
 	virtual void SendLogin(User *u, NickAlias *na) = 0;
@@ -315,36 +316,36 @@ public:
 	 */
 	virtual void SendOper(User *u);
 
-	virtual void SendClearModes(const MessageSource &user, Channel *c, User *u, const Anope::string &mode, bool self) { }
+	virtual void SendClearModes(const MessageSource &user, Channel *c, User *u, const Warden::string &mode, bool self) { }
 
-	virtual bool IsNickValid(const Anope::string &);
-	virtual bool IsChannelValid(const Anope::string &);
-	virtual bool IsIdentValid(const Anope::string &);
-	virtual bool IsHostValid(const Anope::string &);
-	virtual bool IsExtbanValid(const Anope::string &) { return false; }
-	virtual bool IsTagValid(const Anope::string &, const Anope::string &) { return false; }
+	virtual bool IsNickValid(const Warden::string &);
+	virtual bool IsChannelValid(const Warden::string &);
+	virtual bool IsIdentValid(const Warden::string &);
+	virtual bool IsHostValid(const Warden::string &);
+	virtual bool IsExtbanValid(const Warden::string &) { return false; }
+	virtual bool IsTagValid(const Warden::string &, const Warden::string &) { return false; }
 
 	/** Retrieve the maximum number of list modes settable on this channel
 	 * Defaults to Config->ListSize
 	 */
 	virtual size_t GetMaxListFor(Channel *c, ChannelMode *cm);
 
-	virtual Anope::string NormalizeMask(const Anope::string &mask);
+	virtual Warden::string NormalizeMask(const Warden::string &mask);
 
 };
 
 class CoreExport MessageSource final
 {
-	Anope::string source;
+	Warden::string source;
 	User *u = nullptr;
 	Server *s = nullptr;
 
 public:
-	explicit MessageSource(const Anope::string &);
+	explicit MessageSource(const Warden::string &);
 	MessageSource(User *u);
 	MessageSource(Server *s);
-	const Anope::string &GetName() const;
-	const Anope::string &GetSource() const;
+	const Warden::string &GetName() const;
+	const Warden::string &GetSource() const;
 	User *GetUser() const;
 	BotInfo *GetBot() const;
 	Server *GetServer() const;
@@ -375,7 +376,7 @@ public:
 
 protected:
 	/** The name of the message (e.g. PRIVMSG). */
-	const Anope::string name;
+	const Warden::string name;
 
 	/** The number of parameters this command takes. */
 	const size_t param_count;
@@ -384,7 +385,7 @@ protected:
 	std::bitset<FLAG_MAX> flags;
 
 public:
-	IRCDMessage(Module *o, const Anope::string &n, size_t pc = 0);
+	IRCDMessage(Module *o, const Warden::string &n, size_t pc = 0);
 
 	/** Retrieves the parameter count. */
 	inline size_t GetParamCount() const { return param_count; }
@@ -394,7 +395,7 @@ public:
 	 * @param params Message parameters
 	 * @param tags Message tags
 	 */
-	virtual void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) = 0;
+	virtual void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) = 0;
 
 	/** Sets the flags for this message. */
 	inline void SetFlag(Flag flag, bool value = true) { flags.set(flag, value); }
@@ -408,26 +409,26 @@ class CoreExport MessageTokenizer final
 {
 private:
 	/** The message we are parsing tokens from. */
-	Anope::string message;
+	Warden::string message;
 
 	/** The current position within the message. */
-	Anope::string::size_type position = 0;
+	Warden::string::size_type position = 0;
 
 public:
 	/** Create a tokenstream and fill it with the provided data. */
-	MessageTokenizer(const Anope::string &msg);
+	MessageTokenizer(const Warden::string &msg);
 
 	/** Retrieve the next \<middle> token in the message.
 	 * @param token The next token available, or an empty string if none remain.
 	 * @return True if a token was retrieved; otherwise, false.
 	 */
-	bool GetMiddle(Anope::string &token);
+	bool GetMiddle(Warden::string &token);
 
 	/** Retrieve the next \<trailing> token in the message.
 	 * @param token The next token available, or an empty string if none remain.
 	 * @return True if a token was retrieved; otherwise, false.
 	 */
-	bool GetTrailing(Anope::string &token);
+	bool GetTrailing(Warden::string &token);
 };
 
 extern CoreExport IRCDProto *IRCD;

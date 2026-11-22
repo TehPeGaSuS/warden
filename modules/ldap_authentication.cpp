@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -17,11 +18,11 @@
 
 static Module *me;
 
-static Anope::string basedn;
-static Anope::string search_filter;
-static Anope::string object_class;
-static Anope::string email_attribute;
-static Anope::string username_attribute;
+static Warden::string basedn;
+static Warden::string search_filter;
+static Warden::string object_class;
+static Warden::string email_attribute;
+static Warden::string username_attribute;
 
 struct IdentifyInfo final
 {
@@ -29,7 +30,7 @@ struct IdentifyInfo final
 	IdentifyRequest *req;
 	ServiceReference<LDAPProvider> lprov;
 	bool admin_bind = true;
-	Anope::string dn;
+	Warden::string dn;
 
 	IdentifyInfo(User *u, IdentifyRequest *r, ServiceReference<LDAPProvider> &lp) : user(u), req(r), lprov(lp)
 	{
@@ -91,7 +92,7 @@ public:
 			{
 				if (ii->admin_bind)
 				{
-					auto sf = Anope::Template(search_filter, {
+					auto sf = Warden::Template(search_filter, {
 						{ "account",      ii->lprov->EscapeSF(ii->req->GetAccount()) },
 						{ "object_class", object_class                               },
 					});
@@ -119,9 +120,9 @@ public:
 							ii->user->SendMessage(NickServ, _("Your account \002%s\002 has been successfully created."), na->nick.c_str());
 					}
 					// encrypt and store the password in the nickcore
-					Anope::Encrypt(ii->req->GetPassword(), na->nc->pass);
+					Warden::Encrypt(ii->req->GetPassword(), na->nc->pass);
 
-					na->nc->Extend<Anope::string>("ldap_authentication_dn", ii->dn);
+					na->nc->Extend<Warden::string>("ldap_authentication_dn", ii->dn);
 					ii->req->Success(me, na);
 				}
 				break;
@@ -139,10 +140,10 @@ public:
 class OnIdentifyInterface final
 	: public LDAPInterface
 {
-	Anope::string uid;
+	Warden::string uid;
 
 public:
-	OnIdentifyInterface(Module *m, const Anope::string &i) : LDAPInterface(m), uid(i) { }
+	OnIdentifyInterface(Module *m, const Warden::string &i) : LDAPInterface(m), uid(i) { }
 
 	void OnDelete() override
 	{
@@ -159,7 +160,7 @@ public:
 		try
 		{
 			const LDAPAttributes &attr = r.get(0);
-			Anope::string email = attr.get(email_attribute);
+			Warden::string email = attr.get(email_attribute);
 
 			if (!email.equals_ci(u->Account()->email))
 			{
@@ -205,13 +206,13 @@ class ModuleLDAPAuthentication final
 	ServiceReference<LDAPProvider> ldap;
 	OnRegisterInterface orinterface;
 
-	PrimitiveExtensibleItem<Anope::string> dn;
+	PrimitiveExtensibleItem<Warden::string> dn;
 
-	Anope::string password_attribute;
-	Anope::string disable_register_reason;
-	Anope::string disable_email_reason;
+	Warden::string password_attribute;
+	Warden::string disable_register_reason;
+	Warden::string disable_email_reason;
 public:
-	ModuleLDAPAuthentication(const Anope::string &modname, const Anope::string &creator) :
+	ModuleLDAPAuthentication(const Warden::string &modname, const Warden::string &creator) :
 		Module(modname, creator, EXTRA | VENDOR), ldap("LDAPProvider", "ldap/main"), orinterface(this),
 		dn(this, "ldap_authentication_dn")
 	{
@@ -227,14 +228,14 @@ public:
 	{
 		const auto &conf = Config->GetModule(this);
 
-		basedn = conf.Get<const Anope::string>("basedn");
-		search_filter = conf.Get<const Anope::string>("search_filter");
-		object_class = conf.Get<const Anope::string>("object_class");
-		username_attribute = conf.Get<const Anope::string>("username_attribute");
-		this->password_attribute = conf.Get<const Anope::string>("password_attribute");
-		email_attribute = conf.Get<const Anope::string>("email_attribute");
-		this->disable_register_reason = conf.Get<const Anope::string>("disable_register_reason");
-		this->disable_email_reason = conf.Get<const Anope::string>("disable_email_reason");
+		basedn = conf.Get<const Warden::string>("basedn");
+		search_filter = conf.Get<const Warden::string>("search_filter");
+		object_class = conf.Get<const Warden::string>("object_class");
+		username_attribute = conf.Get<const Warden::string>("username_attribute");
+		this->password_attribute = conf.Get<const Warden::string>("password_attribute");
+		email_attribute = conf.Get<const Warden::string>("email_attribute");
+		this->disable_register_reason = conf.Get<const Warden::string>("disable_register_reason");
+		this->disable_email_reason = conf.Get<const Warden::string>("disable_email_reason");
 
 		if (!email_attribute.empty())
 		{
@@ -243,7 +244,7 @@ public:
 		}
 	}
 
-	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Anope::string> &params) override
+	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Warden::string> &params) override
 	{
 		if (!this->disable_register_reason.empty())
 		{
@@ -277,14 +278,14 @@ public:
 		if (email_attribute.empty() || !this->ldap)
 			return;
 
-		Anope::string *d = dn.Get(u->Account());
+		Warden::string *d = dn.Get(u->Account());
 		if (!d || d->empty())
 			return;
 
 		this->ldap->Search(new OnIdentifyInterface(this, u->GetUID()), *d, "(" + email_attribute + "=*)");
 	}
 
-	void OnNickRegister(User *, NickAlias *na, const Anope::string &pass) override
+	void OnNickRegister(User *, NickAlias *na, const Warden::string &pass) override
 	{
 		if (!this->disable_register_reason.empty() || !this->ldap)
 			return;
@@ -310,7 +311,7 @@ public:
 		attributes[3].name = this->password_attribute;
 		attributes[3].values.push_back(pass);
 
-		Anope::string new_dn = username_attribute + "=" + this->ldap->EscapeDN(na->nick) + "," + basedn;
+		Warden::string new_dn = username_attribute + "=" + this->ldap->EscapeDN(na->nick) + "," + basedn;
 		this->ldap->Add(&this->orinterface, new_dn, attributes);
 	}
 

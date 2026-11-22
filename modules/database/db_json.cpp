@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -23,12 +24,12 @@ namespace fs = std::filesystem;
 
 #include "module.h"
 
-#define ANOPE_DATABASE_VERSION 1
+#define WARDEN_DATABASE_VERSION 1
 
 // TODO:
 // * forking into background
 
-inline Anope::string yyjson_get_astr(yyjson_val *val)
+inline Warden::string yyjson_get_astr(yyjson_val *val)
 {
 	const auto *str = yyjson_get_str(val);
 	return str ? str : "";
@@ -42,7 +43,7 @@ public:
 	Serializable::Id id = 0;
 
 	// Data in this database entry.
-	Anope::unordered_map<Anope::string> data;
+	Warden::unordered_map<Warden::string> data;
 
 	// Used when writing data.
 	Data(Serialize::Type *s_type, Serializable *obj)
@@ -70,21 +71,21 @@ public:
 			}
 
 			if (yyjson_is_bool(value))
-				data[akey] = Anope::ToString(yyjson_get_bool(value));
+				data[akey] = Warden::ToString(yyjson_get_bool(value));
 			else if (yyjson_is_int(value))
-				data[akey] = Anope::ToString(yyjson_get_int(value));
+				data[akey] = Warden::ToString(yyjson_get_int(value));
 			else if (yyjson_is_null(value))
 				data[akey];
 			else if (yyjson_is_real(value))
-				data[akey] = Anope::ToString(yyjson_get_real(value));
+				data[akey] = Warden::ToString(yyjson_get_real(value));
 			else if (yyjson_is_str(value))
-				data[akey] = Anope::ToString(yyjson_get_astr(value));
+				data[akey] = Warden::ToString(yyjson_get_astr(value));
 			else if (yyjson_is_uint(value))
-				data[akey] = Anope::ToString(yyjson_get_uint(value));
+				data[akey] = Warden::ToString(yyjson_get_uint(value));
 		}
 	}
 
-	bool LoadInternal(const Anope::string &key, Anope::string &value) override
+	bool LoadInternal(const Warden::string &key, Warden::string &value) override
 	{
 		auto it = this->data.find(key);
 		if (it == this->data.end())
@@ -101,12 +102,12 @@ public:
 		{
 			auto valuestr = value.str();
 			if (!valuestr.empty())
-				hash ^= Anope::hash_cs()(valuestr);
+				hash ^= Warden::hash_cs()(valuestr);
 		}
 		return hash;
 	}
 
-	bool StoreInternal(const Anope::string &key, const Anope::string &value) override
+	bool StoreInternal(const Warden::string &key, const Warden::string &value) override
 	{
 		this->data[key] = value;
 		return true;
@@ -118,7 +119,7 @@ class DBJSON final
 {
 private:
 	// Multimap from serializable type to serializable data.
-	using DBData = Anope::multimap<Data>;
+	using DBData = Warden::multimap<Data>;
 
 	// The databases which have already been loaded from disk.
 	std::unordered_map<Module *, DBData> databases;
@@ -126,39 +127,39 @@ private:
 	// Whether OnLoadDatabase has been called yet.
 	bool loaded = false;
 
-	void CreateBackup(const Anope::string &backupdir, const fs::path &dbpath, size_t backups, const char *fmt, const char *glob)
+	void CreateBackup(const Warden::string &backupdir, const fs::path &dbpath, size_t backups, const char *fmt, const char *glob)
 	{
 		if (!backups)
 			return;
 
 		char timebuf[16];
-		strftime(timebuf, sizeof(timebuf), fmt, localtime(&Anope::CurTime));
+		strftime(timebuf, sizeof(timebuf), fmt, localtime(&Warden::CurTime));
 
-		auto backupbase = Anope::Expand(backupdir, dbpath.filename().string()) + ".";
+		auto backupbase = Warden::Expand(backupdir, dbpath.filename().string()) + ".";
 		auto backupname = backupbase + timebuf;
 
 		std::error_code ec;
-		Anope::string dbname = dbpath.string();
+		Warden::string dbname = dbpath.string();
 		Log(LOG_DEBUG) << "Copying " << dbname << " to " << backupname;
 		if (!fs::copy_file(dbname.str(), backupname.str(), fs::copy_options::overwrite_existing, ec))
 		{
 			Log(this) << "Failed to copy " << dbname << " to " << backupname << ": " << ec.message();
 			if (!Config->GetModule(this).Get<bool>("ignore_backup_failure"))
 			{
-				Anope::Quitting = true;
-				Anope::QuitReason = "Failed to copy " + dbname + " to " + backupname + ": " + ec.message();
+				Warden::Quitting = true;
+				Warden::QuitReason = "Failed to copy " + dbname + " to " + backupname + ": " + ec.message();
 			}
 		}
 
 		// Delete older backups.
-		std::set<Anope::string> old_backups;
+		std::set<Warden::string> old_backups;
 		for (const auto &entry : fs::directory_iterator(backupdir.str(), ec))
 		{
-			Anope::string entryname = entry.path().string();
+			Warden::string entryname = entry.path().string();
 			if (entryname.compare(0, backupbase.length(), backupbase) != 0)
 				continue; // Not one of our backups.
 
-			if (!Anope::Match(entryname.substr(backupbase.length()), glob))
+			if (!Warden::Match(entryname.substr(backupbase.length()), glob))
 				continue; // Not this type of backup.
 
 			old_backups.insert(entryname);
@@ -175,26 +176,26 @@ private:
 		}
 	}
 
-	Anope::string GetDatabaseFile(Module *mod)
+	Warden::string GetDatabaseFile(Module *mod)
 	{
-		Anope::string filename;
+		Warden::string filename;
 		if (mod)
 		{
 			// We are reading the name of a module database.
-			filename = Anope::Template(Config->GetModule(this).Get<Anope::string>("module_database", "{name}.module.json"), {
+			filename = Warden::Template(Config->GetModule(this).Get<Warden::string>("module_database", "{name}.module.json"), {
 				{ "name", mod->name },
 			});
 		}
 		else
 		{
 			// We are reading a the name of the core database.
-			filename = Config->GetModule(this).Get<Anope::string>("database", "anope.json");
+			filename = Config->GetModule(this).Get<Warden::string>("database", "warden.json");
 		}
 
-		return Anope::ExpandData(filename);
+		return Warden::ExpandData(filename);
 	}
 
-	void BackupDatabase(const Anope::string &dbname)
+	void BackupDatabase(const Warden::string &dbname)
 	{
 		std::error_code ec;
 		fs::path dbpath(dbname.str());
@@ -207,7 +208,7 @@ private:
 		if (!daily_backups && !monthly_backups)
 			return; // No backups.
 
-		auto backupdir = Anope::ExpandData(modconf.Get<Anope::string>("backup_directory", "backups"));
+		auto backupdir = Warden::ExpandData(modconf.Get<Warden::string>("backup_directory", "backups"));
 		if (!fs::is_directory(backupdir.str(), ec))
 		{
 			fs::create_directories(backupdir.str(), ec);
@@ -216,8 +217,8 @@ private:
 				Log(this) << "Failed to create backup directory: " << ec.message();
 				if (!modconf.Get<bool>("ignore_backup_failure"))
 				{
-					Anope::Quitting = true;
-					Anope::QuitReason = "Failed to create backup directory: " + ec.message();
+					Warden::Quitting = true;
+					Warden::QuitReason = "Failed to create backup directory: " + ec.message();
 				}
 				return;
 			}
@@ -242,7 +243,7 @@ private:
 		}
 	}
 
-	std::optional<DBData> ReadDatabase(const Anope::string &dbname)
+	std::optional<DBData> ReadDatabase(const Warden::string &dbname)
 	{
 		yyjson_read_err errmsg;
 		const auto flags = YYJSON_READ_ALLOW_TRAILING_COMMAS | YYJSON_READ_ALLOW_INVALID_UNICODE;
@@ -261,7 +262,7 @@ private:
 		}
 
 		auto version = yyjson_get_uint(yyjson_obj_get(root, "version"));
-		if (version && version != ANOPE_DATABASE_VERSION)
+		if (version && version != WARDEN_DATABASE_VERSION)
 		{
 			Log(this) << "Refusing to load an unsupported database version: " << version;
 			return std::nullopt;
@@ -269,7 +270,7 @@ private:
 
 		auto generator = yyjson_get_astr(yyjson_obj_get(root, "generator"));
 		auto updated = yyjson_get_uint(yyjson_obj_get(root, "updated"));
-		Log(LOG_DEBUG) << "Database " << dbname << " was generated on " << Anope::strftime(updated) << " by " << generator;
+		Log(LOG_DEBUG) << "Database " << dbname << " was generated on " << Warden::strftime(updated) << " by " << generator;
 
 		auto *data = yyjson_obj_get(root, "data");
 		if (!data || !yyjson_is_obj(data))
@@ -313,7 +314,7 @@ private:
 		return ret;
 	}
 
-	void SaveType(yyjson_mut_doc *doc, yyjson_mut_val *obj, const Anope::string &typestr, const Data &data)
+	void SaveType(yyjson_mut_doc *doc, yyjson_mut_val *obj, const Warden::string &typestr, const Data &data)
 	{
 		auto *type = yyjson_mut_obj_getn(obj, typestr.c_str(), typestr.length());
 		if (!type || !yyjson_mut_is_arr(type))
@@ -333,13 +334,13 @@ private:
 			switch (data.GetType(key))
 			{
 				case Serialize::DataType::BOOL:
-					v = yyjson_mut_bool(doc, Anope::Convert<bool>(value, false));
+					v = yyjson_mut_bool(doc, Warden::Convert<bool>(value, false));
 					break;
 				case Serialize::DataType::FLOAT:
-					v = yyjson_mut_real(doc, Anope::Convert<double>(value, 0.0));
+					v = yyjson_mut_real(doc, Warden::Convert<double>(value, 0.0));
 					break;
 				case Serialize::DataType::INT:
-					v = yyjson_mut_int(doc, Anope::Convert<int64_t>(value, 0));
+					v = yyjson_mut_int(doc, Warden::Convert<int64_t>(value, 0));
 					break;
 				case Serialize::DataType::TEXT:
 				{
@@ -349,7 +350,7 @@ private:
 					break;
 				}
 				case Serialize::DataType::UINT:
-					v = yyjson_mut_uint(doc, Anope::Convert<uint64_t>(value, 0));
+					v = yyjson_mut_uint(doc, Warden::Convert<uint64_t>(value, 0));
 					break;
 			}
 
@@ -361,7 +362,7 @@ private:
 	}
 
 public:
-	DBJSON(const Anope::string &modname, const Anope::string &creator)
+	DBJSON(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, DATABASE | VENDOR)
 	{
 	}
@@ -446,10 +447,10 @@ public:
 			auto *root = yyjson_mut_obj(doc);
 			yyjson_mut_doc_set_root(doc, root);
 
-			const auto generator = "Anope " + Anope::Version() + " " + Anope::VersionBuildString();
+			const auto generator = "Warden " + Warden::Version() + " " + Warden::VersionBuildString();
 			yyjson_mut_obj_add_strncpy(doc, root, "generator", generator.c_str(), generator.length());
-			yyjson_mut_obj_add_uint(doc, root, "version", ANOPE_DATABASE_VERSION);
-			yyjson_mut_obj_add_int(doc, root, "updated", Anope::CurTime);
+			yyjson_mut_obj_add_uint(doc, root, "version", WARDEN_DATABASE_VERSION);
+			yyjson_mut_obj_add_int(doc, root, "updated", Warden::CurTime);
 
 			auto *data = yyjson_mut_obj(doc);
 			yyjson_mut_obj_add_val(doc, root, "data", data);
@@ -463,9 +464,9 @@ public:
 			const auto flags = YYJSON_WRITE_ALLOW_INVALID_UNICODE | YYJSON_WRITE_NEWLINE_AT_END | YYJSON_WRITE_PRETTY;
 			if (!yyjson_mut_write_file(dbname.c_str(), doc, flags, nullptr, &errmsg))
 			{
-				Anope::Quitting = true;
-				Anope::QuitReason = "Unable to write " + dbname + ": error #" + Anope::ToString(errmsg.code) + ": " + errmsg.msg;
-				Log(this) << Anope::QuitReason;
+				Warden::Quitting = true;
+				Warden::QuitReason = "Unable to write " + dbname + ": error #" + Warden::ToString(errmsg.code) + ": " + errmsg.msg;
+				Log(this) << Warden::QuitReason;
 			}
 
 			yyjson_mut_doc_free(doc);

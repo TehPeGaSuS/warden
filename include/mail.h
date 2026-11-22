@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,34 +15,34 @@
 
 #pragma once
 
-#include "anope.h"
+#include "warden.h"
 #include "config.h"
 #include "threadengine.h"
 #include "serialize.h"
 
 namespace Mail
 {
-	using HeaderMap = Anope::map<Anope::string>;
+	using HeaderMap = Warden::map<Warden::string>;
 
-	extern CoreExport bool Send(User *from, NickCore *to, BotInfo *service, const Anope::string &subject, const Anope::string &message, const HeaderMap& hm = {});
-	extern CoreExport bool Send(NickCore *to, const Anope::string &subject, const Anope::string &message, const HeaderMap& hm = {});
-	extern CoreExport bool Validate(const Anope::string &email);
+	extern CoreExport bool Send(User *from, NickCore *to, BotInfo *service, const Warden::string &subject, const Warden::string &message, const HeaderMap& hm = {});
+	extern CoreExport bool Send(NickCore *to, const Warden::string &subject, const Warden::string &message, const HeaderMap& hm = {});
+	extern CoreExport bool Validate(const Warden::string &email);
 
 	/* A email message being sent */
 	class Message final
 		: public Thread
 	{
 	private:
-		Anope::string error;
-		Anope::string sendmail_path;
-		Anope::string send_from;
-		Anope::string mail_to;
-		Anope::string addr;
-		Anope::string subject;
-		Anope::string message;
+		Warden::string error;
+		Warden::string sendmail_path;
+		Warden::string send_from;
+		Warden::string mail_to;
+		Warden::string addr;
+		Warden::string subject;
+		Warden::string message;
 		HeaderMap headers;
 		bool dont_quote_addresses;
-		Anope::string eol;
+		Warden::string eol;
 
 	public:
 		/** Construct this message. Once constructed call Thread::Start to launch the mail sending.
@@ -52,7 +53,7 @@ namespace Mail
 		 * @param message The actual message
 		 * @param hm Headers to include in the email
 		 */
-		Message(const Anope::string &sf, const Anope::string &mailto, const Anope::string &addr, const Anope::string &subject, const Anope::string &message, const HeaderMap& hm);
+		Message(const Warden::string &sf, const Warden::string &mailto, const Warden::string &addr, const Warden::string &subject, const Warden::string &message, const HeaderMap& hm);
 
 		/** @nodoc */
 		~Message();
@@ -66,22 +67,22 @@ namespace Mail
 	private:
 		struct MessagePart final
 		{
-			Anope::string body;
-			Anope::string content_type;
+			Warden::string body;
+			Warden::string content_type;
 		};
-		const Anope::string config;
-		Anope::map<Anope::string> subjects;
-		Anope::multimap<MessagePart> messages;
+		const Warden::string config;
+		Warden::map<Warden::string> subjects;
+		Warden::multimap<MessagePart> messages;
 
-		bool FormatMessage(NickCore* to, const Anope::map<Anope::string> &vars, Anope::string &subject, Anope::string &message, Mail::HeaderMap &headers) const;
-		void ParseMessages(const Configuration::Block &conf, Anope::multimap<MessagePart> &newmessages, const Anope::string &language, const Anope::string &ckey) const;
-		void ParseSubject(const Configuration::Block &conf, Anope::map<Anope::string> &newsubjects, const Anope::string &language, const Anope::string &ckey) const;
+		bool FormatMessage(NickCore* to, const Warden::map<Warden::string> &vars, Warden::string &subject, Warden::string &message, Mail::HeaderMap &headers) const;
+		void ParseMessages(const Configuration::Block &conf, Warden::multimap<MessagePart> &newmessages, const Warden::string &language, const Warden::string &ckey) const;
+		void ParseSubject(const Configuration::Block &conf, Warden::map<Warden::string> &newsubjects, const Warden::string &language, const Warden::string &ckey) const;
 
 	public:
-		Template(const Anope::string &c);
+		Template(const Warden::string &c);
 		void Reload(const Configuration::Conf &conf);
-		bool Send(User *from, NickCore *to, BotInfo *service, const Anope::map<Anope::string> &vars) const;
-		bool Send(NickCore *to, const Anope::map<Anope::string> &vars) const;
+		bool Send(User *from, NickCore *to, BotInfo *service, const Warden::map<Warden::string> &vars) const;
+		bool Send(NickCore *to, const Warden::map<Warden::string> &vars) const;
 	};
 
 } // namespace Mail

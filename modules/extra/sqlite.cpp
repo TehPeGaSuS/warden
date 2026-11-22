@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -31,15 +32,15 @@ class SQLiteResult final
 	: public Result
 {
 public:
-	SQLiteResult(unsigned int i, const Query &q, const Anope::string &fq) : Result(i, q, fq)
+	SQLiteResult(unsigned int i, const Query &q, const Warden::string &fq) : Result(i, q, fq)
 	{
 	}
 
-	SQLiteResult(const Query &q, const Anope::string &fq, const Anope::string &err) : Result(0, q, fq, err)
+	SQLiteResult(const Query &q, const Warden::string &fq, const Warden::string &err) : Result(0, q, fq, err)
 	{
 	}
 
-	void AddRow(const std::map<Anope::string, Anope::string> &data)
+	void AddRow(const std::map<Warden::string, Warden::string> &data)
 	{
 		this->entries.push_back(data);
 	}
@@ -50,16 +51,16 @@ public:
 class SQLiteService final
 	: public Provider
 {
-	std::map<Anope::string, std::set<Anope::string> > active_schema;
+	std::map<Warden::string, std::set<Warden::string> > active_schema;
 
-	Anope::string database;
+	Warden::string database;
 
 	sqlite3 *sql = nullptr;
 
-	Anope::string Escape(const Anope::string &query);
+	Warden::string Escape(const Warden::string &query);
 
 public:
-	SQLiteService(Module *o, const Anope::string &n, const Anope::string &d);
+	SQLiteService(Module *o, const Warden::string &n, const Warden::string &d);
 
 	~SQLiteService();
 
@@ -67,17 +68,17 @@ public:
 
 	Result RunQuery(const Query &query) override;
 
-	std::vector<Query> CreateTable(const Anope::string &table, const Data &data) override;
+	std::vector<Query> CreateTable(const Warden::string &table, const Data &data) override;
 
-	Query BuildInsert(const Anope::string &table, Serializable::Id id, Data &data) override;
+	Query BuildInsert(const Warden::string &table, Serializable::Id id, Data &data) override;
 
-	Query GetTables(const Anope::string &prefix) override;
+	Query GetTables(const Warden::string &prefix) override;
 
-	Anope::string BuildQuery(const Query &q);
+	Warden::string BuildQuery(const Query &q);
 
-	Anope::string FromUnixtime(time_t) override;
+	Warden::string FromUnixtime(time_t) override;
 
-	Anope::string GetColumnType(Serialize::DataType dt)
+	Warden::string GetColumnType(Serialize::DataType dt)
 	{
 		switch (dt)
 		{
@@ -107,16 +108,16 @@ class ModuleSQLite final
 	: public Module
 {
 	/* SQL connections */
-	std::map<Anope::string, SQLiteService *> SQLiteServices;
+	std::map<Warden::string, SQLiteService *> SQLiteServices;
 public:
-	ModuleSQLite(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, EXTRA | VENDOR)
+	ModuleSQLite(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, EXTRA | VENDOR)
 	{
 		Log(this) << "Module was compiled against SQLite version " << SQLITE_VERSION << " and is running against version " << sqlite3_libversion();
 	}
 
 	~ModuleSQLite()
 	{
-		for (std::map<Anope::string, SQLiteService *>::iterator it = this->SQLiteServices.begin(); it != this->SQLiteServices.end(); ++it)
+		for (std::map<Warden::string, SQLiteService *>::iterator it = this->SQLiteServices.begin(); it != this->SQLiteServices.end(); ++it)
 			delete it->second;
 		SQLiteServices.clear();
 	}
@@ -125,15 +126,15 @@ public:
 	{
 		const auto &config = conf.GetModule(this);
 
-		for (std::map<Anope::string, SQLiteService *>::iterator it = this->SQLiteServices.begin(); it != this->SQLiteServices.end();)
+		for (std::map<Warden::string, SQLiteService *>::iterator it = this->SQLiteServices.begin(); it != this->SQLiteServices.end();)
 		{
-			const Anope::string &cname = it->first;
+			const Warden::string &cname = it->first;
 			SQLiteService *s = it->second;
 			size_t i, num;
 			++it;
 
 			for (i = 0, num = config.CountBlock("sqlite"); i < num; ++i)
-				if (config.GetBlock("sqlite", i).Get<const Anope::string>("name", "sqlite/main") == cname)
+				if (config.GetBlock("sqlite", i).Get<const Warden::string>("name", "sqlite/main") == cname)
 					break;
 
 			if (i == num)
@@ -147,11 +148,11 @@ public:
 
 		for (const auto &[_,  block] : config.GetBlocks("sqlite"))
 		{
-			Anope::string connname = block.Get<const Anope::string>("name", "sqlite/main");
+			Warden::string connname = block.Get<const Warden::string>("name", "sqlite/main");
 
 			if (this->SQLiteServices.find(connname) == this->SQLiteServices.end())
 			{
-				auto database = Anope::ExpandData(block.Get<const Anope::string>("database", "anope"));
+				auto database = Warden::ExpandData(block.Get<const Warden::string>("database", "warden"));
 				try
 				{
 					auto *ss = new SQLiteService(this, connname, database);
@@ -168,13 +169,13 @@ public:
 	}
 };
 
-SQLiteService::SQLiteService(Module *o, const Anope::string &n, const Anope::string &d)
+SQLiteService::SQLiteService(Module *o, const Warden::string &n, const Warden::string &d)
 : Provider(o, n), database(d)
 {
 	int db = sqlite3_open_v2(database.c_str(), &this->sql, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, 0);
 	if (db != SQLITE_OK)
 	{
-		Anope::string exstr = "Unable to open SQLite database " + database;
+		Warden::string exstr = "Unable to open SQLite database " + database;
 		if (this->sql)
 		{
 			exstr += ": ";
@@ -202,13 +203,13 @@ void SQLiteService::Run(Interface *i, const Query &query)
 
 Result SQLiteService::RunQuery(const Query &query)
 {
-	Anope::string real_query = this->BuildQuery(query);
+	Warden::string real_query = this->BuildQuery(query);
 	sqlite3_stmt *stmt;
 	int err = sqlite3_prepare_v2(this->sql, real_query.c_str(), real_query.length(), &stmt, NULL);
 	if (err != SQLITE_OK)
 		return SQLiteResult(query, real_query, sqlite3_errmsg(this->sql));
 
-	std::vector<Anope::string> columns;
+	std::vector<Warden::string> columns;
 	int cols = sqlite3_column_count(stmt);
 	columns.resize(cols);
 	for (int i = 0; i < cols; ++i)
@@ -218,7 +219,7 @@ Result SQLiteService::RunQuery(const Query &query)
 
 	while ((err = sqlite3_step(stmt)) == SQLITE_ROW)
 	{
-		std::map<Anope::string, Anope::string> items;
+		std::map<Warden::string, Warden::string> items;
 		for (int i = 0; i < cols; ++i)
 		{
 			const char *data = reinterpret_cast<const char *>(sqlite3_column_text(stmt, i));
@@ -243,10 +244,10 @@ Result SQLiteService::RunQuery(const Query &query)
 #endif
 }
 
-std::vector<Query> SQLiteService::CreateTable(const Anope::string &table, const Data &data)
+std::vector<Query> SQLiteService::CreateTable(const Warden::string &table, const Data &data)
 {
 	std::vector<Query> queries;
-	std::set<Anope::string> &known_cols = this->active_schema[table];
+	std::set<Warden::string> &known_cols = this->active_schema[table];
 
 	if (known_cols.empty())
 	{
@@ -255,7 +256,7 @@ std::vector<Query> SQLiteService::CreateTable(const Anope::string &table, const 
 		Result columns = this->RunQuery("PRAGMA table_info(" + table + ")");
 		for (int i = 0; i < columns.Rows(); ++i)
 		{
-			const Anope::string &column = columns.Get(i, "name");
+			const Warden::string &column = columns.Get(i, "name");
 
 			Log(LOG_DEBUG) << "sqlite: Column #" << i << " for " << table << ": " << column;
 			known_cols.insert(column);
@@ -264,7 +265,7 @@ std::vector<Query> SQLiteService::CreateTable(const Anope::string &table, const 
 
 	if (known_cols.empty())
 	{
-		Anope::string query_text = "CREATE TABLE `" + table + "` (`id` INTEGER PRIMARY KEY, `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP";
+		Warden::string query_text = "CREATE TABLE `" + table + "` (`id` INTEGER PRIMARY KEY, `timestamp` timestamp DEFAULT CURRENT_TIMESTAMP";
 
 		for (const auto &[column, _] : data.data)
 		{
@@ -295,7 +296,7 @@ std::vector<Query> SQLiteService::CreateTable(const Anope::string &table, const 
 
 			known_cols.insert(column);
 
-			Anope::string query_text = "ALTER TABLE `" + table + "` ADD `" + column + "` " + GetColumnType(data.GetType(column));;
+			Warden::string query_text = "ALTER TABLE `" + table + "` ADD `" + column + "` " + GetColumnType(data.GetType(column));;
 
 			queries.push_back(query_text);
 		}
@@ -304,7 +305,7 @@ std::vector<Query> SQLiteService::CreateTable(const Anope::string &table, const 
 	return queries;
 }
 
-Query SQLiteService::BuildInsert(const Anope::string &table, Serializable::Id id, Data &data)
+Query SQLiteService::BuildInsert(const Warden::string &table, Serializable::Id id, Data &data)
 {
 	/* Empty columns not present in the data set */
 	for (const auto &known_col : this->active_schema[table])
@@ -313,7 +314,7 @@ Query SQLiteService::BuildInsert(const Anope::string &table, Serializable::Id id
 			data.data[known_col];
 	}
 
-	Anope::string query_text = "REPLACE INTO `" + table + "` (";
+	Warden::string query_text = "REPLACE INTO `" + table + "` (";
 	if (id > 0)
 		query_text += "`id`,";
 	for (const auto &[field, _] : data.data)
@@ -321,7 +322,7 @@ Query SQLiteService::BuildInsert(const Anope::string &table, Serializable::Id id
 	query_text.erase(query_text.length() - 1);
 	query_text += ") VALUES (";
 	if (id > 0)
-		query_text += Anope::ToString(id) + ",";
+		query_text += Warden::ToString(id) + ",";
 	for (const auto &[field, _] : data.data)
 		query_text += "@" + field + "@,";
 	query_text.erase(query_text.length() - 1);
@@ -362,22 +363,22 @@ Query SQLiteService::BuildInsert(const Anope::string &table, Serializable::Id id
 	return query;
 }
 
-Query SQLiteService::GetTables(const Anope::string &prefix)
+Query SQLiteService::GetTables(const Warden::string &prefix)
 {
 	return Query("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE '" + prefix + "%';");
 }
 
-Anope::string SQLiteService::Escape(const Anope::string &query)
+Warden::string SQLiteService::Escape(const Warden::string &query)
 {
 	char *e = sqlite3_mprintf("%q", query.c_str());
-	Anope::string buffer = e;
+	Warden::string buffer = e;
 	sqlite3_free(e);
 	return buffer;
 }
 
-Anope::string SQLiteService::BuildQuery(const Query &q)
+Warden::string SQLiteService::BuildQuery(const Query &q)
 {
-	Anope::string real_query = q.query;
+	Warden::string real_query = q.query;
 
 	for (const auto &[name, value] : q.parameters)
 		real_query = real_query.replace_all_cs("@" + name + "@", (value.escape ? ("'" + this->Escape(value.data) + "'") : value.data));
@@ -385,9 +386,9 @@ Anope::string SQLiteService::BuildQuery(const Query &q)
 	return real_query;
 }
 
-Anope::string SQLiteService::FromUnixtime(time_t t)
+Warden::string SQLiteService::FromUnixtime(time_t t)
 {
-	return "datetime('" + Anope::ToString(t) + "', 'unixepoch')";
+	return "datetime('" + Warden::ToString(t) + "', 'unixepoch')";
 }
 
 MODULE_INIT(ModuleSQLite)

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,30 +22,30 @@
 namespace Uplink
 {
 	extern void Connect();
-	extern CoreExport void SendInternal(const Anope::map<Anope::string> &, const MessageSource &, const Anope::string &, const std::vector<Anope::string> &);
+	extern CoreExport void SendInternal(const Warden::map<Warden::string> &, const MessageSource &, const Warden::string &, const std::vector<Warden::string> &);
 
 	template<typename... Args>
-	void Send(const Anope::map<Anope::string> &tags, const MessageSource &source, const Anope::string &command, Args &&...args)
+	void Send(const Warden::map<Warden::string> &tags, const MessageSource &source, const Warden::string &command, Args &&...args)
 	{
-		SendInternal(tags, source, command, { Anope::ToString(args)... });
+		SendInternal(tags, source, command, { Warden::ToString(args)... });
 	}
 
 	template<typename... Args>
-	void Send(const Anope::map<Anope::string> &tags, const Anope::string &command, Args &&...args)
+	void Send(const Warden::map<Warden::string> &tags, const Warden::string &command, Args &&...args)
 	{
-		SendInternal(tags, Me, command, { Anope::ToString(args)... });
+		SendInternal(tags, Me, command, { Warden::ToString(args)... });
 	}
 
 	template<typename... Args>
-	void Send(const MessageSource &source, const Anope::string &command, Args &&...args)
+	void Send(const MessageSource &source, const Warden::string &command, Args &&...args)
 	{
-		SendInternal({}, source, command, { Anope::ToString(args)... });
+		SendInternal({}, source, command, { Warden::ToString(args)... });
 	}
 
 	template<typename... Args>
-	void Send(const Anope::string &command, Args &&...args)
+	void Send(const Warden::string &command, Args &&...args)
 	{
-		SendInternal({}, Me, command, { Anope::ToString(args)... });
+		SendInternal({}, Me, command, { Warden::ToString(args)... });
 	}
 }
 
@@ -61,6 +62,6 @@ public:
 	~UplinkSocket();
 	bool ProcessRead() override;
 	void OnConnect() override;
-	void OnError(const Anope::string &) override;
+	void OnError(const Warden::string &) override;
 };
 extern CoreExport UplinkSocket *UplinkSock;

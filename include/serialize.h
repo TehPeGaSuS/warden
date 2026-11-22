@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,7 +17,7 @@
 
 #include <sstream>
 
-#include "anope.h"
+#include "warden.h"
 #include "base.h"
 
 /** Names of serialization types implemented in the core. */
@@ -58,7 +59,7 @@ class CoreExport Serializable
 	: public virtual Base
 {
 private:
-	/* A list of every serializable item in Anope.
+	/* A list of every serializable item in Warden.
 	 * Some of these are static and constructed at runtime,
 	 * so this list must be on the heap, as it is not always
 	 * constructed before other objects are if it isn't.
@@ -66,7 +67,7 @@ private:
 	static std::list<Serializable *> *SerializableItems;
 	friend class Serialize::Type;
 	/* The type of item this object is */
-	const Anope::string s_name;
+	const Warden::string s_name;
 	Serialize::Type *s_type;
 	/* Iterator into serializable_items */
 	std::list<Serializable *>::iterator s_iter;
@@ -78,7 +79,7 @@ private:
 	bool should_commit = true;
 
 protected:
-	Serializable(const Anope::string &serialize_type);
+	Serializable(const Warden::string &serialize_type);
 	Serializable(const Serializable &);
 
 	Serializable &operator=(const Serializable &);
@@ -130,7 +131,7 @@ class CoreExport Serialize::Data
 {
 protected:
 	/** The specified data types of known fields. */
-	std::map<Anope::string, Serialize::DataType> types;
+	std::map<Warden::string, Serialize::DataType> types;
 
 	Data() = default;
 
@@ -138,19 +139,19 @@ protected:
 	 * @param key The field to get the value of.
 	 * @param value The location to store the retrieved value.
 	 */
-	virtual bool LoadInternal(const Anope::string &key, Anope::string &value) = 0;
+	virtual bool LoadInternal(const Warden::string &key, Warden::string &value) = 0;
 
 	/** Internal method for storing data in the database.
 	 * @param key The field to set the value of.
 	 * @param value The value of the field.
 	 */
-	virtual bool StoreInternal(const Anope::string &key, const Anope::string &value) = 0;
+	virtual bool StoreInternal(const Warden::string &key, const Warden::string &value) = 0;
 
 	/** Sets the data type of the specified field. This is called automatically from \ref Store.
 	 * @param key The field to specify the data type for.
 	 * @param dt The data type of the field.
 	 */
-	void SetType(const Anope::string &key, Serialize::DataType dt);
+	void SetType(const Warden::string &key, Serialize::DataType dt);
 
 public:
 	virtual ~Data() = default;
@@ -159,7 +160,7 @@ public:
 	 * specified then it will default to TEXT.
 	 * @param key The field to retrieve the data type for.
 	 */
-	Serialize::DataType GetType(const Anope::string &key) const;
+	Serialize::DataType GetType(const Warden::string &key) const;
 
 	/** Retrieves a unique hash for the data set. */
 	virtual size_t Hash() const { throw CoreException("Not supported"); }
@@ -168,8 +169,8 @@ public:
 	 * @param key The field to get the value of.
 	 * @param def The default value if none is set.
 	 */
-	template <typename T = Anope::string>
-	T Load(const Anope::string &key, T def = T())
+	template <typename T = Warden::string>
+	T Load(const Warden::string &key, T def = T())
 	{
 		T out;
 		if (!TryLoad(key, out))
@@ -182,7 +183,7 @@ public:
 	 * @param value The value of the field.
 	 */
 	template <typename T>
-	void Store(const Anope::string &key, const T &value)
+	void Store(const Warden::string &key, const T &value)
 	{
 		using Type = std::remove_cv_t<std::remove_reference_t<T>>;
 
@@ -195,21 +196,21 @@ public:
 		else if constexpr (std::is_integral_v<Type> && std::is_unsigned_v<Type>)
 			SetType(key, DataType::UINT);
 
-		StoreInternal(key, Anope::ToString(value));
+		StoreInternal(key, Warden::ToString(value));
 	}
 
 	/** Tries to load the value of a specific field.
 	 * @param key The field to get the value of.
 	 * @param out The location to store the retrieved value.
 	 */
-	template <typename T = Anope::string>
-	bool TryLoad(const Anope::string &key, T &out)
+	template <typename T = Warden::string>
+	bool TryLoad(const Warden::string &key, T &out)
 	{
-		Anope::string out_str;
+		Warden::string out_str;
 		if (!LoadInternal(key, out_str))
 			return false;
 
-		auto out_opt = Anope::TryConvert<T>(out_str);
+		auto out_opt = Warden::TryConvert<T>(out_str);
 		if (!out_opt)
 			return false;
 
@@ -230,7 +231,7 @@ private:
 	bool created = false;
 
 	/** The name of this type in the database (e.g. NickAlias). */
-	const Anope::string name;
+	const Warden::string name;
 
 	/** The module which owns this type, or nullptr if it belongs to the core.
 	 * Some database backends use this to put third-party module data into their
@@ -244,10 +245,10 @@ private:
 	time_t timestamp = 0;
 
 	/* The names of currently registered types in order of registration. */
-	static std::vector<Anope::string> TypeOrder;
+	static std::vector<Warden::string> TypeOrder;
 
 	/** The currently registered types. */
-	static std::map<Anope::string, Serialize::Type *> Types;
+	static std::map<Warden::string, Serialize::Type *> Types;
 
 protected:
 	/** Creates a new serializable type.
@@ -256,7 +257,7 @@ protected:
 	 * @param o The module which owns this type, or nullptr if it belongs to the
 	 *          core.
 	 */
-	Type(const Anope::string &n, Module *o = nullptr);
+	Type(const Warden::string &n, Module *o = nullptr);
 
 public:
 	/* Map of Serializable objects of this type keyed by their object id. */
@@ -274,7 +275,7 @@ public:
 	/** Attempts to find a serializable type with the specified name.
 	 * @param n The name of the serializable type to find.
 	 */
-	static Serialize::Type *Find(const Anope::string &n);
+	static Serialize::Type *Find(const Warden::string &n);
 
 	/** Retrieves the name of this type in the database (e.g. NickAlias). */
 	inline const auto &GetName() const { return this->name; }
@@ -330,7 +331,7 @@ public:
 template<typename T>
 class Serialize::Checker
 {
-	Anope::string name;
+	Warden::string name;
 	T obj;
 	mutable ::Reference<Serialize::Type> type = nullptr;
 
@@ -343,7 +344,7 @@ class Serialize::Checker
 	}
 
 public:
-	Checker(const Anope::string &n) : name(n) { }
+	Checker(const Warden::string &n) : name(n) { }
 
 	inline const T *operator->() const
 	{

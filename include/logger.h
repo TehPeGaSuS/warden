@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,7 +15,7 @@
 
 #pragma once
 
-#include "anope.h"
+#include "warden.h"
 #include "defs.h"
 
 enum LogType
@@ -42,12 +43,12 @@ enum LogType
 
 struct LogFile final
 {
-	Anope::string filename;
+	Warden::string filename;
 	std::ofstream stream;
 
-	LogFile(const Anope::string &name);
+	LogFile(const Warden::string &name);
 	~LogFile();
-	const Anope::string &GetName() const;
+	const Warden::string &GetName() const;
 };
 
 /* Represents a single log message */
@@ -73,36 +74,36 @@ public:
 	/* For LOG_MODULE */
 	Module *m = nullptr;
 	LogType type;
-	Anope::string category;
+	Warden::string category;
 
 	std::stringstream buf;
 
-	Log(LogType type = LOG_NORMAL, const Anope::string &category = "", BotInfo *bi = NULL);
+	Log(LogType type = LOG_NORMAL, const Warden::string &category = "", BotInfo *bi = NULL);
 
 	/* LOG_COMMAND/OVERRIDE/ADMIN */
 	Log(LogType type, CommandSource &source, Command *c, ChannelInfo *ci = NULL);
 
 	/* LOG_CHANNEL */
-	Log(User *u, Channel *c, const Anope::string &category = "");
+	Log(User *u, Channel *c, const Warden::string &category = "");
 
 	/* LOG_USER */
-	Log(User *u, const Anope::string &category = "", BotInfo *bi = NULL);
+	Log(User *u, const Warden::string &category = "", BotInfo *bi = NULL);
 
 	/* LOG_SERVER */
-	Log(Server *s, const Anope::string &category = "", BotInfo *bi = NULL);
+	Log(Server *s, const Warden::string &category = "", BotInfo *bi = NULL);
 
-	Log(BotInfo *b, const Anope::string &category = "");
+	Log(BotInfo *b, const Warden::string &category = "");
 
-	Log(Module *m, const Anope::string &category = "", BotInfo *bi = NULL);
+	Log(Module *m, const Warden::string &category = "", BotInfo *bi = NULL);
 
 	~Log();
 
 private:
-	Anope::string FormatSource() const;
-	Anope::string FormatCommand() const;
+	Warden::string FormatSource() const;
+	Warden::string FormatCommand() const;
 
 public:
-	Anope::string BuildPrefix() const;
+	Warden::string BuildPrefix() const;
 
 	template<typename T> Log &operator<<(T val)
 	{
@@ -116,18 +117,18 @@ class CoreExport LogInfo final
 {
 public:
 	BotInfo *bot = nullptr;
-	std::vector<Anope::string> targets;
+	std::vector<Warden::string> targets;
 	std::vector<LogFile *> logfiles;
 	int last_day = 0;
-	std::vector<Anope::string> sources;
+	std::vector<Warden::string> sources;
 	int log_age;
-	std::vector<Anope::string> admin;
-	std::vector<Anope::string> override;
-	std::vector<Anope::string> commands;
-	std::vector<Anope::string> servers;
-	std::vector<Anope::string> users;
-	std::vector<Anope::string> channels;
-	std::vector<Anope::string> normal;
+	std::vector<Warden::string> admin;
+	std::vector<Warden::string> override;
+	std::vector<Warden::string> commands;
+	std::vector<Warden::string> servers;
+	std::vector<Warden::string> users;
+	std::vector<Warden::string> channels;
+	std::vector<Warden::string> normal;
 	bool raw_io;
 	bool debug;
 
@@ -137,7 +138,7 @@ public:
 
 	void OpenLogFiles();
 
-	bool HasType(LogType ltype, const Anope::string &type) const;
+	bool HasType(LogType ltype, const Warden::string &type) const;
 
 	/* Logs the message l if configured to */
 	void ProcessMessage(const Log *l);

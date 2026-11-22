@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -82,7 +83,7 @@ public:
 	{
 	}
 
-	bool OnRequest(HTTP::Provider *provider, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply) override
+	bool OnRequest(HTTP::Provider *provider, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply) override
 	{
 		xmlrpc_env env;
 		xmlrpc_env_init(&env);
@@ -128,10 +129,10 @@ public:
 			xmlrpc_value *value = nullptr;
 			xmlrpc_array_read_item(&env, params, idx, &value);
 
-			Anope::string param;
+			Warden::string param;
 			if (xmlrpc_value_type(value) != XMLRPC_TYPE_STRING)
 			{
-				xmlrpc_env_set_fault(&env, RPC::ERR_INVALID_REQUEST, "Anope XML-RPC only supports strings");
+				xmlrpc_env_set_fault(&env, RPC::ERR_INVALID_REQUEST, "Warden XML-RPC only supports strings");
 				SendError(reply, env);
 				xmlrpc_DECREF(value);
 				xmlrpc_DECREF(params);
@@ -150,14 +151,14 @@ public:
 				continue;
 			}
 
-			request.data.push_back(Anope::string(string, length));
+			request.data.push_back(Warden::string(string, length));
 			xmlrpc_DECREF(value);
 		}
 		xmlrpc_DECREF(params);
 
 		if (request.data.size() < event->GetMinParams())
 		{
-			auto error = Anope::Format("Not enough parameters (given %zu, expected %zu)",
+			auto error = Warden::Format("Not enough parameters (given %zu, expected %zu)",
 				request.data.size(), event->GetMinParams());
 			xmlrpc_env_set_fault(&env, RPC::ERR_INVALID_PARAMS, error.c_str());
 			SendError(reply, env);
@@ -216,7 +217,7 @@ xmlrpc_value *XMLRPCServiceInterface::SerializeElement(xmlrpc_env &env, const RP
 			elem = xmlrpc_struct_new(&env);
 			SerializeMap(env, elem, m);
 		},
-		[&env, &elem](const Anope::string &s)
+		[&env, &elem](const Warden::string &s)
 		{
 			elem = xmlrpc_string_new_lp(&env, s.length(), s.c_str());
 		},
@@ -249,7 +250,7 @@ xmlrpc_value *XMLRPCServiceInterface::SerializeElement(xmlrpc_env &env, const RP
 			else
 			{
 				// We need to convert this to a string.
-				auto s = Anope::ToString(i);
+				auto s = Warden::ToString(i);
 				elem = xmlrpc_string_new_lp(&env, s.length(), s.c_str());
 			}
 		},
@@ -270,7 +271,7 @@ xmlrpc_value *XMLRPCServiceInterface::SerializeElement(xmlrpc_env &env, const RP
 			else
 			{
 				// We need to convert this to a string.
-				auto s = Anope::ToString(u);
+				auto s = Warden::ToString(u);
 				elem = xmlrpc_string_new_lp(&env, s.length(), s.c_str());
 			}
 		},
@@ -289,7 +290,7 @@ private:
 	XMLRPCServiceInterface xmlrpcinterface;
 
 public:
-	ModuleXMLRPC(const Anope::string &modname, const Anope::string &creator)
+	ModuleXMLRPC(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, EXTRA | VENDOR)
 		, httpref(HTTP_PROVIDER)
 		, xmlrpcinterface(this)
@@ -299,7 +300,7 @@ public:
 		xmlrpc_init(&env);
 		if (env.fault_occurred)
 		{
-			Anope::string fault(env.fault_string);
+			Warden::string fault(env.fault_string);
 			xmlrpc_env_clean(&env);
 			throw ModuleException("Failed to initialise libxmlrpc: " + fault);
 		}
@@ -326,7 +327,7 @@ public:
 		XMLRPCServiceInterface::enable_i8 = modconf.Get<bool>("enable_i8", "yes");
 		XMLRPCServiceInterface::enable_nil = modconf.Get<bool>("enable_nil", "yes");
 
-		this->httpref.SetServiceName(modconf.Get<const Anope::string>("server", "httpd/main"));
+		this->httpref.SetServiceName(modconf.Get<const Warden::string>("server", "httpd/main"));
 		if (!httpref)
 			throw ConfigException("Unable to find http reference, is httpd loaded?");
 
@@ -334,11 +335,11 @@ public:
 		for (const auto &[_,  block] : modconf.GetBlocks("token"))
 		{
 			RPC::Token token;
-			token.token = block.Get<const Anope::string>("token");
+			token.token = block.Get<const Warden::string>("token");
 			if (!token.token.empty())
 			{
-				token.token_hash = block.Get<const Anope::string>("token_hash");
-				spacesepstream(block.Get<const Anope::string>("methods")).GetTokens(token.methods);
+				token.token_hash = block.Get<const Warden::string>("token_hash");
+				spacesepstream(block.Get<const Warden::string>("methods")).GetTokens(token.methods);
 				xmlrpcinterface.tokens.emplace_back(token);
 			}
 		}

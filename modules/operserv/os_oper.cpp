@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -42,7 +43,7 @@ struct OSOperType
 
 		OperServ::Oper *myo;
 		if (obj)
-			myo = anope_dynamic_static_cast<OperServ::Oper *>(obj);
+			myo = warden_dynamic_static_cast<OperServ::Oper *>(obj);
 		else
 			myo = new OperServ::Oper(nc->display, ot);
 
@@ -83,14 +84,14 @@ public:
 		this->SetSyntax("LIST");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &subcommand = params[0];
+		const Warden::string &subcommand = params[0];
 
 		if (subcommand.equals_ci("ADD") && params.size() > 2)
 		{
-			const Anope::string &oper = params[1];
-			const Anope::string &otype = params[2];
+			const Warden::string &oper = params[1];
+			const Warden::string &otype = params[2];
 
 			if (!source.HasPriv("operserv/oper/modify"))
 			{
@@ -120,7 +121,7 @@ public:
 
 				na->nc->o = new OperServ::Oper(na->nc->display, ot);
 
-				if (Anope::ReadOnly)
+				if (Warden::ReadOnly)
 					source.Reply(READ_ONLY_MODE);
 
 				Log(LOG_ADMIN, source, this) << "ADD " << na->nick << " as type " << ot->GetName();
@@ -129,7 +130,7 @@ public:
 		}
 		else if (subcommand.equals_ci("DEL") && params.size() > 1)
 		{
-			const Anope::string &oper = params[1];
+			const Warden::string &oper = params[1];
 
 			if (!source.HasPriv("operserv/oper/modify"))
 			{
@@ -151,7 +152,7 @@ public:
 				delete na->nc->o;
 				na->nc->o = NULL;
 
-				if (Anope::ReadOnly)
+				if (Warden::ReadOnly)
 					source.Reply(READ_ONLY_MODE);
 
 				Log(LOG_ADMIN, source, this) << "DEL " << na->nick;
@@ -187,7 +188,7 @@ public:
 				return;
 			}
 
-			Anope::string fulltype = params[1];
+			Warden::string fulltype = params[1];
 			if (params.size() > 2)
 				fulltype += " " + params[2];
 			OperType *ot = OperType::Find(fulltype);
@@ -200,8 +201,8 @@ public:
 				else
 				{
 					source.Reply(_("Available commands for \002%s\002:"), ot->GetName().c_str());
-					Anope::string buf;
-					std::list<Anope::string> cmds = ot->GetCommands();
+					Warden::string buf;
+					std::list<Warden::string> cmds = ot->GetCommands();
 					for (const auto &cmd : cmds)
 					{
 						buf += cmd + " ";
@@ -222,8 +223,8 @@ public:
 				else
 				{
 					source.Reply(_("Available privileges for \002%s\002:"), ot->GetName().c_str());
-					Anope::string buf;
-					std::list<Anope::string> privs = ot->GetPrivs();
+					Warden::string buf;
+					std::list<Warden::string> privs = ot->GetPrivs();
 					for (const auto &priv : privs)
 					{
 						buf += priv + " ";
@@ -247,7 +248,7 @@ public:
 			this->OnSyntaxError(source, subcommand);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -267,7 +268,7 @@ class OSOper final
 	CommandOSOper commandosoper;
 
 public:
-	OSOper(const Anope::string &modname, const Anope::string &creator)
+	OSOper(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandosoper(this)
 	{

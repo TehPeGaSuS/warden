@@ -1,4 +1,4 @@
-Anope DefCon
+Warden DefCon
 ------------
 
 1) Introduction
@@ -10,7 +10,7 @@ Anope DefCon
 
 1) Introduction
 
-    Anope supports a unique protection mechanism based on the
+    Warden supports a unique protection mechanism based on the
     military "Defense Readiness Condition" (DefCon) system. It is based on
     5 levels of defense readiness defined as:
 
@@ -20,16 +20,16 @@ Anope DefCon
     DEFCON2 Further increase in force readiness
     DEFCON1 Maximum force readiness.
 
-    These are configurable levels that mandates what actions Anope should
+    These are configurable levels that mandates what actions Warden should
     take in case of emergency and change in readiness status.
 
-    It is used to prevent abuse to both Anope, and the IRCd on which they
+    It is used to prevent abuse to both Warden, and the IRCd on which they
     are running. Also to protect the users, primarily in the event of Clones
     and/or FloodBOT attacks.
 
 2) Installation
 
-    The DefCon system is part of Anope's core,
+    The DefCon system is part of Warden's core,
 
     The DefCon system has to be configured on your operserv.conf file to
     be enabled. Defcon will be disabled if "defaultlevel" in the defcon
@@ -37,7 +37,7 @@ Anope DefCon
     on your operserv.conf file for more information on enabling and
     configuring it.
 
-    Make sure you restart Anope after changing the DefCon configuration
+    Make sure you restart Warden after changing the DefCon configuration
     directives.
 
 3) Configuration
@@ -60,7 +60,7 @@ Anope DefCon
 
 4) Usage
 
-    Anope starts up in DEFCON5 (normal readiness). To change the Defcon level
+    Warden starts up in DEFCON5 (normal readiness). To change the Defcon level
     in action use:
 
     /msg OperServ DEFCON 1|2|3|4|5
@@ -89,5 +89,5 @@ Anope DefCon
 
 6) Support
 
-    You might get DefCon support by posting on our online forum, or maybe on
-    our #anope channel at /server irc.teranova.net.
+    You might get DefCon support by asking in GitHub Discussions:
+    https://github.com/TehPeGaSuS/warden/discussions.

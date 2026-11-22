@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,7 +16,7 @@
 #include "module.h"
 #include "modules/nickserv/sasl.h"
 
-static Anope::string UplinkSID;
+static Warden::string UplinkSID;
 
 static ServiceReference<IRCDProto> hybrid("IRCDProto", "hybrid");
 
@@ -43,9 +44,9 @@ public:
 		MaxModes = 4;
 	}
 
-	void SendSVSKill(const MessageSource &source, User *targ, const Anope::string &reason) override { hybrid->SendSVSKill(source, targ, reason); }
-	void SendGlobalNotice(BotInfo *bi, const Server *dest, const Anope::string &msg) override { hybrid->SendGlobalNotice(bi, dest, msg); }
-	void SendGlobalPrivmsg(BotInfo *bi, const Server *dest, const Anope::string &msg) override { hybrid->SendGlobalPrivmsg(bi, dest, msg); }
+	void SendSVSKill(const MessageSource &source, User *targ, const Warden::string &reason) override { hybrid->SendSVSKill(source, targ, reason); }
+	void SendGlobalNotice(BotInfo *bi, const Server *dest, const Warden::string &msg) override { hybrid->SendGlobalNotice(bi, dest, msg); }
+	void SendGlobalPrivmsg(BotInfo *bi, const Server *dest, const Warden::string &msg) override { hybrid->SendGlobalPrivmsg(bi, dest, msg); }
 	void SendSQLine(User *u, const XLine *x) override { hybrid->SendSQLine(u, x); }
 	void SendSQLineDel(const XLine *x) override { hybrid->SendSQLineDel(x); }
 	void SendSGLineDel(const XLine *x) override { hybrid->SendSGLineDel(x); }
@@ -54,10 +55,10 @@ public:
 	void SendAkill(User *u, XLine *x) override { hybrid->SendAkill(u, x); }
 	void SendServer(const Server *server) override { hybrid->SendServer(server); }
 	void SendChannel(Channel *c) override { hybrid->SendChannel(c); }
-	void SendSVSHold(const Anope::string &nick, time_t t) override { hybrid->SendSVSHold(nick, t); }
-	void SendSVSHoldDel(const Anope::string &nick) override { hybrid->SendSVSHoldDel(nick); }
+	void SendSVSHold(const Warden::string &nick, time_t t) override { hybrid->SendSVSHold(nick, t); }
+	void SendSVSHoldDel(const Warden::string &nick) override { hybrid->SendSVSHoldDel(nick); }
 
-	void SendGlobops(const MessageSource &source, const Anope::string &buf) override
+	void SendGlobops(const MessageSource &source, const Warden::string &buf) override
 	{
 		Uplink::Send(source, "OPERWALL", buf);
 	}
@@ -85,12 +86,12 @@ public:
 		}
 	}
 
-	void SendForceNickChange(User *u, const Anope::string &newnick, time_t when) override
+	void SendForceNickChange(User *u, const Warden::string &newnick, time_t when) override
 	{
 		Uplink::Send("ENCAP", u->server->GetName(), "SVSNICK", u->GetUID(), u->timestamp, newnick, when);
 	}
 
-	void SendVHost(User *u, const Anope::string &ident, const Anope::string &host) override
+	void SendVHost(User *u, const Warden::string &ident, const Warden::string &host) override
 	{
 		if (!ident.empty())
 			Uplink::Send("ENCAP", '*', "CHGIDENT", u->GetUID(), ident);
@@ -106,7 +107,7 @@ public:
 
 	void SendConnect() override
 	{
-		Uplink::Send("PASS", Config->Uplinks[Anope::CurrentUplink].password, "TS", 6, Me->GetSID());
+		Uplink::Send("PASS", Config->Uplinks[Warden::CurrentUplink].password, "TS", 6, Me->GetSID());
 
 		/* CAPAB
 		 * QS     - Can handle quit storm removal
@@ -140,7 +141,7 @@ public:
 		 *	  parv[3] = server is standalone or connected to non-TS only
 		 *	  parv[4] = server's idea of UTC time
 		 */
-		Uplink::Send("SVINFO", 6, 5, 0, Anope::CurTime);
+		Uplink::Send("SVINFO", 6, 5, 0, Warden::CurTime);
 	}
 
 	void SendClientIntroduction(User *u) override
@@ -148,10 +149,10 @@ public:
 		Uplink::Send("UID", u->nick, 1, u->timestamp, "+" + u->GetModes(), u->GetIdent(), u->host, "255.255.255.255", u->GetUID(), 0, u->host, u->realname);
 	}
 
-	void SendModeInternal(const MessageSource &source, User *u, const Anope::string &modes, const std::vector<Anope::string> &values) override
+	void SendModeInternal(const MessageSource &source, User *u, const Warden::string &modes, const std::vector<Warden::string> &values) override
 	{
 		auto params = values;
-		params.insert(params.begin(), { "*", "SVSMODE", u->GetUID(), Anope::ToString(u->timestamp), modes });
+		params.insert(params.begin(), { "*", "SVSMODE", u->GetUID(), Warden::ToString(u->timestamp), modes });
 		Uplink::SendInternal({}, source, "ENCAP", params);
 	}
 
@@ -170,12 +171,12 @@ public:
 		Uplink::Send(source, "ENCAP", '*', "TOPIC", c->name, c->topic_setter, c->topic_ts, c->topic);
 	}
 
-	void SendSVSJoin(const MessageSource &source, User *user, const Anope::string &chan, const Anope::string &key) override
+	void SendSVSJoin(const MessageSource &source, User *user, const Warden::string &chan, const Warden::string &key) override
 	{
 		Uplink::Send(source, "ENCAP", '*', "SVSJOIN", user->GetUID(), chan);
 	}
 
-	void SendSVSPart(const MessageSource &source, User *user, const Anope::string &chan, const Anope::string &param) override
+	void SendSVSPart(const MessageSource &source, User *user, const Warden::string &chan, const Warden::string &param) override
 	{
 		Uplink::Send(source, "ENCAP", '*', "SVSPART", user->GetUID(), chan);
 	}
@@ -190,10 +191,10 @@ public:
 		Uplink::SendInternal({}, Me, "ENCAP", newparams);
 	}
 
-	void SendSVSLogin(const Anope::string &uid, NickAlias *na) override
+	void SendSVSLogin(const Warden::string &uid, NickAlias *na) override
 	{
 		Server *s = Server::Find(uid.substr(0, 3));
-		Anope::string target = s ? s->GetName() : uid.substr(0, 3);
+		Warden::string target = s ? s->GetName() : uid.substr(0, 3);
 		if (na)
 		{
 			Uplink::Send("ENCAP", target, "SVSLOGIN", uid, '*', '*', na->GetVHostHost().empty() ? "*" : na->GetVHostHost(), na->nc->display);
@@ -215,7 +216,7 @@ struct IRCDMessageEncap final
 {
 	IRCDMessageEncap(Module *creator) : IRCDMessage(creator, "ENCAP", 4) { SetFlag(FLAG_REQUIRE_SERVER); SetFlag(FLAG_SOFT_LIMIT); }
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		/*
 		 * Received: :dev.anope.de ENCAP * SU DukePyrolator DukePyrolator
@@ -290,7 +291,7 @@ struct IRCDMessagePass final
 {
 	IRCDMessagePass(Module *creator) : IRCDMessage(creator, "PASS", 4) { SetFlag(FLAG_REQUIRE_SERVER); }
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		UplinkSID = params[3];
 	}
@@ -303,7 +304,7 @@ struct IRCDMessageServer final
 
 	/*        0          1  2                       */
 	/* SERVER hades.arpa 1 :ircd-hybrid test server */
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		/* Servers other than our immediate uplink are introduced via SID */
 		if (params[1] != "1")
@@ -332,10 +333,10 @@ struct IRCDMessageUID final
 	   params[10] = info
 	*/
 	// :42X UID Adam 1 1348535644 +aow Adam 192.168.0.5 192.168.0.5 42XAAAAAB 0 192.168.0.5 :Adam
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		/* An IP of 0 means the user is spoofed */
-		Anope::string ip = params[6];
+		Warden::string ip = params[6];
 		if (ip == "0")
 			ip.clear();
 
@@ -448,7 +449,7 @@ class ProtoPlexus final
 	}
 
 public:
-	ProtoPlexus(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, PROTOCOL | VENDOR),
+	ProtoPlexus(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, PROTOCOL | VENDOR),
 		ircd_proto(this),
 		message_away(this), message_capab(this), message_error(this), message_invite(this), message_kick(this), message_kill(this),
 		message_mode(this), message_motd(this), message_notice(this), message_part(this), message_ping(this), message_privmsg(this),

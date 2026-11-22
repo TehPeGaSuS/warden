@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -22,7 +23,7 @@
 
 namespace
 {
-	Anope::string TypeToString(OperServ::NewsType nt)
+	Warden::string TypeToString(OperServ::NewsType nt)
 	{
 		switch (nt)
 		{
@@ -36,7 +37,7 @@ namespace
 		return ""; // Should never happen.
 	}
 
-	OperServ::NewsType StringToType(const Anope::string &nt)
+	OperServ::NewsType StringToType(const Warden::string &nt)
 	{
 		if (nt.equals_ci("LOGON") || nt.equals_ci("0"))
 			return OperServ::NEWS_LOGON;
@@ -65,7 +66,7 @@ enum
 struct NewsMessages final
 {
 	OperServ::NewsType type;
-	Anope::string name;
+	Warden::string name;
 	const char *msgs[MSG_END];
 };
 
@@ -126,7 +127,7 @@ struct NewsItemType final
 
 		OperServ::NewsItem *ni;
 		if (obj)
-			ni = anope_dynamic_static_cast<OperServ::NewsItem *>(obj);
+			ni = warden_dynamic_static_cast<OperServ::NewsItem *>(obj);
 		else
 			ni = new OperServ::NewsItem();
 
@@ -209,9 +210,9 @@ protected:
 			for (unsigned i = 0, end = list.size(); i < end; ++i)
 			{
 				ListFormatter::ListEntry entry;
-				entry["Number"] = Anope::ToString(i + 1);
+				entry["Number"] = Warden::ToString(i + 1);
 				entry["Creator"] = list[i]->who;
-				entry["Created"] = Anope::strftime(list[i]->time, NULL, true);
+				entry["Created"] = Warden::strftime(list[i]->time, NULL, true);
 				entry["Text"] = list[i]->text;
 				lflist.AddEntry(entry);
 			}
@@ -222,21 +223,21 @@ protected:
 		}
 	}
 
-	void DoAdd(CommandSource &source, const std::vector<Anope::string> &params, OperServ::NewsType ntype, const char **msgs)
+	void DoAdd(CommandSource &source, const std::vector<Warden::string> &params, OperServ::NewsType ntype, const char **msgs)
 	{
-		const Anope::string text = params.size() > 1 ? params[1] : "";
+		const Warden::string text = params.size() > 1 ? params[1] : "";
 
 		if (text.empty())
 			this->OnSyntaxError(source, "ADD");
 		else
 		{
-			if (Anope::ReadOnly)
+			if (Warden::ReadOnly)
 				source.Reply(READ_ONLY_MODE);
 
 			auto *news = new OperServ::NewsItem();
 			news->type = ntype;
 			news->text = text;
-			news->time = Anope::CurTime;
+			news->time = Warden::CurTime;
 			news->who = source.GetNick();
 
 			OperServ::news_service->AddNewsItem(news);
@@ -246,9 +247,9 @@ protected:
 		}
 	}
 
-	void DoDel(CommandSource &source, const std::vector<Anope::string> &params, OperServ::NewsType ntype, const char **msgs)
+	void DoDel(CommandSource &source, const std::vector<Warden::string> &params, OperServ::NewsType ntype, const char **msgs)
 	{
-		const Anope::string &text = params.size() > 1 ? params[1] : "";
+		const Warden::string &text = params.size() > 1 ? params[1] : "";
 
 		if (text.empty())
 			this->OnSyntaxError(source, "DEL");
@@ -259,11 +260,11 @@ protected:
 				source.Reply(msgs[MSG_LIST_NONE]);
 			else
 			{
-				if (Anope::ReadOnly)
+				if (Warden::ReadOnly)
 					source.Reply(READ_ONLY_MODE);
 				if (!text.equals_ci("ALL"))
 				{
-					auto num = Anope::Convert<unsigned>(text, 0);
+					auto num = Warden::Convert<unsigned>(text, 0);
 					if (num > 0 && num <= list.size())
 					{
 						OperServ::news_service->DelNewsItem(list[num - 1]);
@@ -285,7 +286,7 @@ protected:
 		}
 	}
 
-	void DoNews(CommandSource &source, const std::vector<Anope::string> &params, OperServ::NewsType ntype)
+	void DoNews(CommandSource &source, const std::vector<Warden::string> &params, OperServ::NewsType ntype)
 	{
 		if (!OperServ::news_service)
 		{
@@ -293,7 +294,7 @@ protected:
 			return;
 		}
 
-		const Anope::string &cmd = params[0];
+		const Warden::string &cmd = params[0];
 
 		const char **msgs = findmsgs(ntype);
 		if (!msgs)
@@ -309,7 +310,7 @@ protected:
 			this->OnSyntaxError(source, "");
 	}
 public:
-	NewsBase(Module *creator, const Anope::string &newstype)
+	NewsBase(Module *creator, const Warden::string &newstype)
 		: Command(creator, newstype, 1, 2)
 	{
 		this->SetSyntax(_("ADD \037text\037"));
@@ -321,9 +322,9 @@ public:
 	{
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override = 0;
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override = 0;
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override = 0;
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override = 0;
 };
 
 class CommandOSLogonNews final
@@ -335,12 +336,12 @@ public:
 		this->SetDesc(_("Define messages to be shown to users at logon"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		return this->DoNews(source, params, OperServ::NEWS_LOGON);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -365,12 +366,12 @@ public:
 		this->SetDesc(_("Define messages to be shown to users who oper"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		return this->DoNews(source, params, OperServ::NEWS_OPER);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -395,12 +396,12 @@ public:
 		this->SetDesc(_("Define messages to be randomly shown to users at logon"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		return this->DoNews(source, params, OperServ::NEWS_RANDOM);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -425,7 +426,7 @@ class OSNews final
 	CommandOSOperNews commandosopernews;
 	CommandOSRandomNews commandosrandomnews;
 
-	Anope::string oper_announcer, announcer;
+	Warden::string oper_announcer, announcer;
 	unsigned news_count;
 
 	void DisplayNews(User *u, OperServ::NewsType Type)
@@ -437,9 +438,9 @@ class OSNews final
 		const auto &modconf = Config->GetModule(this);
 		BotInfo *bi = NULL;
 		if (Type == OperServ::NEWS_OPER)
-			bi = BotInfo::Find(modconf.Get<const Anope::string>("oper_announcer", "OperServ"), true);
+			bi = BotInfo::Find(modconf.Get<const Warden::string>("oper_announcer", "OperServ"), true);
 		else
-			bi = BotInfo::Find(modconf.Get<const Anope::string>("announcer", "Global"), true);
+			bi = BotInfo::Find(modconf.Get<const Warden::string>("announcer", "Global"), true);
 		if (bi == NULL)
 			return;
 
@@ -464,7 +465,7 @@ class OSNews final
 
 			const auto *news = newsList[i];
 			if (showdate)
-				u->SendMessage(bi, msgs[MSG_NEWS_LONG], Anope::strftime(news->time, u->Account(), true).c_str(), news->text.c_str());
+				u->SendMessage(bi, msgs[MSG_NEWS_LONG], Warden::strftime(news->time, u->Account(), true).c_str(), news->text.c_str());
 			else
 				u->SendMessage(bi, msgs[MSG_NEWS_SHORT], news->text.c_str());
 
@@ -481,7 +482,7 @@ class OSNews final
 	}
 
 public:
-	OSNews(const Anope::string &modname, const Anope::string &creator)
+	OSNews(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, newsservice(this)
 		, commandoslogonnews(this)
@@ -492,12 +493,12 @@ public:
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		oper_announcer = conf.GetModule(this).Get<const Anope::string>("oper_announcer", "OperServ");
-		announcer = conf.GetModule(this).Get<const Anope::string>("announcer", "Global");
+		oper_announcer = conf.GetModule(this).Get<const Warden::string>("oper_announcer", "OperServ");
+		announcer = conf.GetModule(this).Get<const Warden::string>("announcer", "Global");
 		news_count = conf.GetModule(this).Get<unsigned>("newscount", "3");
 	}
 
-	void OnUserModeSet(const MessageSource &setter, User *u, const Anope::string &mname) override
+	void OnUserModeSet(const MessageSource &setter, User *u, const Warden::string &mname) override
 	{
 		if (mname == "OPER")
 			DisplayNews(u, OperServ::NEWS_OPER);

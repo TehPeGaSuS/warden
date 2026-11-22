@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -59,7 +60,7 @@ Serializable *IgnoreDataTypeImpl::Unserialize(Serializable *obj, Serialize::Data
 
 	IgnoreDataImpl *ign;
 	if (obj)
-		ign = anope_dynamic_static_cast<IgnoreDataImpl *>(obj);
+		ign = warden_dynamic_static_cast<IgnoreDataImpl *>(obj);
 	else
 	{
 		ign = new IgnoreDataImpl();
@@ -113,7 +114,7 @@ public:
 		return new IgnoreDataImpl();
 	}
 
-	OperServ::IgnoreData *Find(const Anope::string &mask) override
+	OperServ::IgnoreData *Find(const Warden::string &mask) override
 	{
 		User *u = User::Find(mask, true);
 		auto ign = this->ignores->begin(), ign_end = this->ignores->end();
@@ -130,11 +131,11 @@ public:
 		else
 		{
 			size_t user, host;
-			Anope::string tmp;
+			Warden::string tmp;
 			/* We didn't get a user.. generate a valid mask. */
-			if ((host = mask.find('@')) != Anope::string::npos)
+			if ((host = mask.find('@')) != Warden::string::npos)
 			{
-				if ((user = mask.find('!')) != Anope::string::npos)
+				if ((user = mask.find('!')) != Warden::string::npos)
 				{
 					/* this should never happen */
 					if (user > host)
@@ -150,7 +151,7 @@ public:
 				tmp = mask + "!*@*";
 
 			for (; ign != ign_end; ++ign)
-				if (Anope::Match(tmp, (*ign)->mask, false, true))
+				if (Warden::Match(tmp, (*ign)->mask, false, true))
 					break;
 		}
 
@@ -159,7 +160,7 @@ public:
 		{
 			auto *id = *ign;
 
-			if (id->time && !Anope::NoExpire && id->time <= Anope::CurTime)
+			if (id->time && !Warden::NoExpire && id->time <= Warden::CurTime)
 			{
 				Log(LOG_NORMAL, "expire/ignore", Config->GetClient("OperServ")) << "Expiring ignore entry " << id->mask;
 				delete id;
@@ -181,7 +182,7 @@ class CommandOSIgnore final
 	: public Command
 {
 private:
-	static Anope::string RealMask(const Anope::string &mask)
+	static Warden::string RealMask(const Warden::string &mask)
 	{
 		/* If it s an existing user, we ignore the hostmask. */
 		User *u = User::Find(mask, true);
@@ -190,11 +191,11 @@ private:
 
 		size_t host = mask.find('@');
 		/* Determine whether we get a nick or a mask. */
-		if (host != Anope::string::npos)
+		if (host != Warden::string::npos)
 		{
 			size_t user = mask.find('!');
 			/* Check whether we have a nick too.. */
-			if (user != Anope::string::npos)
+			if (user != Warden::string::npos)
 			{
 				if (user > host)
 					/* this should never happen */
@@ -211,7 +212,7 @@ private:
 		return mask + "!*@*";
 	}
 
-	void DoAdd(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoAdd(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		if (!OperServ::ignore_service)
 		{
@@ -219,9 +220,9 @@ private:
 			return;
 		}
 
-		const Anope::string &time = params.size() > 1 ? params[1] : "";
-		const Anope::string &nick = params.size() > 2 ? params[2] : "";
-		const Anope::string &reason = params.size() > 3 ? params[3] : "";
+		const Warden::string &time = params.size() > 1 ? params[1] : "";
+		const Warden::string &nick = params.size() > 2 ? params[2] : "";
+		const Warden::string &reason = params.size() > 3 ? params[3] : "";
 
 		if (time.empty() || nick.empty())
 		{
@@ -230,7 +231,7 @@ private:
 		}
 		else
 		{
-			time_t t = Anope::DoTime(time);
+			time_t t = Warden::DoTime(time);
 
 			if (t <= -1)
 			{
@@ -238,21 +239,21 @@ private:
 				return;
 			}
 
-			Anope::string mask = RealMask(nick);
+			Warden::string mask = RealMask(nick);
 			if (mask.empty())
 			{
 				source.Reply(BAD_USERHOST_MASK);
 				return;
 			}
 
-			if (Anope::ReadOnly)
+			if (Warden::ReadOnly)
 				source.Reply(READ_ONLY_MODE);
 
 			auto *ign = new IgnoreDataImpl();
 			ign->mask = mask;
 			ign->creator = source.GetNick();
 			ign->reason = reason;
-			ign->time = t ? Anope::CurTime + t : 0;
+			ign->time = t ? Warden::CurTime + t : 0;
 
 			OperServ::ignore_service->AddIgnore(ign);
 			if (!t)
@@ -262,8 +263,8 @@ private:
 			}
 			else
 			{
-				source.Reply(_("\002%s\002 will now be ignored for \002%s\002."), mask.c_str(), Anope::Duration(t, source.GetAccount()).c_str());
-				Log(LOG_ADMIN, source, this) << "to add an ignore on " << mask << " for " << Anope::Duration(t);
+				source.Reply(_("\002%s\002 will now be ignored for \002%s\002."), mask.c_str(), Warden::Duration(t, source.GetAccount()).c_str());
+				Log(LOG_ADMIN, source, this) << "to add an ignore on " << mask << " for " << Warden::Duration(t);
 			}
 		}
 	}
@@ -281,7 +282,7 @@ private:
 		{
 			auto *id = ignores[i - 1];
 
-			if (id->time && !Anope::NoExpire && id->time <= Anope::CurTime)
+			if (id->time && !Warden::NoExpire && id->time <= Warden::CurTime)
 			{
 				Log(LOG_NORMAL, "expire/ignore", Config->GetClient("OperServ")) << "Expiring ignore entry " << id->mask;
 				delete id;
@@ -309,7 +310,7 @@ private:
 				entry["Mask"] = ignore->mask;
 				entry["Creator"] = ignore->creator;
 				entry["Reason"] = ignore->reason;
-				entry["Expires"] = Anope::Expires(ignore->time, source.GetAccount());
+				entry["Expires"] = Warden::Expires(ignore->time, source.GetAccount());
 				list.AddEntry(entry);
 			}
 
@@ -318,7 +319,7 @@ private:
 		}
 	}
 
-	void DoDel(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoDel(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		if (!OperServ::ignore_service)
 		{
@@ -326,14 +327,14 @@ private:
 			return;
 		}
 
-		const Anope::string nick = params.size() > 1 ? params[1] : "";
+		const Warden::string nick = params.size() > 1 ? params[1] : "";
 		if (nick.empty())
 		{
 			this->OnSyntaxError(source, "DEL");
 			return;
 		}
 
-		Anope::string mask = RealMask(nick);
+		Warden::string mask = RealMask(nick);
 		if (mask.empty())
 		{
 			source.Reply(BAD_USERHOST_MASK);
@@ -343,7 +344,7 @@ private:
 		auto *ign = OperServ::ignore_service->Find(mask);
 		if (ign)
 		{
-			if (Anope::ReadOnly)
+			if (Warden::ReadOnly)
 				source.Reply(READ_ONLY_MODE);
 
 			Log(LOG_ADMIN, source, this) << "to remove an ignore on " << mask;
@@ -362,7 +363,7 @@ private:
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 
 		OperServ::ignore_service->ClearIgnores();
@@ -380,9 +381,9 @@ public:
 		this->SetSyntax("CLEAR");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[0];
+		const Warden::string &cmd = params[0];
 
 		if (cmd.equals_ci("ADD"))
 			return this->DoAdd(source, params);
@@ -396,7 +397,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -414,7 +415,7 @@ public:
 			"Ignores will not be enforced on IRC Operators."
 		));
 
-		const Anope::string &regexengine = Config->GetBlock("options").Get<const Anope::string>("regexengine");
+		const Warden::string &regexengine = Config->GetBlock("options").Get<const Warden::string>("regexengine");
 		if (!regexengine.empty())
 		{
 			source.Reply(" ");
@@ -437,7 +438,7 @@ class OSIgnore final
 	CommandOSIgnore commandosignore;
 
 public:
-	OSIgnore(const Anope::string &modname, const Anope::string &creator)
+	OSIgnore(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, osignoreservice(this)
 		, commandosignore(this)
@@ -449,7 +450,7 @@ public:
 		ModuleManager::SetPriority(this, I_OnBotPrivmsg, PRIORITY_FIRST);
 	}
 
-	EventReturn OnBotPrivmsg(User *u, BotInfo *bi, Anope::string &message, const Anope::map<Anope::string> &tags) override
+	EventReturn OnBotPrivmsg(User *u, BotInfo *bi, Warden::string &message, const Warden::map<Warden::string> &tags) override
 	{
 		if (!u->HasMode("OPER") && this->osignoreservice.Find(u->nick))
 			return EVENT_STOP;

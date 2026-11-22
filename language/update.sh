@@ -2,12 +2,12 @@
 
 if [ "${PWD##*/}" != "language" ]
 then
-	echo "Please run this script in the language/ subfolder of an anope source tree."
+	echo "Please run this script in the language/ subfolder of an warden source tree."
 	exit 1
 fi
 
 # truncate
-: > anope.pot
+: > warden.pot
 
 # find .cpp, .h, and .conf files
 # exclude docs and third party modules
@@ -24,9 +24,9 @@ find ../ \
 	-print0 | sort -z | xargs -0 -I {} \
 		xgettext \
 			--language=C++ \
-			--default-domain=Anope \
+			--default-domain=Warden \
 			--join-existing \
-			--output=anope.pot \
+			--output=warden.pot \
 			--from-code=utf-8 \
 			--keyword \
 			--keyword=_ \

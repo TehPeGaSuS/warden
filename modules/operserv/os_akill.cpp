@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,10 +22,10 @@ class AkillDelCallback final
 {
 	CommandSource &source;
 	unsigned deleted = 0;
-	Anope::string lastdeleted;
+	Warden::string lastdeleted;
 	Command *cmd;
 public:
-	AkillDelCallback(CommandSource &_source, const Anope::string &numlist, Command *c) : NumberList(numlist, true), source(_source), cmd(c)
+	AkillDelCallback(CommandSource &_source, const Warden::string &numlist, Command *c) : NumberList(numlist, true), source(_source), cmd(c)
 	{
 	}
 
@@ -73,9 +74,9 @@ class CommandOSAKill final
 	: public Command
 {
 private:
-	void DoAdd(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoAdd(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		Anope::string expiry, mask;
+		Warden::string expiry, mask;
 
 		if (params.size() < 2)
 		{
@@ -92,7 +93,7 @@ private:
 			sep.GetToken(mask);
 		}
 
-		time_t expires = !expiry.empty() ? Anope::DoTime(expiry) : Config->GetModule("operserv").Get<time_t>("autokillexpiry", "30d");
+		time_t expires = !expiry.empty() ? Warden::DoTime(expiry) : Config->GetModule("operserv").Get<time_t>("autokillexpiry", "30d");
 		/* If the expiry given does not contain a final letter, it's in days,
 		 * said the doc. Ah well.
 		 */
@@ -105,7 +106,7 @@ private:
 			return;
 		}
 		else if (expires > 0)
-			expires += Anope::CurTime;
+			expires += Warden::CurTime;
 
 		if (sep.StreamEnd())
 		{
@@ -113,13 +114,13 @@ private:
 			return;
 		}
 
-		Anope::string reason;
-		if (mask.find('#') != Anope::string::npos)
+		Warden::string reason;
+		if (mask.find('#') != Warden::string::npos)
 		{
-			Anope::string remaining = sep.GetRemaining();
+			Warden::string remaining = sep.GetRemaining();
 
 			size_t co = remaining[0] == ':' ? 0 : remaining.rfind(" :");
-			if (co == Anope::string::npos)
+			if (co == Warden::string::npos)
 			{
 				this->OnSyntaxError(source, "ADD");
 				return;
@@ -137,7 +138,7 @@ private:
 
 		if (mask[0] == '/' && mask[mask.length() - 1] == '/')
 		{
-			const Anope::string &regexengine = Config->GetBlock("options").Get<const Anope::string>("regexengine");
+			const Warden::string &regexengine = Config->GetBlock("options").Get<const Warden::string>("regexengine");
 
 			if (regexengine.empty())
 			{
@@ -154,7 +155,7 @@ private:
 
 			try
 			{
-				Anope::string stripped_mask = mask.substr(1, mask.length() - 2);
+				Warden::string stripped_mask = mask.substr(1, mask.length() - 2);
 				delete provider->Compile(stripped_mask);
 			}
 			catch (const RegexException &ex)
@@ -171,12 +172,12 @@ private:
 		if (Config->GetModule("operserv").Get<bool>("addakiller", "yes") && !source.GetNick().empty())
 			reason = "[" + source.GetNick() + "] " + reason;
 
-		if (mask.find_first_not_of("/~@.*?") == Anope::string::npos)
+		if (mask.find_first_not_of("/~@.*?") == Warden::string::npos)
 		{
 			source.Reply(USERHOST_MASK_TOO_WIDE, mask.c_str());
 			return;
 		}
-		else if (mask.find('@') == Anope::string::npos)
+		else if (mask.find('@') == Warden::string::npos)
 		{
 			source.Reply(BAD_USERHOST_MASK);
 			return;
@@ -220,14 +221,14 @@ private:
 
 		source.Reply(_("\002%s\002 added to the AKILL list."), mask.c_str());
 
-		Log(LOG_ADMIN, source, this) << "on " << mask << " (" << x->reason << "), expires in " << (expires ? Anope::Duration(expires - Anope::CurTime) : "never") << " [affects " << affected << " user(s) (" << percent << "%)]";
-		if (Anope::ReadOnly)
+		Log(LOG_ADMIN, source, this) << "on " << mask << " (" << x->reason << "), expires in " << (expires ? Warden::Duration(expires - Warden::CurTime) : "never") << " [affects " << affected << " user(s) (" << percent << "%)]";
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 	}
 
-	void DoDel(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoDel(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &mask = params.size() > 1 ? params[1] : "";
+		const Warden::string &mask = params.size() > 1 ? params[1] : "";
 
 		if (mask.empty())
 		{
@@ -241,7 +242,7 @@ private:
 			return;
 		}
 
-		if (isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			AkillDelCallback list(source, mask, this);
 			list.Process();
@@ -268,15 +269,15 @@ private:
 
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 	}
 
-	void ProcessList(CommandSource &source, const std::vector<Anope::string> &params, ListFormatter &list)
+	void ProcessList(CommandSource &source, const std::vector<Warden::string> &params, ListFormatter &list)
 	{
-		const Anope::string &mask = params.size() > 1 ? params[1] : "";
+		const Warden::string &mask = params.size() > 1 ? params[1] : "";
 
-		if (!mask.empty() && isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (!mask.empty() && isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			class ListCallback final
 				: public NumberList
@@ -284,7 +285,7 @@ private:
 				CommandSource &source;
 				ListFormatter &list;
 			public:
-				ListCallback(CommandSource &_source, ListFormatter &_list, const Anope::string &numstr) : NumberList(numstr, false), source(_source), list(_list)
+				ListCallback(CommandSource &_source, ListFormatter &_list, const Warden::string &numstr) : NumberList(numstr, false), source(_source), list(_list)
 				{
 				}
 
@@ -299,11 +300,11 @@ private:
 						return;
 
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(number);
+					entry["Number"] = Warden::ToString(number);
 					entry["Mask"] = x->mask;
 					entry["Creator"] = x->by;
-					entry["Created"] = Anope::strftime(x->created, NULL, true);
-					entry["Expires"] = Anope::Expires(x->expires, source.nc);
+					entry["Created"] = Warden::strftime(x->created, NULL, true);
+					entry["Expires"] = Warden::Expires(x->expires, source.nc);
 					entry["ID"] = x->id;
 					entry["Reason"] = x->reason;
 					this->list.AddEntry(entry);
@@ -318,14 +319,14 @@ private:
 			{
 				const XLine *x = akills->GetEntry(i);
 
-				if (mask.empty() || mask.equals_ci(x->mask) || mask == x->id || Anope::Match(x->mask, mask, false, true))
+				if (mask.empty() || mask.equals_ci(x->mask) || mask == x->id || Warden::Match(x->mask, mask, false, true))
 				{
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(i + 1);
+					entry["Number"] = Warden::ToString(i + 1);
 					entry["Mask"] = x->mask;
 					entry["Creator"] = x->by;
-					entry["Created"] = Anope::strftime(x->created, NULL, true);
-					entry["Expires"] = Anope::Expires(x->expires, source.nc);
+					entry["Created"] = Warden::strftime(x->created, NULL, true);
+					entry["Expires"] = Warden::Expires(x->expires, source.nc);
 					entry["ID"] = x->id;
 					entry["Reason"] = x->reason;
 					list.AddEntry(entry);
@@ -343,7 +344,7 @@ private:
 		}
 	}
 
-	void DoList(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoList(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		if (akills->GetList().empty())
 		{
@@ -358,7 +359,7 @@ private:
 		this->ProcessList(source, params, list);
 	}
 
-	void DoView(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoView(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		if (akills->GetList().empty())
 		{
@@ -396,7 +397,7 @@ private:
 		Log(LOG_ADMIN, source, this) << "to CLEAR the list";
 		source.Reply(_("The AKILL list has been cleared."));
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 	}
 public:
@@ -410,9 +411,9 @@ public:
 		this->SetSyntax("CLEAR");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[0];
+		const Warden::string &cmd = params[0];
 
 		if (!akills)
 			return;
@@ -431,7 +432,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -459,7 +460,7 @@ public:
 			),
 			source.command.nobreak().c_str());
 
-		const Anope::string &regexengine = Config->GetBlock("options").Get<const Anope::string>("regexengine");
+		const Warden::string &regexengine = Config->GetBlock("options").Get<const Warden::string>("regexengine");
 		if (!regexengine.empty())
 		{
 			source.Reply(" ");
@@ -510,7 +511,7 @@ class OSAKill final
 	CommandOSAKill commandosakill;
 
 public:
-	OSAKill(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSAKill(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandosakill(this)
 	{
 

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,9 +26,9 @@ public:
 		this->AllowUnregistered(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &chan = params[0];
+		const Warden::string &chan = params[0];
 
 		NickCore *nc = source.nc;
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
@@ -56,19 +57,19 @@ public:
 		if (!ci->desc.empty())
 			info[_("Description")] = ci->desc;
 
-		info[_("Registered")] = Anope::strftime(ci->registered, source.GetAccount());
-		info[_("Last used")] = Anope::strftime(ci->last_used, source.GetAccount());
+		info[_("Registered")] = Warden::strftime(ci->registered, source.GetAccount());
+		info[_("Last used")] = Warden::strftime(ci->last_used, source.GetAccount());
 
 		if (show_all)
 		{
-			info[_("Ban type")] = Anope::ToString(ci->bantype);
+			info[_("Ban type")] = Warden::ToString(ci->bantype);
 		}
 
 		FOREACH_MOD(OnChanInfo, (source, ci, info, show_all));
 		info.SendTo(source);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -90,7 +91,7 @@ class CSInfo final
 	CommandCSInfo commandcsinfo;
 
 public:
-	CSInfo(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	CSInfo(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandcsinfo(this)
 	{
 

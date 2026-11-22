@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -31,25 +32,25 @@
 
 #define MODULE_VERSION_UNPACK(VERSION) \
 	std::tuple( \
-		(Anope::VersionComponent)((VERSION >> 32) & 0xFFFF), \
-		(Anope::VersionComponent)((VERSION >> 16) & 0xFFFF), \
-		(Anope::VersionComponent)(VERSION & 0x3FF) \
+		(Warden::VersionComponent)((VERSION >> 32) & 0xFFFF), \
+		(Warden::VersionComponent)((VERSION >> 16) & 0xFFFF), \
+		(Warden::VersionComponent)(VERSION & 0x3FF) \
 	)
 
 /** This definition is used as shorthand for the various classes
  * and functions needed to make a module loadable by the OS.
- * It defines the class factory and external AnopeInit and AnopeFini functions.
+ * It defines the class factory and external WardenInit and WardenFini functions.
  */
 #define MODULE_INIT(x) \
-	extern "C" DllExport Module *AnopeInit(const Anope::string &modname, const Anope::string &creator) \
+	extern "C" DllExport Module *WardenInit(const Warden::string &modname, const Warden::string &creator) \
 	{ \
 		return new x(modname, creator); \
 	} \
-	extern "C" DllExport void AnopeFini(x *m) \
+	extern "C" DllExport void WardenFini(x *m) \
 	{ \
 		delete m; \
 	} \
-	extern "C" DllExport ModuleVersion AnopeVersion() noexcept \
+	extern "C" DllExport ModuleVersion WardenVersion() noexcept \
 	{ \
 		return MODULE_VERSION_PACK(VERSION_MAJOR, VERSION_MINOR, VERSION_PATCH); \
 	}
@@ -157,7 +158,7 @@ enum
 	MT_BEGIN,
 	/* Module is 3rd party. All 3rd party modules should set this. Mutually exclusive to VENDOR. */
 	THIRD = 1 << 0,
-	/* A vendor module, which is made and shipped by Anope. Mutually exclusive to THIRD. */
+	/* A vendor module, which is made and shipped by Warden. Mutually exclusive to THIRD. */
 	VENDOR = 1 << 1,
 	/* Extra module not required for standard use. Probably requires external dependencies.
 	 * This module does something extreme enough that we want it to show in the default /os modlist command
@@ -186,7 +187,7 @@ public:
 	NotImplementedException() : CoreException("") { }
 };
 
-/** Every module in Anope is actually a class.
+/** Every module in Warden is actually a class.
  */
 class CoreExport Module
 	: public Extensible
@@ -196,7 +197,7 @@ private:
 public:
 	/** The module name (e.g. os_modload)
 	 */
-	Anope::string name;
+	Warden::string name;
 
 	/** What type this module is
 	 */
@@ -204,7 +205,7 @@ public:
 
 	/** The temporary path/filename
 	 */
-	Anope::string filename;
+	Warden::string filename;
 
 	/** Handle for this module, obtained from dlopen()
 	 */
@@ -216,18 +217,18 @@ public:
 
 	/** Version of this module
 	 */
-	Anope::string version;
+	Warden::string version;
 
 	/** Author of the module
 	 */
-	Anope::string author;
+	Warden::string author;
 
 	/** Creates and initialises a new module.
 	 * @param modname The module name
 	 * @param loadernick The nickname of the user loading the module.
 	 * @param type The module type
 	 */
-	Module(const Anope::string &modname, const Anope::string &loadernick, ModType type = THIRD);
+	Module(const Warden::string &modname, const Warden::string &loadernick, ModType type = THIRD);
 
 	/** Destroys a module, freeing resources it has allocated.
 	 */
@@ -250,12 +251,12 @@ public:
 	/** Set the modules version info.
 	 * @param version the version of the module
 	 */
-	void SetVersion(const Anope::string &version);
+	void SetVersion(const Warden::string &version);
 
 	/** Set the modules author info
 	 * @param author the author of the module
 	 */
-	void SetAuthor(const Anope::string &author);
+	void SetAuthor(const Warden::string &author);
 
 	virtual void Prioritize();
 
@@ -273,7 +274,7 @@ public:
 	 * @param memb The membership for the user who is being kicked
 	 * @param kickmsg The reason for the kick.
 	 */
-	virtual void OnPreUserKicked(const MessageSource &source, Membership *memb, const Anope::string &kickmsg) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
+	virtual void OnPreUserKicked(const MessageSource &source, Membership *memb, const Warden::string &kickmsg) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
 
 	/** Called when a user has been kicked from a channel.
 	 * @param source The kicker
@@ -282,7 +283,7 @@ public:
 	 * @param status The status the kicked user had on the channel before they were kicked
 	 * @param kickmsg The reason for the kick.
 	 */
-	virtual void OnUserKicked(const MessageSource &source, User *target, const Anope::string &channel, ChannelStatus &status, const Anope::string &kickmsg) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
+	virtual void OnUserKicked(const MessageSource &source, User *target, const Warden::string &channel, ChannelStatus &status, const Warden::string &kickmsg) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
 
 	/** Called when the configuration is being (re)loaded.
 	 * @param conf The config that is being built now and will replace the global Config object
@@ -324,20 +325,20 @@ public:
 	 * @param u The user.
 	 * @param oldnick The old nick of the user
 	 */
-	virtual void OnUserNickChange(User *u, const Anope::string &oldnick) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
+	virtual void OnUserNickChange(User *u, const Warden::string &oldnick) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
 
 	/** Called when someone uses the generic/help command
 	 * @param source Command source
 	 * @param params Params
 	 * @return EVENT_STOP to stop processing
 	 */
-	virtual EventReturn OnPreHelp(CommandSource &source, const std::vector<Anope::string> &params) { throw NotImplementedException(); }
+	virtual EventReturn OnPreHelp(CommandSource &source, const std::vector<Warden::string> &params) { throw NotImplementedException(); }
 
 	/** Called when someone uses the generic/help command
 	 * @param source Command source
 	 * @param params Params
 	 */
-	virtual void OnPostHelp(CommandSource &source, const std::vector<Anope::string> &params) { throw NotImplementedException(); }
+	virtual void OnPostHelp(CommandSource &source, const std::vector<Warden::string> &params) { throw NotImplementedException(); }
 
 	/** Called before a command is due to be executed.
 	 * @param source The source of the command
@@ -345,14 +346,14 @@ public:
 	 * @param params The parameters the user is sending
 	 * @return EVENT_CONTINUE to let other modules decide, EVENT_STOP to halt the command and not process it
 	 */
-	virtual EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Anope::string> &params) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
+	virtual EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Warden::string> &params) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
 
 	/** Called after a command has been executed.
 	 * @param source The source of the command
 	 * @param command The command the user executed
 	 * @param params The parameters the user sent
 	 */
-	virtual void OnPostCommand(CommandSource &source, Command *command, const std::vector<Anope::string> &params) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
+	virtual void OnPostCommand(CommandSource &source, Command *command, const std::vector<Warden::string> &params) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
 
 	/** Called when the databases are saved
 	 */
@@ -363,9 +364,9 @@ public:
 	 */
 	virtual EventReturn OnLoadDatabase() { throw NotImplementedException(); }
 
-	/** Called when anope needs to check passwords against encryption
+	/** Called when warden needs to check passwords against encryption
 	 */
-	virtual EventReturn OnEncrypt(const Anope::string &src, Anope::string &dest) { throw NotImplementedException(); }
+	virtual EventReturn OnEncrypt(const Warden::string &src, Warden::string &dest) { throw NotImplementedException(); }
 
 	/** Called on fantasy command
 	 * @param source The source of the command
@@ -374,7 +375,7 @@ public:
 	 * @param params The params
 	 * @return EVENT_STOP to halt processing and not run the command, EVENT_ALLOW to allow the command to be executed
 	 */
-	virtual EventReturn OnBotFantasy(CommandSource &source, Command *c, ChannelInfo *ci, const std::vector<Anope::string> &params) ATTR_NOT_NULL(3, 4) { throw NotImplementedException(); }
+	virtual EventReturn OnBotFantasy(CommandSource &source, Command *c, ChannelInfo *ci, const std::vector<Warden::string> &params) ATTR_NOT_NULL(3, 4) { throw NotImplementedException(); }
 
 	/** Called on fantasy command without access
 	 * @param source The source of the command
@@ -383,14 +384,14 @@ public:
 	 * @param params The params
 	 * @return EVENT_STOP to halt processing and not run the command, EVENT_ALLOW to allow the command to be executed
 	 */
-	virtual EventReturn OnBotNoFantasyAccess(CommandSource &source, Command *c, ChannelInfo *ci, const std::vector<Anope::string> &params) ATTR_NOT_NULL(3, 4) { throw NotImplementedException(); }
+	virtual EventReturn OnBotNoFantasyAccess(CommandSource &source, Command *c, ChannelInfo *ci, const std::vector<Warden::string> &params) ATTR_NOT_NULL(3, 4) { throw NotImplementedException(); }
 
 	/** Called when a bot places a ban
 	 * @param u User being banned
 	 * @param ci Channel the ban is placed on
 	 * @param mask The mask being banned
 	 */
-	virtual void OnBotBan(User *u, ChannelInfo *ci, const Anope::string &mask) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
+	virtual void OnBotBan(User *u, ChannelInfo *ci, const Warden::string &mask) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
 
 	/** Called before a badword is added to the badword list
 	 * @param ci The channel
@@ -416,7 +417,7 @@ public:
 	 * @param reason The reason
 	 * @return EVENT_CONTINUE to let other modules decide, EVENT_STOP to halt the command and not process it
 	 */
-	virtual EventReturn OnBotKick(BotInfo *bi, Channel *c, User *u, const Anope::string &reason) ATTR_NOT_NULL(2, 3, 4) { throw NotImplementedException(); }
+	virtual EventReturn OnBotKick(BotInfo *bi, Channel *c, User *u, const Warden::string &reason) ATTR_NOT_NULL(2, 3, 4) { throw NotImplementedException(); }
 
 	/** Called before a user parts a channel
 	 * @param u The user
@@ -430,7 +431,7 @@ public:
 	 * @param channel The channel name
 	 * @param msg The part reason
 	 */
-	virtual void OnPartChannel(User *u, Channel *c, const Anope::string &channel, const Anope::string &msg) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
+	virtual void OnPartChannel(User *u, Channel *c, const Warden::string &channel, const Warden::string &msg) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
 
 	/** Called when a user leaves a channel.
 	 * From either parting, being kicked, or quitting/killed!
@@ -454,7 +455,7 @@ public:
 	 * @param setter The user who set the new topic, if there is no source
 	 * @param topic The new topic
 	 */
-	virtual void OnTopicUpdated(User *source, Channel *c, const Anope::string &user, const Anope::string &topic) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
+	virtual void OnTopicUpdated(User *source, Channel *c, const Warden::string &user, const Warden::string &topic) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
 
 	/** Called before a channel expires
 	 * @param ci The channel
@@ -467,11 +468,11 @@ public:
 	 */
 	virtual void OnChanExpire(ChannelInfo *ci) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
 
-	/** Called before Anope connects to its uplink
+	/** Called before Warden connects to its uplink
 	 */
 	virtual void OnPreServerConnect() { throw NotImplementedException(); }
 
-	/** Called when Anope connects to its uplink
+	/** Called when Warden connects to its uplink
 	 */
 	virtual void OnServerConnect() { throw NotImplementedException(); }
 
@@ -479,7 +480,7 @@ public:
 	 */
 	virtual void OnPreUplinkSync(Server *serv) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
 
-	/** Called when Anope disconnects from its uplink, before it tries to reconnect
+	/** Called when Warden disconnects from its uplink, before it tries to reconnect
 	 */
 	virtual void OnServerDisconnect() { throw NotImplementedException(); }
 
@@ -549,7 +550,7 @@ public:
 	 * @param u The user
 	 * @param msg The quit message
 	 */
-	virtual void OnUserQuit(User *u, const Anope::string &msg) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
+	virtual void OnUserQuit(User *u, const Warden::string &msg) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
 
 	/** Called when a user is quit, before and after being internally removed from
 	 * This is different from OnUserQuit, which takes place at the time of the quit.
@@ -603,7 +604,7 @@ public:
 	 * @param priv The privilege changed
 	 * @param what The new level
 	 */
-	virtual void OnLevelChange(CommandSource &source, ChannelInfo *ci, const Anope::string &priv, int16_t what) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
+	virtual void OnLevelChange(CommandSource &source, ChannelInfo *ci, const Warden::string &priv, int16_t what) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
 
 	/** Called right before a channel is dropped
 	 * @param source The user dropping the channel
@@ -669,7 +670,7 @@ public:
 	 * @param reason The reason for the kick
 	 * @return EVENT_STOP to prevent the user from joining by kicking/banning the user
 	 */
-	virtual EventReturn OnCheckKick(User *u, Channel *c, Anope::string &mask, Anope::string &reason) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
+	virtual EventReturn OnCheckKick(User *u, Channel *c, Warden::string &mask, Warden::string &reason) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
 
 	/** Called when a user requests info for a channel
 	 * @param source The user requesting info
@@ -684,14 +685,14 @@ public:
 	 * @param priv The privilege being checked for
 	 * @return EVENT_ALLOW for yes, EVENT_STOP to stop all processing
 	 */
-	virtual EventReturn OnCheckPriv(const ChanAccess *access, const Anope::string &priv) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
+	virtual EventReturn OnCheckPriv(const ChanAccess *access, const Warden::string &priv) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
 
 	/** Check whether an access group has a privilege
 	 * @param group The group
 	 * @param priv The privilege
 	 * @return MOD_ALLOW to allow, MOD_STOP to stop
 	 */
-	virtual EventReturn OnGroupCheckPriv(const AccessGroup *group, const Anope::string &priv) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
+	virtual EventReturn OnGroupCheckPriv(const AccessGroup *group, const Warden::string &priv) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
 
 	/** Called when a nick is dropped
 	 * @param source The source of the command
@@ -725,7 +726,7 @@ public:
 	 * @param na The nick
 	 * @param pass The password of the newly registered nick
 	 */
-	virtual void OnNickRegister(User *user, NickAlias *na, const Anope::string &pass) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
+	virtual void OnNickRegister(User *user, NickAlias *na, const Warden::string &pass) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
 
 	/** Called when a nick is confirmed. This will never be called if registration confirmation is not enabled.
 	 * @param user The user confirming the nick
@@ -762,7 +763,7 @@ public:
 	 * @param nc pointer to the NickCore
 	 * @param newdisplay the new display
 	 */
-	virtual void OnChangeCoreDisplay(NickCore *nc, const Anope::string &newdisplay) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
+	virtual void OnChangeCoreDisplay(NickCore *nc, const Warden::string &newdisplay) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
 
 	/** called from NickCore::ClearCert()
 	 * @param nc pointer to the NickCore
@@ -813,7 +814,7 @@ public:
 	/** Called when a user becomes (un)away
 	 * @param message The message, is .empty() if unaway
 	 */
-	virtual void OnUserAway(User *u, const Anope::string &message) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
+	virtual void OnUserAway(User *u, const Warden::string &message) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
 
 	/** Called when a user invites one of our users to a channel
 	 * @param source The user doing the inviting
@@ -843,14 +844,14 @@ public:
 	 * @param mi Memo info for target
 	 * @param m The memo
 	 */
-	virtual void OnMemoSend(const Anope::string &source, const Anope::string &target, MemoInfo *mi, Memo *m) ATTR_NOT_NULL(4, 5) { throw NotImplementedException(); }
+	virtual void OnMemoSend(const Warden::string &source, const Warden::string &target, MemoInfo *mi, Memo *m) ATTR_NOT_NULL(4, 5) { throw NotImplementedException(); }
 
 	/** Called when a memo is deleted
 	 * @param target The target the memo is being deleted from (nick or channel)
 	 * @param mi The memo info
 	 * @param m The memo
 	 */
-	virtual void OnMemoDel(const Anope::string &target, MemoInfo *mi, const Memo *m) ATTR_NOT_NULL(3, 4) { throw NotImplementedException(); }
+	virtual void OnMemoDel(const Warden::string &target, MemoInfo *mi, const Memo *m) ATTR_NOT_NULL(3, 4) { throw NotImplementedException(); }
 
 	/** Called when a mode is set on a channel
 	 * @param c The channel
@@ -868,28 +869,28 @@ public:
 	 * @param param The mode param, if there is one
 	 * @return EVENT_STOP to make mlock/secureops etc checks not happen
 	 */
-	virtual EventReturn OnChannelModeUnset(Channel *c, MessageSource &setter, ChannelMode *mode, const Anope::string &param) ATTR_NOT_NULL(2, 4) { throw NotImplementedException(); }
+	virtual EventReturn OnChannelModeUnset(Channel *c, MessageSource &setter, ChannelMode *mode, const Warden::string &param) ATTR_NOT_NULL(2, 4) { throw NotImplementedException(); }
 
 	/** Called when a mode is set on a user
 	 * @param setter who/what is setting the mode
 	 * @param u The user
 	 * @param mname The mode name
 	 */
-	virtual void OnUserModeSet(const MessageSource &setter, User *u, const Anope::string &mname) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
+	virtual void OnUserModeSet(const MessageSource &setter, User *u, const Warden::string &mname) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
 
 	/** Called when a mode is unset from a user
 	 * @param setter who/what is setting the mode
 	 * @param u The user
 	 * @param mname The mode name
 	 */
-	virtual void OnUserModeUnset(const MessageSource &setter, User *u, const Anope::string &mname) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
+	virtual void OnUserModeUnset(const MessageSource &setter, User *u, const Warden::string &mname) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
 
-	/** Called when a channel mode is introduced into Anope
+	/** Called when a channel mode is introduced into Warden
 	 * @param cm The mode
 	 */
 	virtual void OnChannelModeAdd(ChannelMode *cm) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
 
-	/** Called when a user mode is introduced into Anope
+	/** Called when a user mode is introduced into Warden
 	 * @param um The mode
 	 */
 	virtual void OnUserModeAdd(UserMode *um) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
@@ -937,7 +938,7 @@ public:
 	 * @param tags Message tags
 	 * @return EVENT_STOP to halt processing
 	 */
-	virtual EventReturn OnBotPrivmsg(User *u, BotInfo *bi, Anope::string &message, const Anope::map<Anope::string> &tags) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
+	virtual EventReturn OnBotPrivmsg(User *u, BotInfo *bi, Warden::string &message, const Warden::map<Warden::string> &tags) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
 
 	/** Called when we receive a NOTICE for one of our clients
 	 * @param u The user sending the NOTICE
@@ -945,7 +946,7 @@ public:
 	 * @param tags Message tags
 	 * @param message The message
 	 */
-	virtual void OnBotNotice(User *u, BotInfo *bi, Anope::string &message, const Anope::map<Anope::string> &tags) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
+	virtual void OnBotNotice(User *u, BotInfo *bi, Warden::string &message, const Warden::map<Warden::string> &tags) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
 
 	/** Called when we receive a PRIVMSG for a registered channel we are in
 	 * @param u The source of the message
@@ -953,7 +954,7 @@ public:
 	 * @param msg The message
 	 * @param tags Message tags
 	 */
-	virtual void OnPrivmsg(User *u, Channel *c, Anope::string &msg, const Anope::map<Anope::string> &tags) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
+	virtual void OnPrivmsg(User *u, Channel *c, Warden::string &msg, const Warden::map<Warden::string> &tags) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
 
 	/** Called when a message is logged
 	 * @param l The log message
@@ -966,7 +967,7 @@ public:
 	 * @param l The log message
 	 * @param msg The final formatted message, derived from 'l'
 	 */
-	virtual void OnLogMessage(LogInfo *li, const Log *l, const Anope::string &msg) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
+	virtual void OnLogMessage(LogInfo *li, const Log *l, const Warden::string &msg) ATTR_NOT_NULL(2, 3) { throw NotImplementedException(); }
 
 	/** Called when a DNS request (question) is received.
 	 * @param req The dns request
@@ -1010,7 +1011,7 @@ public:
 	 * @param setting The setting passed to the command. Probably ON/OFF.
 	 * @return EVENT_ALLOW to bypass access checks, EVENT_STOP to halt immediately.
 	 */
-	virtual EventReturn OnSetChannelOption(CommandSource &source, Command *cmd, ChannelInfo *ci, const Anope::string &setting) ATTR_NOT_NULL(3, 4) { throw NotImplementedException(); }
+	virtual EventReturn OnSetChannelOption(CommandSource &source, Command *cmd, ChannelInfo *ci, const Warden::string &setting) ATTR_NOT_NULL(3, 4) { throw NotImplementedException(); }
 
 	/** Called when a nickserv/set command is used.
 	 * @param source The source of the command
@@ -1019,7 +1020,7 @@ public:
 	 * @param setting The setting passed to the command. Probably ON/OFF.
 	 * @return EVENT_STOP to halt immediately
 	 */
-	virtual EventReturn OnSetNickOption(CommandSource &source, Command *cmd, NickCore *nc, const Anope::string &setting) ATTR_NOT_NULL(3, 4) { throw NotImplementedException(); }
+	virtual EventReturn OnSetNickOption(CommandSource &source, Command *cmd, NickCore *nc, const Warden::string &setting) ATTR_NOT_NULL(3, 4) { throw NotImplementedException(); }
 
 	/** Called whenever a message is received from the uplink
 	 * @param source The source of the message
@@ -1028,7 +1029,7 @@ public:
 	 * @param tags Tags
 	 * @return EVENT_STOP to prevent the protocol module from processing this message
 	 */
-	virtual EventReturn OnMessage(MessageSource &source, Anope::string &command, std::vector<Anope::string> &params, Anope::map<Anope::string> &tagss) { throw NotImplementedException(); }
+	virtual EventReturn OnMessage(MessageSource &source, Warden::string &command, std::vector<Warden::string> &params, Warden::map<Warden::string> &tagss) { throw NotImplementedException(); }
 
 	/** Called to determine if a channel mode can be set by a user
 	 * @param u The user
@@ -1057,7 +1058,7 @@ public:
 	 * @param nc The account the password is being validated for, or nullptr if not registered yet.
 	 * @param pass The password which needs to be validated.
 	 */
-	virtual EventReturn OnPasswordValidate(CommandSource &source, NickCore *nc, const Anope::string &pass) { throw NotImplementedException(); }
+	virtual EventReturn OnPasswordValidate(CommandSource &source, NickCore *nc, const Warden::string &pass) { throw NotImplementedException(); }
 };
 
 enum Implementation
@@ -1208,7 +1209,7 @@ public:
 	 */
 	static std::vector<Module *> EventHandlers[I_SIZE];
 
-	/** List of all modules loaded in Anope
+	/** List of all modules loaded in Warden
 	 */
 	static std::list<Module *> Modules;
 
@@ -1223,7 +1224,7 @@ public:
 	 * @param u the user who loaded it, NULL for auto-load
 	 * @return MOD_ERR_OK on success, anything else on fail
 	 */
-	static ModuleReturn LoadModule(const Anope::string &modname, User *u);
+	static ModuleReturn LoadModule(const Warden::string &modname, User *u);
 
 	/** Unload the given module.
 	 * @param m the module to unload
@@ -1236,7 +1237,7 @@ public:
 	 * @param name The module name
 	 * @return The module
 	 */
-	static Module *FindModule(const Anope::string &name);
+	static Module *FindModule(const Warden::string &name);
 
 	/** Find the first module of a certain type
 	 * @param type The module type
@@ -1286,7 +1287,7 @@ private:
 	 */
 	static ModuleReturn DeleteModule(Module *m);
 
-	/** Get the version of Anope the module was compiled against
+	/** Get the version of Warden the module was compiled against
 	 * @return The version
 	 */
 	static ModuleVersion GetVersion(void *handle);

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,7 +20,7 @@
 class CommandCSClone final
 	: public Command
 {
-	static void CopySetting(ChannelInfo *ci, ChannelInfo *target_ci, const Anope::string &setting)
+	static void CopySetting(ChannelInfo *ci, ChannelInfo *target_ci, const Warden::string &setting)
 	{
 		if (ci->HasExt(setting))
 			target_ci->Extend<bool>(setting);
@@ -27,7 +28,7 @@ class CommandCSClone final
 
 	static void CopyAccess(CommandSource &source, ChannelInfo *ci, ChannelInfo *target_ci)
 	{
-		std::set<Anope::string> masks;
+		std::set<Warden::string> masks;
 		auto access_max = Config->GetModule("chanserv").Get<unsigned>("accessmax", "1000");
 		unsigned count = 0;
 
@@ -125,13 +126,13 @@ public:
 		this->SetSyntax(_("\037channel\037 \037target\037 [\037what\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &channel = params[0];
-		const Anope::string &target = params[1];
-		Anope::string what = params.size() > 2 ? params[2] : "";
+		const Warden::string &channel = params[0];
+		const Warden::string &target = params[1];
+		Warden::string what = params.size() > 2 ? params[2] : "";
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -179,7 +180,7 @@ public:
 			delete target_ci;
 			target_ci = new ChannelInfo(*ci);
 			target_ci->name = target;
-			target_ci->registered = Anope::CurTime;
+			target_ci->registered = Warden::CurTime;
 			(*RegisteredChannelList)[target_ci->name] = target_ci;
 			target_ci->c = Channel::Find(target_ci->name);
 
@@ -205,7 +206,7 @@ public:
 			else
 				target_ci->last_topic_setter = source.service->nick;
 
-			const Anope::string settings[] = { "NOAUTOOP", "CS_KEEP_MODES", "PEACE", "PERSIST", "RESTRICTED",
+			const Warden::string settings[] = { "NOAUTOOP", "CS_KEEP_MODES", "PEACE", "PERSIST", "RESTRICTED",
 				"SECUREFOUNDER", "SECUREOPS", "SIGNKICK", "SIGNKICK_LEVEL", "CS_NO_EXPIRE" };
 
 			for (const auto &setting : settings)
@@ -245,7 +246,7 @@ public:
 		Log(override ? LOG_OVERRIDE : LOG_COMMAND, source, this, ci) << "to clone " << (what.empty() ? "everything from it" : what) << " to " << target_ci->name;
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -265,7 +266,7 @@ class CSClone final
 	CommandCSClone commandcsclone;
 
 public:
-	CSClone(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR), commandcsclone(this)
+	CSClone(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR), commandcsclone(this)
 	{
 
 	}

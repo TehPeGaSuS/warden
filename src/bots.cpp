@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2008-2011 Robin Burchell <w00t@inspircd.org>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,7 +16,7 @@
 
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "bots.h"
 #include "servers.h"
 #include "protocol.h"
@@ -28,13 +29,13 @@
 
 Serialize::Checker<botinfo_map> BotListByNick(BOTINFO_TYPE), BotListByUID(BOTINFO_TYPE);
 
-BotInfo::BotInfo(const Anope::string &nnick, const Anope::string &nuser, const Anope::string &nhost, const Anope::string &nreal, const Anope::string &bmodes)
-	: User(nnick, nuser, nhost, "", "", Me, nreal, Anope::CurTime, "", {}, IRCD ? IRCD->UID_Retrieve() : "", NULL)
+BotInfo::BotInfo(const Warden::string &nnick, const Warden::string &nuser, const Warden::string &nhost, const Warden::string &nreal, const Warden::string &bmodes)
+	: User(nnick, nuser, nhost, "", "", Me, nreal, Warden::CurTime, "", {}, IRCD ? IRCD->UID_Retrieve() : "", NULL)
 	, Serializable(BOTINFO_TYPE)
 	, channels(CHANNELINFO_TYPE)
 	, botmodes(bmodes)
 {
-	this->lastmsg = this->created = Anope::CurTime;
+	this->lastmsg = this->created = Warden::CurTime;
 	this->introduced = false;
 	this->oper_only = this->conf = false;
 
@@ -44,32 +45,32 @@ BotInfo::BotInfo(const Anope::string &nnick, const Anope::string &nuser, const A
 
 	ctcps.emplace("CLIENTINFO", [this](auto *bi, auto *u, const auto &)
 	{
-		Anope::string buf;
+		Warden::string buf;
 		for (const auto &[ctcp, _] : this->ctcps)
 		{
 			if (!buf.empty())
 				buf.push_back(' ');
 			buf.append(ctcp.upper());
 		}
-		IRCD->SendNotice(bi, u->GetUID(), Anope::FormatCTCP("CLIENTINFO", buf));
+		IRCD->SendNotice(bi, u->GetUID(), Warden::FormatCTCP("CLIENTINFO", buf));
 	});
 	ctcps.emplace("PING", [](auto *bi, auto *u, const auto &ctcpbody)
 	{
-		IRCD->SendNotice(bi, u->GetUID(), Anope::FormatCTCP("PING", ctcpbody));
+		IRCD->SendNotice(bi, u->GetUID(), Warden::FormatCTCP("PING", ctcpbody));
 	});
 	ctcps.emplace("SOURCE", [](auto *bi, auto *u, const auto &)
 	{
-		IRCD->SendNotice(bi, u->GetUID(), Anope::FormatCTCP("SOURCE", "https://www.anope.org/"));
+		IRCD->SendNotice(bi, u->GetUID(), Warden::FormatCTCP("SOURCE", "https://github.com/TehPeGaSuS/warden"));
 	});
 	ctcps.emplace("TIME", [](auto *bi, auto *u, const auto &)
 	{
-		IRCD->SendNotice(bi, u->GetUID(), Anope::FormatCTCP("TIME", Anope::strftime(Anope::CurTime, nullptr, true)));
+		IRCD->SendNotice(bi, u->GetUID(), Warden::FormatCTCP("TIME", Warden::strftime(Warden::CurTime, nullptr, true)));
 	});
 	ctcps.emplace("VERSION", [](auto *bi, auto *u, const auto &)
 	{
 		auto *enc = ModuleManager::FindFirstOf(ENCRYPTION);
-		IRCD->SendNotice(bi, u->GetUID(), Anope::FormatCTCP("VERSION", Anope::Format("Anope-%s %s -- %s -- %s", Anope::Version().c_str(),
-			Anope::VersionBuildString().c_str(), IRCD->GetProtocolName().c_str(), enc ? enc->name.c_str() : "(none)")));
+		IRCD->SendNotice(bi, u->GetUID(), Warden::FormatCTCP("VERSION", Warden::Format("Warden-%s %s -- %s -- %s", Warden::Version().c_str(),
+			Warden::VersionBuildString().c_str(), IRCD->GetProtocolName().c_str(), enc ? enc->name.c_str() : "(none)")));
 	});
 
 	FOREACH_MOD(OnCreateBot, (this));
@@ -79,10 +80,10 @@ BotInfo::BotInfo(const Anope::string &nnick, const Anope::string &nuser, const A
 	{
 		spacesepstream modesep(this->botmodes.empty() ? IRCD->DefaultPseudoclientModes : "+" + this->botmodes);
 
-		Anope::string modechars;
+		Warden::string modechars;
 		modesep.GetToken(modechars);
 
-		std::vector<Anope::string> modeparams;
+		std::vector<Warden::string> modeparams;
 		modesep.GetTokens(modeparams);
 
 		if (!modechars.empty())
@@ -146,7 +147,7 @@ Serializable *BotInfo::Type::Unserialize(Serializable *obj, Serialize::Data &dat
 
 	BotInfo *bi;
 	if (obj)
-		bi = anope_dynamic_static_cast<BotInfo *>(obj);
+		bi = warden_dynamic_static_cast<BotInfo *>(obj);
 	else if (!(bi = BotInfo::Find(nick, true)))
 		bi = new BotInfo(nick, data.Load("user"), data.Load("host"), data.Load("realname"));
 
@@ -185,7 +186,7 @@ void BotInfo::OnKill()
 		IRCD->SendJoin(this, chan->chan, &chan->status);
 }
 
-void BotInfo::SetNewNick(const Anope::string &newnick)
+void BotInfo::SetNewNick(const Warden::string &newnick)
 {
 	UserListByNick.erase(this->nick);
 	BotListByNick->erase(this->nick);
@@ -253,13 +254,13 @@ void BotInfo::Join(Channel *c, ChannelStatus *status)
 	FOREACH_MOD(OnJoinChannel, (this, c));
 }
 
-void BotInfo::Join(const Anope::string &chname, ChannelStatus *status)
+void BotInfo::Join(const Warden::string &chname, ChannelStatus *status)
 {
 	bool c;
 	return this->Join(Channel::FindOrCreate(chname, c), status);
 }
 
-void BotInfo::Part(Channel *c, const Anope::string &reason)
+void BotInfo::Part(Channel *c, const Warden::string &reason)
 {
 	if (c->FindUser(this) == NULL)
 		return;
@@ -273,12 +274,12 @@ void BotInfo::Part(Channel *c, const Anope::string &reason)
 	FOREACH_MOD(OnPartChannel, (this, c, c->name, reason));
 }
 
-void BotInfo::OnMessage(User *u, const Anope::string &message, const Anope::map<Anope::string> &tags)
+void BotInfo::OnMessage(User *u, const Warden::string &message, const Warden::map<Warden::string> &tags)
 {
 	if (this->commands.empty())
 		return;
 
-	Anope::string msgid;
+	Warden::string msgid;
 	auto iter = tags.find("msgid");
 	if (iter != tags.end())
 		msgid = iter->second;
@@ -287,7 +288,7 @@ void BotInfo::OnMessage(User *u, const Anope::string &message, const Anope::map<
 	Command::Run(source, message);
 }
 
-CommandInfo &BotInfo::SetCommand(const Anope::string &cname, const Anope::string &sname, const Anope::string &permission)
+CommandInfo &BotInfo::SetCommand(const Warden::string &cname, const Warden::string &sname, const Warden::string &permission)
 {
 	CommandInfo ci;
 	ci.name = sname;
@@ -296,7 +297,7 @@ CommandInfo &BotInfo::SetCommand(const Anope::string &cname, const Anope::string
 	return this->commands[cname];
 }
 
-CommandInfo *BotInfo::GetCommand(const Anope::string &cname)
+CommandInfo *BotInfo::GetCommand(const Warden::string &cname)
 {
 	auto it = this->commands.find(cname);
 	if (it != this->commands.end())
@@ -304,9 +305,9 @@ CommandInfo *BotInfo::GetCommand(const Anope::string &cname)
 	return NULL;
 }
 
-Anope::string BotInfo::GetQueryCommand(const Anope::string &command, const Anope::string &extra) const
+Warden::string BotInfo::GetQueryCommand(const Warden::string &command, const Warden::string &extra) const
 {
-	Anope::string buf;
+	Warden::string buf;
 	if (Config->ServiceAlias && !this->alias.empty())
 		buf.append("/").append(this->alias);
 	else
@@ -314,7 +315,7 @@ Anope::string BotInfo::GetQueryCommand(const Anope::string &command, const Anope
 
 	if (!command.empty())
 	{
-		Anope::string actual_command;
+		Warden::string actual_command;
 		for (const auto &[c_name, info] : this->commands)
 		{
 			if (info.name != command)
@@ -336,7 +337,7 @@ Anope::string BotInfo::GetQueryCommand(const Anope::string &command, const Anope
 	return buf.nobreak();
 }
 
-BotInfo *BotInfo::Find(const Anope::string &nick, bool nick_only)
+BotInfo *BotInfo::Find(const Warden::string &nick, bool nick_only)
 {
 	if (!nick_only && IRCD != NULL && IRCD->RequiresID)
 	{

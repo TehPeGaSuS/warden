@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -26,11 +27,11 @@ struct ForLoop final
 	static std::vector<ForLoop> Stack;
 
 	size_t start;       /* Index of start of this loop */
-	std::vector<Anope::string> vars; /* User defined variables */
+	std::vector<Warden::string> vars; /* User defined variables */
 	typedef std::pair<TemplateFileServer::Replacements::iterator, TemplateFileServer::Replacements::iterator> range;
 	std::vector<range> ranges; /* iterator ranges for each variable */
 
-	ForLoop(size_t s, TemplateFileServer::Replacements &r, const std::vector<Anope::string> &v, const std::vector<Anope::string> &r_names) : start(s), vars(v)
+	ForLoop(size_t s, TemplateFileServer::Replacements &r, const std::vector<Warden::string> &v, const std::vector<Warden::string> &r_names) : start(s), vars(v)
 	{
 		for (const auto &r_name : r_names)
 			ranges.push_back(r.equal_range(r_name));
@@ -60,7 +61,7 @@ std::vector<ForLoop> ForLoop::Stack;
 
 std::stack<bool> IfStack;
 
-static Anope::string FindReplacement(const TemplateFileServer::Replacements &r, const Anope::string &key)
+static Warden::string FindReplacement(const TemplateFileServer::Replacements &r, const Warden::string &key)
 {
 	/* Search first through for loop stack then global replacements */
 	for (unsigned i = ForLoop::Stack.size(); i > 0; --i)
@@ -69,7 +70,7 @@ static Anope::string FindReplacement(const TemplateFileServer::Replacements &r, 
 
 		for (unsigned j = 0; j < fl.vars.size(); ++j)
 		{
-			const Anope::string &var_name = fl.vars[j];
+			const Warden::string &var_name = fl.vars[j];
 
 			if (key == var_name)
 			{
@@ -89,11 +90,11 @@ static Anope::string FindReplacement(const TemplateFileServer::Replacements &r, 
 	return "";
 }
 
-TemplateFileServer::TemplateFileServer(const Anope::string &f_n) : file_name(f_n)
+TemplateFileServer::TemplateFileServer(const Warden::string &f_n) : file_name(f_n)
 {
 }
 
-void TemplateFileServer::Serve(HTTP::Provider *server, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, Replacements &r)
+void TemplateFileServer::Serve(HTTP::Provider *server, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, Replacements &r)
 {
 	int fd = open((template_base + "/" + this->file_name).c_str(), O_RDONLY);
 	if (fd < 0)
@@ -104,7 +105,7 @@ void TemplateFileServer::Serve(HTTP::Provider *server, const Anope::string &page
 		return;
 	}
 
-	Anope::string buf;
+	Warden::string buf;
 
 	int i;
 	char buffer[1024];
@@ -116,7 +117,7 @@ void TemplateFileServer::Serve(HTTP::Provider *server, const Anope::string &page
 
 	close(fd);
 
-	Anope::string finished;
+	Warden::string finished;
 
 	bool escaped = false;
 	for (unsigned j = 0; j < buf.length(); ++j)
@@ -126,18 +127,18 @@ void TemplateFileServer::Serve(HTTP::Provider *server, const Anope::string &page
 		else if (buf[j] == '{' && !escaped)
 		{
 			size_t f = buf.substr(j).find('}');
-			if (f == Anope::string::npos)
+			if (f == Warden::string::npos)
 				break;
-			const Anope::string &content = buf.substr(j + 1, f - 1);
+			const Warden::string &content = buf.substr(j + 1, f - 1);
 
 			if (content.find("IF ") == 0)
 			{
-				std::vector<Anope::string> tokens;
+				std::vector<Warden::string> tokens;
 				spacesepstream(content).GetTokens(tokens);
 
 				if (tokens.size() == 4 && tokens[1] == "EQ")
 				{
-					Anope::string first = FindReplacement(r, tokens[2]), second = FindReplacement(r, tokens[3]);
+					Warden::string first = FindReplacement(r, tokens[2]), second = FindReplacement(r, tokens[3]);
 					if (first.empty())
 						first = tokens[2];
 					if (second.empty())
@@ -175,14 +176,14 @@ void TemplateFileServer::Serve(HTTP::Provider *server, const Anope::string &page
 			}
 			else if (content.find("FOR ") == 0)
 			{
-				std::vector<Anope::string> tokens;
+				std::vector<Warden::string> tokens;
 				spacesepstream(content).GetTokens(tokens);
 
 				if (tokens.size() != 4 || tokens[2] != "IN")
 					Log() << "Invalid FOR in web template " << this->file_name;
 				else
 				{
-					std::vector<Anope::string> temp_variables, real_variables;
+					std::vector<Warden::string> temp_variables, real_variables;
 					commasepstream(tokens[1]).GetTokens(temp_variables);
 					commasepstream(tokens[3]).GetTokens(real_variables);
 
@@ -216,7 +217,7 @@ void TemplateFileServer::Serve(HTTP::Provider *server, const Anope::string &page
 			}
 			else if (content.find("INCLUDE ") == 0)
 			{
-				std::vector<Anope::string> tokens;
+				std::vector<Warden::string> tokens;
 				spacesepstream(content).GetTokens(tokens);
 
 				if (tokens.size() != 2)
@@ -241,7 +242,7 @@ void TemplateFileServer::Serve(HTTP::Provider *server, const Anope::string &page
 
 				if (ifok && forok)
 				{
-					Anope::string replacement = FindReplacement(r, content.substr(0, f - 1));
+					Warden::string replacement = FindReplacement(r, content.substr(0, f - 1));
 
 					// htmlescape all text replaced onto the page
 					replacement = HTTP::Escape(replacement);

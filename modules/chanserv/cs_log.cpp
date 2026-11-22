@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -70,7 +71,7 @@ struct LogSettingTypeImpl final
 
 		LogSettingImpl *ls;
 		if (obj)
-			ls = anope_dynamic_static_cast<LogSettingImpl *>(obj);
+			ls = warden_dynamic_static_cast<LogSettingImpl *>(obj);
 		else
 		{
 			auto *lsettings = ci->Require<ChanServ::LogSettings>(CHANSERV_LOG_SETTING_EXT);
@@ -123,9 +124,9 @@ public:
 		this->SetSyntax(_("\037channel\037 \037command\037 \037method\037 [\037status\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &channel = params[0];
+		const Warden::string &channel = params[0];
 
 		ChannelInfo *ci = ChannelInfo::Find(channel);
 		if (ci == NULL)
@@ -148,7 +149,7 @@ public:
 					const auto *log = (*ls)->at(i);
 
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(i + 1);
+					entry["Number"] = Warden::ToString(i + 1);
 					entry["Service"] = log->command_service;
 					entry["Command"] = !log->command_name.empty() ? log->command_name.upper() : log->service_name;
 					entry["Method"] = log->method + (log->extra.empty() ? "" : " ") + log->extra;
@@ -161,29 +162,29 @@ public:
 		}
 		else if (params.size() > 2)
 		{
-			if (Anope::ReadOnly)
+			if (Warden::ReadOnly)
 			{
 				source.Reply(READ_ONLY_MODE);
 				return;
 			}
 
 			auto *ls = ci->Require<ChanServ::LogSettings>(CHANSERV_LOG_SETTING_EXT);
-			const Anope::string &command = params[1];
-			const Anope::string &method = params[2];
-			const Anope::string &extra = params.size() > 3 ? params[3] : "";
+			const Warden::string &command = params[1];
+			const Warden::string &method = params[2];
+			const Warden::string &extra = params.size() > 3 ? params[3] : "";
 
 			size_t sl = command.find('/');
-			if (sl == Anope::string::npos)
+			if (sl == Warden::string::npos)
 			{
 				source.Reply(_("%s is not a valid command."), command.c_str());
 				return;
 			}
 
-			Anope::string service = command.substr(0, sl),
+			Warden::string service = command.substr(0, sl),
 				command_name = command.substr(sl + 1);
 			BotInfo *bi = BotInfo::Find(service, true);
 
-			Anope::string service_name;
+			Warden::string service_name;
 
 			/* Allow either a command name or a service name. */
 			if (bi && bi->commands.count(command_name))
@@ -251,7 +252,7 @@ public:
 			log->command_name = command_name;
 			log->method = method;
 			log->extra = extra;
-			log->created = Anope::CurTime;
+			log->created = Warden::CurTime;
 			log->creator = source.GetNick();
 
 			(*ls)->push_back(log);
@@ -264,7 +265,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -287,16 +288,16 @@ public:
 			source.command.nobreak().c_str());
 
 		ExampleWrapper examples;
-		examples.AddEntry("#anope chanserv/access MESSAGE @", _(
+		examples.AddEntry("#warden chanserv/access MESSAGE @", _(
 			"Sends a message to channel operators and above when someone uses the chanserv/access "
-			"command on #anope."
+			"command on #warden."
 		));
-		examples.AddEntry("#anope chanserv/flags NOTICE +", _(
+		examples.AddEntry("#warden chanserv/flags NOTICE +", _(
 			"Sends a notice to channel voices and above when someone uses the chanserv/flags "
-			"command on #anope."
+			"command on #warden."
 		));
-		examples.AddEntry("#anope chanserv/xop MEMO", _(
-			"Sends a memo to the channel when someone uses the chanserv/xop command on #anope."
+		examples.AddEntry("#warden chanserv/xop MEMO", _(
+			"Sends a memo to the channel when someone uses the chanserv/xop command on #warden."
 		));
 		examples.SendTo(source);
 
@@ -313,13 +314,13 @@ class CSLog final
 
 	struct LogDefault final
 	{
-		Anope::string service, command, method;
+		Warden::string service, command, method;
 	};
 
 	std::vector<LogDefault> defaults;
 
 public:
-	CSLog(const Anope::string &modname, const Anope::string &creator)
+	CSLog(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandcslog(this)
 		, logsettings(this, CHANSERV_LOG_SETTING_EXT)
@@ -335,9 +336,9 @@ public:
 		{
 			LogDefault ld;
 
-			ld.service = def.Get<const Anope::string>("service");
-			ld.command = def.Get<const Anope::string>("command");
-			ld.method = def.Get<const Anope::string>("method");
+			ld.service = def.Get<const Warden::string>("service");
+			ld.command = def.Get<const Warden::string>("command");
+			ld.method = def.Get<const Warden::string>("method");
 
 			defaults.push_back(ld);
 		}
@@ -367,7 +368,7 @@ public:
 			sep.GetToken(log->method);
 			log->extra = sep.GetRemaining();
 
-			log->created = Anope::CurTime;
+			log->created = Warden::CurTime;
 			log->creator = ci->GetFounder() ? ci->GetFounder()->display : "(default)";
 
 			(*ls)->push_back(log);
@@ -399,7 +400,7 @@ public:
 						continue;
 				}
 
-				Anope::string buffer = l->u->nick + " used " + l->source->command.upper() + " " + l->buf.str();
+				Warden::string buffer = l->u->nick + " used " + l->source->command.upper() + " " + l->buf.str();
 
 				if (log->method.equals_ci("MEMO") && MemoServ::service && l->ci->WhoSends() != NULL)
 					MemoServ::service->Send(l->ci->WhoSends()->nick, l->ci->name, buffer, true);
@@ -408,7 +409,7 @@ public:
 				else if (log->method.equals_ci("MESSAGE") && l->ci->c)
 				{
 					IRCD->SendPrivmsg(l->ci->WhoSends(), log->extra + l->ci->c->name, buffer);
-					l->ci->WhoSends()->lastmsg = Anope::CurTime;
+					l->ci->WhoSends()->lastmsg = Warden::CurTime;
 				}
 				else if (log->method.equals_ci("NOTICE") && l->ci->c)
 					IRCD->SendNotice(l->ci->WhoSends(), log->extra + l->ci->c->name, buffer);

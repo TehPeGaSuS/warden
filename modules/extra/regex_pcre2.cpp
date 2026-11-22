@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -33,7 +34,7 @@ class PCRERegex final
 	pcre2_code *regex;
 
 public:
-	PCRERegex(const Anope::string &expr) : Regex(expr)
+	PCRERegex(const Warden::string &expr) : Regex(expr)
 	{
 		int errcode;
 		PCRE2_SIZE erroffset;
@@ -43,7 +44,7 @@ public:
 		{
 			PCRE2_UCHAR error[128];
 			pcre2_get_error_message(errcode, error, sizeof error);
-			throw RegexException("Error in regex " + expr + " at offset " + Anope::ToString(erroffset) + ": " + reinterpret_cast<const char*>(error));
+			throw RegexException("Error in regex " + expr + " at offset " + Warden::ToString(erroffset) + ": " + reinterpret_cast<const char*>(error));
 		}
 	}
 
@@ -52,7 +53,7 @@ public:
 		pcre2_code_free(this->regex);
 	}
 
-	bool Matches(const Anope::string &str)
+	bool Matches(const Warden::string &str)
 	{
 		pcre2_match_data *unused = pcre2_match_data_create_from_pattern(this->regex, NULL);
 		int result = pcre2_match(regex, reinterpret_cast<PCRE2_SPTR8>(str.c_str()), str.length(), 0, 0, unused, NULL);
@@ -67,7 +68,7 @@ class PCRERegexProvider final
 public:
 	PCRERegexProvider(Module *creator) : RegexProvider(creator, "regex/pcre") { }
 
-	Regex *Compile(const Anope::string &expression) override
+	Regex *Compile(const Warden::string &expression) override
 	{
 		return new PCRERegex(expression);
 	}
@@ -79,7 +80,7 @@ class ModuleRegexPCRE final
 	PCRERegexProvider pcre_regex_provider;
 
 public:
-	ModuleRegexPCRE(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, EXTRA | VENDOR),
+	ModuleRegexPCRE(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, EXTRA | VENDOR),
 		pcre_regex_provider(this)
 	{
 		this->SetPermanent(true);

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,15 +20,15 @@ class CommandCSSetKeepTopic final
 	: public Command
 {
 public:
-	CommandCSSetKeepTopic(Module *creator, const Anope::string &cname = "chanserv/set/keeptopic") : Command(creator, cname, 2, 2)
+	CommandCSSetKeepTopic(Module *creator, const Warden::string &cname = "chanserv/set/keeptopic") : Command(creator, cname, 2, 2)
 	{
 		this->SetDesc(_("Retain topic when channel is not in use"));
 		this->SetSyntax(_("\037channel\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -67,7 +68,7 @@ public:
 			this->OnSyntaxError(source, "KEEPTOPIC");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -89,9 +90,9 @@ class CommandCSTopic final
 {
 	ExtensibleRef<bool> topiclock;
 
-	void Lock(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void Lock(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -106,9 +107,9 @@ class CommandCSTopic final
 		source.Reply(_("Topic lock option for %s is now \002on\002."), ci->name.c_str());
 	}
 
-	void Unlock(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void Unlock(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -123,11 +124,11 @@ class CommandCSTopic final
 		source.Reply(_("Topic lock option for %s is now \002off\002."), ci->name.c_str());
 	}
 
-	void Set(CommandSource &source, ChannelInfo *ci, const Anope::string &topic)
+	void Set(CommandSource &source, ChannelInfo *ci, const Warden::string &topic)
 	{
 		bool has_topiclock = topiclock->HasExt(ci);
 		topiclock->Unset(ci);
-		ci->c->ChangeTopic(source.GetNick(), topic, Anope::CurTime);
+		ci->c->ChangeTopic(source.GetNick(), topic, Warden::CurTime);
 		if (has_topiclock)
 			topiclock->Set(ci);
 
@@ -135,11 +136,11 @@ class CommandCSTopic final
 		Log(override ? LOG_OVERRIDE : LOG_COMMAND, source, this, ci) << (!topic.empty() ? "to change the topic to: " : "to unset the topic") << (!topic.empty() ? topic : "");
 	}
 
-	void Combine(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params, bool append)
+	void Combine(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params, bool append)
 	{
-		const Anope::string &topic = params[2];
+		const Warden::string &topic = params[2];
 
-		Anope::string new_topic;
+		Warden::string new_topic;
 		if (!ci->c->topic.empty())
 		{
 			if (append)
@@ -166,9 +167,9 @@ public:
 		this->SetSyntax(_("\037channel\037 [UNLOCK|LOCK]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &subcmd = params[1];
+		const Warden::string &subcmd = params[1];
 
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
 		if (ci == NULL)
@@ -187,7 +188,7 @@ public:
 			this->Combine(source, ci, params, false);
 		else
 		{
-			Anope::string topic;
+			Warden::string topic;
 			if (subcmd.equals_ci("SET"))
 			{
 				topic = params.size() > 2 ? params[2] : "";
@@ -202,7 +203,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -229,7 +230,7 @@ class CSTopic final
 	SerializableExtensibleItem<bool> topiclock, keeptopic;
 
 public:
-	CSTopic(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	CSTopic(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandcstopic(this), commandcssetkeeptopic(this), topiclock(this, "TOPICLOCK"), keeptopic(this, "KEEPTOPIC")
 	{
 
@@ -242,12 +243,12 @@ public:
 			/* Update channel topic */
 			if ((topiclock.HasExt(c->ci) || keeptopic.HasExt(c->ci)) && c->ci->last_topic != c->topic)
 			{
-				c->ChangeTopic(!c->ci->last_topic_setter.empty() ? c->ci->last_topic_setter : c->ci->WhoSends()->nick, c->ci->last_topic, c->ci->last_topic_time ? c->ci->last_topic_time : Anope::CurTime);
+				c->ChangeTopic(!c->ci->last_topic_setter.empty() ? c->ci->last_topic_setter : c->ci->WhoSends()->nick, c->ci->last_topic, c->ci->last_topic_time ? c->ci->last_topic_time : Warden::CurTime);
 			}
 		}
 	}
 
-	void OnTopicUpdated(User *source, Channel *c, const Anope::string &user, const Anope::string &topic) override
+	void OnTopicUpdated(User *source, Channel *c, const Warden::string &user, const Warden::string &topic) override
 	{
 		if (!c->ci)
 			return;

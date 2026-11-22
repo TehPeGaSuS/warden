@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,7 +15,7 @@
 
 #include "module.h"
 
-static Anope::string UplinkSID;
+static Warden::string UplinkSID;
 
 static ServiceReference<IRCDProto> hybrid("IRCDProto", "hybrid");
 
@@ -47,20 +48,20 @@ public:
 		MaxModes = 4;
 	}
 
-	void SendSVSKill(const MessageSource &source, User *targ, const Anope::string &reason) override { hybrid->SendSVSKill(source, targ, reason); }
-	void SendGlobalNotice(BotInfo *bi, const Server *dest, const Anope::string &msg) override { hybrid->SendGlobalNotice(bi, dest, msg); }
-	void SendGlobalPrivmsg(BotInfo *bi, const Server *dest, const Anope::string &msg) override { hybrid->SendGlobalPrivmsg(bi, dest, msg); }
+	void SendSVSKill(const MessageSource &source, User *targ, const Warden::string &reason) override { hybrid->SendSVSKill(source, targ, reason); }
+	void SendGlobalNotice(BotInfo *bi, const Server *dest, const Warden::string &msg) override { hybrid->SendGlobalNotice(bi, dest, msg); }
+	void SendGlobalPrivmsg(BotInfo *bi, const Server *dest, const Warden::string &msg) override { hybrid->SendGlobalPrivmsg(bi, dest, msg); }
 	void SendSGLine(User *u, const XLine *x) override { hybrid->SendSGLine(u, x); }
 	void SendSGLineDel(const XLine *x) override { hybrid->SendSGLineDel(x); }
 	void SendAkill(User *u, XLine *x) override { hybrid->SendAkill(u, x); }
 	void SendAkillDel(const XLine *x) override { hybrid->SendAkillDel(x); }
 	void SendJoin(User *user, Channel *c, const ChannelStatus *status) override { hybrid->SendJoin(user, c, status); }
 	void SendServer(const Server *server) override { hybrid->SendServer(server); }
-	void SendModeInternal(const MessageSource &source, User *u, const Anope::string &modes, const std::vector<Anope::string> &values) override { hybrid->SendModeInternal(source, u, modes, values); }
+	void SendModeInternal(const MessageSource &source, User *u, const Warden::string &modes, const std::vector<Warden::string> &values) override { hybrid->SendModeInternal(source, u, modes, values); }
 	void SendChannel(Channel *c) override { hybrid->SendChannel(c); }
-	bool IsIdentValid(const Anope::string &ident) override { return hybrid->IsIdentValid(ident); }
+	bool IsIdentValid(const Warden::string &ident) override { return hybrid->IsIdentValid(ident); }
 
-	void SendGlobops(const MessageSource &source, const Anope::string &buf) override
+	void SendGlobops(const MessageSource &source, const Warden::string &buf) override
 	{
 		Uplink::Send(source, "OPERWALL", buf);
 	}
@@ -68,7 +69,7 @@ public:
 	void SendSQLine(User *, const XLine *x) override
 	{
 		// Calculate the time left before this would expire
-		time_t timeleft = x->expires ? x->expires - Anope::CurTime : x->expires;
+		time_t timeleft = x->expires ? x->expires - Warden::CurTime : x->expires;
 		Uplink::Send(FindIntroduced(), "ENCAP", '*', "RESV", timeleft, x->mask, 0, x->GetReason());
 	}
 
@@ -79,7 +80,7 @@ public:
 
 	void SendConnect() override
 	{
-		Uplink::Send("PASS", Config->Uplinks[Anope::CurrentUplink].password, "TS", 6, Me->GetSID());
+		Uplink::Send("PASS", Config->Uplinks[Warden::CurrentUplink].password, "TS", 6, Me->GetSID());
 
 		/*
 		  QS     - Can handle quit storm removal
@@ -104,7 +105,7 @@ public:
 		 *	  parv[3] = server is standalone or connected to non-TS only
 		 *	  parv[4] = server's idea of UTC time
 		 */
-		Uplink::Send("SVINFO", 6, 3, 0, Anope::CurTime);
+		Uplink::Send("SVINFO", 6, 3, 0, Warden::CurTime);
 	}
 
 	void SendClientIntroduction(User *u) override
@@ -151,7 +152,7 @@ struct IRCDMessageEncap final
 	IRCDMessageEncap(Module *creator) : IRCDMessage(creator, "ENCAP", 3) { SetFlag(FLAG_REQUIRE_USER); }
 
 	// Debug: Received: :00BAAAAAB ENCAP * LOGIN Adam
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		if (params[1] == "LOGIN" || params[1] == "SU")
 		{
@@ -197,7 +198,7 @@ struct IRCDMessageJoin final
 {
 	IRCDMessageJoin(Module *creator) : Message::Join(creator, "JOIN") { }
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		if (params.size() == 1 && params[0] == "0")
 			return Message::Join::Run(source, params, tags);
@@ -205,7 +206,7 @@ struct IRCDMessageJoin final
 		if (params.size() < 2)
 			return;
 
-		std::vector<Anope::string> p = params;
+		std::vector<Warden::string> p = params;
 		p.erase(p.begin());
 
 		return Message::Join::Run(source, p, tags);
@@ -217,7 +218,7 @@ struct IRCDMessagePass final
 {
 	IRCDMessagePass(Module *creator) : IRCDMessage(creator, "PASS", 4) { SetFlag(FLAG_REQUIRE_SERVER); }
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		UplinkSID = params[3];
 	}
@@ -229,7 +230,7 @@ struct IRCDMessageServer final
 	IRCDMessageServer(Module *creator) : IRCDMessage(creator, "SERVER", 3) { SetFlag(FLAG_REQUIRE_SERVER); }
 
 	// SERVER hades.arpa 1 :ircd-ratbox test server
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		// Servers other then our immediate uplink are introduced via SID
 		if (params[1] != "1")
@@ -250,7 +251,7 @@ struct IRCDMessageTBurst final
 	 * params[2] = topic OR who set the topic
 	 * params[3] = topic if params[2] isn't the topic
 	 */
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		auto topic_time = IRCD->ExtractTimestamp(params[1]);
 		Channel *c = Channel::Find(params[0]);
@@ -258,7 +259,7 @@ struct IRCDMessageTBurst final
 		if (!c)
 			return;
 
-		const Anope::string &setter = params.size() == 4 ? params[2] : "",
+		const Warden::string &setter = params.size() == 4 ? params[2] : "",
 			topic = params.size() == 4 ? params[3] : params[2];
 
 		c->ChangeTopicInternal(NULL, setter, topic, topic_time);
@@ -271,7 +272,7 @@ struct IRCDMessageUID final
 	IRCDMessageUID(Module *creator) : IRCDMessage(creator, "UID", 9) { SetFlag(FLAG_REQUIRE_SERVER); }
 
 	// :42X UID Adam 1 1348535644 +aow Adam 192.168.0.5 192.168.0.5 42XAAAAAB :Adam
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		/* Source is always the server */
 		User::OnIntroduce(params[0], params[4], params[5], "", params[6], source.GetServer(), params[8], IRCD->ExtractTimestamp(params[2]), params[3], params[7], NULL);
@@ -368,7 +369,7 @@ class ProtoRatbox final
 	}
 
 public:
-	ProtoRatbox(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, PROTOCOL | VENDOR),
+	ProtoRatbox(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, PROTOCOL | VENDOR),
 		ircd_proto(this),
 		message_away(this), message_capab(this), message_error(this), message_invite(this), message_kick(this),
 		message_kill(this), message_mode(this), message_motd(this), message_notice(this), message_part(this),

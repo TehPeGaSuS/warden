@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -20,36 +21,36 @@ namespace
 	unsigned maxemails = 0;
 
 	/* strip dots from username, and remove anything after the first + */
-	Anope::string CleanMail(const Anope::string &email)
+	Warden::string CleanMail(const Warden::string &email)
 	{
 		size_t host = email.find('@');
-		if (host == Anope::string::npos)
+		if (host == Warden::string::npos)
 			return email;
 
-		Anope::string username = email.substr(0, host);
+		Warden::string username = email.substr(0, host);
 		username = username.replace_all_cs(".", "");
 
 		size_t sz = username.find('+');
-		if (sz != Anope::string::npos)
+		if (sz != Warden::string::npos)
 			username = username.substr(0, sz);
 
-		Anope::string cleaned = username + email.substr(host);
+		Warden::string cleaned = username + email.substr(host);
 		Log(LOG_DEBUG) << "cleaned " << email << " to " << cleaned;
 		return cleaned;
 	}
 
-	unsigned CountEmail(const Anope::string &email, NickCore *unc)
+	unsigned CountEmail(const Warden::string &email, NickCore *unc)
 	{
 		unsigned count = 0;
 
 		if (email.empty())
 			return 0;
 
-		Anope::string cleanemail = clean ? CleanMail(email) : email;
+		Warden::string cleanemail = clean ? CleanMail(email) : email;
 
 		for (const auto &[_, nc] : *NickCoreList)
 		{
-			Anope::string cleannc = clean ? CleanMail(nc->email) : nc->email;
+			Warden::string cleannc = clean ? CleanMail(nc->email) : nc->email;
 
 			if (unc != nc && cleanemail.equals_ci(cleannc))
 				++count;
@@ -58,7 +59,7 @@ namespace
 		return count;
 	}
 
-	bool CheckLimitReached(CommandSource &source, const Anope::string &email, bool ignoreself)
+	bool CheckLimitReached(CommandSource &source, const Warden::string &email, bool ignoreself)
 	{
 		if (!maxemails || email.empty())
 			return false;
@@ -78,9 +79,9 @@ namespace
 
 struct EmailChange final
 {
-	Anope::string code;
-	Anope::string email;
-	time_t requested = Anope::CurTime;
+	Warden::string code;
+	Warden::string email;
+	time_t requested = Warden::CurTime;
 };
 
 class CommandNSConfirmEmail final
@@ -99,11 +100,11 @@ public:
 		this->SetSyntax(_("@\037nickname\037"), [](auto &source) { return source.HasPriv("nickserv/confirm/email"); });
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		auto has_priv = source.HasPriv("nickserv/confirm/email");
 
-		Anope::string code;
+		Warden::string code;
 		NickAlias *na;
 		if (params[0][0] == '@')
 		{
@@ -151,7 +152,7 @@ public:
 				return;
 			}
 
-			if (nse->requested < Anope::CurTime - GetExpiry(owner))
+			if (nse->requested < Warden::CurTime - GetExpiry(owner))
 			{
 				ns_set_email.Unset(nc);
 				source.Reply(_("The email address change request for %s has expired."),
@@ -177,7 +178,7 @@ public:
 			na->nick.c_str(), old_email.c_str(), nc->email.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 
 		this->SendSyntax(source);
@@ -186,7 +187,7 @@ public:
 				"Confirms an change of email address. You have %s after requesting an email "
 				"address change to do this before your request expires."
 			),
-			Anope::Duration(GetExpiry(owner), source.GetAccount()).c_str());
+			Warden::Duration(GetExpiry(owner), source.GetAccount()).c_str());
 
 		if (source.HasPriv("nickserv/confirm/email"))
 		{
@@ -212,16 +213,16 @@ public:
 		this->SetSyntax(_("\037email\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &email = params[0];
+		const Warden::string &email = params[0];
 		int j = 0;
 
 		Log(LOG_ADMIN, source, this) << "on " << email;
 
 		for (const auto &[_, nc] : *NickCoreList)
 		{
-			if (!nc->email.empty() && Anope::Match(nc->email, email))
+			if (!nc->email.empty() && Warden::Match(nc->email, email))
 			{
 				++j;
 				source.Reply(_("Email matched: \002%s\002 (\002%s\002) to \002%s\002."), nc->display.c_str(), nc->email.c_str(), email.c_str());
@@ -235,7 +236,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -249,22 +250,22 @@ static Mail::Template confirmemail("email_change");
 class CommandNSSetEmail
 	: public Command
 {
-	static bool SendConfirmMail(User *u, NickCore *nc, BotInfo *bi, const Anope::string &new_email, Module *owner)
+	static bool SendConfirmMail(User *u, NickCore *nc, BotInfo *bi, const Warden::string &new_email, Module *owner)
 	{
 		auto *nse = nc->Extend<EmailChange>("ns_set_email");
-		nse->code = Anope::Random(Config->GetBlock("options").Get<size_t>("codelength", "15"));
+		nse->code = Warden::Random(Config->GetBlock("options").Get<size_t>("codelength", "15"));
 		nse->email = new_email;
 
-		Anope::map<Anope::string> vars = {
+		Warden::map<Warden::string> vars = {
 			{ "old_email", nc->email                                                               },
 			{ "new_email", new_email                                                               },
 			{ "account",   nc->display                                                             },
-			{ "network",   Config->GetBlock("networkinfo").Get<const Anope::string>("networkname") },
+			{ "network",   Config->GetBlock("networkinfo").Get<const Warden::string>("networkname") },
 			{ "code",      nse->code                                                               },
-			{ "expiry",    Anope::Duration(GetExpiry(owner), nc)                                   },
+			{ "expiry",    Warden::Duration(GetExpiry(owner), nc)                                   },
 		};
 
-		Anope::string old = nc->email;
+		Warden::string old = nc->email;
 		nc->email = new_email;
 		auto b = confirmemail.Send(u, nc, bi, vars);
 		nc->email = old;
@@ -272,15 +273,15 @@ class CommandNSSetEmail
 	}
 
 public:
-	CommandNSSetEmail(Module *creator, const Anope::string &cname = "nickserv/set/email", size_t min = 0) : Command(creator, cname, min, min + 1)
+	CommandNSSetEmail(Module *creator, const Warden::string &cname = "nickserv/set/email", size_t min = 0) : Command(creator, cname, min, min + 1)
 	{
 		this->SetDesc(_("Associate an email address with your nickname"));
 		this->SetSyntax(_("\037address\037"));
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -323,7 +324,7 @@ public:
 		if (MOD_RESULT == EVENT_STOP)
 			return;
 
-		const auto nsmailreg = Config->GetModule("ns_register").Get<const Anope::string>("registration").equals_ci("mail");
+		const auto nsmailreg = Config->GetModule("ns_register").Get<const Warden::string>("registration").equals_ci("mail");
 		if (!param.empty() && Config->GetModule("nickserv").Get<bool>("confirmemailchanges", nsmailreg ? "yes" : "no") && source.GetAccount() == nc)
 		{
 			if (SendConfirmMail(source.GetUser(), source.GetAccount(), source.service, param, owner))
@@ -349,12 +350,12 @@ public:
 		}
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params.size() ? params[0] : "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -377,12 +378,12 @@ public:
 		this->SetSyntax(_("\037nickname\037 \037address\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params.size() > 1 ? params[1] : "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -404,7 +405,7 @@ private:
 	PrimitiveExtensibleItem<EmailChange> ns_set_email;
 
 public:
-	NSEmail(const Anope::string &modname, const Anope::string &creator)
+	NSEmail(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnsconfirmemail(this, ns_set_email)
 		, commandnsgetemail(this)
@@ -422,7 +423,7 @@ public:
 		confirmemail.Reload(conf);
 	}
 
-	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Anope::string> &params) override
+	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Warden::string> &params) override
 	{
 		if (!source.IsOper() && command->name == "nickserv/register")
 		{

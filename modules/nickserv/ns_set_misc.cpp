@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,22 +20,22 @@ static Module *me;
 
 struct CommandData final
 {
-	Anope::string saset_description;
-	Anope::string set_description;
-	Anope::string pattern;
-	Anope::string syntax;
-	Anope::string title;
+	Warden::string saset_description;
+	Warden::string set_description;
+	Warden::string pattern;
+	Warden::string syntax;
+	Warden::string title;
 	time_t priority = 0;
 	bool swhois = false;
 };
 
-static Anope::map<CommandData> command_data;
+static Warden::map<CommandData> command_data;
 
 struct NSMiscData;
-static Anope::map<ExtensibleItem<NSMiscData> *> items;
+static Warden::map<ExtensibleItem<NSMiscData> *> items;
 static std::vector<std::pair<time_t, ExtensibleItem<NSMiscData> *>> items_by_priority;
 
-static ExtensibleItem<NSMiscData> *GetItem(const Anope::string &name)
+static ExtensibleItem<NSMiscData> *GetItem(const Warden::string &name)
 {
 	ExtensibleItem<NSMiscData> *&it = items[name];
 	if (!it)
@@ -52,7 +53,7 @@ struct NSMiscData final
 {
 	NSMiscData(Extensible *) : Serializable("NSMiscData") { }
 
-	NSMiscData(NickCore *ncore, const Anope::string &n, const Anope::string &d) : Serializable("NSMiscData")
+	NSMiscData(NickCore *ncore, const Warden::string &n, const Warden::string &d) : Serializable("NSMiscData")
 	{
 		object = ncore->display;
 		name = n;
@@ -88,7 +89,7 @@ struct NSMiscDataType final
 		NSMiscData *d = NULL;
 		if (obj)
 		{
-			d = anope_dynamic_static_cast<NSMiscData *>(obj);
+			d = warden_dynamic_static_cast<NSMiscData *>(obj);
 			d->object = nc->display;
 			d->name = sname;
 			d->data =  sdata;
@@ -104,10 +105,10 @@ struct NSMiscDataType final
 	}
 };
 
-static Anope::string GetAttribute(const Anope::string &command)
+static Warden::string GetAttribute(const Warden::string &command)
 {
 	size_t sp = command.rfind(' ');
-	if (sp != Anope::string::npos)
+	if (sp != Warden::string::npos)
 		return NICKSERV_SET_MISC_PREFIX + command.substr(sp + 1);
 	return NICKSERV_SET_MISC_PREFIX + command;
 }
@@ -120,7 +121,7 @@ static const char* GetTitle(ExtensibleItem<NSMiscData> *ext)
 	return it->second.title.c_str();
 }
 
-static void CheckSWhois(User* u, const Anope::string &name, ExtensibleItem<NSMiscData> *ext)
+static void CheckSWhois(User* u, const Warden::string &name, ExtensibleItem<NSMiscData> *ext)
 {
 	auto it = command_data.find(name);
 	if (it == command_data.end() || !it->second.swhois)
@@ -131,7 +132,7 @@ static void CheckSWhois(User* u, const Anope::string &name, ExtensibleItem<NSMis
 	auto *nc = u->Account();
 	auto *data = nc ? ext->Get(nc) : nullptr;
 	if (data)
-		IRCD->SendSWhois(nickserv, u, name, it->second.priority, Anope::Format("%s: %s", GetTitle(ext), data->data.c_str()));
+		IRCD->SendSWhois(nickserv, u, name, it->second.priority, Warden::Format("%s: %s", GetTitle(ext), data->data.c_str()));
 	else
 		IRCD->SendSWhoisDel(nickserv, u, name, "");
 }
@@ -143,13 +144,13 @@ protected:
 	bool saset = false;
 
 private:
-	bool CheckSyntax(CommandSource &source, ExtensibleItem<NSMiscData> *ext, const Anope::string &value) const
+	bool CheckSyntax(CommandSource &source, ExtensibleItem<NSMiscData> *ext, const Warden::string &value) const
 	{
 		auto it = command_data.find(ext->name);
 		if (it == command_data.end() || it->second.pattern.empty())
 			return true; // No syntax validation.
 
-		ServiceReference<RegexProvider> regex("Regex", Config->GetBlock("options").Get<const Anope::string>("regexengine"));
+		ServiceReference<RegexProvider> regex("Regex", Config->GetBlock("options").Get<const Warden::string>("regexengine"));
 		if (!regex)
 			return true; // No regex engine.
 
@@ -168,14 +169,14 @@ private:
 	}
 
 public:
-	CommandNSSetMisc(Module *creator, const Anope::string &cname = "nickserv/set/misc", size_t min = 0) : Command(creator, cname, min, min + 1)
+	CommandNSSetMisc(Module *creator, const Warden::string &cname = "nickserv/set/misc", size_t min = 0) : Command(creator, cname, min, min + 1)
 	{
 		this->SetSyntax(_("[\037parameter\037]"));
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -221,7 +222,7 @@ public:
 			CheckSWhois(u, key, item);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, !params.empty() ? params[0] : "");
 	}
@@ -240,7 +241,7 @@ public:
 		Command::OnServHelp(source, help);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		auto it = command_data.find(GetAttribute(source.command));
 		if (it == command_data.end())
@@ -264,7 +265,7 @@ public:
 			value = it->second.syntax.c_str();
 
 		this->ClearSyntax();
-		this->SetSyntax(Anope::Format("[\037%s\037]", source.Translate(value)));
+		this->SetSyntax(Warden::Format("[\037%s\037]", source.Translate(value)));
 
 		Command::SendSyntax(source);
 	}
@@ -279,7 +280,7 @@ public:
 		this->saset = true;
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params.size() > 1 ? params[1] : "");
 	}
@@ -292,7 +293,7 @@ public:
 			value = it->second.syntax.c_str();
 
 		this->ClearSyntax();
-		this->SetSyntax(Anope::Format(
+		this->SetSyntax(Warden::Format(
 			source.Translate(_("\037nickname\037 [\037%s\037]")),
 			source.Translate(value)
 		));
@@ -309,7 +310,7 @@ class NSSetMisc final
 	NSMiscDataType nsmiscdata_type;
 
 public:
-	NSSetMisc(const Anope::string &modname, const Anope::string &creator)
+	NSSetMisc(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnssetmisc(this)
 		, commandnssasetmisc(this)
@@ -331,12 +332,12 @@ public:
 		time_t default_priority = 0;
 		for (const auto &[_,  block] : conf.GetBlocks("command"))
 		{
-			const Anope::string &cmd = block.Get<const Anope::string>("command");
+			const Warden::string &cmd = block.Get<const Warden::string>("command");
 			if (cmd != "nickserv/set/misc" && cmd != "nickserv/saset/misc")
 				continue;
 
-			Anope::string cname = block.Get<const Anope::string>("name");
-			Anope::string desc = block.Get<const Anope::string>("misc_description");
+			Warden::string cname = block.Get<const Warden::string>("name");
+			Warden::string desc = block.Get<const Warden::string>("misc_description");
 			if (cname.empty() || desc.empty())
 				continue;
 
@@ -354,9 +355,9 @@ public:
 			default_priority += 1000;
 
 			data.set_description = desc;
-			data.pattern = block.Get<const Anope::string>("misc_pattern");
-			data.syntax = block.Get<const Anope::string>("misc_syntax");
-			data.title = block.Get<const Anope::string>("misc_title");
+			data.pattern = block.Get<const Warden::string>("misc_pattern");
+			data.syntax = block.Get<const Warden::string>("misc_syntax");
+			data.title = block.Get<const Warden::string>("misc_title");
 			data.priority = block.Get<time_t>("misc_priority", "0");
 			if (data.priority <= 0)
 			{

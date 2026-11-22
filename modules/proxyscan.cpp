@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,14 +17,14 @@
 
 struct ProxyCheck final
 {
-	std::set<Anope::string, ci::less> types;
+	std::set<Warden::string, ci::less> types;
 	std::vector<unsigned short> ports;
 	time_t duration;
-	Anope::string reason;
+	Warden::string reason;
 };
 
-static Anope::string ProxyCheckString;
-static Anope::string target_ip;
+static Warden::string ProxyCheckString;
+static Warden::string target_ip;
 static unsigned short target_port;
 static bool add_to_akill;
 
@@ -51,7 +52,7 @@ class ProxyCallbackListener final
 	};
 
 public:
-	ProxyCallbackListener(const Anope::string &b, int p) : Socket(-1, b.find(':') == Anope::string::npos ? AF_INET : AF_INET6), ListenSocket(b, p, false)
+	ProxyCallbackListener(const Warden::string &b, int p) : Socket(-1, b.find(':') == Warden::string::npos ? AF_INET : AF_INET6), ListenSocket(b, p, false)
 	{
 	}
 
@@ -74,7 +75,7 @@ public:
 	time_t created;
 
 	ProxyConnect(ProxyCheck &p, unsigned short po) : Socket(-1), ConnectionSocket(), proxy(p),
-		port(po), created(Anope::CurTime)
+		port(po), created(Warden::CurTime)
 	{
 		proxies.insert(this);
 	}
@@ -90,15 +91,15 @@ public:
 protected:
 	void Ban()
 	{
-		auto reason = Anope::Template(this->proxy.reason, {
+		auto reason = Warden::Template(this->proxy.reason, {
 			{ "ip",    this->conaddr.addr()                  },
-			{ "port",  Anope::ToString(this->conaddr.port()) },
+			{ "port",  Warden::ToString(this->conaddr.port()) },
 			{ "type",  this->GetType()                       },
 		});
 
 		BotInfo *OperServ = Config->GetClient("OperServ");
 		Log(OperServ) << "PROXYSCAN: Open " << this->GetType() << " proxy found on " << this->conaddr.str() << " (" << reason << ")";
-		auto *x = new XLine("*@" + this->conaddr.addr(), OperServ ? OperServ->nick : "", Anope::CurTime + this->proxy.duration, reason, XLineManager::GenerateUID());
+		auto *x = new XLine("*@" + this->conaddr.addr(), OperServ ? OperServ->nick : "", Warden::CurTime + this->proxy.duration, reason, XLineManager::GenerateUID());
 		if (add_to_akill && akills)
 		{
 			akills->AddXLine(x);
@@ -206,9 +207,9 @@ public:
 class ModuleProxyScan final
 	: public Module
 {
-	Anope::string listen_ip;
+	Warden::string listen_ip;
 	unsigned short listen_port;
-	Anope::string con_notice, con_source;
+	Warden::string con_notice, con_source;
 	std::vector<ProxyCheck> proxyscans;
 
 	ProxyCallbackListener *listener;
@@ -229,7 +230,7 @@ class ModuleProxyScan final
 				ProxyConnect *p = *it;
 				++it;
 
-				if (p->created + this->GetSecs() < Anope::CurTime)
+				if (p->created + this->GetSecs() < Warden::CurTime)
 					delete p;
 			}
 			return true;
@@ -237,7 +238,7 @@ class ModuleProxyScan final
 	} connectionTimeout;
 
 public:
-	ModuleProxyScan(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, EXTRA | VENDOR),
+	ModuleProxyScan(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, EXTRA | VENDOR),
 		connectionTimeout(this, 5)
 	{
 
@@ -271,7 +272,7 @@ public:
 	{
 		const auto &config = Config->GetModule(this);
 
-		Anope::string s_target_ip = config.Get<const Anope::string>("target_ip");
+		Warden::string s_target_ip = config.Get<const Warden::string>("target_ip");
 		if (s_target_ip.empty())
 			throw ConfigException(this->name + " target_ip may not be empty");
 
@@ -279,7 +280,7 @@ public:
 		if (s_target_port <= 0)
 			throw ConfigException(this->name + " target_port may not be empty and must be a positive number");
 
-		Anope::string s_listen_ip = config.Get<const Anope::string>("listen_ip");
+		Warden::string s_listen_ip = config.Get<const Warden::string>("listen_ip");
 		if (s_listen_ip.empty())
 			throw ConfigException(this->name + " listen_ip may not be empty");
 
@@ -291,12 +292,12 @@ public:
 		target_port = s_target_port;
 		this->listen_ip = s_listen_ip;
 		this->listen_port = s_listen_port;
-		this->con_notice = config.Get<const Anope::string>("connect_notice");
-		this->con_source = config.Get<const Anope::string>("connect_source");
+		this->con_notice = config.Get<const Warden::string>("connect_notice");
+		this->con_source = config.Get<const Warden::string>("connect_source");
 		add_to_akill = config.Get<bool>("add_to_akill", "true");
 		this->connectionTimeout.SetSecs(config.Get<time_t>("timeout", "5s"));
 
-		ProxyCheckString = Config->GetBlock("networkinfo").Get<const Anope::string>("networkname") + " proxy check";
+		ProxyCheckString = Config->GetBlock("networkinfo").Get<const Warden::string>("networkname") + " proxy check";
 		delete this->listener;
 		this->listener = NULL;
 		try
@@ -313,9 +314,9 @@ public:
 		for (const auto &[_, block] : config.GetBlocks("proxyscan"))
 		{
 			ProxyCheck p;
-			Anope::string token;
+			Warden::string token;
 
-			commasepstream sep(block.Get<const Anope::string>("type"));
+			commasepstream sep(block.Get<const Warden::string>("type"));
 			while (sep.GetToken(token))
 			{
 				if (!token.equals_ci("HTTP") && !token.equals_ci("SOCKS5"))
@@ -325,17 +326,17 @@ public:
 			if (p.types.empty())
 				continue;
 
-			commasepstream sep2(block.Get<const Anope::string>("port"));
+			commasepstream sep2(block.Get<const Warden::string>("port"));
 			while (sep2.GetToken(token))
 			{
-				if (auto port = Anope::TryConvert<unsigned short>(token))
+				if (auto port = Warden::TryConvert<unsigned short>(token))
 					p.ports.push_back(port.value());
 			}
 			if (p.ports.empty())
 				continue;
 
 			p.duration = block.Get<time_t>("time", "4h");
-			p.reason = block.Get<const Anope::string>("reason");
+			p.reason = block.Get<const Warden::string>("reason");
 			if (p.reason.empty())
 				continue;
 

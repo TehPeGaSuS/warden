@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,15 +15,15 @@
 
 #include "../../webcpanel.h"
 
-WebCPanel::NickServ::Info::Info(const Anope::string &cat, const Anope::string &u) : WebPanelProtectedPage(cat, u)
+WebCPanel::NickServ::Info::Info(const Warden::string &cat, const Warden::string &u) : WebPanelProtectedPage(cat, u)
 {
 }
 
-bool WebCPanel::NickServ::Info::OnRequest(HTTP::Provider *server, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
+bool WebCPanel::NickServ::Info::OnRequest(HTTP::Provider *server, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
 {
 	if (!message.post_data.empty())
 	{
-		const Anope::string email = WebPanel::GetRequestData(message.post_data, "email");
+		const Warden::string email = WebPanel::GetRequestData(message.post_data, "email");
 		if (!email.empty())
 		{
 			if (email != na->nc->email)
@@ -36,15 +37,15 @@ bool WebCPanel::NickServ::Info::OnRequest(HTTP::Provider *server, const Anope::s
 				}
 			}
 		}
-		const Anope::string post_greet = WebPanel::GetRequestData(message.post_data, "greet");
+		const Warden::string post_greet = WebPanel::GetRequestData(message.post_data, "greet");
 		if (!post_greet.empty())
 		{
-			Anope::string *greet = na->nc->GetExt<Anope::string>("greet");
+			Warden::string *greet = na->nc->GetExt<Warden::string>("greet");
 
 			if (post_greet.empty())
-				na->nc->Shrink<Anope::string>("greet");
+				na->nc->Shrink<Warden::string>("greet");
 			else if (!greet || post_greet != *greet)
-				na->nc->Extend<Anope::string>("greet", post_greet);
+				na->nc->Extend<Warden::string>("greet", post_greet);
 
 			replacements["MESSAGES"] = "Greet updated";
 		}
@@ -84,12 +85,12 @@ bool WebCPanel::NickServ::Info::OnRequest(HTTP::Provider *server, const Anope::s
 			auto &block = Config->GetModule("nickserv");
 			auto minprotect = block.Get<time_t>("minprotect", "10s");
 			auto maxprotect = block.Get<time_t>("maxprotect", "10m");
-			auto secs = Anope::TryConvert<time_t>(protectafter);
+			auto secs = Warden::TryConvert<time_t>(protectafter);
 			if (!secs)
 				replacements["ERRORS"] = "Protection delay must be a number of seconds";
 			else if (*secs < minprotect || *secs > maxprotect)
 			{
-				replacements["ERRORS"] = Anope::Format("Protection delay must be between %ld and %ld seconds.",
+				replacements["ERRORS"] = Warden::Format("Protection delay must be between %ld and %ld seconds.",
 					minprotect, maxprotect);
 			}
 			else if (!na->nc->HasExt("PROTECT_AFTER") || *secs != *na->nc->GetExt<time_t>("PROTECT_AFTER"))
@@ -129,10 +130,10 @@ bool WebCPanel::NickServ::Info::OnRequest(HTTP::Provider *server, const Anope::s
 	replacements["DISPLAY"] = na->nc->display;
 	if (!na->nc->email.empty())
 		replacements["EMAIL"] = na->nc->email;
-	replacements["REGISTERED"] = Anope::strftime(na->nc->registered, na->nc);
+	replacements["REGISTERED"] = Warden::strftime(na->nc->registered, na->nc);
 	if (na->HasVHost())
 		replacements["VHOST"] = na->GetVHostMask();
-	auto *greet = na->nc->GetExt<Anope::string>("greet");
+	auto *greet = na->nc->GetExt<Warden::string>("greet");
 	if (greet)
 		replacements["GREET"] = *greet;
 	if (na->nc->HasExt("AUTOOP"))
@@ -144,7 +145,7 @@ bool WebCPanel::NickServ::Info::OnRequest(HTTP::Provider *server, const Anope::s
 		replacements["PROTECT"];
 		auto *protectafter = na->nc->GetExt<time_t>("PROTECT_AFTER");
 		if (protectafter)
-			replacements["PROTECT_AFTER"] = Anope::ToString(*protectafter);
+			replacements["PROTECT_AFTER"] = Warden::ToString(*protectafter);
 	}
 	if (na->nc->HasExt("NS_KEEP_MODES"))
 		replacements["KEEPMODES"];

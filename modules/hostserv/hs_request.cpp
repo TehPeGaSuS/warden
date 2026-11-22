@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,12 +20,12 @@
 
 static ServiceReference<DNS::Manager> dnsmanager("DNS::Manager", "dns/manager");
 
-static void req_send_memos(Module *me, CommandSource &source, const Anope::string &vident, const Anope::string &vhost);
+static void req_send_memos(Module *me, CommandSource &source, const Warden::string &vident, const Warden::string &vhost);
 
 namespace
 {
 	// The name of the DNS record used for validation.
-	Anope::string validation_record;
+	Warden::string validation_record;
 }
 
 struct SharedData final
@@ -42,7 +43,7 @@ struct SharedData final
 	SerializableExtensibleItem<time_t> requestcooldown;
 
 	// The name of the DNS record used for validation.
-	Anope::string validationrecord;
+	Warden::string validationrecord;
 
 	SharedData(Module *mod)
 		: requestcooldown(mod, "HS_REQUEST_COOLDOWN")
@@ -64,16 +65,16 @@ struct HostRequestImpl final
 		return na ? na->GetExt<HostRequestImpl>(HOSTSERV_HOST_REQUEST_EXT) : nullptr;
 	}
 
-	Anope::string Mask() const
+	Warden::string Mask() const
 	{
 		if (ident.empty())
 			return host;
 		return ident + "@" + host;
 	}
 
-	Anope::string GetValidationRecord() const
+	Warden::string GetValidationRecord() const
 	{
-		return Anope::Format("%s=%s", validation_record.c_str(), this->validation_token.c_str());
+		return Warden::Format("%s=%s", validation_record.c_str(), this->validation_token.c_str());
 	}
 };
 
@@ -104,7 +105,7 @@ struct HostRequestTypeImpl final
 
 		HostRequestImpl *req;
 		if (obj)
-			req = anope_dynamic_static_cast<HostRequestImpl *>(obj);
+			req = warden_dynamic_static_cast<HostRequestImpl *>(obj);
 		else
 			req = na->Extend<HostRequestImpl>(HOSTSERV_HOST_REQUEST_EXT);
 		if (req)
@@ -150,7 +151,7 @@ public:
 		, source(src)
 		, data(sd)
 	{
-		hr->last_validation = Anope::CurTime;
+		hr->last_validation = Warden::CurTime;
 		Log(LOG_DEBUG) << "Checking " << hr->host << " for " << hr->validation_token;
 	}
 
@@ -197,7 +198,7 @@ public:
 			source.Reply(_("VHost for %s has been validated using DNS."), na->nick.c_str());
 			Log(LOG_COMMAND, source, command) << "for " << na->nick << " for vhost " << hr->Mask();
 
-			data.requestcooldown.Set(na, Anope::CurTime + data.activationcooldown);
+			data.requestcooldown.Set(na, Warden::CurTime + data.activationcooldown);
 			na->Shrink<HostRequestImpl>(HOSTSERV_HOST_REQUEST_EXT);
 
 			return; // We're done.
@@ -222,9 +223,9 @@ public:
 		this->SetSyntax(_("vhost"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -244,12 +245,12 @@ public:
 			return;
 		}
 
-		Anope::string rawhostmask = params[0];
+		Warden::string rawhostmask = params[0];
 
-		Anope::string user, host;
+		Warden::string user, host;
 		size_t a = rawhostmask.find('@');
 
-		if (a == Anope::string::npos)
+		if (a == Warden::string::npos)
 			host = rawhostmask;
 		else
 		{
@@ -310,10 +311,10 @@ public:
 				waituntil = std::max(waituntil, u->lastmemosend + send_delay);
 		}
 
-		if (waituntil && waituntil > Anope::CurTime)
+		if (waituntil && waituntil > Warden::CurTime)
 		{
-			const auto waitperiod = waituntil - Anope::CurTime;
-			source.Reply(_("Please wait %s before requesting a new vhost."), Anope::Duration(waitperiod, source.GetAccount()).c_str());
+			const auto waitperiod = waituntil - Warden::CurTime;
+			source.Reply(_("Please wait %s before requesting a new vhost."), Warden::Duration(waitperiod, source.GetAccount()).c_str());
 			return;
 		}
 
@@ -321,12 +322,12 @@ public:
 		req.nick = source.GetNick();
 		req.ident = user;
 		req.host = host;
-		req.time = Anope::CurTime;
-		req.validation_token = Anope::Random(Config->GetBlock("options").Get<size_t>("codelength", "15"));
+		req.time = Warden::CurTime;
+		req.validation_token = Warden::Random(Config->GetBlock("options").Get<size_t>("codelength", "15"));
 		na->Extend<HostRequestImpl>(HOSTSERV_HOST_REQUEST_EXT, req);
 
 		BotInfo *bi;
-		Anope::string cmd;
+		Warden::string cmd;
 		if (dnsmanager && Command::FindFromService("hostserv/validate", bi, cmd))
 		{
 			source.Reply(_(
@@ -348,7 +349,7 @@ public:
 		Log(LOG_COMMAND, source, this) << "to request new vhost " << (!user.empty() ? user + "@" : "") << host;
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -376,15 +377,15 @@ public:
 		this->SetSyntax(_("\037nick\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
 		}
 
-		const Anope::string &nick = params[0];
+		const Warden::string &nick = params[0];
 
 		NickAlias *na = NickAlias::Find(nick);
 		auto *req = HostRequestImpl::Get(na);
@@ -399,14 +400,14 @@ public:
 			source.Reply(_("VHost for %s has been activated."), na->nick.c_str());
 			Log(LOG_COMMAND, source, this) << "for " << na->nick << " for vhost " << (!req->ident.empty() ? req->ident + "@" : "") << req->host;
 
-			data.requestcooldown.Set(na, Anope::CurTime + data.activationcooldown);
+			data.requestcooldown.Set(na, Warden::CurTime + data.activationcooldown);
 			na->Shrink<HostRequestImpl>(HOSTSERV_HOST_REQUEST_EXT);
 		}
 		else
 			source.Reply(_("No request for nick %s found."), nick.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -433,29 +434,29 @@ public:
 		this->SetSyntax(_("\037nick\037 [\037reason\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
 		}
 
-		const Anope::string &nick = params[0];
-		const Anope::string &reason = params.size() > 1 ? params[1] : "";
+		const Warden::string &nick = params[0];
+		const Warden::string &reason = params.size() > 1 ? params[1] : "";
 
 		NickAlias *na = NickAlias::Find(nick);
 		auto *req = HostRequestImpl::Get(na);
 		if (req)
 		{
-			data.requestcooldown.Set(na, Anope::CurTime + data.rejectioncooldown);
+			data.requestcooldown.Set(na, Warden::CurTime + data.rejectioncooldown);
 			na->Shrink<HostRequestImpl>(HOSTSERV_HOST_REQUEST_EXT);
 
 			if (Config->GetModule(this->owner).Get<bool>("memouser") && MemoServ::service)
 			{
-				Anope::string message;
+				Warden::string message;
 				if (!reason.empty())
-					message = Anope::Format(_("Your requested vhost has been rejected. Reason: %s"), reason.c_str());
+					message = Warden::Format(_("Your requested vhost has been rejected. Reason: %s"), reason.c_str());
 				else
 					message = _("Your requested vhost has been rejected.");
 
@@ -469,7 +470,7 @@ public:
 			source.Reply(_("No request for nick %s found."), nick.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -490,7 +491,7 @@ public:
 		this->SetDesc(_("Retrieve the vhost requests"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		unsigned counter = 0;
 		unsigned display_counter = 0, listmax = Config->GetModule(this->owner).Get<unsigned>("listmax");
@@ -510,13 +511,13 @@ public:
 				++display_counter;
 
 				ListFormatter::ListEntry entry;
-				entry["Number"] = Anope::ToString(display_counter);
+				entry["Number"] = Warden::ToString(display_counter);
 				entry["Nick"] = nick;
 				if (!hr->ident.empty())
 					entry["VHost"] = hr->ident + "@" + hr->host;
 				else
 					entry["VHost"] = hr->host;
-				entry["Created"] = Anope::strftime(hr->time, NULL, true);
+				entry["Created"] = Warden::strftime(hr->time, NULL, true);
 				list.AddEntry(entry);
 			}
 			++counter;
@@ -526,7 +527,7 @@ public:
 		source.Reply(_("Displayed \002%d\002 records (\002%d\002 total)."), display_counter, counter);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -550,9 +551,9 @@ public:
 		this->SetDesc(_("Validate a previously requested vhost using DNS"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -573,10 +574,10 @@ public:
 		}
 
 		auto next_validation = req->last_validation + data.validationcooldown;
-		if (req->last_validation && next_validation > Anope::CurTime)
+		if (req->last_validation && next_validation > Warden::CurTime)
 		{
 			source.Reply(_("You must wait for %s before trying DNS validation again."),
-				Anope::Duration(next_validation - Anope::CurTime).c_str());
+				Warden::Duration(next_validation - Warden::CurTime).c_str());
 			return;
 		}
 
@@ -597,7 +598,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -624,7 +625,7 @@ private:
 	HostRequestTypeImpl request_type;
 
 public:
-	HSRequest(const Anope::string &modname, const Anope::string &creator)
+	HSRequest(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, data(this)
 		, commandhsrequest(this, data)
@@ -644,13 +645,13 @@ public:
 		data.activationcooldown = block.Get<time_t>("activationcooldown", "24h");
 		data.rejectioncooldown = block.Get<time_t>("rejectioncooldown", "24h");
 		data.validationcooldown = block.Get<time_t>("validationcooldown", "5m");
-		validation_record = block.Get<const Anope::string>("validationrecord", "anope-dns-validation");
+		validation_record = block.Get<const Warden::string>("validationrecord", "warden-dns-validation");
 	}
 };
 
-static void req_send_memos(Module *me, CommandSource &source, const Anope::string &vident, const Anope::string &vhost)
+static void req_send_memos(Module *me, CommandSource &source, const Warden::string &vident, const Warden::string &vhost)
 {
-	Anope::string host;
+	Warden::string host;
 	if (!vident.empty())
 		host = vident + "@" + vhost;
 	else
@@ -664,7 +665,7 @@ static void req_send_memos(Module *me, CommandSource &source, const Anope::strin
 			if (!na)
 				continue;
 
-			Anope::string message = Anope::Format(_("VHost \002%s\002 has been requested by %s."), host.c_str(), source.GetNick().c_str());
+			Warden::string message = Warden::Format(_("VHost \002%s\002 has been requested by %s."), host.c_str(), source.GetNick().c_str());
 
 			MemoServ::service->Send(source.service->nick, na->nick, message, true);
 		}

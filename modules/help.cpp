@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,7 +20,7 @@ class CommandHelp final
 {
 	static const unsigned help_wrap_len = 40;
 
-	static CommandGroup *FindGroup(const Anope::string &name)
+	static CommandGroup *FindGroup(const Warden::string &name)
 	{
 		for (auto &gr : Config->CommandGroups)
 		{
@@ -37,14 +38,14 @@ public:
 		this->AllowUnregistered(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		EventReturn MOD_RESULT;
 		FOREACH_RESULT(OnPreHelp, MOD_RESULT, (source, params));
 		if (MOD_RESULT == EVENT_STOP)
 			return;
 
-		Anope::string source_command = source.command;
+		Warden::string source_command = source.command;
 		const BotInfo *bi = source.service;
 		const CommandInfo::map &map = source.c ? Config->Fantasy : bi->commands;
 		bool hide_privileged_commands = Config->GetBlock("options").Get<bool>("hideprivilegedcommands"),
@@ -54,7 +55,7 @@ public:
 		if (params.empty() || params[0].equals_ci("ALL"))
 		{
 			bool all = !params.empty() && params[0].equals_ci("ALL");
-			typedef std::map<CommandGroup *, std::list<Anope::string> > GroupInfo;
+			typedef std::map<CommandGroup *, std::list<Warden::string> > GroupInfo;
 			GroupInfo groups;
 
 			if (all)
@@ -66,7 +67,7 @@ public:
 					continue;
 
 				// Smaller command exists
-				Anope::string cmd;
+				Warden::string cmd;
 				spacesepstream(c_name).GetToken(cmd, 0);
 				if (cmd != c_name && map.count(cmd))
 					continue;
@@ -102,7 +103,7 @@ public:
 				source.Reply(" ");
 				source.Reply("%s", gr->description.c_str());
 
-				Anope::string buf;
+				Warden::string buf;
 				for (const auto &c_name : cmds)
 				{
 					if (!buf.empty())
@@ -133,7 +134,7 @@ public:
 			bool helped = false;
 			for (unsigned max = params.size(); max > 0; --max)
 			{
-				Anope::string full_command;
+				Warden::string full_command;
 				for (unsigned i = 0; i < max; ++i)
 					full_command += " " + params[i];
 				full_command.erase(full_command.begin());
@@ -153,7 +154,7 @@ public:
 
 				// Allow unregistered users to see help for commands that they explicitly request help for
 
-				const Anope::string &subcommand = params.size() > max ? params[max] : "";
+				const Warden::string &subcommand = params.size() > max ? params[max] : "";
 				source.command = it->first;
 				if (!c->OnHelp(source, subcommand))
 					continue;
@@ -195,7 +196,7 @@ class Help final
 	CommandHelp commandhelp;
 
 public:
-	Help(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	Help(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandhelp(this)
 	{
 

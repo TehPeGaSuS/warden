@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -41,7 +42,7 @@ public:
 	 * @param t The time the akick was added, defaults to now
 	 * @param lu The time the akick was last used, defaults to never
 	 */
-	virtual AutoKick *AddAKick(ChannelInfo *ci, const Anope::string &user, NickCore *akicknc, const Anope::string &reason, time_t t = Anope::CurTime, time_t lu = 0) = 0;
+	virtual AutoKick *AddAKick(ChannelInfo *ci, const Warden::string &user, NickCore *akicknc, const Warden::string &reason, time_t t = Warden::CurTime, time_t lu = 0) = 0;
 
 	/** Add an akick entry to the channel by reason
 	 * @param user The user who added the akick
@@ -50,7 +51,7 @@ public:
 	 * @param t The time the akick was added, defaults to now
 	 * @param lu The time the akick was last used, defaults to never
 	 */
-	virtual AutoKick *AddAKick(ChannelInfo *ci, const Anope::string &user, const Anope::string &mask, const Anope::string &reason, time_t t = Anope::CurTime, time_t lu = 0)  = 0;
+	virtual AutoKick *AddAKick(ChannelInfo *ci, const Warden::string &user, const Warden::string &mask, const Warden::string &reason, time_t t = Warden::CurTime, time_t lu = 0)  = 0;
 
 	/** Get an entry from the channel akick list
 	 * @param index The index in the akick vector
@@ -81,11 +82,11 @@ public:
 	/* Channel this autokick is on */
 	Serialize::Reference<ChannelInfo> ci;
 
-	Anope::string mask;
+	Warden::string mask;
 	Serialize::Reference<NickCore> nc;
 
-	Anope::string reason;
-	Anope::string creator;
+	Warden::string reason;
+	Warden::string creator;
 	time_t addtime;
 	time_t last_used;
 

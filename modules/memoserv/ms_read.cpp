@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,10 +16,10 @@
 #include "module.h"
 #include "modules/memoserv/service.h"
 
-static void rsend_notify(CommandSource &source, MemoInfo *mi, Memo *m, const Anope::string &targ)
+static void rsend_notify(CommandSource &source, MemoInfo *mi, Memo *m, const Warden::string &targ)
 {
 	/* Only send receipt if memos are allowed */
-	if (MemoServ::service && !Anope::ReadOnly)
+	if (MemoServ::service && !Warden::ReadOnly)
 	{
 		/* Get nick alias for sender */
 		const NickAlias *na = NickAlias::Find(m->sender);
@@ -34,7 +35,7 @@ static void rsend_notify(CommandSource &source, MemoInfo *mi, Memo *m, const Ano
 
 		/* Text of the memo varies if the recipient was a
 		   nick or channel */
-		Anope::string text = Anope::Format(Language::Translate(na->nc, _("\002[auto-memo]\002 The memo you sent to %s has been viewed.")), targ.c_str());
+		Warden::string text = Warden::Format(Language::Translate(na->nc, _("\002[auto-memo]\002 The memo you sent to %s has been viewed.")), targ.c_str());
 
 		/* Send notification */
 		MemoServ::service->Send(source.GetNick(), m->sender, text, true);
@@ -57,7 +58,7 @@ class MemoListCallback final
 	const ChannelInfo *ci;
 	bool found;
 public:
-	MemoListCallback(CommandSource &_source, MemoInfo *_mi, const ChannelInfo *_ci, const Anope::string &numlist) : NumberList(numlist, false), source(_source), mi(_mi), ci(_ci)
+	MemoListCallback(CommandSource &_source, MemoInfo *_mi, const ChannelInfo *_ci, const Warden::string &numlist) : NumberList(numlist, false), source(_source), mi(_mi), ci(_ci)
 	{
 		found = false;
 	}
@@ -84,12 +85,12 @@ public:
 			return;
 
 		if (ci)
-			source.Reply(_("Memo %d from %s (%s)."), index + 1, m->sender.c_str(), Anope::strftime(m->time, source.GetAccount()).c_str());
+			source.Reply(_("Memo %d from %s (%s)."), index + 1, m->sender.c_str(), Warden::strftime(m->time, source.GetAccount()).c_str());
 		else
-			source.Reply(_("Memo %d from %s (%s)."), index + 1, m->sender.c_str(), Anope::strftime(m->time, source.GetAccount()).c_str());
+			source.Reply(_("Memo %d from %s (%s)."), index + 1, m->sender.c_str(), Warden::strftime(m->time, source.GetAccount()).c_str());
 
 		BotInfo *bi;
-		Anope::string cmd;
+		Warden::string cmd;
 		if (Command::FindFromService("memoserv/del", bi, cmd))
 		{
 			if (ci)
@@ -117,12 +118,12 @@ public:
 		this->SetSyntax(_("[\037channel\037] {\037num\037 | \037list\037 | LAST | NEW | ALL}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 
 		MemoInfo *mi;
 		ChannelInfo *ci = NULL;
-		Anope::string numstr = params[0], chan;
+		Warden::string numstr = params[0], chan;
 
 		if (!numstr.empty() && numstr[0] == '#')
 		{
@@ -145,7 +146,7 @@ public:
 		else
 			mi = &source.nc->memos;
 
-		if (numstr.empty() || (!numstr.equals_ci("LAST") && !numstr.equals_ci("NEW") && !numstr.equals_ci("ALL") && numstr.find_first_not_of("0123456789.,-") != Anope::string::npos))
+		if (numstr.empty() || (!numstr.equals_ci("LAST") && !numstr.equals_ci("NEW") && !numstr.equals_ci("ALL") && numstr.find_first_not_of("0123456789.,-") != Warden::string::npos))
 			this->OnSyntaxError(source, numstr);
 		else if (mi->memos->empty())
 		{
@@ -195,7 +196,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -232,7 +233,7 @@ class MSRead final
 	CommandMSRead commandmsread;
 
 public:
-	MSRead(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	MSRead(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandmsread(this)
 	{
 

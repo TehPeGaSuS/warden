@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: CC0-1.0
 "use strict";
 
-/** Implements methods for accessing an Anope JSON-RPC server. */
-class AnopeRPC {
+/** Implements methods for accessing an Warden JSON-RPC server. */
+class WardenRPC {
 
 	/**
-	 * Initializes a new AnopeRPC instance with the specified RPC host.
+	 * Initializes a new WardenRPC instance with the specified RPC host.
 	 *
 	 * @param {string} host The RPC host base URL.
 	 * @param {string} token The bearer token for authorizing with the RPC interface.
@@ -60,7 +60,7 @@ class AnopeRPC {
 	 * @returns {(array|object)} A list of accounts.
 	 */
 	listAccounts(detail = "name") {
-		return this.run("anope.listAccounts", detail);
+		return this.run("warden.listAccounts", detail);
 	}
 
 	/**
@@ -72,7 +72,7 @@ class AnopeRPC {
 	 * @returns {object} An object containing information about the account.
 	 */
 	account(name) {
-		return this.run("anope.account", name);
+		return this.run("warden.account", name);
 	}
 
 	/**
@@ -84,7 +84,7 @@ class AnopeRPC {
 	 * @returns {(array|object)} A list of channels.
 	 */
 	listChannels(detail = "name") {
-		return this.run("anope.listChannels", detail);
+		return this.run("warden.listChannels", detail);
 	}
 
 	/**
@@ -96,7 +96,7 @@ class AnopeRPC {
 	 * @returns {object} An object containing information about the channel.
 	 */
 	channel(name) {
-		return this.run("anope.channel", name);
+		return this.run("warden.channel", name);
 	}
 
 	/**
@@ -108,7 +108,7 @@ class AnopeRPC {
 	 * @returns {(array|object)} A list of services operators.
 	 */
 	listOpers(detail = "name") {
-		return this.run("anope.listOpers", detail);
+		return this.run("warden.listOpers", detail);
 	}
 
 	/**
@@ -120,7 +120,7 @@ class AnopeRPC {
 	 * @returns {object} An object containing information about the services operator.
 	 */
 	oper(name) {
-		return this.run("anope.oper", name);
+		return this.run("warden.oper", name);
 	}
 
 	/**
@@ -132,7 +132,7 @@ class AnopeRPC {
 	 * @returns {(array|object)} A list of servers.
 	 */
 	listServers(detail = "name") {
-		return this.run("anope.listServers", detail);
+		return this.run("warden.listServers", detail);
 	}
 
 	/**
@@ -144,7 +144,7 @@ class AnopeRPC {
 	 * @returns {object} An object containing information about the server.
 	 */
 	server(name) {
-		return this.run("anope.server", name);
+		return this.run("warden.server", name);
 	}
 
 	/**
@@ -156,7 +156,7 @@ class AnopeRPC {
 	 * @returns {(array|object)} A list of users.
 	 */
 	listUsers(detail = "name") {
-		return this.run("anope.listUsers", detail);
+		return this.run("warden.listUsers", detail);
 	}
 
 	/**
@@ -168,7 +168,7 @@ class AnopeRPC {
 	 * @returns {object} An object containing information about the user.
 	 */
 	user(nick) {
-		return this.run("anope.user", nick);
+		return this.run("warden.user", nick);
 	}
 
 	/**
@@ -179,7 +179,7 @@ class AnopeRPC {
 	 * @param {...*} messages One or more messages to send.
 	 */
 	messageNetwork(...messages) {
-		return this.run("anope.messageNetwork", ...messages);
+		return this.run("warden.messageNetwork", ...messages);
 	}
 
 	/**
@@ -191,7 +191,7 @@ class AnopeRPC {
 	 * @param {...*} messages One or more messages to send.
 	 */
 	messageServer(server, ...messages) {
-		return this.run("anope.messageServer", server, ...messages);
+		return this.run("warden.messageServer", server, ...messages);
 	}
 
 	/**
@@ -204,7 +204,7 @@ class AnopeRPC {
 	 * @param {...*} messages One or more messages to send.
 	 */
 	messageUser(source, target, ...messages) {
-		return this.run("anope.messageUser", source, target, ...messages);
+		return this.run("warden.messageUser", source, target, ...messages);
 	}
 
 	/**
@@ -217,7 +217,7 @@ class AnopeRPC {
 	 * @returns {object} An object containing basic information about the account.
 	 */
 	checkCredentials(account, password) {
-		return this.run("anope.checkCredentials", account, password);
+		return this.run("warden.checkCredentials", account, password);
 	}
 
 	/**
@@ -230,7 +230,7 @@ class AnopeRPC {
 	 * @param {string} password The nickname of the IRC user to identify to the account.
 	 */
 	identify(account, user) {
-		return this.run("anope.identify", account, user);
+		return this.run("warden.identify", account, user);
 	}
 
 	/**
@@ -242,7 +242,7 @@ class AnopeRPC {
 	 * @returns {object} An object containing information about the available commands.
 	 */
 	listCommands(...services) {
-		return this.run("anope.listCommands", ...services);
+		return this.run("warden.listCommands", ...services);
 	}
 
 	/**
@@ -256,12 +256,12 @@ class AnopeRPC {
 	 * @returns {object} An object containing information about the available commands.
 	 */
 	command(account, service, ...command) {
-		return this.run("anope.command", account, service, ...command);
+		return this.run("warden.command", account, service, ...command);
 	}
 }
 
 /*
-const arpc = new AnopeRPC("http://127.0.0.1:8080/jsonrpc");
+const arpc = new WardenRPC("http://127.0.0.1:8080/jsonrpc");
 arpc.listServers("full").then(servers => {
 	console.log(servers);
 }).catch (error => {

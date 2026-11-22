@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -31,18 +32,18 @@
 
 #include <iostream>
 
-static Anope::string GetTimeStamp()
+static Warden::string GetTimeStamp()
 {
 	char tbuf[256];
 
-	Anope::UpdateTime();
-	auto tm = *localtime(&Anope::CurTime);
-	if (Anope::Debug)
+	Warden::UpdateTime();
+	auto tm = *localtime(&Warden::CurTime);
+	if (Warden::Debug)
 	{
 		char *s;
 		strftime(tbuf, sizeof(tbuf) - 1, "[%b %d %H:%M:%S", &tm);
 		s = tbuf + strlen(tbuf);
-		s += snprintf(s, sizeof(tbuf) - (s - tbuf), ".%06lld", static_cast<long long>(Anope::CurTimeNs / 1000));
+		s += snprintf(s, sizeof(tbuf) - (s - tbuf), ".%06lld", static_cast<long long>(Warden::CurTimeNs / 1000));
 		strftime(s, sizeof(tbuf) - (s - tbuf) - 1, " %Y]", &tm);
 	}
 	else
@@ -51,16 +52,16 @@ static Anope::string GetTimeStamp()
 	return tbuf;
 }
 
-static inline Anope::string CreateLogName(const Anope::string &file, time_t t = Anope::CurTime)
+static inline Warden::string CreateLogName(const Warden::string &file, time_t t = Warden::CurTime)
 {
 	char timestamp[32];
 	tm *tm = localtime(&t);
 	strftime(timestamp, sizeof(timestamp), "%Y%m%d", tm);
 
-	return Anope::ExpandLog(file + "." + timestamp);
+	return Warden::ExpandLog(file + "." + timestamp);
 }
 
-LogFile::LogFile(const Anope::string &name) : filename(name), stream(name.c_str(), std::ios_base::out | std::ios_base::app)
+LogFile::LogFile(const Warden::string &name) : filename(name), stream(name.c_str(), std::ios_base::out | std::ios_base::app)
 {
 }
 
@@ -69,12 +70,12 @@ LogFile::~LogFile()
 	this->stream.close();
 }
 
-const Anope::string &LogFile::GetName() const
+const Warden::string &LogFile::GetName() const
 {
 	return this->filename;
 }
 
-Log::Log(LogType t, const Anope::string &cat, BotInfo *b) : bi(b), type(t), category(cat)
+Log::Log(LogType t, const Warden::string &cat, BotInfo *b) : bi(b), type(t), category(cat)
 {
 }
 
@@ -87,42 +88,42 @@ Log::Log(LogType t, CommandSource &src, Command *_c, ChannelInfo *_ci) : u(src.G
 		throw CoreException("This constructor does not support this log type");
 
 	size_t sl = c->name.find('/');
-	if (sl != Anope::string::npos)
+	if (sl != Warden::string::npos)
 		this->bi = Config->GetClient(c->name.substr(0, sl));
 	this->category = c->name;
 }
 
-Log::Log(User *_u, Channel *ch, const Anope::string &cat) : u(_u), chan(ch), ci(chan ? *chan->ci : nullptr), type(LOG_CHANNEL), category(cat)
+Log::Log(User *_u, Channel *ch, const Warden::string &cat) : u(_u), chan(ch), ci(chan ? *chan->ci : nullptr), type(LOG_CHANNEL), category(cat)
 {
 	if (!chan)
 		throw CoreException("Invalid pointers passed to Log::Log");
 }
 
-Log::Log(User *_u, const Anope::string &cat, BotInfo *_bi) : bi(_bi), u(_u), type(LOG_USER), category(cat)
+Log::Log(User *_u, const Warden::string &cat, BotInfo *_bi) : bi(_bi), u(_u), type(LOG_USER), category(cat)
 {
 	if (!u)
 		throw CoreException("Invalid pointers passed to Log::Log");
 }
 
-Log::Log(Server *serv, const Anope::string &cat, BotInfo *_bi) : bi(_bi), s(serv), type(LOG_SERVER), category(cat)
+Log::Log(Server *serv, const Warden::string &cat, BotInfo *_bi) : bi(_bi), s(serv), type(LOG_SERVER), category(cat)
 {
 	if (!s)
 		throw CoreException("Invalid pointer passed to Log::Log");
 }
 
-Log::Log(BotInfo *b, const Anope::string &cat) : bi(b), type(LOG_NORMAL), category(cat)
+Log::Log(BotInfo *b, const Warden::string &cat) : bi(b), type(LOG_NORMAL), category(cat)
 {
 }
 
-Log::Log(Module *mod, const Anope::string &cat, BotInfo *_bi) : bi(_bi), m(mod), type(LOG_MODULE), category(cat)
+Log::Log(Module *mod, const Warden::string &cat, BotInfo *_bi) : bi(_bi), m(mod), type(LOG_MODULE), category(cat)
 {
 }
 
 Log::~Log()
 {
-	if (Anope::NoFork && Anope::Debug && this->type >= LOG_NORMAL && this->type <= LOG_DEBUG + Anope::Debug - 1)
+	if (Warden::NoFork && Warden::Debug && this->type >= LOG_NORMAL && this->type <= LOG_DEBUG + Warden::Debug - 1)
 		std::cout << GetTimeStamp() << " Debug: " << this->BuildPrefix() << this->buf.str() << std::endl;
-	else if (Anope::NoFork && this->type <= LOG_TERMINAL)
+	else if (Warden::NoFork && this->type <= LOG_TERMINAL)
 		std::cout << GetTimeStamp() << " " << this->BuildPrefix() << this->buf.str() << std::endl;
 	else if (this->type == LOG_TERMINAL)
 		std::cout << this->BuildPrefix() << this->buf.str() << std::endl;
@@ -139,7 +140,7 @@ Log::~Log()
 	}
 }
 
-Anope::string Log::FormatSource() const
+Warden::string Log::FormatSource() const
 {
 	if (u)
 		if (nc)
@@ -150,7 +151,7 @@ Anope::string Log::FormatSource() const
 		return nc->display;
 	else if (source)
 	{
-		Anope::string nickbuf = source->GetNick();
+		Warden::string nickbuf = source->GetNick();
 		if (!nickbuf.empty() && !source->ip.empty())
 			nickbuf += " (" + source->ip + ")";
 		return nickbuf;
@@ -158,18 +159,18 @@ Anope::string Log::FormatSource() const
 	return "";
 }
 
-Anope::string Log::FormatCommand() const
+Warden::string Log::FormatCommand() const
 {
-	Anope::string buffer = FormatSource() + " used " + (source != NULL && !source->command.empty() ? source->command : this->c->name) + " ";
+	Warden::string buffer = FormatSource() + " used " + (source != NULL && !source->command.empty() ? source->command : this->c->name) + " ";
 	if (this->ci)
 		buffer += "on " + this->ci->name + " ";
 
 	return buffer;
 }
 
-Anope::string Log::BuildPrefix() const
+Warden::string Log::BuildPrefix() const
 {
-	Anope::string buffer;
+	Warden::string buffer;
 
 	switch (this->type)
 	{
@@ -199,7 +200,7 @@ Anope::string Log::BuildPrefix() const
 			if (!this->chan)
 				break;
 			buffer += "CHANNEL: ";
-			Anope::string src = FormatSource();
+			Warden::string src = FormatSource();
 			if (!src.empty())
 				buffer += src + " ";
 			buffer += this->category + " " + this->chan->name + " ";
@@ -241,9 +242,9 @@ LogInfo::~LogInfo()
 	this->logfiles.clear();
 }
 
-bool LogInfo::HasType(LogType ltype, const Anope::string &type) const
+bool LogInfo::HasType(LogType ltype, const Warden::string &type) const
 {
-	const std::vector<Anope::string> *list = NULL;
+	const std::vector<Warden::string> *list = NULL;
 	switch (ltype)
 	{
 		case LOG_ADMIN:
@@ -267,9 +268,9 @@ bool LogInfo::HasType(LogType ltype, const Anope::string &type) const
 		case LOG_TERMINAL:
 			return true;
 		case LOG_RAWIO:
-			return (Anope::Debug || this->debug) ? true : this->raw_io;
+			return (Warden::Debug || this->debug) ? true : this->raw_io;
 		case LOG_DEBUG:
-			return Anope::Debug ? true : this->debug;
+			return Warden::Debug ? true : this->debug;
 		case LOG_DEBUG_2:
 		case LOG_DEBUG_3:
 		case LOG_DEBUG_4:
@@ -292,7 +293,7 @@ bool LogInfo::HasType(LogType ltype, const Anope::string &type) const
 			value.erase(value.begin());
 			inverse = true;
 		}
-		if (Anope::Match(type, value))
+		if (Warden::Match(type, value))
 		{
 			return !inverse;
 		}
@@ -309,7 +310,7 @@ void LogInfo::OpenLogFiles()
 
 	for (const auto &target : this->targets)
 	{
-		if (target.empty() || target[0] == '#' || target == "globops" || target.find(":") != Anope::string::npos)
+		if (target.empty() || target[0] == '#' || target == "globops" || target.find(":") != Warden::string::npos)
 			continue;
 
 		auto *lf = new LogFile(CreateLogName(target));
@@ -330,7 +331,7 @@ void LogInfo::ProcessMessage(const Log *l)
 		bool log = false;
 		for (unsigned i = 0; i < this->sources.size() && !log; ++i)
 		{
-			const Anope::string &src = this->sources[i];
+			const Warden::string &src = this->sources[i];
 
 			if (l->bi && src == l->bi->nick)
 				log = true;
@@ -349,7 +350,7 @@ void LogInfo::ProcessMessage(const Log *l)
 			return;
 	}
 
-	Anope::string buffer = l->BuildPrefix() + Anope::ReplaceUnsafe(l->buf.str());
+	Warden::string buffer = l->BuildPrefix() + Warden::ReplaceUnsafe(l->buf.str());
 
 	FOREACH_MOD(OnLogMessage, (this, l, buffer));
 
@@ -385,7 +386,7 @@ void LogInfo::ProcessMessage(const Log *l)
 		}
 	}
 
-	tm *tm = localtime(&Anope::CurTime);
+	tm *tm = localtime(&Warden::CurTime);
 	if (tm->tm_mday != this->last_day)
 	{
 		this->last_day = tm->tm_mday;
@@ -395,10 +396,10 @@ void LogInfo::ProcessMessage(const Log *l)
 		{
 			for (const auto &target : this->targets)
 			{
-					if (target.empty() || target[0] == '#' || target == "globops" || target.find(":") != Anope::string::npos)
+					if (target.empty() || target[0] == '#' || target == "globops" || target.find(":") != Warden::string::npos)
 					continue;
 
-				Anope::string oldlog = CreateLogName(target, Anope::CurTime - 86400 * this->log_age);
+				Warden::string oldlog = CreateLogName(target, Warden::CurTime - 86400 * this->log_age);
 				if (IsFile(oldlog))
 				{
 					unlink(oldlog.c_str());

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -63,7 +64,7 @@ private:
 
 		const auto timeout = Config->GetModule("operserv").Get<time_t>(config, "30d");
 		if (timeout)
-			source.Reply(_("Default %s expiry time: \002%s\002"), type, Anope::Duration(timeout, source.nc, true).c_str());
+			source.Reply(_("Default %s expiry time: \002%s\002"), type, Warden::Duration(timeout, source.nc, true).c_str());
 		else
 			source.Reply(_("Default %s expiry time: \002No expiration\002"), type);
 	}
@@ -83,22 +84,22 @@ private:
 	static void DoStatsReset(CommandSource &source)
 	{
 		MaxUserCount = UserListByNick.size();
-		MaxUserTime = Anope::CurTime;
+		MaxUserTime = Warden::CurTime;
 		Stats::me->QueueUpdate();
 		source.Reply(_("Statistics reset."));
 	}
 
 	static void DoStatsUptime(CommandSource &source)
 	{
-		time_t uptime = Anope::CurTime - Anope::StartTime;
+		time_t uptime = Warden::CurTime - Warden::StartTime;
 		source.Reply(_("Current users: \002%zu\002 (\002%zu\002 ops)"), UserListByNick.size(), OperCount);
-		source.Reply(_("Maximum users: \002%zu\002 (%s)"), MaxUserCount, Anope::strftime(MaxUserTime, source.GetAccount()).c_str());
-		source.Reply(_("Services up %s."), Anope::Duration(uptime, source.GetAccount()).c_str());
+		source.Reply(_("Maximum users: \002%zu\002 (%s)"), MaxUserCount, Warden::strftime(MaxUserTime, source.GetAccount()).c_str());
+		source.Reply(_("Services up %s."), Warden::Duration(uptime, source.GetAccount()).c_str());
 	}
 
 	static void DoStatsUplink(CommandSource &source)
 	{
-		Anope::string buf;
+		Warden::string buf;
 		for (const auto &capab : Servers::Capab)
 			buf += " " + capab;
 		if (!buf.empty())
@@ -151,7 +152,7 @@ private:
 
 	void DoStatsPassword(CommandSource &source)
 	{
-		Anope::map<size_t> counts;
+		Warden::map<size_t> counts;
 		size_t missing = 0;
 		size_t unknown = 0;
 		for (const auto &[_, nc] : *NickCoreList)
@@ -163,7 +164,7 @@ private:
 			}
 
 			auto sep = nc->pass.find(':');
-			if (sep == Anope::string::npos)
+			if (sep == Warden::string::npos)
 			{
 				unknown++;
 				continue;
@@ -188,9 +189,9 @@ public:
 		this->SetSyntax("[AKILL | HASH | PASSWORD | UPLINK | UPTIME | ALL | RESET]");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		Anope::string extra = !params.empty() ? params[0] : "";
+		Warden::string extra = !params.empty() ? params[0] : "";
 
 		Log(LOG_ADMIN, source, this) << extra;
 
@@ -232,7 +233,7 @@ public:
 			source.Reply(_("Unknown STATS option: \002%s\002"), extra.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -251,7 +252,7 @@ public:
 			"for user passwords. "
 			"\n\n"
 			"The \002UPLINK\002 option displays information about the current "
-			"server Anope uses as an uplink to the network."
+			"server Warden uses as an uplink to the network."
 			"\n\n"
 			"The \002HASH\002 option displays information about the hash maps."
 			"\n\n"
@@ -269,7 +270,7 @@ class OSStats final
 	Stats stats_saver;
 
 public:
-	OSStats(const Anope::string &modname, const Anope::string &creator)
+	OSStats(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandosstats(this)
 	{
@@ -277,7 +278,7 @@ public:
 
 	void OnUserConnect(User *u, bool &exempt) override
 	{
-		if (UserListByNick.size() == MaxUserCount && Anope::CurTime == MaxUserTime)
+		if (UserListByNick.size() == MaxUserCount && Warden::CurTime == MaxUserTime)
 			Stats::me->QueueUpdate();
 	}
 };

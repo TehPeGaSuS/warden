@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -81,7 +82,7 @@ class MySQLResult final
 	MYSQL_RES *res = nullptr;
 
 public:
-	MySQLResult(unsigned int i, const Query &q, const Anope::string &fq, MYSQL_RES *r) : Result(i, q, fq), res(r)
+	MySQLResult(unsigned int i, const Query &q, const Warden::string &fq, MYSQL_RES *r) : Result(i, q, fq), res(r)
 	{
 		unsigned num_fields = res ? mysql_num_fields(res) : 0;
 
@@ -96,12 +97,12 @@ public:
 
 			if (fields)
 			{
-				std::map<Anope::string, Anope::string> items;
+				std::map<Warden::string, Warden::string> items;
 
 				for (unsigned field_count = 0; field_count < num_fields; ++field_count)
 				{
-					Anope::string column = (fields[field_count].name ? fields[field_count].name : "");
-					Anope::string data = (row[field_count] ? row[field_count] : "");
+					Warden::string column = (fields[field_count].name ? fields[field_count].name : "");
+					Warden::string data = (row[field_count] ? row[field_count] : "");
 
 					items[column] = data;
 				}
@@ -111,7 +112,7 @@ public:
 		}
 	}
 
-	MySQLResult(const Query &q, const Anope::string &fq, const Anope::string &err) : Result(0, q, fq, err)
+	MySQLResult(const Query &q, const Warden::string &fq, const Warden::string &err) : Result(0, q, fq, err)
 	{
 	}
 
@@ -127,21 +128,21 @@ public:
 class MySQLService final
 	: public Provider
 {
-	std::map<Anope::string, std::set<Anope::string> > active_schema;
+	std::map<Warden::string, std::set<Warden::string> > active_schema;
 
-	Anope::string database;
-	Anope::string server;
-	Anope::string user;
-	Anope::string password;
+	Warden::string database;
+	Warden::string server;
+	Warden::string user;
+	Warden::string password;
 	unsigned int port;
-	Anope::string socket;
+	Warden::string socket;
 
 	MYSQL *sql = nullptr;
 
 	/** Escape a query.
 	 * Note the mutex must be held!
 	 */
-	Anope::string Escape(const Anope::string &query);
+	Warden::string Escape(const Warden::string &query);
 
 public:
 	/* Locked by the SQL thread when a query is pending on this database,
@@ -150,7 +151,7 @@ public:
 	 */
 	std::mutex Lock;
 
-	MySQLService(Module *o, const Anope::string &n, const Anope::string &d, const Anope::string &s, const Anope::string &u, const Anope::string &p, unsigned int po, const Anope::string &so);
+	MySQLService(Module *o, const Warden::string &n, const Warden::string &d, const Warden::string &s, const Warden::string &u, const Warden::string &p, unsigned int po, const Warden::string &so);
 
 	~MySQLService();
 
@@ -158,19 +159,19 @@ public:
 
 	Result RunQuery(const Query &query) override;
 
-	std::vector<Query> CreateTable(const Anope::string &table, const Data &data) override;
+	std::vector<Query> CreateTable(const Warden::string &table, const Data &data) override;
 
-	Query BuildInsert(const Anope::string &table, Serializable::Id id, Data &data) override;
+	Query BuildInsert(const Warden::string &table, Serializable::Id id, Data &data) override;
 
-	Query GetTables(const Anope::string &prefix) override;
+	Query GetTables(const Warden::string &prefix) override;
 
 	void Connect();
 
 	bool CheckConnection();
 
-	Anope::string BuildQuery(const Query &q);
+	Warden::string BuildQuery(const Query &q);
 
-	Anope::string FromUnixtime(time_t) override;
+	Warden::string FromUnixtime(time_t) override;
 
 	const char* GetColumnDefault(Serialize::DataType dt)
 	{
@@ -211,9 +212,9 @@ public:
 		return "TEXT"; // Should never be reached
 	}
 
-	Anope::string GetColumn(Serialize::DataType dt)
+	Warden::string GetColumn(Serialize::DataType dt)
 	{
-		return Anope::Format("%s %s DEFAULT %s",
+		return Warden::Format("%s %s DEFAULT %s",
 				GetColumnType(dt),
 				GetColumnNull(dt) ? "NULL" : "NOT NULL",
 				GetColumnDefault(dt));
@@ -242,7 +243,7 @@ class ModuleSQL final
 	, public Pipe
 {
 	/* SQL connections */
-	std::map<Anope::string, MySQLService *> MySQLServices;
+	std::map<Warden::string, MySQLService *> MySQLServices;
 public:
 	/* Pending query requests */
 	std::deque<QueryRequest> QueryRequests;
@@ -251,7 +252,7 @@ public:
 	/* The thread used to execute queries */
 	DispatcherThread *DThread;
 
-	ModuleSQL(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, EXTRA | VENDOR)
+	ModuleSQL(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, EXTRA | VENDOR)
 	{
 		me = this;
 
@@ -263,7 +264,7 @@ public:
 
 	~ModuleSQL()
 	{
-		for (std::map<Anope::string, MySQLService *>::iterator it = this->MySQLServices.begin(); it != this->MySQLServices.end(); ++it)
+		for (std::map<Warden::string, MySQLService *>::iterator it = this->MySQLServices.begin(); it != this->MySQLServices.end(); ++it)
 			delete it->second;
 		MySQLServices.clear();
 
@@ -277,16 +278,16 @@ public:
 	{
 		const auto &config = conf.GetModule(this);
 
-		for (std::map<Anope::string, MySQLService *>::iterator it = this->MySQLServices.begin(); it != this->MySQLServices.end();)
+		for (std::map<Warden::string, MySQLService *>::iterator it = this->MySQLServices.begin(); it != this->MySQLServices.end();)
 		{
-			const Anope::string &cname = it->first;
+			const Warden::string &cname = it->first;
 			MySQLService *s = it->second;
 			size_t i;
 
 			++it;
 
 			for (i = 0; i < config.CountBlock("mysql"); ++i)
-				if (config.GetBlock("mysql", i).Get<const Anope::string>("name", "mysql/main") == cname)
+				if (config.GetBlock("mysql", i).Get<const Warden::string>("name", "mysql/main") == cname)
 					break;
 
 			if (i == config.CountBlock("mysql"))
@@ -300,16 +301,16 @@ public:
 
 		for (const auto &[_,  block] : config.GetBlocks("mysql"))
 		{
-			const Anope::string &connname = block.Get<const Anope::string>("name", "mysql/main");
+			const Warden::string &connname = block.Get<const Warden::string>("name", "mysql/main");
 
 			if (this->MySQLServices.find(connname) == this->MySQLServices.end())
 			{
-				const Anope::string &database = block.Get<const Anope::string>("database", "anope");
-				const Anope::string &server = block.Get<const Anope::string>("server", "127.0.0.1");
-				const Anope::string &user = block.Get<const Anope::string>("username", "anope");
-				const Anope::string &password = block.Get<const Anope::string>("password");
+				const Warden::string &database = block.Get<const Warden::string>("database", "warden");
+				const Warden::string &server = block.Get<const Warden::string>("server", "127.0.0.1");
+				const Warden::string &user = block.Get<const Warden::string>("username", "warden");
+				const Warden::string &password = block.Get<const Warden::string>("password");
 				unsigned int port = block.Get<unsigned int>("port", "3306");
-				const Anope::string &socket = block.Get<const Anope::string>("socket");
+				const Warden::string &socket = block.Get<const Warden::string>("socket");
 
 				try
 				{
@@ -371,7 +372,7 @@ public:
 	}
 };
 
-MySQLService::MySQLService(Module *o, const Anope::string &n, const Anope::string &d, const Anope::string &s, const Anope::string &u, const Anope::string &p, unsigned int po, const Anope::string &so)
+MySQLService::MySQLService(Module *o, const Warden::string &n, const Warden::string &d, const Warden::string &s, const Warden::string &u, const Warden::string &p, unsigned int po, const Warden::string &so)
 	: Provider(o, n)
 	, database(d)
 	, server(s)
@@ -423,7 +424,7 @@ Result MySQLService::RunQuery(const Query &query)
 		return MySQLResult(query, query.query, mysql_error(this->sql));
 	}
 
-	Anope::string real_query = this->BuildQuery(query);
+	Warden::string real_query = this->BuildQuery(query);
 	if (!mysql_real_query(this->sql, real_query.c_str(), real_query.length()))
 	{
 		MYSQL_RES *res = mysql_store_result(this->sql);
@@ -443,16 +444,16 @@ Result MySQLService::RunQuery(const Query &query)
 	}
 	else
 	{
-		Anope::string error = mysql_error(this->sql);
+		Warden::string error = mysql_error(this->sql);
 		this->Lock.unlock();
 		return MySQLResult(query, real_query, error);
 	}
 }
 
-std::vector<Query> MySQLService::CreateTable(const Anope::string &table, const Data &data)
+std::vector<Query> MySQLService::CreateTable(const Warden::string &table, const Data &data)
 {
 	std::vector<Query> queries;
-	std::set<Anope::string> &known_cols = this->active_schema[table];
+	std::set<Warden::string> &known_cols = this->active_schema[table];
 
 	if (known_cols.empty())
 	{
@@ -510,24 +511,24 @@ std::vector<Query> MySQLService::CreateTable(const Anope::string &table, const D
 			{
 				// We can't just use MODIFY COLUMN here because the value may not
 				// be valid and we may need to replace with the default.
-				auto res = this->RunQuery(Anope::Format("ALTER TABLE `%s` ADD COLUMN `%s_new` %s; ",
+				auto res = this->RunQuery(Warden::Format("ALTER TABLE `%s` ADD COLUMN `%s_new` %s; ",
 					table.c_str(), column.c_str(), GetColumn(stype).c_str()));
 
 				if (res)
 				{
-					res = this->RunQuery(Anope::Format("UPDATE IGNORE `%s` SET `%s_new` = %s; ",
+					res = this->RunQuery(Warden::Format("UPDATE IGNORE `%s` SET `%s_new` = %s; ",
 						table.c_str(), column.c_str(), column.c_str()));
 				}
 
 				if (res)
 				{
-					res = this->RunQuery(Anope::Format("ALTER TABLE `%s` DROP COLUMN `%s`; ",
+					res = this->RunQuery(Warden::Format("ALTER TABLE `%s` DROP COLUMN `%s`; ",
 						table.c_str(), column.c_str()));
 				}
 
 				if (res)
 				{
-					res = this->RunQuery(Anope::Format("ALTER TABLE `%s` RENAME COLUMN `%s_new` TO `%s`; ",
+					res = this->RunQuery(Warden::Format("ALTER TABLE `%s` RENAME COLUMN `%s_new` TO `%s`; ",
 						table.c_str(), column.c_str(), column.c_str()));
 				}
 
@@ -539,7 +540,7 @@ std::vector<Query> MySQLService::CreateTable(const Anope::string &table, const D
 
 	if (known_cols.empty())
 	{
-		Anope::string query_text = "CREATE TABLE `" + table + "` (`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,"
+		Warden::string query_text = "CREATE TABLE `" + table + "` (`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,"
 			" `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP";
 		for (const auto &[column, _] : data.data)
 		{
@@ -559,7 +560,7 @@ std::vector<Query> MySQLService::CreateTable(const Anope::string &table, const D
 
 			known_cols.insert(column);
 
-			Anope::string query_text = "ALTER TABLE `" + table + "` ADD `" + column + "` " + GetColumn(data.GetType(column));
+			Warden::string query_text = "ALTER TABLE `" + table + "` ADD `" + column + "` " + GetColumn(data.GetType(column));
 
 			queries.push_back(query_text);
 		}
@@ -568,7 +569,7 @@ std::vector<Query> MySQLService::CreateTable(const Anope::string &table, const D
 	return queries;
 }
 
-Query MySQLService::BuildInsert(const Anope::string &table, Serializable::Id id, Data &data)
+Query MySQLService::BuildInsert(const Warden::string &table, Serializable::Id id, Data &data)
 {
 	/* Empty columns not present in the data set */
 	for (const auto &known_col : this->active_schema[table])
@@ -577,11 +578,11 @@ Query MySQLService::BuildInsert(const Anope::string &table, Serializable::Id id,
 			data.data[known_col];
 	}
 
-	Anope::string query_text = "INSERT INTO `" + table + "` (`id`";
+	Warden::string query_text = "INSERT INTO `" + table + "` (`id`";
 
 	for (const auto &[field, _] : data.data)
 		query_text += ",`" + field + "`";
-	query_text += ") VALUES (" + Anope::ToString(id);
+	query_text += ") VALUES (" + Warden::ToString(id);
 	for (const auto &[field, _] : data.data)
 		query_text += ",@" + field + "@";
 	query_text += ") ON DUPLICATE KEY UPDATE ";
@@ -624,7 +625,7 @@ Query MySQLService::BuildInsert(const Anope::string &table, Serializable::Id id,
 	return query;
 }
 
-Query MySQLService::GetTables(const Anope::string &prefix)
+Query MySQLService::GetTables(const Warden::string &prefix)
 {
 	return Query("SHOW TABLES LIKE '" + prefix + "%';");
 }
@@ -665,16 +666,16 @@ bool MySQLService::CheckConnection()
 	return true;
 }
 
-Anope::string MySQLService::Escape(const Anope::string &query)
+Warden::string MySQLService::Escape(const Warden::string &query)
 {
 	std::vector<char> buffer(query.length() * 2 + 1);
 	mysql_real_escape_string(this->sql, &buffer[0], query.c_str(), query.length());
 	return &buffer[0];
 }
 
-Anope::string MySQLService::BuildQuery(const Query &q)
+Warden::string MySQLService::BuildQuery(const Query &q)
 {
-	Anope::string real_query = q.query;
+	Warden::string real_query = q.query;
 
 	for (const auto &[name, value] : q.parameters)
 		real_query = real_query.replace_all_cs("@" + name + "@", (value.escape ? ("'" + this->Escape(value.data) + "'") : value.data));
@@ -682,9 +683,9 @@ Anope::string MySQLService::BuildQuery(const Query &q)
 	return real_query;
 }
 
-Anope::string MySQLService::FromUnixtime(time_t t)
+Warden::string MySQLService::FromUnixtime(time_t t)
 {
-	return "FROM_UNIXTIME(" + Anope::ToString(t) + ")";
+	return "FROM_UNIXTIME(" + Warden::ToString(t) + ")";
 }
 
 void DispatcherThread::Run()

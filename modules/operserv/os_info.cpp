@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,7 +25,7 @@ struct OperInfoImpl final
 	{
 	}
 
-	OperInfoImpl(const Anope::string &t, const Anope::string &i, const Anope::string &a, time_t c)
+	OperInfoImpl(const Warden::string &t, const Warden::string &i, const Warden::string &a, time_t c)
 		: OperInfo(t, i, a, c)
 		, Serializable("OperInfo")
 	{
@@ -63,7 +64,7 @@ struct OperInfos final
 		return new OperInfoImpl();
 	}
 
-	static Extensible *Find(const Anope::string &target)
+	static Extensible *Find(const Warden::string &target)
 	{
 		NickAlias *na = NickAlias::Find(target);
 		if (na)
@@ -98,7 +99,7 @@ Serializable *OperInfoTypeImpl::Unserialize(Serializable *obj, Serialize::Data &
 	auto *oi = e->Require<OperInfos>("operinfo");
 	OperInfoImpl *o;
 	if (obj)
-		o = anope_dynamic_static_cast<OperInfoImpl *>(obj);
+		o = warden_dynamic_static_cast<OperInfoImpl *>(obj);
 	else
 	{
 		o = new OperInfoImpl();
@@ -125,9 +126,9 @@ public:
 		this->SetSyntax(_("CLEAR \037target\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[0], target = params[1], info = params.size() > 2 ? params[2] : "";
+		const Warden::string &cmd = params[0], target = params[1], info = params.size() > 2 ? params[2] : "";
 
 		Extensible *e;
 		if (IRCD->IsChannelValid(target))
@@ -178,12 +179,12 @@ public:
 				}
 			}
 
-			(*oi)->push_back(new OperInfoImpl(target, info, source.GetNick(), Anope::CurTime));
+			(*oi)->push_back(new OperInfoImpl(target, info, source.GetNick(), Warden::CurTime));
 
 			source.Reply(_("Added info to \002%s\002."), target.c_str());
 			Log(LOG_ADMIN, source, this) << "to add information to " << target;
 
-			if (Anope::ReadOnly)
+			if (Warden::ReadOnly)
 				source.Reply(READ_ONLY_MODE);
 		}
 		else if (cmd.equals_ci("DEL"))
@@ -227,7 +228,7 @@ public:
 				source.Reply(_("Deleted info from \002%s\002."), target.c_str());
 				Log(LOG_ADMIN, source, this) << "to remove information from " << target;
 
-				if (Anope::ReadOnly)
+				if (Warden::ReadOnly)
 					source.Reply(READ_ONLY_MODE);
 			}
 		}
@@ -246,7 +247,7 @@ public:
 			source.Reply(_("Cleared info from \002%s\002."), target.c_str());
 			Log(LOG_ADMIN, source, this) << "to clear information for " << target;
 
-			if (Anope::ReadOnly)
+			if (Warden::ReadOnly)
 				source.Reply(READ_ONLY_MODE);
 		}
 		else
@@ -255,7 +256,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -286,12 +287,12 @@ class OSInfo final
 
 		for (auto *o : *(*oi))
 		{
-			info[_("Oper Info")] = Anope::Format(_("(by %s on %s) %s"), o->adder.c_str(), Anope::strftime(o->created, source.GetAccount(), true).c_str(), o->info.c_str());
+			info[_("Oper Info")] = Warden::Format(_("(by %s on %s) %s"), o->adder.c_str(), Warden::strftime(o->created, source.GetAccount(), true).c_str(), o->info.c_str());
 		}
 	}
 
 public:
-	OSInfo(const Anope::string &modname, const Anope::string &creator)
+	OSInfo(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandosinfo(this)
 		, oinfo(this, "operinfo")

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,11 +17,11 @@
 
 struct Rewrite final
 {
-	Anope::string client, source_message, target_message, desc;
+	Warden::string client, source_message, target_message, desc;
 
-	bool Matches(const std::vector<Anope::string> &message)
+	bool Matches(const std::vector<Warden::string> &message)
 	{
-		std::vector<Anope::string> sm;
+		std::vector<Warden::string> sm;
 		spacesepstream(this->source_message).GetTokens(sm);
 
 		for (unsigned i = 0; i < sm.size(); ++i)
@@ -30,10 +31,10 @@ struct Rewrite final
 		return true;
 	}
 
-	Anope::string Process(CommandSource &source, const std::vector<Anope::string> &params)
+	Warden::string Process(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		spacesepstream sep(this->target_message);
-		Anope::string token, message;
+		Warden::string token, message;
 
 		while (sep.GetToken(token))
 		{
@@ -44,11 +45,11 @@ struct Rewrite final
 			else
 			{
 				int num = -1, end = -1;
-				Anope::string num_str = token.substr(1);
+				Warden::string num_str = token.substr(1);
 				size_t hy = num_str.find('-');
-				if (hy == Anope::string::npos)
+				if (hy == Warden::string::npos)
 				{
-					auto n = Anope::TryConvert<int>(num_str);
+					auto n = Warden::TryConvert<int>(num_str);
 					if (!n.has_value())
 						continue;
 
@@ -57,7 +58,7 @@ struct Rewrite final
 				}
 				else
 				{
-					auto n = Anope::TryConvert<int>(num_str.substr(0, hy));
+					auto n = Warden::TryConvert<int>(num_str.substr(0, hy));
 					if (!n.has_value())
 						continue;
 
@@ -66,7 +67,7 @@ struct Rewrite final
 						end = params.size();
 					else
 					{
-						n = Anope::TryConvert<int>(num_str.substr(hy + 1));
+						n = Warden::TryConvert<int>(num_str.substr(hy + 1));
 						if (!n.has_value())
 							continue;
 
@@ -85,7 +86,7 @@ struct Rewrite final
 
 	static std::vector<Rewrite> rewrites;
 
-	static Rewrite *Find(const Anope::string &client, const Anope::string &cmd)
+	static Rewrite *Find(const Warden::string &client, const Warden::string &cmd)
 	{
 		for (auto &r : rewrites)
 		{
@@ -96,7 +97,7 @@ struct Rewrite final
 		return NULL;
 	}
 
-	static Rewrite *Match(const Anope::string &client, const std::vector<Anope::string> &params)
+	static Rewrite *Match(const Warden::string &client, const std::vector<Warden::string> &params)
 	{
 		for (auto &r : rewrites)
 		{
@@ -116,15 +117,15 @@ class RewriteCommand final
 public:
 	RewriteCommand(Module *creator) : Command(creator, "rewrite", 0, 0) { }
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		std::vector<Anope::string> full_params = params;
+		std::vector<Warden::string> full_params = params;
 		full_params.insert(full_params.begin(), source.command);
 
 		Rewrite *r = Rewrite::Match(!source.c ? source.service->nick : "", full_params);
 		if (r != NULL)
 		{
-			Anope::string new_message = r->Process(source, full_params);
+			Warden::string new_message = r->Process(source, full_params);
 			Log(LOG_DEBUG) << "rewrite: Rewrote '" << source.command << (!params.empty() ? " " + params[0] : "") << "' to '" << new_message << "' using '" << r->source_message << "'";
 			source.service = BotInfo::Find(r->client, true);
 			if (!source.service)
@@ -145,14 +146,14 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		Rewrite *r = Rewrite::Find(!source.c ? source.service->nick : "", source.command);
 		if (r != NULL && !r->desc.empty())
 		{
 			source.Reply(r->desc);
 			size_t sz = r->target_message.find(' ');
-			source.Reply(_("This command is an alias to the command %s."), sz != Anope::string::npos ? r->target_message.substr(0, sz).c_str() : r->target_message.c_str());
+			source.Reply(_("This command is an alias to the command %s."), sz != Warden::string::npos ? r->target_message.substr(0, sz).c_str() : r->target_message.c_str());
 			return true;
 		}
 		return false;
@@ -165,7 +166,7 @@ class ModuleRewrite final
 	RewriteCommand cmdrewrite;
 
 public:
-	ModuleRewrite(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR | EXTRA), cmdrewrite(this)
+	ModuleRewrite(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR | EXTRA), cmdrewrite(this)
 	{
 	}
 
@@ -180,10 +181,10 @@ public:
 
 			Rewrite rw;
 
-			rw.client = block.Get<const Anope::string>("service");
-			rw.source_message = block.Get<const Anope::string>("rewrite_source");
-			rw.target_message = block.Get<const Anope::string>("rewrite_target");
-			rw.desc = block.Get<const Anope::string>("rewrite_description");
+			rw.client = block.Get<const Warden::string>("service");
+			rw.source_message = block.Get<const Warden::string>("rewrite_source");
+			rw.target_message = block.Get<const Warden::string>("rewrite_target");
+			rw.desc = block.Get<const Warden::string>("rewrite_description");
 
 			if (rw.client.empty() || rw.source_message.empty() || rw.target_message.empty())
 				continue;

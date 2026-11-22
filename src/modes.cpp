@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2008-2011 Adam <Adam@anope.org>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -27,7 +28,7 @@ struct StackerInfo;
 static std::map<User *, StackerInfo *> UserStackerObjects;
 static std::map<Channel *, StackerInfo *> ChannelStackerObjects;
 
-/* Array of all modes Anope knows about.*/
+/* Array of all modes Warden knows about.*/
 static std::vector<ChannelMode *> ChannelModes;
 static std::vector<UserMode *> UserModes;
 
@@ -37,8 +38,8 @@ static std::vector<UserMode *> UserModes;
 static std::vector<ChannelMode *> ChannelModesIdx;
 static std::vector<UserMode *> UserModesIdx;
 
-static std::map<Anope::string, ChannelMode *> ChannelModesByName;
-static std::map<Anope::string, UserMode *> UserModesByName;
+static std::map<Warden::string, ChannelMode *> ChannelModesByName;
+static std::map<Warden::string, UserMode *> UserModesByName;
 
 /* Sorted by status */
 static std::vector<ChannelModeStatus *> ChannelModesByStatus;
@@ -64,7 +65,7 @@ struct StackerInfo final
 	void AddMode(Mode *mode, bool set, const ModeData &data);
 };
 
-ChannelStatus::ChannelStatus(const Anope::string &m)
+ChannelStatus::ChannelStatus(const Warden::string &m)
 {
 	for (const auto mc : m)
 	{
@@ -111,33 +112,33 @@ void ChannelStatus::Clear()
 	modes.clear();
 }
 
-Anope::string ChannelStatus::BuildModePrefixList() const
+Warden::string ChannelStatus::BuildModePrefixList() const
 {
-	Anope::string ret;
+	Warden::string ret;
 
 	for (const auto *cm : modes)
 	{
-		const auto *cms = anope_dynamic_static_cast<const ChannelModeStatus *>(cm);
+		const auto *cms = warden_dynamic_static_cast<const ChannelModeStatus *>(cm);
 		ret += cms->symbol;
 	}
 
 	return ret;
 }
 
-Mode::Mode(const Anope::string &mname, ModeClass mcl, char mch, ModeType mt) : name(mname), mclass(mcl), mchar(mch), type(mt)
+Mode::Mode(const Warden::string &mname, ModeClass mcl, char mch, ModeType mt) : name(mname), mclass(mcl), mchar(mch), type(mt)
 {
 }
 
-UserMode::UserMode(const Anope::string &un, char mch) : Mode(un, MC_USER, mch, MODE_REGULAR)
+UserMode::UserMode(const Warden::string &un, char mch) : Mode(un, MC_USER, mch, MODE_REGULAR)
 {
 }
 
-UserModeParam::UserModeParam(const Anope::string &un, char mch) : UserMode(un, mch)
+UserModeParam::UserModeParam(const Warden::string &un, char mch) : UserMode(un, mch)
 {
 	this->type = MODE_PARAM;
 }
 
-ChannelMode::ChannelMode(const Anope::string &cm, char mch) : Mode(cm, MC_CHANNEL, mch, MODE_REGULAR)
+ChannelMode::ChannelMode(const Warden::string &cm, char mch) : Mode(cm, MC_CHANNEL, mch, MODE_REGULAR)
 {
 }
 
@@ -148,12 +149,12 @@ bool ChannelMode::CanSet(User *u, Channel *c) const
 	return MOD_RESULT != EVENT_STOP;
 }
 
-ChannelMode *ChannelMode::Wrap(Anope::string &param)
+ChannelMode *ChannelMode::Wrap(Warden::string &param)
 {
 	return this;
 }
 
-ChannelMode *ChannelMode::Unwrap(Anope::string &param)
+ChannelMode *ChannelMode::Unwrap(Warden::string &param)
 {
 	for (auto *listener : listeners)
 	{
@@ -165,35 +166,35 @@ ChannelMode *ChannelMode::Unwrap(Anope::string &param)
 	return this;
 }
 
-ChannelMode *ChannelMode::Unwrap(ChannelMode *, Anope::string &param)
+ChannelMode *ChannelMode::Unwrap(ChannelMode *, Warden::string &param)
 {
 	throw CoreException("Unwrap in channel mode");
 }
 
-ChannelModeList::ChannelModeList(const Anope::string &cm, char mch) : ChannelMode(cm, mch)
+ChannelModeList::ChannelModeList(const Warden::string &cm, char mch) : ChannelMode(cm, mch)
 {
 	this->type = MODE_LIST;
 }
 
-bool ChannelModeList::IsValid(Anope::string &mask) const
+bool ChannelModeList::IsValid(Warden::string &mask) const
 {
 	if (name == "BAN" || name == "EXCEPT" || name == "INVITEOVERRIDE")
 		mask = IRCD->NormalizeMask(mask);
 	return true;
 }
 
-ChannelModeParam::ChannelModeParam(const Anope::string &cm, char mch, bool ma) : ChannelMode(cm, mch), minus_no_arg(ma)
+ChannelModeParam::ChannelModeParam(const Warden::string &cm, char mch, bool ma) : ChannelMode(cm, mch), minus_no_arg(ma)
 {
 	this->type = MODE_PARAM;
 }
 
-ChannelModeStatus::ChannelModeStatus(const Anope::string &mname, char modeChar, char msymbol, unsigned mlevel) : ChannelMode(mname, modeChar), symbol(msymbol), level(mlevel)
+ChannelModeStatus::ChannelModeStatus(const Warden::string &mname, char modeChar, char msymbol, unsigned mlevel) : ChannelMode(mname, modeChar), symbol(msymbol), level(mlevel)
 {
 	this->type = MODE_STATUS;
 }
 
 template<typename T>
-ChannelModeVirtual<T>::ChannelModeVirtual(const Anope::string &mname, const Anope::string &basename) : T(mname, 0)
+ChannelModeVirtual<T>::ChannelModeVirtual(const Warden::string &mname, const Warden::string &basename) : T(mname, 0)
 	, base(basename)
 {
 	basech = ModeManager::FindChannelModeByName(base);
@@ -230,7 +231,7 @@ ChannelMode *ChannelModeVirtual<T>::GetBaseMode()
 }
 
 template<typename T>
-ChannelMode *ChannelModeVirtual<T>::Wrap(Anope::string &param)
+ChannelMode *ChannelModeVirtual<T>::Wrap(Warden::string &param)
 {
 	return basech;
 }
@@ -248,9 +249,9 @@ bool UserModeNoone::CanSet(User *source, User *target) const
 	return false;
 }
 
-bool ChannelModeKey::IsValid(Anope::string &value) const
+bool ChannelModeKey::IsValid(Warden::string &value) const
 {
-	return !value.empty() && value.find(':') == Anope::string::npos && value.find(',') == Anope::string::npos;
+	return !value.empty() && value.find(':') == Warden::string::npos && value.find(',') == Warden::string::npos;
 }
 
 bool ChannelModeOperOnly::CanSet(User *u, Channel *c) const
@@ -349,7 +350,7 @@ bool ModeManager::AddUserMode(UserMode *um)
 
 	if (um->name.empty())
 	{
-		um->name = Anope::ToString(++GenericUserModes);
+		um->name = Warden::ToString(++GenericUserModes);
 		Log() << "ModeManager: Added generic support for user mode " << um->mchar;
 	}
 
@@ -376,7 +377,7 @@ bool ModeManager::AddChannelMode(ChannelMode *cm)
 
 	if (cm->name.empty())
 	{
-		cm->name = Anope::ToString(++GenericChannelModes);
+		cm->name = Warden::ToString(++GenericChannelModes);
 		Log() << "ModeManager: Added generic support for channel mode " << cm->mchar;
 	}
 
@@ -390,7 +391,7 @@ bool ModeManager::AddChannelMode(ChannelMode *cm)
 
 	if (cm->type == MODE_STATUS)
 	{
-		auto *cms = anope_dynamic_static_cast<ChannelModeStatus *>(cm);
+		auto *cms = warden_dynamic_static_cast<ChannelModeStatus *>(cm);
 		unsigned want = cms->symbol;
 		if (want >= ChannelModesIdx.size())
 			ChannelModesIdx.resize(want + 1);
@@ -453,7 +454,7 @@ void ModeManager::RemoveChannelMode(ChannelMode *cm)
 
 	if (cm->type == MODE_STATUS)
 	{
-		auto *cms = anope_dynamic_static_cast<ChannelModeStatus *>(cm);
+		auto *cms = warden_dynamic_static_cast<ChannelModeStatus *>(cm);
 		unsigned want = cms->symbol;
 
 		if (want >= ChannelModesIdx.size())
@@ -494,7 +495,7 @@ UserMode *ModeManager::FindUserModeByChar(char mode)
 	return UserModesIdx[want];
 }
 
-ChannelMode *ModeManager::FindChannelModeByName(const Anope::string &name)
+ChannelMode *ModeManager::FindChannelModeByName(const Warden::string &name)
 {
 	auto it = ChannelModesByName.find(name);
 	if (it != ChannelModesByName.end())
@@ -502,7 +503,7 @@ ChannelMode *ModeManager::FindChannelModeByName(const Anope::string &name)
 	return NULL;
 }
 
-UserMode *ModeManager::FindUserModeByName(const Anope::string &name)
+UserMode *ModeManager::FindUserModeByName(const Warden::string &name)
 {
 	auto it = UserModesByName.find(name);
 	if (it != UserModesByName.end())
@@ -552,7 +553,7 @@ void ModeManager::RebuildStatusModes()
 	for (auto *cm : ChannelModesIdx)
 	{
 		if (cm && cm->type == MODE_STATUS && std::find(ChannelModesByStatus.begin(), ChannelModesByStatus.end(), cm) == ChannelModesByStatus.end())
-			ChannelModesByStatus.push_back(anope_dynamic_static_cast<ChannelModeStatus *>(cm));
+			ChannelModesByStatus.push_back(warden_dynamic_static_cast<ChannelModeStatus *>(cm));
 	}
 	std::sort(ChannelModesByStatus.begin(), ChannelModesByStatus.end(), statuscmp);
 }
@@ -687,14 +688,14 @@ void ModeManager::StackerDel(Mode *m)
 	}
 }
 
-Entry::Entry(const Anope::string &m, const Anope::string &n, bool r)
+Entry::Entry(const Warden::string &m, const Warden::string &n, bool r)
 	: name(n)
 	, mask(m)
 {
 	const auto first_sep = this->mask.find_first_of("!@");
-	if (first_sep == Anope::string::npos)
+	if (first_sep == Warden::string::npos)
 	{
-		if (this->mask.find_first_of(".:") == Anope::string::npos)
+		if (this->mask.find_first_of(".:") == Warden::string::npos)
 			this->nick = this->mask;
 		else
 			this->host = this->mask;
@@ -704,7 +705,7 @@ Entry::Entry(const Anope::string &m, const Anope::string &n, bool r)
 		this->nick = this->mask.substr(0, first_sep);
 
 		const auto second_sep = this->mask.find('@');
-		if (second_sep == Anope::string::npos)
+		if (second_sep == Warden::string::npos)
 			this->user = this->mask.substr(first_sep + 1);
 		else
 		{
@@ -722,7 +723,7 @@ Entry::Entry(const Anope::string &m, const Anope::string &n, bool r)
 	if (r)
 	{
 		const auto real_sep = this->host.find('#');
-		if (real_sep != Anope::string::npos)
+		if (real_sep != Warden::string::npos)
 		{
 			this->real = this->host.substr(real_sep + 1);
 			this->host.erase(real_sep);
@@ -730,24 +731,24 @@ Entry::Entry(const Anope::string &m, const Anope::string &n, bool r)
 	}
 
 	// If the mask is all *'s it will match anything, so just clear it.
-	if (this->nick.find_first_not_of("*") == Anope::string::npos)
+	if (this->nick.find_first_not_of("*") == Warden::string::npos)
 		this->nick.clear();
 
-	if (this->user.find_first_not_of("*") == Anope::string::npos)
+	if (this->user.find_first_not_of("*") == Warden::string::npos)
 		this->user.clear();
 
-	if (this->host.find_first_not_of("*") == Anope::string::npos)
+	if (this->host.find_first_not_of("*") == Warden::string::npos)
 		this->host.clear();
 	else
 	{
 		// Host might be a CIDR range.
 		const auto cidr_sep = this->host.find_last_of('/');
-		if (cidr_sep != Anope::string::npos)
+		if (cidr_sep != Warden::string::npos)
 		{
 			sockaddrs cidr_addr(this->host.substr(0, cidr_sep));
 			const auto cidr_range = this->host.substr(cidr_sep + 1);
 
-			const auto range = Anope::TryConvert<unsigned short>(cidr_range);
+			const auto range = Warden::TryConvert<unsigned short>(cidr_range);
 			if (cidr_addr.valid() && range.has_value())
 			{
 				this->cidr_len = range.value();
@@ -757,18 +758,18 @@ Entry::Entry(const Anope::string &m, const Anope::string &n, bool r)
 		}
 	}
 
-	if (this->real.find_first_not_of("*") == Anope::string::npos)
+	if (this->real.find_first_not_of("*") == Warden::string::npos)
 		this->real.clear();
 }
 
-Anope::string Entry::GetMask() const
+Warden::string Entry::GetMask() const
 {
 	return this->mask;
 }
 
-Anope::string Entry::GetCleanMask() const
+Warden::string Entry::GetCleanMask() const
 {
-	Anope::string cmask;
+	Warden::string cmask;
 	cmask.append(this->nick.empty() ? "*" : this->nick);
 	cmask.push_back('!');
 	cmask.append(this->user.empty() ? "*" : this->user);
@@ -780,13 +781,13 @@ Anope::string Entry::GetCleanMask() const
 		case AF_INET:
 		{
 			if (cidr_len < 32)
-				cmask.append("/").append(Anope::ToString(cidr_len));
+				cmask.append("/").append(Warden::ToString(cidr_len));
 			break;
 		}
 		case AF_INET6:
 		{
 			if (cidr_len < 128)
-				cmask.append("/").append(Anope::ToString(cidr_len));
+				cmask.append("/").append(Warden::ToString(cidr_len));
 			break;
 		}
 	}
@@ -810,7 +811,7 @@ bool Entry::Matches(User *u, bool full) const
 		ChannelMode *cm = ModeManager::FindChannelModeByName(this->name);
 		if (cm != NULL && cm->type == MODE_LIST)
 		{
-			auto *cml = anope_dynamic_static_cast<ChannelModeList *>(cm);
+			auto *cml = warden_dynamic_static_cast<ChannelModeList *>(cm);
 			return cml->Matches(u, this);
 		}
 	}
@@ -822,10 +823,10 @@ bool Entry::Matches(User *u, bool full) const
 
 	bool ret = true;
 
-	if (!this->nick.empty() && !Anope::Match(u->nick, this->nick))
+	if (!this->nick.empty() && !Warden::Match(u->nick, this->nick))
 		ret = false;
 
-	if (!this->user.empty() && !Anope::Match(u->GetVIdent(), this->user) && (!full || !Anope::Match(u->GetIdent(), this->user)))
+	if (!this->user.empty() && !Warden::Match(u->GetVIdent(), this->user) && (!full || !Warden::Match(u->GetIdent(), this->user)))
 		ret = false;
 
 	if (this->cidr_len && full)
@@ -840,11 +841,11 @@ bool Entry::Matches(User *u, bool full) const
 			ret = false;
 		}
 	}
-	else if (!this->host.empty() && !Anope::Match(u->GetDisplayedHost(), this->host) && !Anope::Match(u->GetCloakedHost(), this->host) &&
-		(!full || (!Anope::Match(u->host, this->host) && !Anope::Match(u->ip.addr(), this->host))))
+	else if (!this->host.empty() && !Warden::Match(u->GetDisplayedHost(), this->host) && !Warden::Match(u->GetCloakedHost(), this->host) &&
+		(!full || (!Warden::Match(u->host, this->host) && !Warden::Match(u->ip.addr(), this->host))))
 		ret = false;
 
-	if (!this->real.empty() && !Anope::Match(u->realname, this->real))
+	if (!this->real.empty() && !Warden::Match(u->realname, this->real))
 		ret = false;
 
 	return ret;

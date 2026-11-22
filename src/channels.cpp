@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -31,7 +32,7 @@
 channel_map ChannelList;
 std::vector<Channel *> Channel::deleting;
 
-Channel::Channel(const Anope::string &nname, time_t ts)
+Channel::Channel(const Warden::string &nname, time_t ts)
 	: name(nname)
 	, created(ts)
 {
@@ -106,7 +107,7 @@ void Channel::CheckModes()
 		return;
 
 	/* Check for mode bouncing */
-	if (this->chanserv_modetime == Anope::CurTime && this->server_modetime == Anope::CurTime && this->server_modecount >= 3 && this->chanserv_modecount >= 3)
+	if (this->chanserv_modetime == Warden::CurTime && this->server_modetime == Warden::CurTime && this->server_modecount >= 3 && this->chanserv_modecount >= 3)
 	{
 		Log() << "Warning: unable to set modes on channel " << this->name << ". Are your servers' U:lines configured correctly?";
 		this->bouncy_modes = true;
@@ -190,12 +191,12 @@ bool Channel::HasUserStatus(User *u, ChannelModeStatus *cms)
 	return false;
 }
 
-bool Channel::HasUserStatus(User *u, const Anope::string &mname)
+bool Channel::HasUserStatus(User *u, const Warden::string &mname)
 {
-	return HasUserStatus(u, anope_dynamic_static_cast<ChannelModeStatus *>(ModeManager::FindChannelModeByName(mname)));
+	return HasUserStatus(u, warden_dynamic_static_cast<ChannelModeStatus *>(ModeManager::FindChannelModeByName(mname)));
 }
 
-bool Channel::HasMode(const Anope::string &mname, const Anope::string &param)
+bool Channel::HasMode(const Warden::string &mname, const Warden::string &param)
 {
 	if (param.empty())
 		return modes.find(mname) != modes.end();
@@ -216,9 +217,9 @@ size_t Channel::CountModeList(ChannelMode *cm)
 	return total;
 }
 
-Anope::string Channel::GetModes(bool complete, bool plus)
+Warden::string Channel::GetModes(bool complete, bool plus)
 {
-	Anope::string res, params;
+	Warden::string res, params;
 
 	for (const auto &[mode, data] : this->modes)
 	{
@@ -232,7 +233,7 @@ Anope::string Channel::GetModes(bool complete, bool plus)
 		{
 			ChannelModeParam *cmp = NULL;
 			if (cm->type == MODE_PARAM)
-				cmp = anope_dynamic_static_cast<ChannelModeParam *>(cm);
+				cmp = warden_dynamic_static_cast<ChannelModeParam *>(cm);
 
 			if (plus || !cmp || !cmp->minus_no_arg)
 				params += " " + data.value;
@@ -247,9 +248,9 @@ const Channel::ModeList &Channel::GetModes() const
 	return this->modes;
 }
 
-std::vector<Anope::string> Channel::GetModeList(const Anope::string &mname)
+std::vector<Warden::string> Channel::GetModeList(const Warden::string &mname)
 {
-	std::vector<Anope::string> r;
+	std::vector<Warden::string> r;
 	std::transform(modes.lower_bound(mname), modes.upper_bound(mname), std::back_inserter(r), [](const auto &mode) {
 		return mode.second.value;
 	});
@@ -263,7 +264,7 @@ void Channel::SetModeInternal(MessageSource &setter, ChannelMode *ocm, const Mod
 
 	// We build a mode data which has more than what the caller gives us.
 	ModeData mdata;
-	mdata.set_at = data.set_at ? data.set_at : Anope::CurTime;
+	mdata.set_at = data.set_at ? data.set_at : Warden::CurTime;
 	mdata.set_by = data.set_by.empty() ? setter.GetName() : data.set_by;
 	mdata.value = data.value;
 	auto *cm = ocm->Unwrap(mdata.value);
@@ -316,7 +317,7 @@ void Channel::SetModeInternal(MessageSource &setter, ChannelMode *ocm, const Mod
 
 	if (cm->type == MODE_LIST)
 	{
-		auto *cml = anope_dynamic_static_cast<ChannelModeList *>(cm);
+		auto *cml = warden_dynamic_static_cast<ChannelModeList *>(cm);
 		cml->OnAdd(this, mdata.value);
 	}
 
@@ -329,12 +330,12 @@ void Channel::SetModeInternal(MessageSource &setter, ChannelMode *ocm, const Mod
 	this->CheckModes();
 }
 
-void Channel::RemoveModeInternal(MessageSource &setter, ChannelMode *ocm, const Anope::string &oparam, bool enforce_mlock)
+void Channel::RemoveModeInternal(MessageSource &setter, ChannelMode *ocm, const Warden::string &oparam, bool enforce_mlock)
 {
 	if (!ocm)
 		return;
 
-	Anope::string param = oparam;
+	Warden::string param = oparam;
 	ChannelMode *cm = ocm->Unwrap(param);
 
 	EventReturn MOD_RESULT;
@@ -386,7 +387,7 @@ void Channel::RemoveModeInternal(MessageSource &setter, ChannelMode *ocm, const 
 
 	if (cm->type == MODE_LIST)
 	{
-		auto *cml = anope_dynamic_static_cast<ChannelModeList *>(cm);
+		auto *cml = warden_dynamic_static_cast<ChannelModeList *>(cm);
 		cml->OnDel(this, param);
 	}
 
@@ -415,7 +416,7 @@ void Channel::SetMode(BotInfo *bi, ChannelMode *cm, const ModeData &data, bool e
 
 	// We build a mode data which has more than what the caller gives us.
 	ModeData mdata;
-	mdata.set_at = data.set_at ? data.set_at : Anope::CurTime;
+	mdata.set_at = data.set_at ? data.set_at : Warden::CurTime;
 	mdata.set_by = data.set_by.empty() ? (bi ? bi->nick : Me->GetName()) : data.set_by;
 	mdata.value = data.value;
 
@@ -424,23 +425,23 @@ void Channel::SetMode(BotInfo *bi, ChannelMode *cm, const ModeData &data, bool e
 		return;
 	else if (cm->type == MODE_PARAM)
 	{
-		auto *cmp = anope_dynamic_static_cast<ChannelModeParam *>(cm);
+		auto *cmp = warden_dynamic_static_cast<ChannelModeParam *>(cm);
 		if (!cmp->IsValid(mdata.value))
 			return;
 
-		Anope::string cparam;
+		Warden::string cparam;
 		if (GetParam(cm->name, cparam) && cparam.equals_cs(mdata.value))
 			return;
 	}
 	else if (cm->type == MODE_STATUS)
 	{
 		User *u = User::Find(mdata.value);
-		if (!u || HasUserStatus(u, anope_dynamic_static_cast<ChannelModeStatus *>(cm)))
+		if (!u || HasUserStatus(u, warden_dynamic_static_cast<ChannelModeStatus *>(cm)))
 			return;
 	}
 	else if (cm->type == MODE_LIST)
 	{
-		auto *cml = anope_dynamic_static_cast<ChannelModeList *>(cm);
+		auto *cml = warden_dynamic_static_cast<ChannelModeList *>(cm);
 
 		if (!cml->IsValid(mdata.value))
 			return;
@@ -451,10 +452,10 @@ void Channel::SetMode(BotInfo *bi, ChannelMode *cm, const ModeData &data, bool e
 
 	if (Me->IsSynced())
 	{
-		if (this->chanserv_modetime != Anope::CurTime)
+		if (this->chanserv_modetime != Warden::CurTime)
 		{
 			this->chanserv_modecount = 0;
-			this->chanserv_modetime = Anope::CurTime;
+			this->chanserv_modetime = Warden::CurTime;
 		}
 
 		this->chanserv_modecount++;
@@ -467,12 +468,12 @@ void Channel::SetMode(BotInfo *bi, ChannelMode *cm, const ModeData &data, bool e
 	SetModeInternal(ms, wcm, mdata, enforce_mlock);
 }
 
-void Channel::SetMode(BotInfo *bi, const Anope::string &mname, const ModeData &data, bool enforce_mlock)
+void Channel::SetMode(BotInfo *bi, const Warden::string &mname, const ModeData &data, bool enforce_mlock)
 {
 	SetMode(bi, ModeManager::FindChannelModeByName(mname), data, enforce_mlock);
 }
 
-void Channel::RemoveMode(BotInfo *bi, ChannelMode *cm, const Anope::string &wparam, bool enforce_mlock)
+void Channel::RemoveMode(BotInfo *bi, ChannelMode *cm, const Warden::string &wparam, bool enforce_mlock)
 {
 	if (!cm)
 		return;
@@ -482,14 +483,14 @@ void Channel::RemoveMode(BotInfo *bi, ChannelMode *cm, const Anope::string &wpar
 		return;
 
 	/* Unwrap to be sure we have the internal representation */
-	Anope::string param = wparam;
+	Warden::string param = wparam;
 	cm = cm->Unwrap(param);
 
 	/* Don't unset status that aren't set */
 	if (cm->type == MODE_STATUS)
 	{
 		User *u = User::Find(param);
-		if (!u || !HasUserStatus(u, anope_dynamic_static_cast<ChannelModeStatus *>(cm)))
+		if (!u || !HasUserStatus(u, warden_dynamic_static_cast<ChannelModeStatus *>(cm)))
 			return;
 	}
 	else if (cm->type == MODE_LIST)
@@ -502,17 +503,17 @@ void Channel::RemoveMode(BotInfo *bi, ChannelMode *cm, const Anope::string &wpar
 	if (cm->type == MODE_PARAM)
 	{
 		param.clear();
-		auto *cmp = anope_dynamic_static_cast<ChannelModeParam *>(cm);
+		auto *cmp = warden_dynamic_static_cast<ChannelModeParam *>(cm);
 		if (!cmp->minus_no_arg)
 			this->GetParam(cmp->name, param);
 	}
 
 	if (Me->IsSynced())
 	{
-		if (this->chanserv_modetime != Anope::CurTime)
+		if (this->chanserv_modetime != Warden::CurTime)
 		{
 			this->chanserv_modecount = 0;
-			this->chanserv_modetime = Anope::CurTime;
+			this->chanserv_modetime = Warden::CurTime;
 		}
 
 		this->chanserv_modecount++;
@@ -526,12 +527,12 @@ void Channel::RemoveMode(BotInfo *bi, ChannelMode *cm, const Anope::string &wpar
 	RemoveModeInternal(ms, wcm, param, enforce_mlock);
 }
 
-void Channel::RemoveMode(BotInfo *bi, const Anope::string &mname, const Anope::string &param, bool enforce_mlock)
+void Channel::RemoveMode(BotInfo *bi, const Warden::string &mname, const Warden::string &param, bool enforce_mlock)
 {
 	RemoveMode(bi, ModeManager::FindChannelModeByName(mname), param, enforce_mlock);
 }
 
-bool Channel::GetParam(const Anope::string &mname, Anope::string &target) const
+bool Channel::GetParam(const Warden::string &mname, Warden::string &target) const
 {
 	const auto it = this->modes.find(mname);
 
@@ -548,15 +549,15 @@ bool Channel::GetParam(const Anope::string &mname, Anope::string &target) const
 
 void Channel::SetModes(BotInfo *bi, bool enforce_mlock, const char *cmodes, ...)
 {
-	Anope::string buf;
-	ANOPE_FORMAT(cmodes, cmodes, buf);
+	Warden::string buf;
+	WARDEN_FORMAT(cmodes, cmodes, buf);
 	SetModes(bi, enforce_mlock, buf);
 }
 
 
-void Channel::SetModes(BotInfo *bi, bool enforce_mlock, const Anope::string &cmodes)
+void Channel::SetModes(BotInfo *bi, bool enforce_mlock, const Warden::string &cmodes)
 {
-	Anope::string modebuf, sbuf;
+	Warden::string modebuf, sbuf;
 	int add = -1;
 	Reference<Channel> this_reference(this);
 
@@ -615,7 +616,7 @@ void Channel::SetModes(BotInfo *bi, bool enforce_mlock, const Anope::string &cmo
 	}
 }
 
-void Channel::SetModesInternal(MessageSource &source, const Anope::string &modes, const std::vector<Anope::string> &params, time_t ts, bool enforce_mlock)
+void Channel::SetModesInternal(MessageSource &source, const Warden::string &modes, const std::vector<Warden::string> &params, time_t ts, bool enforce_mlock)
 {
 	if (!ts)
 		;
@@ -635,8 +636,8 @@ void Channel::SetModesInternal(MessageSource &source, const Anope::string &modes
 	/* Removing channel modes *may* delete this channel */
 	Reference<Channel> this_reference(this);
 
-	Anope::string modestring;
-	Anope::string paramstring;
+	Warden::string modestring;
+	Warden::string paramstring;
 	int add = -1;
 	bool changed = false;
 	auto paramit = params.begin();
@@ -670,7 +671,7 @@ void Channel::SetModesInternal(MessageSource &source, const Anope::string &modes
 
 		ModeData data;
 		data.set_by = source.GetName();
-		data.set_at = ts ? ts : Anope::CurTime;
+		data.set_at = ts ? ts : Warden::CurTime;
 
 		if (cm->type == MODE_REGULAR)
 		{
@@ -684,7 +685,7 @@ void Channel::SetModesInternal(MessageSource &source, const Anope::string &modes
 		}
 		else if (cm->type == MODE_PARAM)
 		{
-			auto *cmp = anope_dynamic_static_cast<ChannelModeParam *>(cm);
+			auto *cmp = warden_dynamic_static_cast<ChannelModeParam *>(cm);
 
 			if (!add && cmp->minus_no_arg)
 			{
@@ -720,10 +721,10 @@ void Channel::SetModesInternal(MessageSource &source, const Anope::string &modes
 
 	if (changed && source.GetServer() && source.GetServer()->IsSynced())
 	{
-		if (Anope::CurTime != this->server_modetime)
+		if (Warden::CurTime != this->server_modetime)
 		{
 			this->server_modecount = 0;
-			this->server_modetime = Anope::CurTime;
+			this->server_modetime = Warden::CurTime;
 		}
 
 		++this->server_modecount;
@@ -738,7 +739,7 @@ void Channel::SetModesInternal(MessageSource &source, const Anope::string &modes
 		this->CheckModes();
 }
 
-bool Channel::MatchesList(User *u, const Anope::string &mode)
+bool Channel::MatchesList(User *u, const Warden::string &mode)
 {
 	if (!this->HasMode(mode))
 		return false;
@@ -753,7 +754,7 @@ bool Channel::MatchesList(User *u, const Anope::string &mode)
 	return false;
 }
 
-void Channel::KickInternal(const MessageSource &source, const Anope::string &nick, const Anope::string &reason)
+void Channel::KickInternal(const MessageSource &source, const Warden::string &nick, const Warden::string &reason)
 {
 	User *sender = source.GetUser();
 	User *target = User::Find(nick);
@@ -768,7 +769,7 @@ void Channel::KickInternal(const MessageSource &source, const Anope::string &nic
 	else
 		Log(target, this, "kick") << "was kicked by " << source.GetName() << " (" << reason << ")";
 
-	Anope::string chname = this->name;
+	Warden::string chname = this->name;
 
 	auto *memb = target->FindChannel(this);
 	if (memb == NULL)
@@ -786,12 +787,12 @@ void Channel::KickInternal(const MessageSource &source, const Anope::string &nic
 
 bool Channel::Kick(BotInfo *bi, User *u, const char *reason, ...)
 {
-	Anope::string buf;
-	ANOPE_FORMAT(reason, reason, buf);
+	Warden::string buf;
+	WARDEN_FORMAT(reason, reason, buf);
 	return Kick(bi, u, buf);
 }
 
-bool Channel::Kick(BotInfo *bi, User *u, const Anope::string &reason)
+bool Channel::Kick(BotInfo *bi, User *u, const Warden::string &reason)
 {
 	/* Do not kick protected clients or Ulines */
 	if (u->IsProtected())
@@ -809,19 +810,19 @@ bool Channel::Kick(BotInfo *bi, User *u, const Anope::string &reason)
 	return true;
 }
 
-void Channel::ChangeTopicInternal(User *u, const Anope::string &user, const Anope::string &newtopic, time_t ts)
+void Channel::ChangeTopicInternal(User *u, const Warden::string &user, const Warden::string &newtopic, time_t ts)
 {
 	this->topic = newtopic;
 	this->topic_setter = u ? u->nick : user;
 	this->topic_ts = ts;
-	this->topic_time = Anope::CurTime;
+	this->topic_time = Warden::CurTime;
 
 	Log(LOG_DEBUG) << "Topic of " << this->name << " changed by " << this->topic_setter << " to " << newtopic;
 
 	FOREACH_MOD(OnTopicUpdated, (u, this, user, this->topic));
 }
 
-void Channel::ChangeTopic(const Anope::string &user, const Anope::string &newtopic, time_t ts)
+void Channel::ChangeTopic(const Warden::string &user, const Warden::string &newtopic, time_t ts)
 {
 	this->topic = newtopic;
 	this->topic_setter = user;
@@ -830,7 +831,7 @@ void Channel::ChangeTopic(const Anope::string &user, const Anope::string &newtop
 	IRCD->SendTopic(this->WhoSends(), this);
 
 	/* Now that the topic is set update the time set. This is *after* we set it so the protocol modules are able to tell the old last set time */
-	this->topic_time = Anope::CurTime;
+	this->topic_time = Warden::CurTime;
 
 	FOREACH_MOD(OnTopicUpdated, (NULL, this, user, this->topic));
 }
@@ -887,7 +888,7 @@ void Channel::SetCorrectModes(User *user, bool give_modes)
 	}
 }
 
-bool Channel::Unban(User *u, const Anope::string &mode, bool full)
+bool Channel::Unban(User *u, const Warden::string &mode, bool full)
 {
 	if (!this->HasMode(mode))
 		return false;
@@ -917,7 +918,7 @@ bool Channel::CheckKick(User *user)
 	if (user->IsProtected())
 		return false;
 
-	Anope::string mask, reason;
+	Warden::string mask, reason;
 
 	EventReturn MOD_RESULT;
 	FOREACH_RESULT(OnCheckKick, MOD_RESULT, (user, this, mask, reason));
@@ -954,7 +955,7 @@ BotInfo *Channel::WhoSends() const
 	return NULL;
 }
 
-bool Channel::ClearModes(User* user, const Anope::string &mode, bool self)
+bool Channel::ClearModes(User* user, const Warden::string &mode, bool self)
 {
 	const auto it = IRCD->CanClearModes.find("BAN");
 	if (it != IRCD->CanClearModes.end() && (!self || it->second))
@@ -978,7 +979,7 @@ bool Channel::ClearModes(User* user, const Anope::string &mode, bool self)
 	return unbanned;
 }
 
-Channel *Channel::Find(const Anope::string &name)
+Channel *Channel::Find(const Warden::string &name)
 {
 	auto it = ChannelList.find(name);
 
@@ -987,7 +988,7 @@ Channel *Channel::Find(const Anope::string &name)
 	return NULL;
 }
 
-Channel *Channel::FindOrCreate(const Anope::string &name, bool &created, time_t ts)
+Channel *Channel::FindOrCreate(const Warden::string &name, bool &created, time_t ts)
 {
 	Channel *&chan = ChannelList[name];
 	created = chan == NULL;

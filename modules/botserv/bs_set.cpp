@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,12 +25,12 @@ public:
 		this->SetSyntax(_("\037option\037 \037(channel | bot)\037 \037settings\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -42,7 +43,7 @@ public:
 		     hide_registered_commands = Config->GetBlock("options").Get<bool>("hideregisteredcommands");
 
 		HelpWrapper help;
-		Anope::string this_name = source.command;
+		Warden::string this_name = source.command;
 		for (const auto &[c_name, info] : source.service->commands)
 		{
 			if (c_name.find_ci(this_name + " ") == 0)
@@ -81,11 +82,11 @@ public:
 	class UnbanTimer final
 		: public Timer
 	{
-		Anope::string chname;
-		Anope::string mask;
+		Warden::string chname;
+		Warden::string mask;
 
 	public:
-		UnbanTimer(Module *creator, const Anope::string &ch, const Anope::string &bmask, time_t t)
+		UnbanTimer(Module *creator, const Warden::string &ch, const Warden::string &bmask, time_t t)
 			: Timer(creator, t)
 			, chname(ch)
 			, mask(bmask)
@@ -101,16 +102,16 @@ public:
 		}
 	};
 
-	CommandBSSetBanExpire(Module *creator, const Anope::string &sname = "botserv/set/banexpire") : Command(creator, sname, 2, 2)
+	CommandBSSetBanExpire(Module *creator, const Warden::string &sname = "botserv/set/banexpire") : Command(creator, sname, 2, 2)
 	{
 		this->SetDesc(_("Configure the time bot bans expire in"));
 		this->SetSyntax(_("\037channel\037 \037time\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &chan = params[0];
-		const Anope::string &arg = params[1];
+		const Warden::string &chan = params[0];
+		const Warden::string &arg = params[1];
 
 		ChannelInfo *ci = ChannelInfo::Find(chan);
 		if (ci == NULL)
@@ -126,13 +127,13 @@ public:
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
 		}
 
-		time_t t = Anope::DoTime(arg);
+		time_t t = Warden::DoTime(arg);
 		if (t < 0)
 		{
 			source.Reply(BAD_EXPIRY_TIME);
@@ -154,10 +155,10 @@ public:
 		if (!ci->banexpire)
 			source.Reply(_("Bot bans will no longer automatically expire."));
 		else
-			source.Reply(_("Bot bans will automatically expire after %s."), Anope::Duration(ci->banexpire, source.GetAccount()).c_str());
+			source.Reply(_("Bot bans will automatically expire after %s."), Warden::Duration(ci->banexpire, source.GetAccount()).c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -182,18 +183,18 @@ class CommandBSSetPrivate final
 	: public Command
 {
 public:
-	CommandBSSetPrivate(Module *creator, const Anope::string &sname = "botserv/set/private") : Command(creator, sname, 2, 2)
+	CommandBSSetPrivate(Module *creator, const Warden::string &sname = "botserv/set/private") : Command(creator, sname, 2, 2)
 	{
 		this->SetDesc(_("Prevent a bot from being assigned by non Services Operators"));
 		this->SetSyntax(_("\037botname\037 {\037ON|OFF\037}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		BotInfo *bi = BotInfo::Find(params[0], true);
-		const Anope::string &value = params[1];
+		const Warden::string &value = params[1];
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -219,7 +220,7 @@ public:
 			this->OnSyntaxError(source, source.command);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -239,13 +240,13 @@ class BSSet final
 	CommandBSSetPrivate commandbssetprivate;
 
 public:
-	BSSet(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	BSSet(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandbsset(this), commandbssetbanexpire(this),
 		commandbssetprivate(this)
 	{
 	}
 
-	void OnBotBan(User *u, ChannelInfo *ci, const Anope::string &mask) override
+	void OnBotBan(User *u, ChannelInfo *ci, const Warden::string &mask) override
 	{
 		if (!ci->banexpire)
 			return;

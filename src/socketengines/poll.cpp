@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -13,7 +14,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "sockets.h"
 #include "socketengine.h"
 #include "config.h"
@@ -74,7 +75,7 @@ void SocketEngine::Change(Socket *s, bool set, SocketFlag flag)
 	{
 		std::map<int, unsigned>::iterator pos = socket_positions.find(s->GetFD());
 		if (pos == socket_positions.end())
-			throw SocketException("Unable to remove fd " + Anope::ToString(s->GetFD()) + " from poll, it does not exist?");
+			throw SocketException("Unable to remove fd " + Warden::ToString(s->GetFD()) + " from poll, it does not exist?");
 
 		if (pos->second != events.size() - 1)
 		{
@@ -93,7 +94,7 @@ void SocketEngine::Change(Socket *s, bool set, SocketFlag flag)
 	{
 		std::map<int, unsigned>::iterator pos = socket_positions.find(s->GetFD());
 		if (pos == socket_positions.end())
-			throw SocketException("Unable to modify fd " + Anope::ToString(s->GetFD()) + " in poll, it does not exist?");
+			throw SocketException("Unable to modify fd " + Warden::ToString(s->GetFD()) + " in poll, it does not exist?");
 
 		pollfd &ev = events[pos->second];
 		ev.events = (s->flags[SF_READABLE] ? POLLIN : 0) | (s->flags[SF_WRITABLE] ? POLLOUT : 0);
@@ -103,13 +104,13 @@ void SocketEngine::Change(Socket *s, bool set, SocketFlag flag)
 void SocketEngine::Process()
 {
 	int total = poll(&events.front(), events.size(), Config->ReadTimeout * 1000);
-	Anope::UpdateTime();
+	Warden::UpdateTime();
 
 	/* EINTR can be given if the read timeout expires */
 	if (total < 0)
 	{
 		if (errno != EINTR)
-			Log() << "SockEngine::Process(): error: " << Anope::LastError();
+			Log() << "SockEngine::Process(): error: " << Warden::LastError();
 		return;
 	}
 

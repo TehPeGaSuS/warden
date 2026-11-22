@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,11 +26,11 @@ public:
 		this->SetSyntax(_("\037channel\037 \037mask\037 [\037reason\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &chan = params[0];
-		const Anope::string &target = params[1];
-		Anope::string reason = params.size() > 2 ? params[2] : "Requested";
+		const Warden::string &chan = params[0];
+		const Warden::string &target = params[1];
+		Warden::string reason = params.size() > 2 ? params[2] : "Requested";
 
 		User *u = source.GetUser();
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
@@ -51,7 +52,7 @@ public:
 		if (reason.length() > reasonmax)
 			reason = reason.substr(0, reasonmax);
 
-		auto signkickformat = Config->GetModule("chanserv").Get<Anope::string>("signkickformat", "{message} ({nick})");
+		auto signkickformat = Config->GetModule("chanserv").Get<Warden::string>("signkickformat", "{message} ({nick})");
 
 		AccessGroup u_access = source.AccessFor(ci);
 
@@ -73,7 +74,7 @@ public:
 
 				if (ci->HasExt("SIGNKICK") || (ci->HasExt("SIGNKICK_LEVEL") && !u_access.HasPriv("SIGNKICK")))
 				{
-					signkickformat = Anope::Template(signkickformat, {
+					signkickformat = Warden::Template(signkickformat, {
 						{ "message", reason           },
 						{ "nick",    source.GetNick() },
 					});
@@ -85,7 +86,7 @@ public:
 		}
 		else if (u_access.HasPriv("FOUNDER"))
 		{
-			Anope::string mask = IRCD->NormalizeMask(target);
+			Warden::string mask = IRCD->NormalizeMask(target);
 
 			Log(LOG_COMMAND, source, this, ci) << "for " << mask;
 
@@ -110,7 +111,7 @@ public:
 					if (ci->HasExt("SIGNKICK") || (ci->HasExt("SIGNKICK_LEVEL") && !u_access.HasPriv("SIGNKICK")))
 					{
 						reason += " (Matches " + mask + ")";
-						signkickformat = Anope::Template(signkickformat, {
+						signkickformat = Warden::Template(signkickformat, {
 							{ "message", reason           },
 							{ "nick",    source.GetNick() },
 						});
@@ -130,7 +131,7 @@ public:
 			source.Reply(NICK_X_NOT_IN_USE, target.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -149,7 +150,7 @@ class CSKick final
 	CommandCSKick commandcskick;
 
 public:
-	CSKick(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR), commandcskick(this)
+	CSKick(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR), commandcskick(this)
 	{
 
 	}

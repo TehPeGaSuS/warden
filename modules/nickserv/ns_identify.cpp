@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,7 +22,7 @@ class NSIdentifyRequest final
 	Command *cmd;
 
 public:
-	NSIdentifyRequest(Module *o, CommandSource &s, Command *c, const Anope::string &acc, const Anope::string &pass)
+	NSIdentifyRequest(Module *o, CommandSource &s, Command *c, const Warden::string &acc, const Warden::string &pass)
 		: IdentifyRequest(o, acc, pass, s.ip)
 		, source(s)
 		, cmd(c)
@@ -71,12 +72,12 @@ public:
 		this->RequireUser(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		User *u = source.GetUser();
 
-		const Anope::string &nick = params.size() == 2 ? params[0] : u->nick;
-		Anope::string pass = params[params.size() - 1];
+		const Warden::string &nick = params.size() == 2 ? params[0] : u->nick;
+		Warden::string pass = params[params.size() - 1];
 
 		NickAlias *na = NickAlias::Find(nick);
 		if (na && na->nc->HasExt("NS_SUSPENDED"))
@@ -103,7 +104,7 @@ public:
 		req->Dispatch();
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -125,7 +126,7 @@ class NSIdentify final
 	CommandNSIdentify commandnsidentify;
 
 public:
-	NSIdentify(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	NSIdentify(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandnsidentify(this)
 	{
 

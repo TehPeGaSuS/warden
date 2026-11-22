@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -26,11 +27,11 @@ namespace Configuration
 	class CoreExport FilePosition final
 	{
 	public:
-		Anope::string name;
+		Warden::string name;
 		size_t line = 0;
 		size_t column = 0;
-		FilePosition(const Anope::string& n);
-		Anope::string str() const;
+		FilePosition(const Warden::string& n);
+		Warden::string str() const;
 	};
 
 	class CoreExport Block
@@ -38,12 +39,12 @@ namespace Configuration
 		friend class Configuration::Conf;
 
 	public:
-		typedef Anope::map<Anope::string> ItemMap;
-		typedef Anope::multimap<Block> BlockMap;
-		typedef Anope::iterator_range<BlockMap::const_iterator> BlockList;
+		typedef Warden::map<Warden::string> ItemMap;
+		typedef Warden::multimap<Block> BlockMap;
+		typedef Warden::iterator_range<BlockMap::const_iterator> BlockList;
 
 	private:
-		Anope::string name;
+		Warden::string name;
 		ItemMap items;
 		BlockMap blocks;
 		FilePosition position;
@@ -52,44 +53,44 @@ namespace Configuration
 		static Block EmptyBlock;
 
 	public:
-		Block(const Anope::string &);
-		const Anope::string &GetName() const;
-		size_t CountBlock(const Anope::string &name) const;
-		BlockList GetBlocks(const Anope::string &name) const;
-		const Block &GetBlock(const Anope::string &name, size_t num = 0) const;
-		Block *GetMutableBlock(const Anope::string &name, size_t num = 0);
+		Block(const Warden::string &);
+		const Warden::string &GetName() const;
+		size_t CountBlock(const Warden::string &name) const;
+		BlockList GetBlocks(const Warden::string &name) const;
+		const Block &GetBlock(const Warden::string &name, size_t num = 0) const;
+		Block *GetMutableBlock(const Warden::string &name, size_t num = 0);
 
-		template<typename T> T Get(const Anope::string &tag, const Anope::string &def = "") const
+		template<typename T> T Get(const Warden::string &tag, const Warden::string &def = "") const
 		{
-			return Anope::TryConvert<T>(this->Get<const Anope::string>(tag, def)).value_or(T());
+			return Warden::TryConvert<T>(this->Get<const Warden::string>(tag, def)).value_or(T());
 		}
 
-		bool Set(const Anope::string &tag, const Anope::string &value);
+		bool Set(const Warden::string &tag, const Warden::string &value);
 		const ItemMap &GetItems() const;
 	};
 
-	template<> CoreExport const Anope::string Block::Get(const Anope::string &tag, const Anope::string &def) const;
-	template<> CoreExport time_t Block::Get(const Anope::string &tag, const Anope::string &def) const;
-	template<> CoreExport bool Block::Get(const Anope::string &tag, const Anope::string &def) const;
+	template<> CoreExport const Warden::string Block::Get(const Warden::string &tag, const Warden::string &def) const;
+	template<> CoreExport time_t Block::Get(const Warden::string &tag, const Warden::string &def) const;
+	template<> CoreExport bool Block::Get(const Warden::string &tag, const Warden::string &def) const;
 
 	/** Represents a configuration file
 	 */
 	class File final
 	{
-		Anope::string name;
+		Warden::string name;
 		bool executable;
 		FILE *fp = nullptr;
 	public:
-		File(const Anope::string &, bool);
+		File(const Warden::string &, bool);
 		~File();
-		const Anope::string &GetName() const;
-		Anope::string GetPath() const;
+		const Warden::string &GetName() const;
+		Warden::string GetPath() const;
 
 		bool IsOpen() const;
 		bool Open();
 		void Close();
 		bool End() const;
-		Anope::string Read();
+		Warden::string Read();
 	};
 
 	struct Uplink;
@@ -99,7 +100,7 @@ namespace Configuration
 	{
 	private:
 		/** Replaces defined variables within a string. */
-		Anope::string ReplaceVars(const Anope::string &str, const File &file, const FilePosition &position);
+		Warden::string ReplaceVars(const Warden::string &str, const File &file, const FilePosition &position);
 
 	public:
 		/* options:readtimeout */
@@ -107,20 +108,20 @@ namespace Configuration
 		/* If we should default to privmsging clients */
 		bool DefPrivmsg;
 		/* Default language */
-		Anope::string DefLanguage;
+		Warden::string DefLanguage;
 		/* options:timeoutcheck */
 		time_t TimeoutCheck;
 		/* options:servicealias */
 		bool ServiceAlias;
 		/* networkinfo:nickchars */
-		Anope::string NickChars;
+		Warden::string NickChars;
 
 		/* List of uplink servers to try and connect to */
 		std::vector<Uplink> Uplinks;
 		/* A vector of our logfile options */
 		std::vector<LogInfo> LogInfos;
 		/* Array of ulined servers */
-		std::vector<Anope::string> Ulines;
+		std::vector<Warden::string> Ulines;
 		/* List of available opertypes */
 		std::vector<OperType *> MyOperTypes;
 		/* List of pairs of opers and their opertype from the config */
@@ -130,11 +131,11 @@ namespace Configuration
 		/* Command groups */
 		std::vector<CommandGroup> CommandGroups;
 		/* List of modules to autoload */
-		std::vector<Anope::string> ModulesAutoLoad;
+		std::vector<Warden::string> ModulesAutoLoad;
 
 		/* module configuration blocks */
-		std::map<Anope::string, Block *> modules;
-		Anope::map<Anope::string> bots;
+		std::map<Warden::string, Block *> modules;
+		Warden::map<Warden::string> bots;
 
 		Conf();
 		~Conf();
@@ -143,24 +144,24 @@ namespace Configuration
 		void Post(Conf *old);
 
 		Block &GetModule(const Module *);
-		Block &GetModule(const Anope::string &name);
+		Block &GetModule(const Warden::string &name);
 
-		BotInfo *GetClient(const Anope::string &name);
+		BotInfo *GetClient(const Warden::string &name);
 
 		const Block &GetCommand(CommandSource &);
 	};
 
 	struct Uplink final
 	{
-		Anope::string host;
+		Warden::string host;
 		unsigned port;
-		Anope::string password;
+		Warden::string password;
 		int protocol;
 
-		Uplink(const Anope::string &_host, int _port, const Anope::string &_password, int _protocol) : host(_host), port(_port), password(_password), protocol(_protocol) { }
+		Uplink(const Warden::string &_host, int _port, const Warden::string &_password, int _protocol) : host(_host), port(_port), password(_password), protocol(_protocol) { }
 		inline bool operator==(const Uplink &other) const { return host == other.host && port == other.port && password == other.password && protocol == other.protocol; }
 		inline bool operator!=(const Uplink &other) const { return !(*this == other); }
-		Anope::string str() const;
+		Warden::string str() const;
 	};
 }
 
@@ -179,7 +180,7 @@ public:
 	ConfigException() : CoreException("Config threw an exception", "Config Parser") { }
 	/** This constructor can be used to specify an error message before throwing.
 	 */
-	ConfigException(const Anope::string &message) : CoreException(message, "Config Parser") { }
+	ConfigException(const Warden::string &message) : CoreException(message, "Config Parser") { }
 	/** This destructor solves world hunger, cancels the world debt, and causes the world to end.
 	 * Actually no, it does nothing. Never mind.
 	 * @throws Nothing!

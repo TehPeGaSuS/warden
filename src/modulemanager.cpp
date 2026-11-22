@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -34,7 +35,7 @@ std::vector<Module *> ModuleManager::EventHandlers[I_SIZE];
 #ifdef _WIN32
 void ModuleManager::CleanupRuntimeDirectory()
 {
-	Anope::string dirbuf = Anope::ExpandData("runtime");
+	Warden::string dirbuf = Warden::ExpandData("runtime");
 
 	Log(LOG_DEBUG) << "Cleaning out Module run time directory (" << dirbuf << ") - this may take a moment, please wait";
 	try
@@ -53,7 +54,7 @@ void ModuleManager::CleanupRuntimeDirectory()
 #endif
 
 template <class Type>
-static Type GetSymbol(void *handle, const Anope::string &symbol)
+static Type GetSymbol(void *handle, const Warden::string &symbol)
 {
 	static_assert(sizeof(Type) <= sizeof(void*));
 	union
@@ -67,7 +68,7 @@ static Type GetSymbol(void *handle, const Anope::string &symbol)
 	return cast.typed;
 }
 
-static ModuleReturn HandleThrowable(const Anope::string &modname, const Anope::string &what,
+static ModuleReturn HandleThrowable(const Warden::string &modname, const Warden::string &what,
 	const std::function<void(void)>& callback)
 {
 	try
@@ -91,7 +92,7 @@ static ModuleReturn HandleThrowable(const Anope::string &modname, const Anope::s
 	return MOD_ERR_OK;
 }
 
-ModuleReturn ModuleManager::LoadModule(const Anope::string &modname, User *u)
+ModuleReturn ModuleManager::LoadModule(const Warden::string &modname, User *u)
 {
 	if (modname.empty())
 		return MOD_ERR_PARAMS;
@@ -101,7 +102,7 @@ ModuleReturn ModuleManager::LoadModule(const Anope::string &modname, User *u)
 
 	Log(LOG_DEBUG) << "Trying to load module: " << modname;
 
-	const auto modpath = Anope::ExpandModule(modname + DLL_EXT);
+	const auto modpath = Warden::ExpandModule(modname + DLL_EXT);
 	std::error_code ec;
 	if (!fs::exists(modpath.str()) || ec)
 	{
@@ -111,7 +112,7 @@ ModuleReturn ModuleManager::LoadModule(const Anope::string &modname, User *u)
 
 #ifdef _WIN32
 	/* Generate the filename for the temporary copy of the module */
-	auto pbuf = Anope::ExpandData("runtime/" + modname + "." + Anope::ToString(Anope::CurTime) + DLL_EXT);
+	auto pbuf = Warden::ExpandData("runtime/" + modname + "." + Warden::ToString(Warden::CurTime) + DLL_EXT);
 	if (!fs::copy_file(modpath.str(), pbuf.str(), fs::copy_options::overwrite_existing, ec) || ec)
 	{
 		Log(LOG_TERMINAL) << "Error while copying " << modname << " from " << modpath
@@ -135,22 +136,22 @@ ModuleReturn ModuleManager::LoadModule(const Anope::string &modname, User *u)
 	try
 	{
 		const auto module_version = GetVersion(handle);
-		const auto core_version = MODULE_VERSION_PACK(Anope::VersionMajor(), Anope::VersionMinor(), Anope::VersionPatch());
+		const auto core_version = MODULE_VERSION_PACK(Warden::VersionMajor(), Warden::VersionMinor(), Warden::VersionPatch());
 		if (core_version < module_version)
 		{
 			const auto [major, minor, patch] = MODULE_VERSION_UNPACK(module_version);
-			Log() << "Module " << modname << " is compiled against Anope " << major << "." << minor << "." << patch << " which is too new for Anope " << Anope::VersionShort();
+			Log() << "Module " << modname << " is compiled against Warden " << major << "." << minor << "." << patch << " which is too new for Warden " << Warden::VersionShort();
 			dlclose(handle);
 			return MOD_ERR_VERSION;
 		}
 		else if (core_version > module_version)
 		{
 			const auto [major, minor, patch] = MODULE_VERSION_UNPACK(module_version);
-			Log() << "Module " << modname << " is compiled against Anope " << major << "." << minor << "." << patch << " which is too old for Anope " << Anope::VersionShort();
+			Log() << "Module " << modname << " is compiled against Warden " << major << "." << minor << "." << patch << " which is too old for Warden " << Warden::VersionShort();
 			dlclose(handle);
 			return MOD_ERR_VERSION;
 		}
-		Log(LOG_DEBUG_2) << "Module " << modname << " is compiled against current version of Anope " << Anope::VersionShort();
+		Log(LOG_DEBUG_2) << "Module " << modname << " is compiled against current version of Warden " << Warden::VersionShort();
 	}
 	catch (const ModuleException &ex)
 	{
@@ -159,11 +160,11 @@ ModuleReturn ModuleManager::LoadModule(const Anope::string &modname, User *u)
 		return MOD_ERR_NOLOAD;
 	}
 
-	auto *func = GetSymbol<Module *(*)(const Anope::string &, const Anope::string &)>(handle, "AnopeInit");
+	auto *func = GetSymbol<Module *(*)(const Warden::string &, const Warden::string &)>(handle, "WardenInit");
 	err = dlerror();
 	if (!func)
 	{
-		Log() << "No init function found, not an Anope module";
+		Log() << "No init function found, not an Warden module";
 		if (err && *err)
 			Log(LOG_DEBUG) << err;
 		dlclose(handle);
@@ -217,10 +218,10 @@ ModuleReturn ModuleManager::LoadModule(const Anope::string &modname, User *u)
 
 ModuleVersion ModuleManager::GetVersion(void *handle)
 {
-	auto *func = GetSymbol<ModuleVersion (*)()>(handle, "AnopeVersion");
+	auto *func = GetSymbol<ModuleVersion (*)()>(handle, "WardenVersion");
 	if (!func)
 	{
-		Log() << "No version function found, not an Anope module";
+		Log() << "No version function found, not an Warden module";
 
 		const char *err = dlerror();
 		if (err && *err)
@@ -242,7 +243,7 @@ ModuleReturn ModuleManager::UnloadModule(Module *m, User *u)
 	return DeleteModule(m);
 }
 
-Module *ModuleManager::FindModule(const Anope::string &name)
+Module *ModuleManager::FindModule(const Warden::string &name)
 {
 	for (auto *m : Modules)
 	{
@@ -273,11 +274,11 @@ ModuleReturn ModuleManager::DeleteModule(Module *m)
 		return MOD_ERR_PARAMS;
 
 	void *handle = m->handle;
-	Anope::string filename = m->filename;
+	Warden::string filename = m->filename;
 
 	Log(LOG_DEBUG) << "Unloading module " << m->name;
 
-	auto *destroy_func = GetSymbol<void (*)(Module *)>(m->handle, "AnopeFini");
+	auto *destroy_func = GetSymbol<void (*)(Module *)>(m->handle, "WardenFini");
 	const char *err = dlerror();
 	if (!destroy_func || (err && *err))
 	{
@@ -431,7 +432,7 @@ bool ModuleManager::SetPriority(Module *mod, Implementation i, Priority s, Modul
 
 void ModuleManager::UnloadAll()
 {
-	std::vector<Anope::string> modules;
+	std::vector<Warden::string> modules;
 	for (size_t i = 1, j = 0; i != MT_END; j |= i, i <<= 1)
 	{
 		for (auto *m : Modules)

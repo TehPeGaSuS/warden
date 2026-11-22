@@ -1,6 +1,6 @@
-# Anope `rpc_message` RPC interface
+# Warden `rpc_message` RPC interface
 
-## `anope.messageNetwork`
+## `warden.messageNetwork`
 
 Sends a message to all users on the network.
 
@@ -20,7 +20,7 @@ Code   | Description
 
 This procedure returns no result.
 
-## `anope.messageServer`
+## `warden.messageServer`
 
 Sends a message to all users on the specified server.
 
@@ -42,7 +42,7 @@ Code   | Description
 
 This procedure returns no result.
 
-## `anope.messageUser`
+## `warden.messageUser`
 
 Sends a message to the specified user.
 

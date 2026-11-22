@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -17,13 +18,13 @@
 
 namespace
 {
-	Anope::string *GetCode(NickCore *nc)
+	Warden::string *GetCode(NickCore *nc)
 	{
-		auto *code = nc->GetExt<Anope::string>("passcode");
+		auto *code = nc->GetExt<Warden::string>("passcode");
 		if (!code)
 		{
-			code = nc->Extend<Anope::string>("passcode");
-			*code = Anope::Random(Config->GetBlock("options").Get<size_t>("codelength", "15"));
+			code = nc->Extend<Warden::string>("passcode");
+			*code = Warden::Random(Config->GetBlock("options").Get<size_t>("codelength", "15"));
 		}
 		return code;
 	}
@@ -51,15 +52,15 @@ public:
 		this->AllowUnregistered(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		User *u = source.GetUser();
-		Anope::string u_nick = source.GetNick();
-		Anope::string pass = params[0];
-		Anope::string email = params.size() > 1 ? params[1] : "";
-		const Anope::string &nsregister = Config->GetModule(this->owner).Get<const Anope::string>("registration");
+		Warden::string u_nick = source.GetNick();
+		Warden::string pass = params[0];
+		Warden::string email = params.size() > 1 ? params[1] : "";
+		const Warden::string &nsregister = Config->GetModule(this->owner).Get<const Warden::string>("registration");
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -73,11 +74,11 @@ public:
 
 		time_t nickregdelay = Config->GetModule(this->owner).Get<time_t>("nickregdelay");
 		time_t reg_delay = Config->GetModule("nickserv").Get<time_t>("regdelay", "15m");
-		if (u && !u->HasMode("OPER") && nickregdelay && Anope::CurTime - u->timestamp < nickregdelay)
+		if (u && !u->HasMode("OPER") && nickregdelay && Warden::CurTime - u->timestamp < nickregdelay)
 		{
-			auto waitperiod = (u->timestamp + nickregdelay) -  Anope::CurTime;
+			auto waitperiod = (u->timestamp + nickregdelay) -  Warden::CurTime;
 			source.Reply(_("You must wait %s before registering your nick."),
-				Anope::Duration(waitperiod, source.GetAccount()).c_str());
+				Warden::Duration(waitperiod, source.GetAccount()).c_str());
 			return;
 		}
 
@@ -103,7 +104,7 @@ public:
 		{
 			for (auto *o : Oper::opers)
 			{
-				if (!source.IsOper() && u_nick.find_ci(o->name) != Anope::string::npos)
+				if (!source.IsOper() && u_nick.find_ci(o->name) != Warden::string::npos)
 				{
 					source.Reply(NICK_CANNOT_BE_REGISTERED, u_nick.c_str());
 					return;
@@ -113,11 +114,11 @@ public:
 
 		if (Config->GetModule("nickserv").Get<bool>("forceemail", "yes") && email.empty())
 			this->OnSyntaxError(source, "");
-		else if (u && Anope::CurTime < u->lastnickreg + reg_delay)
+		else if (u && Warden::CurTime < u->lastnickreg + reg_delay)
 		{
-			auto waitperiod = (unsigned long)(u->lastnickreg + reg_delay) - Anope::CurTime;
+			auto waitperiod = (unsigned long)(u->lastnickreg + reg_delay) - Warden::CurTime;
 			source.Reply(_("Please wait %s before using the REGISTER command again."),
-				Anope::Duration(waitperiod, source.GetAccount()).c_str());
+				Warden::Duration(waitperiod, source.GetAccount()).c_str());
 		}
 		else if (NickAlias::Find(u_nick) != NULL)
 			source.Reply(NICK_ALREADY_REGISTERED, u_nick.c_str());
@@ -130,8 +131,8 @@ public:
 			if (MOD_RESULT == EVENT_STOP)
 				return;
 
-			Anope::string encpass;
-			if (!Anope::Encrypt(pass, encpass))
+			Warden::string encpass;
+			if (!Warden::Encrypt(pass, encpass))
 			{
 				source.Reply(TRY_AGAIN_LATER, source.command.nobreak().c_str());
 				return;
@@ -168,7 +169,7 @@ public:
 			{
 				// This notifies the user that if their registration is unconfirmed
 				u->Identify(na);
-				u->lastnickreg = Anope::CurTime;
+				u->lastnickreg = Warden::CurTime;
 			}
 			else if (nc->HasExt("UNCONFIRMED"))
 			{
@@ -185,7 +186,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		auto minpasslen = Config->GetModule("nickserv").Get<unsigned>("minpasslen", "10");
 		this->SendSyntax(source);
@@ -196,8 +197,8 @@ public:
 				"commands to configure your nick's settings as you like "
 				"them. Make sure you remember the password you use when "
 				"registering - you'll need it to make changes to your nick "
-				"later. (Note that \002case matters!\002 \037ANOPE\037, \037Anope\037, and "
-				"\037anope\037 are all different passwords!) "
+				"later. (Note that \002case matters!\002 \037WARDEN\037, \037Warden\037, and "
+				"\037warden\037 are all different passwords!) "
 				"\n\n"
 				"Guidelines on choosing passwords:"
 				"\n\n"
@@ -248,9 +249,9 @@ public:
 		this->SetSyntax(_("@\037nickname\037"), [](auto &source) { return source.HasPriv("nickserv/confirm/register"); });
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		Anope::string code;
+		Warden::string code;
 		NickAlias *na;
 		if (params[0][0] == '@')
 		{
@@ -290,7 +291,7 @@ public:
 
 		if (!code.empty())
 		{
-			auto *passcode = nc->GetExt<Anope::string>("passcode");
+			auto *passcode = nc->GetExt<Warden::string>("passcode");
 			if (passcode && !code.equals_cs(*passcode))
 			{
 				source.Reply(_("The registration confirmation code you specified for %s is incorrect."),
@@ -305,7 +306,7 @@ public:
 			}
 		}
 
-		nc->Shrink<Anope::string>("passcode");
+		nc->Shrink<Warden::string>("passcode");
 		nc->Shrink<bool>("UNCONFIRMED");
 
 		FOREACH_MOD(OnNickConfirm, (source.GetUser(), nc));
@@ -330,7 +331,7 @@ public:
 		source.Reply(_("Nick \002%s\002 has been confirmed."), na->nick.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -338,7 +339,7 @@ public:
 				"Confirms an account registration. You have %s after registration to do this "
 				"before your registration expires."
 			),
-			Anope::Duration(GetExpiry(owner), source.GetAccount()).c_str());
+			Warden::Duration(GetExpiry(owner), source.GetAccount()).c_str());
 
 		if (source.HasPriv("nickserv/confirm/register"))
 		{
@@ -365,16 +366,16 @@ public:
 		this->AllowUnregistered(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (!Config->GetModule(this->owner).Get<const Anope::string>("registration").equals_ci("mail"))
+		if (!Config->GetModule(this->owner).Get<const Warden::string>("registration").equals_ci("mail"))
 		{
 			source.Reply(ACCESS_DENIED);
 			return;
 		}
 
 		auto is_oper = false;
-		Anope::string nick;
+		Warden::string nick;
 		if (!params.empty() && source.HasCommand("nickserv/resend"))
 		{
 			nick = params[0];
@@ -399,7 +400,7 @@ public:
 			return;
 		}
 
-		if (!is_oper && Anope::CurTime < nc->lastmail + Config->GetModule(this->owner).Get<time_t>("resenddelay"))
+		if (!is_oper && Warden::CurTime < nc->lastmail + Config->GetModule(this->owner).Get<time_t>("resenddelay"))
 		{
 			source.Reply(_("Cannot send mail now; please retry a little later."));
 			return;
@@ -411,16 +412,16 @@ public:
 			return;
 		}
 
-		nc->lastmail = Anope::CurTime;
+		nc->lastmail = Warden::CurTime;
 		source.Reply(_("The confirmation code for \002%s\002 has been re-sent to %s."),
 			na->nick.c_str(), nc->email.c_str());
 
 		Log(nc == source.GetAccount() ? LOG_COMMAND : LOG_ADMIN, source, this) << "to resend the registration confirmation code for " << na->nick;
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
-		if (!Config->GetModule(this->owner).Get<const Anope::string>("registration").equals_ci("mail"))
+		if (!Config->GetModule(this->owner).Get<const Warden::string>("registration").equals_ci("mail"))
 			return false;
 
 		this->SendSyntax(source);
@@ -440,7 +441,7 @@ public:
 
 	void OnServHelp(CommandSource &source, HelpWrapper &help) override
 	{
-		if (Config->GetModule(this->owner).Get<const Anope::string>("registration").equals_ci("mail"))
+		if (Config->GetModule(this->owner).Get<const Warden::string>("registration").equals_ci("mail"))
 			Command::OnServHelp(source, help);
 	}
 };
@@ -453,10 +454,10 @@ class NSRegister final
 	CommandNSResend commandnsresend;
 
 	SerializableExtensibleItem<bool> unconfirmed;
-	SerializableExtensibleItem<Anope::string> passcode;
+	SerializableExtensibleItem<Warden::string> passcode;
 
 public:
-	NSRegister(const Anope::string &modname, const Anope::string &creator)
+	NSRegister(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnsregister(this)
 		, commandnsconfirmregister(this)
@@ -464,7 +465,7 @@ public:
 		, unconfirmed(this, "UNCONFIRMED")
 		, passcode(this, "passcode")
 	{
-		if (Config->GetModule(this).Get<const Anope::string>("registration").equals_ci("disable"))
+		if (Config->GetModule(this).Get<const Warden::string>("registration").equals_ci("disable"))
 			throw ModuleException("Module " + this->name + " will not load with registration disabled.");
 	}
 
@@ -478,7 +479,7 @@ public:
 		BotInfo *NickServ;
 		if (unconfirmed.HasExt(u->Account()) && (NickServ = Config->GetClient("NickServ")))
 		{
-			const Anope::string &nsregister = Config->GetModule(this).Get<const Anope::string>("registration");
+			const Warden::string &nsregister = Config->GetModule(this).Get<const Warden::string>("registration");
 			if (nsregister.equals_ci("admin"))
 				u->SendMessage(NickServ, CONFIRM_REGISTER_ADMIN);
 			else if (nsregister.equals_ci("code"))
@@ -490,10 +491,10 @@ public:
 				u->SendMessage(NickServ, CONFIRM_REGISTER_MAIL);
 
 			const NickAlias *this_na = u->AccountNick();
-			time_t registered = Anope::CurTime - this_na->registered;
+			time_t registered = Warden::CurTime - this_na->registered;
 			const auto unconfirmed_expire = GetExpiry(this);
 			if (unconfirmed_expire > registered)
-				u->SendMessage(NickServ, _("Your account will expire, if not confirmed, in %s."), Anope::Duration(unconfirmed_expire - registered, u->Account()).c_str());
+				u->SendMessage(NickServ, _("Your account will expire, if not confirmed, in %s."), Warden::Duration(unconfirmed_expire - registered, u->Account()).c_str());
 		}
 	}
 
@@ -502,7 +503,7 @@ public:
 		if (unconfirmed.HasExt(na->nc))
 		{
 			const auto unconfirmed_expire = GetExpiry(this);
-			if (unconfirmed_expire && Anope::CurTime - na->registered >= unconfirmed_expire)
+			if (unconfirmed_expire && Warden::CurTime - na->registered >= unconfirmed_expire)
 				expire = true;
 		}
 	}
@@ -513,11 +514,11 @@ static bool SendRegmail(User *u, const NickAlias *na, BotInfo *bi, Module *owner
 	NickCore *nc = na->nc;
 	auto *code = GetCode(na->nc);
 
-	Anope::map<Anope::string> vars = {
+	Warden::map<Warden::string> vars = {
 		{ "nick",    na->nick                                                                },
-		{ "network", Config->GetBlock("networkinfo").Get<const Anope::string>("networkname") },
+		{ "network", Config->GetBlock("networkinfo").Get<const Warden::string>("networkname") },
 		{ "code",    *code                                                                   },
-		{ "expiry",  Anope::Duration(GetExpiry(owner), na->nc)                               },
+		{ "expiry",  Warden::Duration(GetExpiry(owner), na->nc)                               },
 	};
 
 	return regemail.Send(u, nc, bi, vars);

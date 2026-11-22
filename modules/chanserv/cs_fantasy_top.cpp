@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -44,7 +45,7 @@ public:
 		this->SetSyntax(_("\037channel\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params);
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params);
 };
 
 class CommandCSTop10 final
@@ -57,7 +58,7 @@ public:
 		this->SetSyntax(_("\037channel\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params);
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params);
 };
 
 class CommandCSGTop final
@@ -69,7 +70,7 @@ public:
 		this->SetDesc(_("Display the top 3 users of the network"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params);
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params);
 };
 
 class CommandCSGTop10 final
@@ -81,7 +82,7 @@ public:
 		this->SetDesc(_("Display the top 10 users of the network"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params);
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params);
 };
 
 
@@ -96,10 +97,10 @@ class CSTop final
 	CommandCSGTop10 commandcsgtop10;
 	ServiceReference<SQL::Provider> sql;
 	MySQLInterface sqlinterface;
-	Anope::string prefix;
+	Warden::string prefix;
 
 public:
-	CSTop(const Anope::string &modname, const Anope::string &creator)
+	CSTop(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandcstop(this)
 		, commandcsgtop(this)
@@ -114,8 +115,8 @@ public:
 	void OnReload(Configuration::Conf &conf) override
 	{
 		const auto &block = conf.GetModule("chanstats");
-		prefix = block.Get<const Anope::string>("prefix", "chanstats21_");
-		this->sql.SetServiceName(block.Get<const Anope::string>("engine"));
+		prefix = block.Get<const Warden::string>("prefix", "chanstats21_");
+		this->sql.SetServiceName(block.Get<const Warden::string>("engine"));
 	}
 
 	SQL::Result RunQuery(const SQL::Query &query)
@@ -129,10 +130,10 @@ public:
 		return res;
 	}
 
-	void DoTop(CommandSource &source, const std::vector<Anope::string> &params, bool is_global, int limit = 1)
+	void DoTop(CommandSource &source, const std::vector<Warden::string> &params, bool is_global, int limit = 1)
 	{
 
-		Anope::string channel;
+		Warden::string channel;
 		if (!params.empty())
 			channel = params[0];
 		else if (source.c && source.c->ci)
@@ -179,22 +180,22 @@ public:
 	}
 };
 
-void CommandCSTop::Execute(CommandSource &source, const std::vector<Anope::string> &params)
+void CommandCSTop::Execute(CommandSource &source, const std::vector<Warden::string> &params)
 {
 	me->DoTop(source, params, false, 3);
 }
 
-void CommandCSTop10::Execute(CommandSource &source, const std::vector<Anope::string> &params)
+void CommandCSTop10::Execute(CommandSource &source, const std::vector<Warden::string> &params)
 {
 	me->DoTop(source, params, false, 10);
 }
 
-void CommandCSGTop::Execute(CommandSource &source, const std::vector<Anope::string> &params)
+void CommandCSGTop::Execute(CommandSource &source, const std::vector<Warden::string> &params)
 {
 	me->DoTop(source, params, true, 3);
 }
 
-void CommandCSGTop10::Execute(CommandSource &source, const std::vector<Anope::string> &params)
+void CommandCSGTop10::Execute(CommandSource &source, const std::vector<Warden::string> &params)
 {
 	me->DoTop(source, params, true, 10);
 }

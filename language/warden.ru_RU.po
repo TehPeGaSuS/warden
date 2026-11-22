@@ -1,9 +1,10 @@
-# Anope IRC Services <https://www.anope.org/>
+# Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 #
 # Copyright (C) 2003-2026 Anope Contributors
+# Copyright (C) 2026 Warden Contributors
 # Copyright (C) 2014 Adam <Adam@anope.org>
 #
-# Anope is free software. You can use, modify, and/or distribute it under the
+# Warden is free software. You can use, modify, and/or distribute it under the
 # terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 # for the complete terms of this license and docs/AUTHORS.txt for a list of
 # contributors.
@@ -14,7 +15,7 @@
 # SPDX-License-Identifier: GPL-2.0-only
 msgid ""
 msgstr ""
-"Project-Id-Version: Anope\n"
+"Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-08-25 16:14+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
@@ -2514,10 +2515,10 @@ msgstr ""
 #: ../modules/operserv/os_config.cpp
 msgid ""
 "Allows you to change and view configuration settings. Settings changed by this command are temporary and will not be reflected back into the "
-"configuration file, and will be lost if Anope is shut down, restarted, or the configuration is reloaded."
+"configuration file, and will be lost if Warden is shut down, restarted, or the configuration is reloaded."
 msgstr ""
 "Позволяет изменять и просматривать настройки конфигурации. Настройки, измененные этой командой, являются временными и не будут отражены обратно в "
-"файле конфигурации, а также будут потеряны, если Anope будет выключен, перезапущен или конфигурация будет перезагружена."
+"файле конфигурации, а также будут потеряны, если Warden будет выключен, перезапущен или конфигурация будет перезагружена."
 
 #: ../modules/nickserv/ns_set_message.cpp
 msgid "Allows you to choose the way services are communicating with the given user. With MSG set, services will use messages, else they'll use notices."
@@ -5102,8 +5103,8 @@ msgid "Lists all registered channels that have been suspended."
 msgstr "Показывает все зарегистрированные каналы, которые были заморожены."
 
 #: ../modules/chanserv/cs_list.cpp
-msgid "Lists all registered channels with anope in their name (case insensitive). "
-msgstr "Показывает все зарегистрированные каналы, содержащие \"anope\" в имени (без учета регистра). "
+msgid "Lists all registered channels with warden in their name (case insensitive). "
+msgstr "Показывает все зарегистрированные каналы, содержащие \"warden\" в имени (без учета регистра). "
 
 #: ../modules/chanserv/cs_list.cpp
 msgid "Lists all registered channels within the given range (51-100)."
@@ -6482,7 +6483,7 @@ msgstr ""
 msgid ""
 "Registers your nickname in the %s database. Once your nick is registered, you can use the SET and ACCESS commands to configure your nick's settings as "
 "you like them. Make sure you remember the password you use when registering - you'll need it to make changes to your nick later. (Note that case "
-"matters! ANOPE, Anope, and anope are all different passwords!) \n"
+"matters! WARDEN, Warden, and warden are all different passwords!) \n"
 "\n"
 "Guidelines on choosing passwords:\n"
 "\n"
@@ -6492,7 +6493,7 @@ msgid ""
 msgstr ""
 "Регистрирует ваш ник в базе данных %s. После регистрации ника вы можете использовать команды SET и ACCESS для настройки параметров вашего ника по "
 "своему усмотрению. Обязательно запомните пароль, который вы используете при регистрации, — он понадобится вам позже для внесения изменений в ваш ник. "
-"(Обратите внимание, что регистр имеет значение! ANOPE, Anope и anope — это разные пароли!)\n"
+"(Обратите внимание, что регистр имеет значение! WARDEN, Warden и warden — это разные пароли!)\n"
 "\n"
 "Рекомендации по выбору пароля:\n"
 "\n"
@@ -6727,8 +6728,8 @@ msgid "Search logs for a matching pattern"
 msgstr "Искать в логах соответствующий шаблон"
 
 #: ../modules/operserv/os_logsearch.cpp
-msgid "Searches the last 21 days worth of logs for messages containing Anope and lists the most recent 500 of them."
-msgstr "Ищет в логах сервисов за последние 21 день сообщения, содержащие Anope, и выводит 500 самых последних из них."
+msgid "Searches the last 21 days worth of logs for messages containing Warden and lists the most recent 500 of them."
+msgstr "Ищет в логах сервисов за последние 21 день сообщения, содержащие Warden, и выводит 500 самых последних из них."
 
 #: ../modules/chanserv/cs_set.cpp
 msgid "Secure founder"
@@ -6819,20 +6820,20 @@ msgstr ""
 "аккаунтом."
 
 #: ../modules/chanserv/cs_log.cpp
-msgid "Sends a memo to the channel when someone uses the chanserv/xop command on #anope."
-msgstr "Отправляет записку на канал, когда кто-то использует команду chanserv/xop на #anope."
+msgid "Sends a memo to the channel when someone uses the chanserv/xop command on #warden."
+msgstr "Отправляет записку на канал, когда кто-то использует команду chanserv/xop на #warden."
 
 #: ../modules/botserv/bs_control.cpp
 msgid "Sends a message to #chat saying hello all."
 msgstr "Отправляет сообщение на #chat с текстом «hello all»."
 
 #: ../modules/chanserv/cs_log.cpp
-msgid "Sends a message to channel operators and above when someone uses the chanserv/access command on #anope."
-msgstr "Отправляет сообщение операторам канала и выше, когда кто-то использует команду chanserv/access на #anope."
+msgid "Sends a message to channel operators and above when someone uses the chanserv/access command on #warden."
+msgstr "Отправляет сообщение операторам канала и выше, когда кто-то использует команду chanserv/access на #warden."
 
 #: ../modules/chanserv/cs_log.cpp
-msgid "Sends a notice to channel voices and above when someone uses the chanserv/flags command on #anope."
-msgstr "Отправляет уведомление пользователям с voice на канале и выше, когда кто-то использует команду chanserv/flags на #anope."
+msgid "Sends a notice to channel voices and above when someone uses the chanserv/flags command on #warden."
+msgstr "Отправляет уведомление пользователям с voice на канале и выше, когда кто-то использует команду chanserv/flags на #warden."
 
 #: ../modules/memoserv/ms_sendall.cpp
 msgid "Sends all registered users a memo containing memo-text."
@@ -8502,8 +8503,8 @@ msgid "To protect voices against bot kicks"
 msgstr "Защита пользователей с voice от киков ботом"
 
 #: ../modules/chanserv/cs_list.cpp
-msgid "To search for channels starting with #, search for the channel name without the #-sign prepended (anope instead of #anope)."
-msgstr "Чтобы искать каналы, начинающиеся с #, ищите имя канала без предшествующего знака # (anope вместо #anope)."
+msgid "To search for channels starting with #, search for the channel name without the #-sign prepended (warden instead of #warden)."
+msgstr "Чтобы искать каналы, начинающиеся с #, ищите имя канала без предшествующего знака # (warden вместо #warden)."
 
 #: ../modules/operserv/os_logsearch.cpp
 #, c-format
@@ -9034,7 +9035,7 @@ msgid ""
 "\n"
 "The PASSWORD option displays the encryption algorithms used for user passwords. \n"
 "\n"
-"The UPLINK option displays information about the current server Anope uses as an uplink to the network.\n"
+"The UPLINK option displays information about the current server Warden uses as an uplink to the network.\n"
 "\n"
 "The HASH option displays information about the hash maps.\n"
 "\n"
@@ -9049,7 +9050,7 @@ msgstr ""
 "\n"
 "Опция PASSWORD отображает алгоритмы шифрования, используемые для паролей пользователей.\n"
 "\n"
-"Опция UPLINK отображает информацию о текущем сервере, который Anope использует в качестве uplink для сети.\n"
+"Опция UPLINK отображает информацию о текущем сервере, который Warden использует в качестве uplink для сети.\n"
 "\n"
 "Опция HASH отображает информацию о хеш-картах.\n"
 "\n"

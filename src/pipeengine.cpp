@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,7 +25,7 @@ Pipe::Pipe() : Socket(-1), write_pipe(-1)
 {
 	int fds[2];
 	if (pipe(fds))
-		throw CoreException("Could not create pipe: " + Anope::LastError());
+		throw CoreException("Could not create pipe: " + Warden::LastError());
 	int sflags = fcntl(fds[0], F_GETFL, 0);
 	fcntl(fds[0], F_SETFL, sflags | O_NONBLOCK);
 	sflags = fcntl(fds[1], F_GETFL, 0);
@@ -32,7 +33,7 @@ Pipe::Pipe() : Socket(-1), write_pipe(-1)
 
 	SocketEngine::Change(this, false, SF_READABLE);
 	SocketEngine::Change(this, false, SF_WRITABLE);
-	anope_close(this->sock);
+	warden_close(this->sock);
 	this->io->Destroy();
 	SocketEngine::Sockets.erase(this->sock);
 
@@ -46,7 +47,7 @@ Pipe::Pipe() : Socket(-1), write_pipe(-1)
 Pipe::~Pipe()
 {
 	if (this->write_pipe >= 0)
-		anope_close(this->write_pipe);
+		warden_close(this->write_pipe);
 }
 
 bool Pipe::ProcessRead()

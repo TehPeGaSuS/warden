@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -35,13 +36,13 @@ struct NickServ::Cert
 	time_t created = 0;
 
 	/** The user who created this certificate. */
-	Anope::string creator;
+	Warden::string creator;
 
 	/** If non-empty then a description of the certificate. */
-	Anope::string description;
+	Warden::string description;
 
 	/** The TLS fingerprint for the certificate. */
-	Anope::string fingerprint;
+	Warden::string fingerprint;
 };
 
 class NickServ::CertList
@@ -58,7 +59,7 @@ public:
 	 *
 	 * Adds a new entry into the cert list.
 	 */
-	virtual NickServ::Cert *AddCert(const Anope::string &entry) = 0;
+	virtual NickServ::Cert *AddCert(const Warden::string &entry) = 0;
 
 	/** Get an entry from the nick's cert list by index
 	 *
@@ -78,7 +79,7 @@ public:
 	 *
 	 * Search for an fingerprint within the cert list.
 	 */
-	virtual bool FindCert(const Anope::string &entry) const = 0;
+	virtual bool FindCert(const Warden::string &entry) const = 0;
 
 	/** Erase a fingerprint from the nick's certificate list
 	 *
@@ -86,7 +87,7 @@ public:
 	 *
 	 * Removes the specified fingerprint from the cert list.
 	 */
-	virtual void EraseCert(const Anope::string &entry) = 0;
+	virtual void EraseCert(const Warden::string &entry) = 0;
 
 	/** Replaces a fingerprint in the nick's certificate list
 	 *
@@ -95,7 +96,7 @@ public:
 	 *
 	 * Replaces the specified fingerprint in the cert list.
 	 */
-	virtual void ReplaceCert(const Anope::string &oldentry, const Anope::string &newentry) = 0;
+	virtual void ReplaceCert(const Warden::string &oldentry, const Warden::string &newentry) = 0;
 
 	/** Clears the entire nick's cert list
 	 *
@@ -115,6 +116,6 @@ public:
 	{
 	}
 
-	virtual NickCore *FindAccountFromCert(const Anope::string &cert) = 0;
-	virtual void ReplaceCert(const Anope::string &oldcert, const Anope::string &newcert) = 0;
+	virtual NickCore *FindAccountFromCert(const Warden::string &cert) = 0;
+	virtual void ReplaceCert(const Warden::string &oldcert, const Warden::string &newcert) = 0;
 };

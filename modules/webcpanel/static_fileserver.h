@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -20,9 +21,9 @@
 class StaticFileServer final
 	: public HTTP::Page
 {
-	Anope::string file_name;
+	Warden::string file_name;
 public:
-	StaticFileServer(const Anope::string &f_n, const Anope::string &u, const Anope::string &c_t);
+	StaticFileServer(const Warden::string &f_n, const Warden::string &u, const Warden::string &c_t);
 
-	bool OnRequest(HTTP::Provider *, const Anope::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &) override;
+	bool OnRequest(HTTP::Provider *, const Warden::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &) override;
 };

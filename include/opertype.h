@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2008-2011 Robin Burchell <w00t@inspircd.org>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,21 +25,21 @@
 struct CoreExport Oper
 {
 	/* The oper's nick */
-	Anope::string name;
+	Warden::string name;
 	/* The type of operator this operator is */
 	OperType *ot;
 	/* Whether the user must log in with /OPERSERV LOGIN. */
 	bool require_login = false;
 	/* Whether the user must be an IRC operator (umode +o) to be considered a services operator */
 	bool require_oper = true;
-	Anope::string password;
-	Anope::string password_hash;
-	std::vector<Anope::string> certfp;
+	Warden::string password;
+	Warden::string password_hash;
+	std::vector<Warden::string> certfp;
 	/* Hosts allowed to use this operator block */
-	std::vector<Anope::string> hosts;
-	Anope::string vhost;
+	std::vector<Warden::string> hosts;
+	Warden::string vhost;
 
-	Oper(const Anope::string &n, OperType *o);
+	Oper(const Warden::string &n, OperType *o);
 	virtual ~Oper();
 
 	static std::vector<Oper *> opers;
@@ -47,7 +48,7 @@ struct CoreExport Oper
 	 * @param name The name
 	 * @return the oper block
 	 */
-	static Oper *Find(const Anope::string &name);
+	static Oper *Find(const Warden::string &name);
 };
 
 class CoreExport OperType final
@@ -55,12 +56,12 @@ class CoreExport OperType final
 private:
 	/** The name of this opertype, e.g. "sra".
 	 */
-	Anope::string name;
+	Warden::string name;
 
 	/** Privs that this opertype may use, e.g. 'users/auspex'.
 	 * This *must* be std::list, see commands comment for details.
 	 */
-	std::list<Anope::string> privs;
+	std::list<Warden::string> privs;
 
 	/** Commands this user may execute, e.g:
 	 * botserv/set/ *, botserv/set/private, botserv/ *
@@ -70,7 +71,7 @@ private:
 	 * we support full globbing here. This shouldn't be a problem
 	 * as we don't invoke it often.
 	 */
-	std::list<Anope::string> commands;
+	std::list<Warden::string> commands;
 
 	/** Set of opertypes we inherit from
 	 */
@@ -78,44 +79,44 @@ private:
 public:
 	/** Modes to set when someone identifies using this opertype
 	 */
-	Anope::string modes;
+	Warden::string modes;
 
 	/** Find an oper type by name
 	 * @param name The name
 	 * @return The oper type
 	 */
-	static OperType *Find(const Anope::string &name);
+	static OperType *Find(const Warden::string &name);
 
 	/** Create a new opertype of the given name.
 	 * @param nname The opertype name, e.g. "sra".
 	 */
-	OperType(const Anope::string &nname);
+	OperType(const Warden::string &nname);
 
 	/** Check whether this opertype has access to run the given command string.
 	 * @param cmdstr The string to check, e.g. botserv/set/private.
 	 * @return True if this opertype may run the specified command, false otherwise.
 	 */
-	bool HasCommand(const Anope::string &cmdstr) const;
+	bool HasCommand(const Warden::string &cmdstr) const;
 
 	/** Check whether this opertype has access to the given special permission.
 	 * @param privstr The priv to check for, e.g. users/auspex.
 	 * @return True if this opertype has the specified priv, false otherwise.
 	 */
-	bool HasPriv(const Anope::string &privstr) const;
+	bool HasPriv(const Warden::string &privstr) const;
 
 	/** Add the specified command to this opertype.
 	 * @param cmdstr The command mask to grant this opertype access to, e.g: nickserv/ *, chanserv/set/ *, botserv/set/private.
 	 */
-	void AddCommand(const Anope::string &cmdstr);
+	void AddCommand(const Warden::string &cmdstr);
 
 	/** Add the specified priv mask to this opertype.
 	 * @param privstr The specified mask of privs to grant this opertype access to,  e.g. users/auspex, users/ *, etc.
 	 */
-	void AddPriv(const Anope::string &privstr);
+	void AddPriv(const Warden::string &privstr);
 
 	/** Returns the name of this opertype.
 	 */
-	const Anope::string &GetName() const;
+	const Warden::string &GetName() const;
 
 	/** Make this opertype inherit commands and privs from another opertype
 	 * @param ot The opertype to inherit from
@@ -125,10 +126,10 @@ public:
 	/** Gets the icommands for this opertype
 	 * @return A list of commands
 	 */
-	std::list<Anope::string> GetCommands() const;
+	std::list<Warden::string> GetCommands() const;
 
 	/** Gets the privileges for this opertype
 	 * @return A list of privileges
 	 */
-	std::list<Anope::string> GetPrivs() const;
+	std::list<Warden::string> GetPrivs() const;
 };

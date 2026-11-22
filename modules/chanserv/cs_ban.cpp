@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -23,14 +24,14 @@ class TempBan final
 	: public Timer
 {
 private:
-	Anope::string channel;
-	Anope::string mask;
-	Anope::string mode;
+	Warden::string channel;
+	Warden::string mask;
+	Warden::string mode;
 
 public:
 	bool ticked = false;
 
-	TempBan(time_t seconds, Channel *c, const Anope::string &banmask, const Anope::string &mod)
+	TempBan(time_t seconds, Channel *c, const Warden::string &banmask, const Warden::string &mod)
 		: Timer(me, seconds)
 		, channel(c->name)
 		, mask(banmask)
@@ -46,7 +47,7 @@ public:
 			tempbans.erase(it);
 	}
 
-	bool Matches(Channel *chan, ChannelMode *cmode, const Anope::string &bmask) const
+	bool Matches(Channel *chan, ChannelMode *cmode, const Warden::string &bmask) const
 	{
 		return chan->name.equals_ci(this->channel)
 			&& cmode->name == this->mode
@@ -77,15 +78,15 @@ public:
 		this->SetSyntax(_("\037channel\037 [+\037expiry\037] {\037nick\037 | \037mask\037} [\037reason\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		const auto &block = Config->GetCommand(source);
-		const Anope::string &mode = block.Get<Anope::string>("mode", "BAN");
+		const Warden::string &mode = block.Get<Warden::string>("mode", "BAN");
 		ChannelMode *cm = ModeManager::FindChannelModeByName(mode);
 		if (cm == NULL)
 			return;
 
-		const Anope::string &chan = params[0];
+		const Warden::string &chan = params[0];
 		ChannelInfo *ci = ChannelInfo::Find(chan);
 		if (ci == NULL)
 		{
@@ -105,11 +106,11 @@ public:
 			return;
 		}
 
-		Anope::string expiry, target, reason;
+		Warden::string expiry, target, reason;
 		time_t ban_time;
 		if (params[1][0] == '+')
 		{
-			ban_time = Anope::DoTime(params[1]);
+			ban_time = Warden::DoTime(params[1]);
 			if (ban_time < 0)
 			{
 				source.Reply(BAD_EXPIRY_TIME);
@@ -140,7 +141,7 @@ public:
 		if (reason.length() > reasonmax)
 			reason = reason.substr(0, reasonmax);
 
-		auto signkickformat = Config->GetModule("chanserv").Get<Anope::string>("signkickformat", "{message} ({nick})");
+		auto signkickformat = Config->GetModule("chanserv").Get<Warden::string>("signkickformat", "{message} ({nick})");
 
 		User *u = source.GetUser();
 		User *u2 = User::Find(target, true);
@@ -165,7 +166,7 @@ public:
 				source.Reply(ACCESS_DENIED);
 			else
 			{
-				Anope::string mask = ci->GetIdealBan(u2);
+				Warden::string mask = ci->GetIdealBan(u2);
 
 				bool override = !u_access.HasPriv("BAN") || (u != u2 && ci->HasExt("PEACE") && u2_access >= u_access);
 				Log(override ? LOG_OVERRIDE : LOG_COMMAND, source, this, ci) << "for " << mask;
@@ -176,7 +177,7 @@ public:
 					if (ban_time)
 					{
 						new TempBan(ban_time, c, mask, mode);
-						source.Reply(_("Ban on \002%s\002 expires in %s."), mask.c_str(), Anope::Duration(ban_time, source.GetAccount()).c_str());
+						source.Reply(_("Ban on \002%s\002 expires in %s."), mask.c_str(), Warden::Duration(ban_time, source.GetAccount()).c_str());
 					}
 				}
 
@@ -188,7 +189,7 @@ public:
 				{
 					if (ci->HasExt("SIGNKICK") || (ci->HasExt("SIGNKICK_LEVEL") && !source.AccessFor(ci).HasPriv("SIGNKICK")))
 					{
-						signkickformat = Anope::Template(signkickformat, {
+						signkickformat = Warden::Template(signkickformat, {
 							{ "message", reason           },
 							{ "nick",    source.GetNick() },
 						});
@@ -204,7 +205,7 @@ public:
 			bool founder = u_access.HasPriv("FOUNDER");
 			bool override = !founder && !u_access.HasPriv("BAN");
 
-			Anope::string mask = IRCD->NormalizeMask(target);
+			Warden::string mask = IRCD->NormalizeMask(target);
 
 			Log(override ? LOG_OVERRIDE : LOG_COMMAND, source, this, ci) << "for " << mask;
 
@@ -214,7 +215,7 @@ public:
 				if (ban_time)
 				{
 					new TempBan(ban_time, c, mask, mode);
-					source.Reply(_("Ban on \002%s\002 expires in %s."), mask.c_str(), Anope::Duration(ban_time, source.GetAccount()).c_str());
+					source.Reply(_("Ban on \002%s\002 expires in %s."), mask.c_str(), Warden::Duration(ban_time, source.GetAccount()).c_str());
 				}
 			}
 
@@ -246,7 +247,7 @@ public:
 						if (ci->HasExt("SIGNKICK") || (ci->HasExt("SIGNKICK_LEVEL") && !u_access.HasPriv("SIGNKICK")))
 						{
 							reason += " (Matches " + mask + ")";
-							signkickformat = Anope::Template(signkickformat, {
+							signkickformat = Warden::Template(signkickformat, {
 								{ "message", reason           },
 								{ "nick",    source.GetNick() },
 							});
@@ -265,7 +266,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -288,14 +289,14 @@ class CSBan final
 	CommandCSBan commandcsban;
 
 public:
-	CSBan(const Anope::string &modname, const Anope::string &creator)
+	CSBan(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandcsban(this)
 	{
 		me = this;
 	}
 
-	EventReturn OnChannelModeUnset(Channel *c, MessageSource &setter, ChannelMode *cmode, const Anope::string &param) override
+	EventReturn OnChannelModeUnset(Channel *c, MessageSource &setter, ChannelMode *cmode, const Warden::string &param) override
 	{
 		for (const auto *tempban : tempbans)
 		{

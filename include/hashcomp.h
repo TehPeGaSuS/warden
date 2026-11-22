@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2009-2011 InspIRCd Development Team
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,11 +22,11 @@
 
 #include "services.h"
 
-namespace Anope
+namespace Warden
 {
 	class string;
 
-	/* Casemap in use by Anope. ci::string's comparison functions use this (and thus Anope::string) */
+	/* Casemap in use by Warden. ci::string's comparison functions use this (and thus Warden::string) */
 	extern std::locale casemap;
 
 	extern CoreExport void CaseMapRebuild();
@@ -135,12 +136,12 @@ namespace ci
 
 	struct CoreExport less final
 	{
-		/** Compare two Anope::strings as ci::strings and find which one is less
+		/** Compare two Warden::strings as ci::strings and find which one is less
 		 * @param s1 The first string
 		 * @param s2 The second string
 		 * @return true if s1 < s2, else false
 		 */
-		bool operator()(const Anope::string &s1, const Anope::string &s2) const;
+		bool operator()(const Warden::string &s1, const Warden::string &s2) const;
 	};
 }
 

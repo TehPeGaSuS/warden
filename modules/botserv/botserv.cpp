@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,14 +22,14 @@ class BotServCore final
 	ExtensibleRef<bool> persist, inhabit;
 
 public:
-	BotServCore(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, PSEUDOCLIENT | VENDOR),
+	BotServCore(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, PSEUDOCLIENT | VENDOR),
 		persist("PERSIST"), inhabit("inhabit")
 	{
 	}
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		const Anope::string &bsnick = conf.GetModule(this).Get<const Anope::string>("client");
+		const Warden::string &bsnick = conf.GetModule(this).Get<const Warden::string>("client");
 		BotServ = BotInfo::Find(bsnick, true);
 	}
 
@@ -37,7 +38,7 @@ public:
 		/* Do not allow removing bot modes on our service bots */
 		if (chan->ci && chan->ci->bi == user)
 		{
-			const Anope::string &botmodes = Config->GetModule(this).Get<const Anope::string>("botmodes");
+			const Warden::string &botmodes = Config->GetModule(this).Get<const Warden::string>("botmodes");
 			for (auto botmode : botmodes)
 				chan->SetMode(chan->ci->bi, ModeManager::FindChannelModeByChar(botmode), chan->ci->bi->GetUID());
 		}
@@ -47,7 +48,7 @@ public:
 	{
 		if (ci->c && ci->c->users.size() >= Config->GetModule(this).Get<unsigned>("minusers"))
 		{
-			ChannelStatus status(Config->GetModule(this).Get<const Anope::string>("botmodes"));
+			ChannelStatus status(Config->GetModule(this).Get<const Warden::string>("botmodes"));
 			bi->Join(ci->c, &status);
 		}
 	}
@@ -62,18 +63,18 @@ public:
 		{
 			c->ClearModes(bi, "BAN", true);
 
-			Anope::string Limit;
+			Warden::string Limit;
 			unsigned limit = 0;
 			if (c->GetParam("LIMIT", Limit))
-				limit = Anope::Convert<unsigned>(Limit, limit);
+				limit = Warden::Convert<unsigned>(Limit, limit);
 
 			/* Should we be invited? */
 			if (c->HasMode("INVITE") || (limit && c->users.size() >= limit))
 			{
 				ChannelMode *cm = ModeManager::FindChannelModeByName("OP");
-				char symbol = cm ? anope_dynamic_static_cast<ChannelModeStatus *>(cm)->symbol : 0;
-				const auto message = Anope::Format("%s invited %s into the channel.", user->nick.c_str(), user->nick.c_str());
-				IRCD->SendNotice(bi, (symbol ? Anope::string(symbol) : "") + c->name, message);
+				char symbol = cm ? warden_dynamic_static_cast<ChannelModeStatus *>(cm)->symbol : 0;
+				const auto message = Warden::Format("%s invited %s into the channel.", user->nick.c_str(), user->nick.c_str());
+				IRCD->SendNotice(bi, (symbol ? Warden::string(symbol) : "") + c->name, message);
 			}
 
 			ModeManager::ProcessModes();
@@ -90,7 +91,7 @@ public:
 			/* This is before the user has joined the channel, so check usercount + 1 */
 			if (c->users.size() + 1 >= Config->GetModule(this).Get<unsigned>("minusers") && !c->FindUser(c->ci->bi))
 			{
-				ChannelStatus status(Config->GetModule(this).Get<const Anope::string>("botmodes"));
+				ChannelStatus status(Config->GetModule(this).Get<const Warden::string>("botmodes"));
 				c->ci->bi->Join(c, &status);
 			}
 		}
@@ -117,7 +118,7 @@ public:
 			c->ci->bi->Part(c->ci->c);
 	}
 
-	EventReturn OnPreHelp(CommandSource &source, const std::vector<Anope::string> &params) override
+	EventReturn OnPreHelp(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!params.empty())
 			return EVENT_CONTINUE;
@@ -133,7 +134,7 @@ public:
 				),
 				source.service->nick.c_str());
 
-			const Anope::string &fantasycharacters = Config->GetModule("fantasy").Get<const Anope::string>("prefix", "!");
+			const Warden::string &fantasycharacters = Config->GetModule("fantasy").Get<const Warden::string>("prefix", "!");
 			if (!fantasycharacters.empty())
 			{
 				source.Reply(" ");
@@ -164,7 +165,7 @@ public:
 		return EVENT_CONTINUE;
 	}
 
-	void OnPostHelp(CommandSource &source, const std::vector<Anope::string> &params) override
+	void OnPostHelp(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!params.empty() || source.c || source.service != *BotServ)
 			return;
@@ -173,7 +174,7 @@ public:
 		source.Reply(_("Bot will join a channel whenever there is at least \002%d\002 user(s) on it."),
 			Config->GetModule(this).Get<unsigned>("minusers"));
 
-		const Anope::string &fantasycharacters = Config->GetModule("fantasy").Get<const Anope::string>("prefix", "!");
+		const Warden::string &fantasycharacters = Config->GetModule("fantasy").Get<const Warden::string>("prefix", "!");
 		if (!fantasycharacters.empty())
 		{
 			source.Reply(_(
@@ -202,12 +203,12 @@ public:
 	void OnCreateChan(ChannelInfo *ci) override
 	{
 		/* Set default bot flags */
-		spacesepstream sep(Config->GetModule(this).Get<const Anope::string>("defaults", "greet fantasy"));
-		for (Anope::string token; sep.GetToken(token);)
+		spacesepstream sep(Config->GetModule(this).Get<const Warden::string>("defaults", "greet fantasy"));
+		for (Warden::string token; sep.GetToken(token);)
 			ci->Extend<bool>("BS_" + token.upper());
 	}
 
-	void OnUserKicked(const MessageSource &source, User *target, const Anope::string &channel, ChannelStatus &status, const Anope::string &kickmsg) override
+	void OnUserKicked(const MessageSource &source, User *target, const Warden::string &channel, ChannelStatus &status, const Warden::string &kickmsg) override
 	{
 		BotInfo *bi = BotInfo::Find(target->GetUID());
 		if (bi)
@@ -218,7 +219,7 @@ public:
 	void OnCreateBot(BotInfo *bi) override
 	{
 		if (bi->botmodes.empty())
-			bi->botmodes = Config->GetModule(this).Get<const Anope::string>("botumodes");
+			bi->botmodes = Config->GetModule(this).Get<const Warden::string>("botumodes");
 	}
 };
 

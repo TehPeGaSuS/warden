@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -47,11 +48,11 @@ public:
 		SHAUpdate(&context, data, len);
 	}
 
-	Anope::string Finalize() override
+	Warden::string Finalize() override
 	{
 		std::vector<unsigned char> digest(digest_size);
 		SHAFinal(&context, digest.data());
-		return Anope::string(reinterpret_cast<const char *>(digest.data()), digest.size());
+		return Warden::string(reinterpret_cast<const char *>(digest.data()), digest.size());
 	}
 };
 
@@ -63,7 +64,7 @@ class SHA2Provider final
 	: public Encryption::Provider
 {
 public:
-	SHA2Provider(Module *creator, const Anope::string &algorithm, size_t bs, size_t ds)
+	SHA2Provider(Module *creator, const Warden::string &algorithm, size_t bs, size_t ds)
 		: Encryption::Provider(creator, algorithm, bs, ds)
 	{
 	}
@@ -84,18 +85,18 @@ private:
 	SHA2Provider<sha384_ctx, sha384_init, sha384_update, sha384_final> sha384provider;
 	SHA2Provider<sha512_ctx, sha512_init, sha512_update, sha512_final> sha512provider;
 
-	Anope::string GenerateKey(size_t keylen)
+	Warden::string GenerateKey(size_t keylen)
 	{
 		static std::random_device device;
 		static std::mt19937 engine(device());
 		static std::uniform_int_distribution<int> dist(CHAR_MIN, CHAR_MAX);
-		Anope::string keybuf(keylen, ' ');
+		Warden::string keybuf(keylen, ' ');
 		for (size_t i = 0; i < keylen; ++i)
 			keybuf[i] = static_cast<char>(dist(engine));
 		return keybuf;
 	}
 
-	Encryption::Provider *GetAlgorithm(const Anope::string &algorithm)
+	Encryption::Provider *GetAlgorithm(const Warden::string &algorithm)
 	{
 		if (algorithm == "sha224")
 			return &sha224provider;
@@ -109,7 +110,7 @@ private:
 	}
 
 public:
-	ESHA2(const Anope::string &modname, const Anope::string &creator)
+	ESHA2(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, ENCRYPTION | VENDOR)
 		, sha224provider(this, "sha224", SHA224_BLOCK_SIZE, SHA224_DIGEST_SIZE)
 		, sha256provider(this, "sha256", SHA256_BLOCK_SIZE, SHA256_DIGEST_SIZE)
@@ -136,17 +137,17 @@ public:
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		this->defaultprovider = GetAlgorithm(Config->GetModule(this).Get<const Anope::string>("algorithm", "sha512"));
+		this->defaultprovider = GetAlgorithm(Config->GetModule(this).Get<const Warden::string>("algorithm", "sha512"));
 	}
 
-	EventReturn OnEncrypt(const Anope::string &src, Anope::string &dest) override
+	EventReturn OnEncrypt(const Warden::string &src, Warden::string &dest) override
 	{
 		if (!defaultprovider)
 			return EVENT_CONTINUE;
 
 		auto key = GenerateKey(defaultprovider->digest_size);
 		auto hmac = defaultprovider->HMAC(key, src);
-		auto enc = "hmac-" + defaultprovider->name + ":" + Anope::Hex(hmac) + ":" + Anope::Hex(key);
+		auto enc = "hmac-" + defaultprovider->name + ":" + Warden::Hex(hmac) + ":" + Warden::Hex(key);
 		Log(LOG_DEBUG_2) << "(enc_sha2) hashed password from [" << src << "] to [" << enc << "]";
 		dest = enc;
 		return EVENT_ALLOW;
@@ -160,10 +161,10 @@ public:
 
 		NickCore *nc = na->nc;
 		auto apos = nc->pass.find(':');
-		if (apos == Anope::string::npos)
+		if (apos == Warden::string::npos)
 			return;
 
-		Anope::string hash_method(nc->pass.begin(), nc->pass.begin() + apos);
+		Warden::string hash_method(nc->pass.begin(), nc->pass.begin() + apos);
 		bool is_hmac = !hash_method.compare(0, 5, "hmac-", 5);
 		if (!is_hmac && hash_method.compare(0, 4, "raw-", 4))
 			return; // Not a SHA-2 password.
@@ -176,35 +177,35 @@ public:
 		if (is_hmac)
 		{
 			auto bpos = nc->pass.find(':', apos + 1);
-			if (bpos == Anope::string::npos)
+			if (bpos == Warden::string::npos)
 				return; // No HMAC key.
 
 			// If you are using PHP you can validate passwords like this:
 			//
 			// <?php
-			// function check_pass($user_pass, $anope_pass) {
-			// 	[$algo, $hash, $key] = explode(':', $anope_pass);
+			// function check_pass($user_pass, $warden_pass) {
+			// 	[$algo, $hash, $key] = explode(':', $warden_pass);
 			// 	$hash_algo           = substr($algo, 5);
 			// 	$unhex_key           = hex2bin($key);
 			// 	$user_hash           = hash_hmac($hash_algo, $user_pass, $unhex_key);
 			// 	return hash_equals($hash, $user_hash);
 			// }
 			//
-			// $anope_pass  = "hmac-sha256:5f7f039818f6e10be84dab0f49610a387d3818b2c883eacdc1778c66a7cecf3b:1a924a3b05a11d7bf3c752d820391dbe01fb7e5d83f7400765de987c3fbb0ec3";
-			// var_dump(check_pass("test12345", $anope_pass));     // valid
-			// var_dump(check_pass("test123456789", $anope_pass)); // invalid
+			// $warden_pass  = "hmac-sha256:5f7f039818f6e10be84dab0f49610a387d3818b2c883eacdc1778c66a7cecf3b:1a924a3b05a11d7bf3c752d820391dbe01fb7e5d83f7400765de987c3fbb0ec3";
+			// var_dump(check_pass("test12345", $warden_pass));     // valid
+			// var_dump(check_pass("test123456789", $warden_pass)); // invalid
 
-			Anope::string pass_hex(nc->pass.begin() + apos + 1, nc->pass.begin() + bpos);
-			Anope::string key_hex(nc->pass.begin() + bpos + 1, nc->pass.end());
-			Anope::string key;
-			Anope::Unhex(key_hex, key);
+			Warden::string pass_hex(nc->pass.begin() + apos + 1, nc->pass.begin() + bpos);
+			Warden::string key_hex(nc->pass.begin() + bpos + 1, nc->pass.end());
+			Warden::string key;
+			Warden::Unhex(key_hex, key);
 
-			auto enc = Anope::Hex(provider->HMAC(key, req->GetPassword()));
+			auto enc = Warden::Hex(provider->HMAC(key, req->GetPassword()));
 			valid = pass_hex.equals_cs(enc);
 		}
 		else
 		{
-			Anope::string pass_hex(nc->pass.begin() + apos + 1, nc->pass.end());
+			Warden::string pass_hex(nc->pass.begin() + apos + 1, nc->pass.end());
 			valid = provider->Compare(pass_hex, req->GetPassword());
 		}
 
@@ -214,7 +215,7 @@ public:
 			// hash, or the algorithm is different we want to re-encrypt the
 			// password with the primary encryption method.
 			if (ModuleManager::FindFirstOf(ENCRYPTION) != this || !is_hmac || provider != defaultprovider)
-				Anope::Encrypt(req->GetPassword(), nc->pass);
+				Warden::Encrypt(req->GetPassword(), nc->pass);
 			req->Success(this, na);
 		}
 	}

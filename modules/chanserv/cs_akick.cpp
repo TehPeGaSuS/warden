@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -38,7 +39,7 @@ public:
 	{
 	}
 
-	ChanServ::AutoKick *AddAKick(ChannelInfo *ci, const Anope::string &user, NickCore *akicknc, const Anope::string &reason, time_t t = Anope::CurTime, time_t lu = 0) override
+	ChanServ::AutoKick *AddAKick(ChannelInfo *ci, const Warden::string &user, NickCore *akicknc, const Warden::string &reason, time_t t = Warden::CurTime, time_t lu = 0) override
 	{
 		auto *akick = new ChanServ::AutoKick();
 		akick->ci = ci;
@@ -56,7 +57,7 @@ public:
 		return akick;
 	}
 
-	ChanServ::AutoKick *AddAKick(ChannelInfo *ci, const Anope::string &user, const Anope::string &mask, const Anope::string &reason, time_t t = Anope::CurTime, time_t lu = 0)  override
+	ChanServ::AutoKick *AddAKick(ChannelInfo *ci, const Warden::string &user, const Warden::string &mask, const Warden::string &reason, time_t t = Warden::CurTime, time_t lu = 0)  override
 	{
 		auto *akick = new ChanServ::AutoKick();
 		akick->ci = ci;
@@ -159,7 +160,7 @@ struct AutoKickType final
 		ChanServ::AutoKick *ak;
 		if (obj)
 		{
-			ak = anope_dynamic_static_cast<ChanServ::AutoKick *>(obj);
+			ak = warden_dynamic_static_cast<ChanServ::AutoKick *>(obj);
 			ak->creator = screator;
 			ak->reason = sreason;
 			ak->nc = nc;
@@ -204,10 +205,10 @@ class CommandCSAKick final
 		source.Reply(_("AKICK ENFORCE for \002%s\002 complete; \002%d\002 users were affected."), ci->name.c_str(), count);
 	}
 
-	void DoAdd(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoAdd(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		Anope::string mask = params[2];
-		Anope::string reason = params.size() > 3 ? params[3] : "";
+		Warden::string mask = params[2];
+		Warden::string reason = params.size() > 3 ? params[3] : "";
 		const NickAlias *na = NickAlias::Find(mask);
 		NickCore *nc = NULL;
 		const ChanServ::AutoKick *akick;
@@ -231,10 +232,10 @@ class CommandCSAKick final
 		else if (!na)
 		{
 			/* If the mask contains a realname the reason must be prepended with a : */
-			if (mask.find('#') != Anope::string::npos)
+			if (mask.find('#') != Warden::string::npos)
 			{
 				size_t r = reason.find(':');
-				if (r != Anope::string::npos)
+				if (r != Warden::string::npos)
 				{
 					mask += " " + reason.substr(0, r);
 					mask.trim();
@@ -258,7 +259,7 @@ class CommandCSAKick final
 		{
 			for (const auto &mode : ci->c->GetModeList("EXCEPT"))
 			{
-				if (Anope::Match(mode, mask))
+				if (Warden::Match(mode, mask))
 				{
 					source.Reply(CHAN_EXCEPTED, mask.c_str(), ci->name.c_str());
 					return;
@@ -309,8 +310,8 @@ class CommandCSAKick final
 				AccessGroup nc_access = ci->AccessFor(na->nc), u_access = source.AccessFor(ci);
 				if (na->nc && (na->nc == ci->GetFounder() || nc_access >= u_access))
 				{
-					Anope::string buf = na->nick + "!" + na->last_userhost;
-					if (Anope::Match(buf, mask))
+					Warden::string buf = na->nick + "!" + na->last_userhost;
+					if (Warden::Match(buf, mask))
 					{
 						source.Reply(ACCESS_DENIED);
 						return;
@@ -349,9 +350,9 @@ class CommandCSAKick final
 		this->Enforce(source, ci);
 	}
 
-	void DoDel(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoDel(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &mask = params[2];
+		const Warden::string &mask = params[2];
 		unsigned i, end;
 
 		if (!ChanServ::akick_service->GetAKickCount(ci))
@@ -361,7 +362,7 @@ class CommandCSAKick final
 		}
 
 		/* Special case: is it a number/list?  Only do search if it isn't. */
-		if (isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			class AkickDelCallback final
 				: public NumberList
@@ -370,10 +371,10 @@ class CommandCSAKick final
 				ChannelInfo *ci;
 				Command *c;
 				unsigned deleted = 0;
-				Anope::string lastdeleted;
+				Warden::string lastdeleted;
 				AccessGroup ag;
 			public:
-				AkickDelCallback(CommandSource &_source, ChannelInfo *_ci, Command *_c, const Anope::string &list) : NumberList(list, true), source(_source), ci(_ci), c(_c), ag(source.AccessFor(ci))
+				AkickDelCallback(CommandSource &_source, ChannelInfo *_ci, Command *_c, const Warden::string &list) : NumberList(list, true), source(_source), ci(_ci), c(_c), ag(source.AccessFor(ci))
 				{
 				}
 
@@ -445,11 +446,11 @@ class CommandCSAKick final
 		}
 	}
 
-	void ProcessList(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params, ListFormatter &list)
+	void ProcessList(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params, ListFormatter &list)
 	{
-		const Anope::string &mask = params.size() > 2 ? params[2] : "";
+		const Warden::string &mask = params.size() > 2 ? params[2] : "";
 
-		if (!mask.empty() && isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (!mask.empty() && isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			class AkickListCallback final
 				: public NumberList
@@ -458,7 +459,7 @@ class CommandCSAKick final
 				ChannelInfo *ci;
 
 			public:
-				AkickListCallback(ListFormatter &_list, ChannelInfo *_ci, const Anope::string &numlist) : NumberList(numlist, false), list(_list), ci(_ci)
+				AkickListCallback(ListFormatter &_list, ChannelInfo *_ci, const Warden::string &numlist) : NumberList(numlist, false), list(_list), ci(_ci)
 				{
 				}
 
@@ -469,18 +470,18 @@ class CommandCSAKick final
 
 					const auto *akick = ChanServ::akick_service->GetAKick(ci, number - 1);
 
-					Anope::string timebuf, lastused;
+					Warden::string timebuf, lastused;
 					if (akick->addtime)
-						timebuf = Anope::strftime(akick->addtime, NULL, true);
+						timebuf = Warden::strftime(akick->addtime, NULL, true);
 					else
 						timebuf = TIME_UNKNOWN;
 					if (akick->last_used)
-						lastused = Anope::strftime(akick->last_used, NULL, true);
+						lastused = Warden::strftime(akick->last_used, NULL, true);
 					else
 						lastused = TIME_NEVER;
 
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(number);
+					entry["Number"] = Warden::ToString(number);
 					if (akick->nc)
 						entry["Mask"] = akick->nc->display;
 					else
@@ -503,24 +504,24 @@ class CommandCSAKick final
 
 				if (!mask.empty())
 				{
-					if (!akick->nc && !Anope::Match(akick->mask, mask))
+					if (!akick->nc && !Warden::Match(akick->mask, mask))
 						continue;
-					if (akick->nc && !Anope::Match(akick->nc->display, mask))
+					if (akick->nc && !Warden::Match(akick->nc->display, mask))
 						continue;
 				}
 
-				Anope::string timebuf, lastused;
+				Warden::string timebuf, lastused;
 				if (akick->addtime)
-					timebuf = Anope::strftime(akick->addtime, NULL, true);
+					timebuf = Warden::strftime(akick->addtime, NULL, true);
 				else
 					timebuf = TIME_UNKNOWN;
 				if (akick->last_used)
-					lastused = Anope::strftime(akick->last_used, NULL, true);
+					lastused = Warden::strftime(akick->last_used, NULL, true);
 				else
 					lastused = TIME_NEVER;
 
 				ListFormatter::ListEntry entry;
-				entry["Number"] = Anope::ToString(i + 1);
+				entry["Number"] = Warden::ToString(i + 1);
 				if (akick->nc)
 					entry["Mask"] = akick->nc->display;
 				else
@@ -543,7 +544,7 @@ class CommandCSAKick final
 		}
 	}
 
-	void DoList(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoList(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
 		if (!ChanServ::akick_service->GetAKickCount(ci))
 		{
@@ -563,7 +564,7 @@ class CommandCSAKick final
 		this->ProcessList(source, ci, params, list);
 	}
 
-	void DoView(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoView(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
 		if (!ChanServ::akick_service->GetAKickCount(ci))
 		{
@@ -617,11 +618,11 @@ public:
 		this->SetSyntax(_("\037channel\037 CLEAR"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		Anope::string chan = params[0];
-		Anope::string cmd = params[1];
-		Anope::string mask = params.size() > 2 ? params[2] : "";
+		Warden::string chan = params[0];
+		Warden::string cmd = params[1];
+		Warden::string mask = params.size() > 2 ? params[2] : "";
 
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
 		if (ci == NULL)
@@ -642,7 +643,7 @@ public:
 			this->OnSyntaxError(source, cmd);
 		else if (!has_access)
 			source.Reply(ACCESS_DENIED);
-		else if (!cmd.equals_ci("LIST") && !cmd.equals_ci("VIEW") && !cmd.equals_ci("ENFORCE") && Anope::ReadOnly)
+		else if (!cmd.equals_ci("LIST") && !cmd.equals_ci("VIEW") && !cmd.equals_ci("ENFORCE") && Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 		else if (cmd.equals_ci("ADD"))
 			this->DoAdd(source, ci, params);
@@ -660,7 +661,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		BotInfo *bi = Config->GetClient("NickServ");
 		this->SendSyntax(source);
@@ -723,7 +724,7 @@ private:
 	CommandCSAKick commandcsakick;
 
 public:
-	CSAKick(const Anope::string &modname, const Anope::string &creator)
+	CSAKick(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, akick_service(this)
 		, commandcsakick(this)
@@ -759,7 +760,7 @@ public:
 		}
 	}
 
-	EventReturn OnCheckKick(User *u, Channel *c, Anope::string &mask, Anope::string &reason) override
+	EventReturn OnCheckKick(User *u, Channel *c, Warden::string &mask, Warden::string &reason) override
 	{
 		if (!c->ci || c->MatchesList(u, "EXCEPT"))
 			return EVENT_CONTINUE;
@@ -783,14 +784,14 @@ public:
 			if (kick)
 			{
 				Log(LOG_DEBUG_2) << u->nick << " matched akick " << (autokick->nc ? autokick->nc->display : autokick->mask);
-				autokick->last_used = Anope::CurTime;
-				if (!autokick->nc && autokick->mask.find('#') == Anope::string::npos)
+				autokick->last_used = Warden::CurTime;
+				if (!autokick->nc && autokick->mask.find('#') == Warden::string::npos)
 					mask = autokick->mask;
 				reason = autokick->reason;
 				if (reason.empty())
 				{
-					reason = Language::Translate(u, Config->GetModule(this).Get<const Anope::string>("autokickreason").c_str());
-					reason = Anope::Template(reason, {
+					reason = Language::Translate(u, Config->GetModule(this).Get<const Warden::string>("autokickreason").c_str());
+					reason = Warden::Template(reason, {
 						{ "channel", c->name },
 						{ "nick",    u->nick },
 					});

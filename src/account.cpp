@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,7 +22,7 @@
 
 std::set<IdentifyRequest *> IdentifyRequest::Requests;
 
-IdentifyRequest::IdentifyRequest(Module *o, const Anope::string &acc, const Anope::string &pass, const Anope::string &ip)
+IdentifyRequest::IdentifyRequest(Module *o, const Warden::string &acc, const Warden::string &pass, const Warden::string &ip)
 	: owner(o)
 	, account(acc)
 	, password(pass)

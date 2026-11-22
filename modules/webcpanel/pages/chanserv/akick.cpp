@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,17 +16,17 @@
 #include "../../webcpanel.h"
 #include "modules/chanserv/akick.h"
 
-WebCPanel::ChanServ::Akick::Akick(const Anope::string &cat, const Anope::string &u) : WebPanelProtectedPage(cat, u)
+WebCPanel::ChanServ::Akick::Akick(const Warden::string &cat, const Warden::string &u) : WebPanelProtectedPage(cat, u)
 {
 }
 
-bool WebCPanel::ChanServ::Akick::OnRequest(HTTP::Provider *server, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
+bool WebCPanel::ChanServ::Akick::OnRequest(HTTP::Provider *server, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
 {
 	TemplateFileServer Page("chanserv/akick.html");
 
 	BuildChanList(na, replacements);
 
-	const Anope::string chname = WebPanel::GetRequestData(message.get_data, "channel");
+	const Warden::string chname = WebPanel::GetRequestData(message.get_data, "channel");
 	if (chname.empty())
 	{
 		Page.Serve(server, page_name, client, message, reply, replacements);
@@ -53,11 +54,11 @@ bool WebCPanel::ChanServ::Akick::OnRequest(HTTP::Provider *server, const Anope::
 
 	replacements["AKICK"] = "YES";
 
-	const Anope::string mask = WebPanel::GetRequestData(message.get_data, "mask");
-	const Anope::string pmask = WebPanel::GetRequestData(message.post_data, "mask");
+	const Warden::string mask = WebPanel::GetRequestData(message.get_data, "mask");
+	const Warden::string pmask = WebPanel::GetRequestData(message.post_data, "mask");
 	if (message.get_data.count("del") && !mask.empty())
 	{
-		std::vector<Anope::string> params;
+		std::vector<Warden::string> params;
 		params.push_back(ci->name);
 		params.push_back("DEL");
 		params.push_back(mask);
@@ -66,12 +67,12 @@ bool WebCPanel::ChanServ::Akick::OnRequest(HTTP::Provider *server, const Anope::
 	}
 	else if (!pmask.empty())
 	{
-		std::vector<Anope::string> params;
+		std::vector<Warden::string> params;
 		params.push_back(ci->name);
 		params.push_back("ADD");
 		params.push_back(pmask);
 
-		const Anope::string reason = WebPanel::GetRequestData(message.post_data, "reason");
+		const Warden::string reason = WebPanel::GetRequestData(message.post_data, "reason");
 		if (!reason.empty())
 			params.push_back(reason);
 
@@ -99,9 +100,9 @@ bool WebCPanel::ChanServ::Akick::OnRequest(HTTP::Provider *server, const Anope::
 	return true;
 }
 
-std::set<Anope::string> WebCPanel::ChanServ::Akick::GetData()
+std::set<Warden::string> WebCPanel::ChanServ::Akick::GetData()
 {
-	std::set<Anope::string> v;
+	std::set<Warden::string> v;
 	v.insert("channel");
 	return v;
 }

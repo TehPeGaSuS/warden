@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -17,25 +18,25 @@
 
 enum
 {
-	// Used by anope.checkCredentials, anope.identify, and anope.command.
+	// Used by warden.checkCredentials, warden.identify, and warden.command.
 	ERR_INVALID_ACCOUNT = RPC::ERR_CUSTOM_START,
 
-	// Used by anope.checkCredentials
+	// Used by warden.checkCredentials
 	ERR_INVALID_PASSWORD = RPC::ERR_CUSTOM_START + 1,
 	ERR_ACCOUNT_SUSPENDED = RPC::ERR_CUSTOM_START + 2,
 
-	// Used by anope.identify
+	// Used by warden.identify
 	ERR_INVALID_USER = RPC::ERR_CUSTOM_START + 1,
 
-	// Used by anope.listCommands, and anope.command
+	// Used by warden.listCommands, and warden.command
 	ERR_INVALID_SERVICE = RPC::ERR_CUSTOM_START + 1,
 
-	// Used by anope.command
+	// Used by warden.command
 	ERR_INVALID_COMMAND = RPC::ERR_CUSTOM_START + 2,
 };
 
 
-class AnopeCheckCredentialsRPCEvent final
+class WardenCheckCredentialsRPCEvent final
 	: public RPC::Event
 {
 private:
@@ -48,7 +49,7 @@ private:
 		Reference<RPC::ServiceInterface> rpcinterface;
 
 	public:
-		RPCIdentifyRequest(Module *m, RPC::Request &r, HTTP::Client *c, RPC::ServiceInterface *i, const Anope::string &a, const Anope::string &p)
+		RPCIdentifyRequest(Module *m, RPC::Request &r, HTTP::Client *c, RPC::ServiceInterface *i, const Warden::string &a, const Warden::string &p)
 			: IdentifyRequest(m, a, p, c->GetIP())
 			, request(r)
 			, client(c)
@@ -95,8 +96,8 @@ private:
 	};
 
 public:
-	AnopeCheckCredentialsRPCEvent(Module *o)
-		: RPC::Event(o, "anope.checkCredentials", 2)
+	WardenCheckCredentialsRPCEvent(Module *o)
+		: RPC::Event(o, "warden.checkCredentials", 2)
 	{
 	}
 
@@ -117,19 +118,19 @@ public:
 	}
 };
 
-class AnopeIdentifyRPCEvent final
+class WardenIdentifyRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeIdentifyRPCEvent(Module *o)
-		: RPC::Event(o, "anope.identify", 2)
+	WardenIdentifyRPCEvent(Module *o)
+		: RPC::Event(o, "warden.identify", 2)
 	{
 	}
 
 	bool Run(RPC::ServiceInterface *iface, HTTP::Client *client, RPC::Request &request) override
 	{
 		auto *na = request.data[0].is_pos_number_only()
-				? NickAlias::FindId(Anope::Convert(request.data[0], 0))
+				? NickAlias::FindId(Warden::Convert(request.data[0], 0))
 				: NickAlias::Find(request.data[0]);
 		if (!na)
 		{
@@ -149,12 +150,12 @@ public:
 	}
 };
 
-class AnopeListCommandsRPCEvent final
+class WardenListCommandsRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeListCommandsRPCEvent(Module *o)
-		: RPC::Event(o, "anope.listCommands")
+	WardenListCommandsRPCEvent(Module *o)
+		: RPC::Event(o, "warden.listCommands")
 	{
 	}
 
@@ -220,7 +221,7 @@ public:
 	}
 };
 
-class AnopeCommandRPCEvent final
+class WardenCommandRPCEvent final
 	: public RPC::Event
 {
 private:
@@ -236,17 +237,17 @@ private:
 		{
 		}
 
-		void SendMessage(BotInfo *source, const Anope::string &msg) override
+		void SendMessage(BotInfo *source, const Warden::string &msg) override
 		{
-			root.Reply(Anope::RemoveFormatting(msg.replace_all_cs("\x1A", "\x20")));
+			root.Reply(Warden::RemoveFormatting(msg.replace_all_cs("\x1A", "\x20")));
 		};
 	};
 
 public:
 	static bool pretenduser;
 
-	AnopeCommandRPCEvent(Module *o)
-		: RPC::Event(o, "anope.command", 3)
+	WardenCommandRPCEvent(Module *o)
+		: RPC::Event(o, "warden.command", 3)
 	{
 	}
 
@@ -256,7 +257,7 @@ public:
 		if (!request.data[0].empty())
 		{
 			na = request.data[0].is_pos_number_only()
-				? NickAlias::FindId(Anope::Convert(request.data[0], 0))
+				? NickAlias::FindId(Warden::Convert(request.data[0], 0))
 				: NickAlias::Find(request.data[0]);
 			if (!na)
 			{
@@ -272,12 +273,12 @@ public:
 			return true;
 		}
 
-		Anope::string command;
+		Warden::string command;
 		for (size_t i = 2; i < request.data.size(); ++i)
 		{
 			if (!command.empty())
 				command.push_back(' ');
-			command.append(Anope::ReplaceUnsafe(request.data[i]));
+			command.append(Warden::ReplaceUnsafe(request.data[i]));
 		}
 
 		User *u = nullptr;
@@ -308,30 +309,30 @@ public:
 	}
 };
 
-bool AnopeCommandRPCEvent::pretenduser = false;
+bool WardenCommandRPCEvent::pretenduser = false;
 
 class ModuleRPCAccount final
 	: public Module
 {
 private:
-	AnopeCheckCredentialsRPCEvent anopecheckcredentialsrpcevent;
-	AnopeIdentifyRPCEvent anopeidentifyrpcevent;
-	AnopeListCommandsRPCEvent anopelistcommandsrpcevent;
-	AnopeCommandRPCEvent anopecommandrpcevent;
+	WardenCheckCredentialsRPCEvent wardencheckcredentialsrpcevent;
+	WardenIdentifyRPCEvent wardenidentifyrpcevent;
+	WardenListCommandsRPCEvent wardenlistcommandsrpcevent;
+	WardenCommandRPCEvent wardencommandrpcevent;
 
 public:
-	ModuleRPCAccount(const Anope::string &modname, const Anope::string &creator)
+	ModuleRPCAccount(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, EXTRA | VENDOR)
-		, anopecheckcredentialsrpcevent(this)
-		, anopeidentifyrpcevent(this)
-		, anopelistcommandsrpcevent(this)
-		, anopecommandrpcevent(this)
+		, wardencheckcredentialsrpcevent(this)
+		, wardenidentifyrpcevent(this)
+		, wardenlistcommandsrpcevent(this)
+		, wardencommandrpcevent(this)
 	{
 	}
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		AnopeCommandRPCEvent::pretenduser = conf.GetModule(this).Get<bool>("pretenduser");
+		WardenCommandRPCEvent::pretenduser = conf.GetModule(this).Get<bool>("pretenduser");
 	}
 };
 

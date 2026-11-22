@@ -1,10 +1,11 @@
 #!/bin/sh
 #
-# Anope IRC Services <https://www.anope.org/>
+# Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 #
 # Copyright (C) 2003-2026 Anope Contributors
+# Copyright (C) 2026 Warden Contributors
 #
-# Anope is free software. You can use, modify, and/or distribute it under the
+# Warden is free software. You can use, modify, and/or distribute it under the
 # terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 # for the complete terms of this license and docs/AUTHORS.txt for a list of
 # contributors.
@@ -71,14 +72,14 @@ Run_Build_System () {
 	fi
 
 	echo ""
-	echo "Now run 'make -C ${BUILD_DIR#"$PWD/"} install' to build and install Anope."
+	echo "Now run 'make -C ${BUILD_DIR#"$PWD/"} install' to build and install Warden."
 }
 
 ###########################################################################
 # Init values
 ###########################################################################
 
-INSTDIR="${HOME}/anope-${VERSION_MAJOR}.${VERSION_MINOR}"
+INSTDIR="${HOME}/warden-${VERSION_MAJOR}.${VERSION_MINOR}"
 RUNGROUP=
 UMASK=
 DEBUG="no"
@@ -98,7 +99,7 @@ while [ $# -ge 1 ] ; do
 	done
 
 	if [ "$OPTION" = "--help" ] ; then
-		echo "Config utility for Anope"
+		echo "Config utility for Warden"
 		echo "------------------------"
 		echo "Syntax: ./Config [options]"
 		echo "-nocache     Ignore settings saved in config.cache"
@@ -133,7 +134,7 @@ done
 cmake --version 2>&1 > /dev/null
 if [ $? -ne 0 ] ; then
 	clear
-	echo "Anope requires CMake 3.20 or newer, which can be downloaded at https://cmake.org/ or through your system's package manager."
+	echo "Warden requires CMake 3.20 or newer, which can be downloaded at https://cmake.org/ or through your system's package manager."
 	echo "If you have installed CMake already, ensure it is in your PATH environment variable."
 	exit 0
 fi
@@ -148,7 +149,7 @@ else
 	echo ""
 fi
 
-echo "Beginning Anope configuration."
+echo "Beginning Warden configuration."
 echo ""
 
 ###########################################################################
@@ -193,7 +194,7 @@ fi
 ####
 
 ok=0
-echo "In what directory should Anope be installed?"
+echo "In what directory should Warden be installed?"
 while [ $ok -eq 0 ] ; do
 	echo -n "[$INSTDIR] "
 	if read INPUT ; then : ; else echo "" ; exit 1 ; fi
@@ -214,7 +215,7 @@ while [ $ok -eq 0 ] ; do
 			fi
 		fi
 	elif [ -e "$INPUT/include/services.h" ]; then
-		echo "You cannot use the Anope source directory as a target directory."
+		echo "You cannot use the Warden source directory as a target directory."
 	else
 		ok=1
 	fi
@@ -226,11 +227,11 @@ echo ""
 
 OLD_RUNGROUP="$RUNGROUP"
 if [ "$RUNGROUP" ] ; then
-	echo "Which group should all Anope data files be owned by?  (If Anope"
+	echo "Which group should all Warden data files be owned by?  (If Warden"
 	echo "should not force files to be owned by a particular group, type \"none\""
 	echo "(without the quotes) and press Return.)"
 else
-	echo "Which group should all Anope data files be owned by?  (If Anope"
+	echo "Which group should all Warden data files be owned by?  (If Warden"
 	echo "should not force files to be owned by a particular group, just press"
 	echo "Return.)"
 fi
@@ -282,7 +283,7 @@ TEMP_YN="n"
 if [ "$DEBUG" = "yes" ] ; then
 	TEMP_YN="y"
 fi
-echo "Would you like to build a debug version of Anope?"
+echo "Would you like to build a debug version of Warden?"
 echo -n "[$TEMP_YN] "
 read YN
 if [ "$YN" ] ; then

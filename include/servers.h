@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,10 +16,10 @@
 #pragma once
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "extensible.h"
 
-/* Anope. We are at the top of the server tree, our uplink is
+/* Warden. We are at the top of the server tree, our uplink is
  * almost always me->GetLinks()[0]. We never have an uplink. */
 extern CoreExport Server *Me;
 
@@ -31,11 +32,11 @@ namespace Servers
 	extern CoreExport Server *GetUplink();
 
 	/* Server maps by name and id */
-	extern CoreExport Anope::map<Server *> ByName;
-	extern CoreExport Anope::map<Server *> ByID;
+	extern CoreExport Warden::map<Server *> ByName;
+	extern CoreExport Warden::map<Server *> ByID;
 
 	/* CAPAB/PROTOCTL given by the uplink */
-	extern CoreExport std::set<Anope::string> Capab;
+	extern CoreExport std::set<Warden::string> Capab;
 }
 
 /** Class representing a server
@@ -45,13 +46,13 @@ class CoreExport Server final
 {
 private:
 	/* Server name */
-	Anope::string name;
+	Warden::string name;
 	/* Hops between services and server */
 	unsigned int hops;
 	/* Server description */
-	Anope::string description;
+	Warden::string description;
 	/* Server ID */
-	Anope::string sid;
+	Warden::string sid;
 	/* Links for this server */
 	std::vector<Server *> links;
 	/* Uplink for this server */
@@ -63,7 +64,7 @@ private:
 	/* The server is about to quit */
 	bool quitting = false;
 	/* Reason this server was quit */
-	Anope::string quit_reason;
+	Warden::string quit_reason;
 
 public:
 	/** Constructor
@@ -74,7 +75,7 @@ public:
 	 * @param hops Hops from services server
 	 * @param jupe If the server is juped
 	 */
-	Server(Server *uplink, const Anope::string &name, const Anope::string &description, const Anope::string &sid = "", unsigned hops = 0, bool jupe = false);
+	Server(Server *uplink, const Warden::string &name, const Warden::string &description, const Warden::string &sid = "", unsigned hops = 0, bool jupe = false);
 
 private:
 	/** Destructor
@@ -88,12 +89,12 @@ public:
 	/** Delete this server with a reason
 	 * @param reason The reason
 	 */
-	void Delete(const Anope::string &reason);
+	void Delete(const Warden::string &reason);
 
 	/** Get the name for this server
 	 * @return The name
 	 */
-	const Anope::string &GetName() const;
+	const Warden::string &GetName() const;
 
 	/** Get the number of hops this server is from services
 	 * @return Number of hops
@@ -103,26 +104,26 @@ public:
 	/** Set the server description
 	 * @param desc The new description
 	 */
-	void SetDescription(const Anope::string &desc);
+	void SetDescription(const Warden::string &desc);
 
 	/** Get the server description
 	 * @return The server description
 	 */
-	const Anope::string &GetDescription() const;
+	const Warden::string &GetDescription() const;
 
 	/** Change this servers SID
 	 * @param sid The new SID
 	 */
-	void SetSID(const Anope::string &sid);
+	void SetSID(const Warden::string &sid);
 
 	/** Get the server numeric/SID, else the server name
 	 * @return The numeric/SID
 	 */
-	const Anope::string &GetSID() const;
+	const Warden::string &GetSID() const;
 
 	/** Retrieves the reason this server is quitting
 	 */
-	const Anope::string &GetQuitReason() const;
+	const Warden::string &GetQuitReason() const;
 
 	/** Get the list of links this server has, or NULL if it has none
 	 * @return A list of servers
@@ -177,12 +178,12 @@ public:
 	 * @param source The source of the message
 	 * @param message The message
 	 */
-	void Notice(BotInfo *source, const Anope::string &message);
+	void Notice(BotInfo *source, const Warden::string &message);
 
 	/** Find a server
 	 * @param name The name or SID/numeric
 	 * @param name_only set to true to only look up by name, not SID
 	 * @return The server
 	 */
-	static Server *Find(const Anope::string &name, bool name_only = false);
+	static Server *Find(const Warden::string &name, bool name_only = false);
 };

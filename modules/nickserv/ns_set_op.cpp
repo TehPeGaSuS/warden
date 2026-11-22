@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,16 +19,16 @@ class CommandNSSetOpAutoOp
 	: public Command
 {
 public:
-	CommandNSSetOpAutoOp(Module *creator, const Anope::string &sname = "nickserv/set/autoop", size_t min = 1)
+	CommandNSSetOpAutoOp(Module *creator, const Warden::string &sname = "nickserv/set/autoop", size_t min = 1)
 		: Command(creator, sname, min, min + 1)
 	{
 		this->SetDesc(_("Set whether services should set channel status modes on you automatically."));
 		this->SetSyntax("{ON | OFF}");
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -62,12 +63,12 @@ public:
 			this->OnSyntaxError(source, "AUTOOP");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params[0]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		BotInfo *bi = Config->GetClient("ChanServ");
 		this->SendSyntax(source);
@@ -94,12 +95,12 @@ public:
 		this->SetSyntax(_("\037nickname\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params[1]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		BotInfo *bi = Config->GetClient("ChanServ");
 		this->SendSyntax(source);
@@ -120,16 +121,16 @@ class CommandNSSetOpNeverOp
 	: public Command
 {
 public:
-	CommandNSSetOpNeverOp(Module *creator, const Anope::string &sname = "nickserv/set/neverop", size_t min = 1)
+	CommandNSSetOpNeverOp(Module *creator, const Warden::string &sname = "nickserv/set/neverop", size_t min = 1)
 		: Command(creator, sname, min, min + 1)
 	{
 		this->SetDesc(_("Set whether you can be added to a channel access list."));
 		this->SetSyntax("{ON | OFF}");
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -164,12 +165,12 @@ public:
 			this->OnSyntaxError(source, "NEVEROP");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params[0]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -189,12 +190,12 @@ public:
 		this->SetSyntax(_("\037nickname\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params[1]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -217,7 +218,7 @@ private:
 	SerializableExtensibleItem<bool> neverop;
 
 public:
-	NSSetOp(const Anope::string &modname, const Anope::string &creator)
+	NSSetOp(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnssetautoop(this)
 		, commandnssasetautoop(this)

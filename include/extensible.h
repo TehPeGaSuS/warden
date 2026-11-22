@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,7 +15,7 @@
 
 #pragma once
 
-#include "anope.h"
+#include "warden.h"
 #include "serialize.h"
 #include "service.h"
 #include "logger.h"
@@ -27,7 +28,7 @@ class CoreExport ExtensibleBase
 protected:
 	std::map<Extensible *, void *> items;
 
-	ExtensibleBase(Module *m, const Anope::string &n);
+	ExtensibleBase(Module *m, const Warden::string &n);
 	~ExtensibleBase();
 
 public:
@@ -47,13 +48,13 @@ public:
 
 	void UnsetExtensibles();
 
-	template<typename T> T *GetExt(const Anope::string &name) const;
-	bool HasExt(const Anope::string &name) const;
+	template<typename T> T *GetExt(const Warden::string &name) const;
+	bool HasExt(const Warden::string &name) const;
 
-	template<typename T> T *Extend(const Anope::string &name, const T &what);
-	template<typename T> T *Extend(const Anope::string &name);
-	template<typename T> T *Require(const Anope::string &name);
-	template<typename T> void Shrink(const Anope::string &name);
+	template<typename T> T *Extend(const Warden::string &name, const T &what);
+	template<typename T> T *Extend(const Warden::string &name);
+	template<typename T> T *Require(const Warden::string &name);
+	template<typename T> void Shrink(const Warden::string &name);
 
 	static void ExtensibleSerialize(const Extensible *, const Serializable *, Serialize::Data &data);
 	static void ExtensibleUnserialize(Extensible *, Serializable *, Serialize::Data &data);
@@ -67,7 +68,7 @@ protected:
 	virtual T *Create(Extensible *) = 0;
 
 public:
-	BaseExtensibleItem(Module *m, const Anope::string &n) : ExtensibleBase(m, n) { }
+	BaseExtensibleItem(Module *m, const Warden::string &n) : ExtensibleBase(m, n) { }
 
 	~BaseExtensibleItem()
 	{
@@ -141,7 +142,7 @@ protected:
 		return new T(obj);
 	}
 public:
-	ExtensibleItem(Module *m, const Anope::string &n) : BaseExtensibleItem<T>(m, n) { }
+	ExtensibleItem(Module *m, const Warden::string &n) : BaseExtensibleItem<T>(m, n) { }
 };
 
 template<typename T>
@@ -154,7 +155,7 @@ protected:
 		return new T();
 	}
 public:
-	PrimitiveExtensibleItem(Module *m, const Anope::string &n) : BaseExtensibleItem<T>(m, n) { }
+	PrimitiveExtensibleItem(Module *m, const Warden::string &n) : BaseExtensibleItem<T>(m, n) { }
 };
 
 template<>
@@ -166,7 +167,7 @@ protected:
 		return NULL;
 	}
 public:
-	PrimitiveExtensibleItem(Module *m, const Anope::string &n) : BaseExtensibleItem<bool>(m, n) { }
+	PrimitiveExtensibleItem(Module *m, const Warden::string &n) : BaseExtensibleItem<bool>(m, n) { }
 };
 
 template<typename T>
@@ -174,7 +175,7 @@ class SerializableExtensibleItem
 	: public PrimitiveExtensibleItem<T>
 {
 public:
-	SerializableExtensibleItem(Module *m, const Anope::string &n) : PrimitiveExtensibleItem<T>(m, n) { }
+	SerializableExtensibleItem(Module *m, const Warden::string &n) : PrimitiveExtensibleItem<T>(m, n) { }
 
 	void ExtensibleSerialize(const Extensible *e, const Serializable *s, Serialize::Data &data) const override
 	{
@@ -196,7 +197,7 @@ template<>
 class SerializableExtensibleItem<bool> : public PrimitiveExtensibleItem<bool>
 {
 public:
-	SerializableExtensibleItem(Module *m, const Anope::string &n) : PrimitiveExtensibleItem<bool>(m, n) { }
+	SerializableExtensibleItem(Module *m, const Warden::string &n) : PrimitiveExtensibleItem<bool>(m, n) { }
 
 	void ExtensibleSerialize(const Extensible *e, const Serializable *s, Serialize::Data &data) const override
 	{
@@ -216,11 +217,11 @@ template<typename T>
 struct ExtensibleRef final
 	: ServiceReference<BaseExtensibleItem<T> >
 {
-	ExtensibleRef(const Anope::string &n) : ServiceReference<BaseExtensibleItem<T> >("Extensible", n) { }
+	ExtensibleRef(const Warden::string &n) : ServiceReference<BaseExtensibleItem<T> >("Extensible", n) { }
 };
 
 template<typename T>
-T *Extensible::GetExt(const Anope::string &name) const
+T *Extensible::GetExt(const Warden::string &name) const
 {
 	ExtensibleRef<T> ref(name);
 	if (ref)
@@ -231,7 +232,7 @@ T *Extensible::GetExt(const Anope::string &name) const
 }
 
 template<typename T>
-T *Extensible::Extend(const Anope::string &name, const T &what)
+T *Extensible::Extend(const Warden::string &name, const T &what)
 {
 	T *t = Extend<T>(name);
 	if (t)
@@ -240,7 +241,7 @@ T *Extensible::Extend(const Anope::string &name, const T &what)
 }
 
 template<typename T>
-T *Extensible::Extend(const Anope::string &name)
+T *Extensible::Extend(const Warden::string &name)
 {
 	ExtensibleRef<T> ref(name);
 	if (ref)
@@ -251,7 +252,7 @@ T *Extensible::Extend(const Anope::string &name)
 }
 
 template<typename T>
-T *Extensible::Require(const Anope::string &name)
+T *Extensible::Require(const Warden::string &name)
 {
 	if (HasExt(name))
 		return GetExt<T>(name);
@@ -260,7 +261,7 @@ T *Extensible::Require(const Anope::string &name)
 }
 
 template<typename T>
-void Extensible::Shrink(const Anope::string &name)
+void Extensible::Shrink(const Warden::string &name)
 {
 	ExtensibleRef<T> ref(name);
 	if (ref)

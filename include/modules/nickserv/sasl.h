@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -33,16 +34,16 @@ namespace SASL
 struct SASL::Message final
 {
 	/** The source UID or name. */
-	Anope::string source;
+	Warden::string source;
 
 	/** The target UID or name. */
-	Anope::string target;
+	Warden::string target;
 
 	/** The type of message. */
-	Anope::string type;
+	Warden::string type;
 
 	/** One or more data parameters. */
-	std::vector<Anope::string> data;
+	std::vector<Warden::string> data;
 };
 
 /** Sends IRCd messages used by the SASL module. */
@@ -59,7 +60,7 @@ public:
 	/** Sends the list of SASL mechanisms to the IRCd
 	 * @param mechs The list of SASL mechanisms.
 	 */
-	virtual void SendSASLMechanisms(std::vector<Anope::string> &mechs) { };
+	virtual void SendSASLMechanisms(std::vector<Warden::string> &mechs) { };
 
 	/** Sends a SASL message to the IRCd.
 	 * @param message The SASL message to send.
@@ -70,7 +71,7 @@ public:
 	 * @param uid The uid of the user to log in.
 	 * @param na The nick alias to log the user in as or logout if nullptr.
 	 */
-	virtual void SendSVSLogin(const Anope::string &uid, NickAlias *na) = 0;
+	virtual void SendSVSLogin(const Warden::string &uid, NickAlias *na) = 0;
 };
 
 /** SASL service interface. */
@@ -93,7 +94,7 @@ struct SASL::Service
 	virtual void Fail(Session *sess) = 0;
 
 	/** Retrieves the session for the specified user identifier. */
-	virtual Session *GetSession(const Anope::string &uid) = 0;
+	virtual Session *GetSession(const Warden::string &uid) = 0;
 
 	/** Processes a SASL authentication message from the uplink.
 	 * @param m The message to process.
@@ -109,7 +110,7 @@ struct SASL::Service
 	 * @param type The type of message to send.
 	 * @param data The contents of the SASL message.
 	 */
-	virtual void SendMessage(SASL::Session *sess, const Anope::string &type, const Anope::string &data) = 0;
+	virtual void SendMessage(SASL::Session *sess, const Warden::string &type, const Warden::string &data) = 0;
 
 	/** Completes a successful authentication.
 	 * @param sess The session which finished authentication.
@@ -125,20 +126,20 @@ struct SASL::Session
 	const time_t created;
 
 	/** The hostname and IP address of the authenticating user. */
-	Anope::string hostname, ip;
+	Warden::string hostname, ip;
 
 	/** A reference to the mechanism that the session is authenticating using. */
 	Reference<Mechanism> mech;
 
 	/** The unique identifier of the authenticating user. */
-	const Anope::string uid;
+	const Warden::string uid;
 
 	/** Creates a new authentication session.
 	 * @param m The mechanism that the session is authenticating with.
 	 * @param u The unique identifier of the authenticating user.
 	 */
-	Session(Mechanism *m, const Anope::string &u)
-		: created(Anope::CurTime)
+	Session(Mechanism *m, const Warden::string &u)
+		: created(Warden::CurTime)
 		, mech(m)
 		, uid(u)
 	{
@@ -151,13 +152,13 @@ struct SASL::Session
 	}
 
 	/** Retrieves a description of the user this session is associated with. */
-	inline Anope::string GetUserInfo()
+	inline Warden::string GetUserInfo()
 	{
 		auto *u = User::Find(uid);
 		if (u)
 			return u->GetMask();
 		if (!hostname.empty() && !ip.empty())
-			return Anope::Format("%s (%s)", hostname.c_str(), ip.c_str());
+			return Warden::Format("%s (%s)", hostname.c_str(), ip.c_str());
 		return "A user";
 	};
 };
@@ -171,7 +172,7 @@ protected:
 	 * @param o The module that owns this instance.
 	 * @param sname The name of the authentication mechanism (e.g. PLAIN).
 	 */
-	Mechanism(Module *o, const Anope::string &sname)
+	Mechanism(Module *o, const Warden::string &sname)
 		: Service(o, "SASL::Mechanism", sname)
 	{
 	}
@@ -186,7 +187,7 @@ public:
 	/** Creates a new SASL session.
 	 * @param uid The unique identifier of the authenticating user.
 	 */
-	virtual Session *CreateSession(const Anope::string &uid)
+	virtual Session *CreateSession(const Warden::string &uid)
 	{
 		return new Session(this, uid);
 	}

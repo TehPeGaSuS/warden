@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -30,7 +31,7 @@ namespace RPC
 	class Value;
 
 	/** Represents possible types of RPC value. */
-	using ValueUnion = std::variant<Array, Map, Anope::string, std::nullptr_t, bool, double, int64_t, uint64_t>;
+	using ValueUnion = std::variant<Array, Map, Warden::string, std::nullptr_t, bool, double, int64_t, uint64_t>;
 
 	/** Represents standard RPC errors from the JSON-RPC and XML-RPC specifications. */
 	enum Error
@@ -69,22 +70,22 @@ public:
 class RPC::Map final
 {
 private:
-	Anope::map<Value> replies;
+	Warden::map<Value> replies;
 
 public:
 	/** Retrieves the list of RPC replies. */
 	inline const auto &GetReplies() const { return this->replies; }
 
 	template <typename T>
-	inline Map &Reply(const Anope::string &key, const T &t)
+	inline Map &Reply(const Warden::string &key, const T &t)
 	{
 		this->replies.emplace(key, RPC::Value(t));
 		return *this;
 	}
 
-	inline Array &ReplyArray(const Anope::string &key);
+	inline Array &ReplyArray(const Warden::string &key);
 
-	inline Map &ReplyMap(const Anope::string &key);
+	inline Map &ReplyMap(const Warden::string &key);
 };
 
 class RPC::Value final
@@ -135,7 +136,7 @@ public:
 
 	template <typename T>
 	Value(const T &t)
-		: value(Anope::ToString(t))
+		: value(Warden::ToString(t))
 	{
 	}
 
@@ -147,13 +148,13 @@ public:
 class RPC::Request final
 {
 private:
-	std::optional<std::pair<int64_t, Anope::string>> error;
+	std::optional<std::pair<int64_t, Warden::string>> error;
 	std::optional<Value> root;
 
 public:
-	Anope::string name;
-	Anope::string id;
-	std::deque<Anope::string> data;
+	Warden::string name;
+	Warden::string id;
+	std::deque<Warden::string> data;
 	HTTP::Reply &reply;
 
 	Request(HTTP::Reply &r)
@@ -161,7 +162,7 @@ public:
 	{
 	}
 
-	inline void Error(uint64_t errcode, const Anope::string &errstr)
+	inline void Error(uint64_t errcode, const Warden::string &errstr)
 	{
 		this->error.emplace(errcode, errstr);
 	}
@@ -183,7 +184,7 @@ private:
 	size_t minparams;
 
 protected:
-	Event(Module *o, const Anope::string &e, size_t mp = 0)
+	Event(Module *o, const Warden::string &e, size_t mp = 0)
 		: Service(o, RPC_EVENT, e)
 		, minparams(mp)
 	{
@@ -199,16 +200,16 @@ public:
 
 struct RPC::Token final
 {
-	std::vector<Anope::string> methods;
-	Anope::string token;
-	Anope::string token_hash;
+	std::vector<Warden::string> methods;
+	Warden::string token;
+	Warden::string token_hash;
 };
 
 class RPC::ServiceInterface
 	: public Service
 {
 private:
-	bool CompareToken(const RPC::Token &token, const Anope::string &rawtoken) const
+	bool CompareToken(const RPC::Token &token, const Warden::string &rawtoken) const
 	{
 		if (token.token_hash.empty())
 			return token.token.equals_cs(rawtoken); // Plaintext token.
@@ -229,12 +230,12 @@ public:
 	{
 	}
 
-	bool CanExecute(const Anope::string &header, const Anope::string &method) const
+	bool CanExecute(const Warden::string &header, const Warden::string &method) const
 	{
 		if (header.compare(0, 7, "Bearer ", 7) != 0)
 			return false; // No token provided.
 
-		auto rawtoken = Anope::B64Decode(header.substr(7));
+		auto rawtoken = Warden::B64Decode(header.substr(7));
 		for (const auto &token : tokens)
 		{
 			if (!CompareToken(token, rawtoken))
@@ -242,10 +243,10 @@ public:
 
 			for (const auto &glob : token.methods)
 			{
-				if (glob[0] == '~' && Anope::Match(method, glob.substr(1)))
+				if (glob[0] == '~' && Warden::Match(method, glob.substr(1)))
 					return false; // Negative match.
 
-				if (Anope::Match(method, glob))
+				if (Warden::Match(method, glob))
 					return true; // Positive match.
 			}
 		}
@@ -267,13 +268,13 @@ inline RPC::Map &RPC::Array::ReplyMap()
 	return std::get<RPC::Map>(reply.Get());
 }
 
-inline RPC::Array &RPC::Map::ReplyArray(const Anope::string &key)
+inline RPC::Array &RPC::Map::ReplyArray(const Warden::string &key)
 {
 	auto it = this->replies.emplace(key, RPC::Array());
 	return std::get<RPC::Array>(it.first->second.Get());
 }
 
-inline RPC::Map &RPC::Map::ReplyMap(const Anope::string &key)
+inline RPC::Map &RPC::Map::ReplyMap(const Warden::string &key)
 {
 	auto it = this->replies.emplace(key, RPC::Map());
 	return std::get<RPC::Map>(it.first->second.Get());

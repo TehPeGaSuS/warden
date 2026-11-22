@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -30,50 +31,50 @@ class WebCPanel::ChanServ::Access final
 	: public WebPanelProtectedPage
 {
 public:
-	Access(const Anope::string &cat, const Anope::string &u);
-	bool OnRequest(HTTP::Provider *, const Anope::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
-	std::set<Anope::string> GetData() override;
+	Access(const Warden::string &cat, const Warden::string &u);
+	bool OnRequest(HTTP::Provider *, const Warden::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
+	std::set<Warden::string> GetData() override;
 };
 
 class WebCPanel::ChanServ::Akick final
 	: public WebPanelProtectedPage
 {
 public:
-	Akick(const Anope::string &cat, const Anope::string &u);
-	bool OnRequest(HTTP::Provider *, const Anope::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
-	std::set<Anope::string> GetData() override;
+	Akick(const Warden::string &cat, const Warden::string &u);
+	bool OnRequest(HTTP::Provider *, const Warden::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
+	std::set<Warden::string> GetData() override;
 };
 
 class WebCPanel::ChanServ::Drop final
 	: public WebPanelProtectedPage
 {
 public:
-	Drop(const Anope::string &cat, const Anope::string &u);
-	bool OnRequest(HTTP::Provider *, const Anope::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
+	Drop(const Warden::string &cat, const Warden::string &u);
+	bool OnRequest(HTTP::Provider *, const Warden::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
 };
 
 class WebCPanel::ChanServ::Info final
 	: public WebPanelProtectedPage
 {
 public:
-	Info(const Anope::string &cat, const Anope::string &u);
-	bool OnRequest(HTTP::Provider *, const Anope::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
+	Info(const Warden::string &cat, const Warden::string &u);
+	bool OnRequest(HTTP::Provider *, const Warden::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
 };
 
 class WebCPanel::ChanServ::Modes final
 	: public WebPanelProtectedPage
 {
 public:
-	Modes(const Anope::string &cat, const Anope::string &u);
-	bool OnRequest(HTTP::Provider *, const Anope::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
-	std::set<Anope::string> GetData() override;
+	Modes(const Warden::string &cat, const Warden::string &u);
+	bool OnRequest(HTTP::Provider *, const Warden::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
+	std::set<Warden::string> GetData() override;
 };
 
 class WebCPanel::ChanServ::Set final
 	: public WebPanelProtectedPage
 {
 public:
-	Set(const Anope::string &cat, const Anope::string &u);
-	bool OnRequest(HTTP::Provider *, const Anope::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
-	std::set<Anope::string> GetData() override;
+	Set(const Warden::string &cat, const Warden::string &u);
+	bool OnRequest(HTTP::Provider *, const Warden::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) override;
+	std::set<Warden::string> GetData() override;
 };

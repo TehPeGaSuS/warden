@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,7 +16,7 @@
 #pragma once
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "base.h"
 
 /** Anything that inherits from this class can be referred to
@@ -26,18 +27,18 @@
 class CoreExport Service
 	: public virtual Base
 {
-	static std::map<Anope::string, std::map<Anope::string, Service *> > Services;
-	static std::map<Anope::string, std::map<Anope::string, Anope::string> > Aliases;
+	static std::map<Warden::string, std::map<Warden::string, Service *> > Services;
+	static std::map<Warden::string, std::map<Warden::string, Warden::string> > Aliases;
 
-	static Service *FindService(const std::map<Anope::string, Service *> &services, const std::map<Anope::string, Anope::string> *aliases, const Anope::string &n)
+	static Service *FindService(const std::map<Warden::string, Service *> &services, const std::map<Warden::string, Warden::string> *aliases, const Warden::string &n)
 	{
-		std::map<Anope::string, Service *>::const_iterator it = services.find(n);
+		std::map<Warden::string, Service *>::const_iterator it = services.find(n);
 		if (it != services.end())
 			return it->second;
 
 		if (aliases != NULL)
 		{
-			std::map<Anope::string, Anope::string>::const_iterator it2 = aliases->find(n);
+			std::map<Warden::string, Warden::string>::const_iterator it2 = aliases->find(n);
 			if (it2 != aliases->end())
 				return FindService(services, aliases, it2->second);
 		}
@@ -46,22 +47,22 @@ class CoreExport Service
 	}
 
 public:
-	static Service *FindService(const Anope::string &t, const Anope::string &n)
+	static Service *FindService(const Warden::string &t, const Warden::string &n)
 	{
-		std::map<Anope::string, std::map<Anope::string, Service *> >::const_iterator it = Services.find(t);
+		std::map<Warden::string, std::map<Warden::string, Service *> >::const_iterator it = Services.find(t);
 		if (it == Services.end())
 			return NULL;
 
-		std::map<Anope::string, std::map<Anope::string, Anope::string> >::const_iterator it2 = Aliases.find(t);
+		std::map<Warden::string, std::map<Warden::string, Warden::string> >::const_iterator it2 = Aliases.find(t);
 		if (it2 != Aliases.end())
 			return FindService(it->second, &it2->second, n);
 
 		return FindService(it->second, NULL, n);
 	}
 
-	static std::vector<Anope::string> GetServiceKeys(const Anope::string &t)
+	static std::vector<Warden::string> GetServiceKeys(const Warden::string &t)
 	{
-		std::vector<Anope::string> keys;
+		std::vector<Warden::string> keys;
 		const auto it = Services.find(t);
 		if (it != Services.end())
 		{
@@ -71,7 +72,7 @@ public:
 		return keys;
 	}
 
-	static std::vector<Service *> GetServices(const Anope::string &t)
+	static std::vector<Service *> GetServices(const Warden::string &t)
 	{
 		std::vector<Service *> values;
 		const auto it = Services.find(t);
@@ -83,15 +84,15 @@ public:
 		return values;
 	}
 
-	static void AddAlias(const Anope::string &t, const Anope::string &n, const Anope::string &v)
+	static void AddAlias(const Warden::string &t, const Warden::string &n, const Warden::string &v)
 	{
-		std::map<Anope::string, Anope::string> &smap = Aliases[t];
+		std::map<Warden::string, Warden::string> &smap = Aliases[t];
 		smap[n] = v;
 	}
 
-	static void DelAlias(const Anope::string &t, const Anope::string &n)
+	static void DelAlias(const Warden::string &t, const Warden::string &n)
 	{
-		std::map<Anope::string, Anope::string> &smap = Aliases[t];
+		std::map<Warden::string, Warden::string> &smap = Aliases[t];
 		smap.erase(n);
 		if (smap.empty())
 			Aliases.erase(t);
@@ -99,11 +100,11 @@ public:
 
 	Module *owner;
 	/* Service type, which should be the class name (eg "Command") */
-	Anope::string type;
+	Warden::string type;
 	/* Service name, commands are usually named service/command */
-	Anope::string name;
+	Warden::string name;
 
-	Service(Module *o, const Anope::string &t, const Anope::string &n) : owner(o), type(t), name(n)
+	Service(Module *o, const Warden::string &t, const Warden::string &n) : owner(o), type(t), name(n)
 	{
 		this->Register();
 	}
@@ -121,7 +122,7 @@ public:
 
 	void Unregister()
 	{
-		std::map<Anope::string, Service *> &smap = Services[this->type];
+		std::map<Warden::string, Service *> &smap = Services[this->type];
 		smap.erase(this->name);
 		if (smap.empty())
 			Services.erase(this->type);
@@ -134,11 +135,11 @@ template<typename T>
 class ServiceReference
 	: public Reference<T>
 {
-	Anope::string type;
-	Anope::string name;
+	Warden::string type;
+	Warden::string name;
 
 public:
-	ServiceReference(const Anope::string &t, const Anope::string &n = "")
+	ServiceReference(const Warden::string &t, const Warden::string &n = "")
 		: type(t)
 		, name(n)
 	{
@@ -151,14 +152,14 @@ public:
 	const auto &GetServiceType() const { return type; }
 
 	/** Invalidates the reference and changes the name of the referenced service. */
-	void SetServiceName(const Anope::string &newname)
+	void SetServiceName(const Warden::string &newname)
 	{
 		this->invalid = true;
 		this->name = newname;
 	}
 
 	/** Invalidates the reference and changes the type of the referenced service. */
-	void SetServiceType(const Anope::string &newtype)
+	void SetServiceType(const Warden::string &newtype)
 	{
 		this->invalid = true;
 		this->type = newtype;
@@ -187,9 +188,9 @@ public:
 
 class ServiceAlias final
 {
-	Anope::string t, f;
+	Warden::string t, f;
 public:
-	ServiceAlias(const Anope::string &type, const Anope::string &from, const Anope::string &to) : t(type), f(from)
+	ServiceAlias(const Warden::string &type, const Warden::string &from, const Warden::string &to) : t(type), f(from)
 	{
 		Service::AddAlias(type, from, to);
 	}

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -38,11 +39,11 @@
 # endif
 #endif
 
-NumberList::NumberList(const Anope::string &list, bool descending) : desc(descending)
+NumberList::NumberList(const Warden::string &list, bool descending) : desc(descending)
 {
-	Anope::string error;
+	Warden::string error;
 	commasepstream sep(list);
-	Anope::string token;
+	Warden::string token;
 
 	sep.GetToken(token);
 	if (token.empty())
@@ -51,9 +52,9 @@ NumberList::NumberList(const Anope::string &list, bool descending) : desc(descen
 	{
 		size_t t = token.find('-');
 
-		if (t == Anope::string::npos)
+		if (t == Warden::string::npos)
 		{
-			if (auto num = Anope::TryConvert<unsigned>(token, &error))
+			if (auto num = Warden::TryConvert<unsigned>(token, &error))
 			{
 				if (error.empty())
 				{
@@ -78,9 +79,9 @@ NumberList::NumberList(const Anope::string &list, bool descending) : desc(descen
 		}
 		else
 		{
-			Anope::string error2;
-			auto n1 = Anope::TryConvert<unsigned>(token.substr(0, t), &error);
-			auto n2 = Anope::TryConvert<unsigned>(token.substr(t + 1), &error);
+			Warden::string error2;
+			auto n1 = Warden::TryConvert<unsigned>(token.substr(0, t), &error);
+			auto n2 = Warden::TryConvert<unsigned>(token.substr(t + 1), &error);
 			if (n1.has_value() && n2.has_value())
 			{
 				auto num1 = n1.value();
@@ -134,7 +135,7 @@ void NumberList::HandleNumber(unsigned)
 {
 }
 
-bool NumberList::InvalidRange(const Anope::string &)
+bool NumberList::InvalidRange(const Warden::string &)
 {
 	return true;
 }
@@ -143,7 +144,7 @@ ListFormatter::ListFormatter(NickCore *acc) : nc(acc)
 {
 }
 
-ListFormatter &ListFormatter::AddColumn(const Anope::string &name)
+ListFormatter &ListFormatter::AddColumn(const Warden::string &name)
 {
 	this->columns.push_back(name);
 	return *this;
@@ -172,9 +173,9 @@ void ListFormatter::SendFixed(CommandSource &source)
 {
 	const auto *monospace = source.nc && source.GetAccount()->HasExt("NS_MONOSPACE") ? "\021" : "";
 
-	std::vector<Anope::string> tcolumns;
-	std::map<Anope::string, size_t> lengths;
-	std::set<Anope::string> breaks;
+	std::vector<Warden::string> tcolumns;
+	std::map<Warden::string, size_t> lengths;
+	std::set<Warden::string> breaks;
 	for (const auto &column : this->columns)
 	{
 		tcolumns.emplace_back(Language::Translate(this->nc, column.c_str()));
@@ -205,13 +206,13 @@ void ListFormatter::SendFixed(CommandSource &source)
 	/* Only put a list header if more than 1 column */
 	if (this->columns.size() > 1)
 	{
-		Anope::string s = monospace;
+		Warden::string s = monospace;
 		for (unsigned i = 0; i < this->columns.size(); ++i)
 		{
 			if (breaks.count(this->columns[i]))
 			{
 				source.Reply(s);
-				s = Anope::Format("%s  ", monospace);
+				s = Warden::Format("%s  ", monospace);
 			}
 			else if (!s.empty())
 				s += "  ";
@@ -225,13 +226,13 @@ void ListFormatter::SendFixed(CommandSource &source)
 
 	for (auto &entry : this->entries)
 	{
-		Anope::string s = monospace;
+		Warden::string s = monospace;
 		for (unsigned j = 0; j < this->columns.size(); ++j)
 		{
 			if (breaks.count(this->columns[j]))
 			{
 				source.Reply(s);
-				s = Anope::Format("%s  ", monospace);
+				s = Warden::Format("%s  ", monospace);
 			}
 			else if (!s.empty())
 				s += "  ";
@@ -249,7 +250,7 @@ void ListFormatter::SendFlexible(CommandSource &source)
 	for (auto &entry : entries)
 	{
 		// Build a map that we can template from.
-		Anope::map<Anope::string> variables;
+		Warden::map<Warden::string> variables;
 		for (const auto &[ekey, evalue] : entry)
 		{
 			const auto tkey = ekey.lower().replace_all_cs(" ", "_");
@@ -258,11 +259,11 @@ void ListFormatter::SendFlexible(CommandSource &source)
 
 		const auto row = this->flexiblerow(entry);
 		const auto *translated_row = Language::Translate(this->nc, row.c_str());
-		source.Reply(Anope::Template(translated_row, variables));
+		source.Reply(Warden::Template(translated_row, variables));
 	}
 }
 
-void ListFormatter::SetFlexible(const Anope::string &format)
+void ListFormatter::SetFlexible(const Warden::string &format)
 {
 	this->flexiblerow = [format](const ListEntry &) { return format; };
 }
@@ -304,28 +305,28 @@ void InfoFormatter::SendTo(CommandSource &source)
 		}
 		else
 		{
-			Anope::string padding(longest - key.utf8length(), ' ');
+			Warden::string padding(longest - key.utf8length(), ' ');
 			source.Reply("%s%s: %s%s", monospace, key.c_str(), padding.c_str(),
 				Language::Translate(this->nc, value.c_str()));
 		}
 	}
 }
 
-Anope::string &InfoFormatter::operator[](const Anope::string &key)
+Warden::string &InfoFormatter::operator[](const Warden::string &key)
 {
-	Anope::string tkey = Language::Translate(this->nc, key.c_str());
+	Warden::string tkey = Language::Translate(this->nc, key.c_str());
 	if (tkey.utf8length() > this->longest)
 		this->longest = tkey.utf8length();
 	this->replies.emplace_back(tkey, "");
 	return this->replies.back().second;
 }
 
-void InfoFormatter::AddOption(const Anope::string &opt)
+void InfoFormatter::AddOption(const Warden::string &opt)
 {
 	this->options.push_back(Language::Translate(nc, opt.c_str()));
 }
 
-ExampleWrapper &ExampleWrapper::AddEntry(const Anope::string &example, const Anope::string &desc, const Anope::string &priv)
+ExampleWrapper &ExampleWrapper::AddEntry(const Warden::string &example, const Warden::string &desc, const Warden::string &priv)
 {
 	auto &entry = entries.emplace_back();
 	entry.example = example;
@@ -365,21 +366,21 @@ void ExampleWrapper::SendTo(CommandSource &source)
 		else
 		{
 			source.Reply(" ");
-			const auto full_example = Anope::Format("%s%s%s", source.command.c_str(),
+			const auto full_example = Warden::Format("%s%s%s", source.command.c_str(),
 				*trans_example ? " " : "", trans_example);
 
 			LineWrapper elw(full_example, max_length - 2);
-			for (Anope::string line; elw.GetLine(line); )
+			for (Warden::string line; elw.GetLine(line); )
 				source.Reply("%s  \002%s\002", monospace, line.c_str());
 
 			LineWrapper dlw(trans_description, max_length - 4);
-			for (Anope::string line; dlw.GetLine(line); )
+			for (Warden::string line; dlw.GetLine(line); )
 				source.Reply("%s    %s", monospace, line.c_str());
 		}
 	}
 }
 
-void HelpWrapper::AddEntry(const Anope::string &name, const Anope::string &desc)
+void HelpWrapper::AddEntry(const Warden::string &name, const Warden::string &desc)
 {
 	entries.emplace_back(name, desc);
 	if (name.utf8length() > longest)
@@ -404,29 +405,29 @@ void HelpWrapper::SendTo(CommandSource &source)
 		else
 		{
 			LineWrapper lw(trans_desc, max_length);
-			Anope::string line;
+			Warden::string line;
 
-			Anope::string padding(longest - entry_name.utf8length(), ' ');
+			Warden::string padding(longest - entry_name.utf8length(), ' ');
 			if (lw.GetLine(line))
 			{
 				source.Reply("%s    %s%s    %s", monospace, entry_name.nobreak().c_str(),
 					padding.c_str(), line.c_str());
 			}
 
-			padding = Anope::string(longest, ' ');
+			padding = Warden::string(longest, ' ');
 			while (lw.GetLine(line))
 				source.Reply("%s    %s    %s", monospace, padding.c_str(), line.c_str());
 		}
 	}
 };
 
-LineWrapper::LineWrapper(const Anope::string &t, size_t ml)
+LineWrapper::LineWrapper(const Warden::string &t, size_t ml)
 	: max_length(ml ? ml : Config->GetBlock("options").Get<size_t>("linelength", "100"))
 	, text(t)
 {
 }
 
-bool LineWrapper::GetLine(Anope::string &out)
+bool LineWrapper::GetLine(Warden::string &out)
 {
 	out.clear();
 	if (text.empty())
@@ -447,9 +448,9 @@ bool LineWrapper::GetLine(Anope::string &out)
 	size_t last_space = 0;
 
 	// Formatting which has been seen since the last space.
-	std::vector<Anope::string> uncertain_formatting;
+	std::vector<Warden::string> uncertain_formatting;
 
-	auto toggle_formatting = [this, &uncertain_formatting](const Anope::string &fmt)
+	auto toggle_formatting = [this, &uncertain_formatting](const Warden::string &fmt)
 	{
 		auto it = std::find_if(formatting.begin(), formatting.end(), [&fmt](const auto &f) {
 			return f[0] == fmt[0];
@@ -597,19 +598,19 @@ bool LineWrapper::GetLine(Anope::string &out)
 }
 
 
-bool Anope::IsFile(const Anope::string &filename)
+bool Warden::IsFile(const Warden::string &filename)
 {
 	struct stat fileinfo;
 	return stat(filename.c_str(), &fileinfo) == 0;
 }
 
-time_t Anope::DoTime(const Anope::string &s)
+time_t Warden::DoTime(const Warden::string &s)
 {
 	if (s.empty())
 		return 0;
 
-	Anope::string end;
-	auto amount = Anope::Convert<int>(s, -1, &end);
+	Warden::string end;
+	auto amount = Warden::Convert<int>(s, -1, &end);
 	if (!end.empty())
 	{
 		switch (end[0])
@@ -634,7 +635,7 @@ time_t Anope::DoTime(const Anope::string &s)
 	return amount;
 }
 
-Anope::string Anope::Duration(time_t t, const NickCore *nc, bool round)
+Warden::string Warden::Duration(time_t t, const NickCore *nc, bool round)
 {
 	if (round)
 	{
@@ -661,37 +662,37 @@ Anope::string Anope::Duration(time_t t, const NickCore *nc, bool round)
 	time_t minutes = (t / 60) % 60;
 	time_t seconds = (t) % 60;
 
-	Anope::string buffer;
+	Warden::string buffer;
 	if (years)
 	{
-		buffer = Anope::Format(Language::Translate(nc, years, N_("%lld year", "%lld years")), (long long)years);
+		buffer = Warden::Format(Language::Translate(nc, years, N_("%lld year", "%lld years")), (long long)years);
 	}
 	if (days)
 	{
 		buffer += buffer.empty() ? "" : ", ";
-		buffer += Anope::Format(Language::Translate(nc, days, N_("%lld day", "%lld days")), (long long)days);
+		buffer += Warden::Format(Language::Translate(nc, days, N_("%lld day", "%lld days")), (long long)days);
 	}
 	if (hours)
 	{
 		buffer += buffer.empty() ? "" : ", ";
-		buffer += Anope::Format(Language::Translate(nc, hours, N_("%lld hour", "%lld hours")), (long long)hours);
+		buffer += Warden::Format(Language::Translate(nc, hours, N_("%lld hour", "%lld hours")), (long long)hours);
 	}
 	if (minutes)
 	{
 		buffer += buffer.empty() ? "" : ", ";
-		buffer += Anope::Format(Language::Translate(nc, minutes, N_("%lld minute", "%lld minutes")), (long long)minutes);
+		buffer += Warden::Format(Language::Translate(nc, minutes, N_("%lld minute", "%lld minutes")), (long long)minutes);
 	}
 	if (seconds || buffer.empty())
 	{
 		buffer += buffer.empty() ? "" : ", ";
-		buffer += Anope::Format(Language::Translate(nc, seconds, N_("%lld second", "%lld seconds")), (long long)seconds);
+		buffer += Warden::Format(Language::Translate(nc, seconds, N_("%lld second", "%lld seconds")), (long long)seconds);
 	}
 	return buffer;
 }
 
-Anope::string Anope::strftime(time_t t, const NickCore *nc, bool short_output)
+Warden::string Warden::strftime(time_t t, const NickCore *nc, bool short_output)
 {
-	static ExtensibleRef<Anope::string> timezone("timezone");
+	static ExtensibleRef<Warden::string> timezone("timezone");
 	if (nc)
 	{
 		Language::SetLocale(nc->language.c_str());
@@ -714,39 +715,39 @@ Anope::string Anope::strftime(time_t t, const NickCore *nc, bool short_output)
 
 	if (short_output)
 		return buf;
-	else if (t < Anope::CurTime)
-		return Anope::Format(Language::Translate(nc, _("%s (%s ago)")), buf, Duration(Anope::CurTime - t, nc, true).c_str());
-	else if (t > Anope::CurTime)
-		return Anope::Format(Language::Translate(nc, _("%s (%s from now)")), buf, Duration(t - Anope::CurTime, nc, true).c_str(), nc);
+	else if (t < Warden::CurTime)
+		return Warden::Format(Language::Translate(nc, _("%s (%s ago)")), buf, Duration(Warden::CurTime - t, nc, true).c_str());
+	else if (t > Warden::CurTime)
+		return Warden::Format(Language::Translate(nc, _("%s (%s from now)")), buf, Duration(t - Warden::CurTime, nc, true).c_str(), nc);
 	else
-		return Anope::Format(Language::Translate(nc, _("%s (now)")), buf);
+		return Warden::Format(Language::Translate(nc, _("%s (now)")), buf);
 }
 
-Anope::string Anope::Expires(time_t expires, const NickCore *nc)
+Warden::string Warden::Expires(time_t expires, const NickCore *nc)
 {
 	if (!expires)
 		return Language::Translate(nc, NO_EXPIRE);
 
-	if (expires <= Anope::CurTime)
+	if (expires <= Warden::CurTime)
 		return Language::Translate(nc, _("expires momentarily"));
 
-	auto duration = Anope::Duration(expires - Anope::CurTime, nc, true);
-	return Anope::Format(Language::Translate(nc, _("expires in %s")), duration.c_str());
+	auto duration = Warden::Duration(expires - Warden::CurTime, nc, true);
+	return Warden::Format(Language::Translate(nc, _("expires in %s")), duration.c_str());
 }
 
-bool Anope::Match(const Anope::string &str, const Anope::string &mask, bool case_sensitive, bool use_regex)
+bool Warden::Match(const Warden::string &str, const Warden::string &mask, bool case_sensitive, bool use_regex)
 {
 	size_t s = 0, m = 0, str_len = str.length(), mask_len = mask.length();
 
 	if (use_regex && mask_len >= 2 && mask[0] == '/' && mask[mask.length() - 1] == '/')
 	{
-		Anope::string stripped_mask = mask.substr(1, mask_len - 2);
+		Warden::string stripped_mask = mask.substr(1, mask_len - 2);
 		// This is often called with the same mask multiple times in a row, so cache it
 		static Regex *r = NULL;
 
 		if (r == NULL || r->GetExpression() != stripped_mask)
 		{
-			ServiceReference<RegexProvider> provider("Regex", Config->GetBlock("options").Get<const Anope::string>("regexengine"));
+			ServiceReference<RegexProvider> provider("Regex", Config->GetBlock("options").Get<const Warden::string>("regexengine"));
 			if (provider)
 			{
 				try
@@ -784,7 +785,7 @@ bool Anope::Match(const Anope::string &str, const Anope::string &mask, bool case
 		}
 		else
 		{
-			if (Anope::tolower(wild) != Anope::tolower(string) && wild != '?')
+			if (Warden::tolower(wild) != Warden::tolower(string) && wild != '?')
 				return false;
 		}
 
@@ -792,7 +793,7 @@ bool Anope::Match(const Anope::string &str, const Anope::string &mask, bool case
 		++s;
 	}
 
-	size_t sp = Anope::string::npos, mp = Anope::string::npos;
+	size_t sp = Warden::string::npos, mp = Warden::string::npos;
 	while (s < str_len)
 	{
 		char string = str[s], wild = mask[m];
@@ -819,7 +820,7 @@ bool Anope::Match(const Anope::string &str, const Anope::string &mask, bool case
 		}
 		else
 		{
-			if (Anope::tolower(wild) == Anope::tolower(string) || wild == '?')
+			if (Warden::tolower(wild) == Warden::tolower(string) || wild == '?')
 			{
 				++m;
 				++s;
@@ -838,21 +839,21 @@ bool Anope::Match(const Anope::string &str, const Anope::string &mask, bool case
 	return m == mask_len;
 }
 
-bool Anope::Encrypt(const Anope::string &src, Anope::string &dest)
+bool Warden::Encrypt(const Warden::string &src, Warden::string &dest)
 {
 	EventReturn MOD_RESULT;
 	FOREACH_RESULT(OnEncrypt, MOD_RESULT, (src, dest));
 	return MOD_RESULT == EVENT_ALLOW &&!dest.empty();
 }
 
-Anope::string Anope::Format(const char *fmt, ...)
+Warden::string Warden::Format(const char *fmt, ...)
 {
-	Anope::string buf;
-	ANOPE_FORMAT(fmt, fmt, buf);
+	Warden::string buf;
+	WARDEN_FORMAT(fmt, fmt, buf);
 	return buf;
 }
 
-Anope::string Anope::Format(va_list &valist, const char *fmt)
+Warden::string Warden::Format(va_list &valist, const char *fmt)
 {
 	if (!fmt || !fmt[0])
 		return "";
@@ -871,15 +872,15 @@ Anope::string Anope::Format(va_list &valist, const char *fmt)
 		buffer.resize(buffer.size() * 2);
 	}
 
-	return Anope::string(&buffer[0]);
+	return Warden::string(&buffer[0]);
 }
 
-Anope::string Anope::Hex(const Anope::string &data)
+Warden::string Warden::Hex(const Warden::string &data)
 {
 	const char hextable[] = "0123456789abcdef";
 
 	size_t l = data.length();
-	Anope::string rv;
+	Warden::string rv;
 	for (size_t i = 0; i < l; ++i)
 	{
 		unsigned char c = data[i];
@@ -889,11 +890,11 @@ Anope::string Anope::Hex(const Anope::string &data)
 	return rv;
 }
 
-Anope::string Anope::Hex(const char *data, unsigned len)
+Warden::string Warden::Hex(const char *data, unsigned len)
 {
 	const char hextable[] = "0123456789abcdef";
 
-	Anope::string rv;
+	Warden::string rv;
 	for (size_t i = 0; i < len; ++i)
 	{
 		unsigned char c = data[i];
@@ -903,13 +904,13 @@ Anope::string Anope::Hex(const char *data, unsigned len)
 	return rv;
 }
 
-void Anope::Unhex(const Anope::string &src, Anope::string &dest)
+void Warden::Unhex(const Warden::string &src, Warden::string &dest)
 {
 	size_t len = src.length();
-	Anope::string rv;
+	Warden::string rv;
 	for (size_t i = 0; i + 1 < len; i += 2)
 	{
-		char h = Anope::tolower(src[i]), l = Anope::tolower(src[i + 1]);
+		char h = Warden::tolower(src[i]), l = Warden::tolower(src[i + 1]);
 		unsigned char byte = (h >= 'a' ? h - 'a' + 10 : h - '0') << 4;
 		byte += (l >= 'a' ? l - 'a' + 10 : l - '0');
 		rv += byte;
@@ -917,15 +918,15 @@ void Anope::Unhex(const Anope::string &src, Anope::string &dest)
 	dest = rv;
 }
 
-void Anope::Unhex(const Anope::string &src, char *dest, size_t sz)
+void Warden::Unhex(const Warden::string &src, char *dest, size_t sz)
 {
-	Anope::string d;
-	Anope::Unhex(src, d);
+	Warden::string d;
+	Warden::Unhex(src, d);
 
 	memcpy(dest, d.c_str(), std::min(d.length() + 1, sz));
 }
 
-int Anope::LastErrorCode()
+int Warden::LastErrorCode()
 {
 #ifndef _WIN32
 	return errno;
@@ -934,7 +935,7 @@ int Anope::LastErrorCode()
 #endif
 }
 
-Anope::string Anope::LastError()
+Warden::string Warden::LastError()
 {
 	const auto errcode = LastErrorCode();
 	if (!errcode)
@@ -950,28 +951,28 @@ Anope::string Anope::LastError()
 #endif
 }
 
-Anope::string Anope::Version()
+Warden::string Warden::Version()
 {
 #ifdef VERSION_GIT
-	return Anope::ToString(VERSION_MAJOR) + "." + Anope::ToString(VERSION_MINOR) + "." + Anope::ToString(VERSION_PATCH) + VERSION_EXTRA + " (" + VERSION_GIT + ")";
+	return Warden::ToString(VERSION_MAJOR) + "." + Warden::ToString(VERSION_MINOR) + "." + Warden::ToString(VERSION_PATCH) + VERSION_EXTRA + " (" + VERSION_GIT + ")";
 #else
-	return Anope::ToString(VERSION_MAJOR) + "." + Anope::ToString(VERSION_MINOR) + "." + Anope::ToString(VERSION_PATCH) + VERSION_EXTRA;
+	return Warden::ToString(VERSION_MAJOR) + "." + Warden::ToString(VERSION_MINOR) + "." + Warden::ToString(VERSION_PATCH) + VERSION_EXTRA;
 #endif
 }
 
-Anope::string Anope::VersionShort()
+Warden::string Warden::VersionShort()
 {
-	return Anope::ToString(VERSION_MAJOR) + "." + Anope::ToString(VERSION_MINOR) + "." + Anope::ToString(VERSION_PATCH);
+	return Warden::ToString(VERSION_MAJOR) + "." + Warden::ToString(VERSION_MINOR) + "." + Warden::ToString(VERSION_PATCH);
 }
 
-Anope::string Anope::VersionBuildString()
+Warden::string Warden::VersionBuildString()
 {
 #if REPRODUCIBLE_BUILD
-	auto s = Anope::Format("build #%u", BUILD);
+	auto s = Warden::Format("build #%u", BUILD);
 #else
-	auto s = Anope::Format("build #%u, compiled %s", BUILD, BUILD_DATE);
+	auto s = Warden::Format("build #%u, compiled %s", BUILD, BUILD_DATE);
 #endif
-	Anope::string flags;
+	Warden::string flags;
 
 #if DEBUG_BUILD
 	flags += "D";
@@ -992,13 +993,13 @@ Anope::string Anope::VersionBuildString()
 	return s;
 }
 
-Anope::VersionComponent Anope::VersionMajor() { return VERSION_MAJOR; }
-Anope::VersionComponent Anope::VersionMinor() { return VERSION_MINOR; }
-Anope::VersionComponent Anope::VersionPatch() { return VERSION_PATCH; }
+Warden::VersionComponent Warden::VersionMajor() { return VERSION_MAJOR; }
+Warden::VersionComponent Warden::VersionMinor() { return VERSION_MINOR; }
+Warden::VersionComponent Warden::VersionPatch() { return VERSION_PATCH; }
 
-Anope::string Anope::RemoveFormatting(const Anope::string &buf)
+Warden::string Warden::RemoveFormatting(const Warden::string &buf)
 {
-	Anope::string newbuf;
+	Warden::string newbuf;
 	for (size_t idx = 0; idx < buf.length(); )
 	{
 		switch (buf[idx])
@@ -1044,9 +1045,9 @@ Anope::string Anope::RemoveFormatting(const Anope::string &buf)
 	return newbuf;
 }
 
-Anope::string Anope::ReplaceUnsafe(const Anope::string &text)
+Warden::string Warden::ReplaceUnsafe(const Warden::string &text)
 {
-	Anope::string newtext;
+	Warden::string newtext;
 	for (auto chr : text)
 	{
 		if (chr == '\0' || chr == '\n' || chr == '\r')
@@ -1056,15 +1057,15 @@ Anope::string Anope::ReplaceUnsafe(const Anope::string &text)
 	return newtext;
 }
 
-Anope::string Anope::Resolve(const Anope::string &host, int type)
+Warden::string Warden::Resolve(const Warden::string &host, int type)
 {
-	std::vector<Anope::string> results = Anope::ResolveMultiple(host, type);
+	std::vector<Warden::string> results = Warden::ResolveMultiple(host, type);
 	return results.empty() ? host : results[0];
 }
 
-std::vector<Anope::string> Anope::ResolveMultiple(const Anope::string &host, int type)
+std::vector<Warden::string> Warden::ResolveMultiple(const Warden::string &host, int type)
 {
-	std::vector<Anope::string> results;
+	std::vector<Warden::string> results;
 
 	addrinfo hints;
 	memset(&hints, 0, sizeof(hints));
@@ -1090,7 +1091,7 @@ std::vector<Anope::string> Anope::ResolveMultiple(const Anope::string &host, int
 	return results;
 }
 
-Anope::string Anope::Random(size_t len)
+Warden::string Warden::Random(size_t len)
 {
 	char chars[] = {
 		'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
@@ -1099,13 +1100,13 @@ Anope::string Anope::Random(size_t len)
 		'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
 		'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
 	};
-	Anope::string buf;
+	Warden::string buf;
 	for (size_t i = 0; i < len; ++i)
-		buf.append(chars[Anope::RandomNumber() % sizeof(chars)]);
+		buf.append(chars[Warden::RandomNumber() % sizeof(chars)]);
 	return buf;
 }
 
-int Anope::RandomNumber()
+int Warden::RandomNumber()
 {
 #if HAVE_GETENTROPY
 	int result;
@@ -1124,7 +1125,7 @@ int Anope::RandomNumber()
 }
 
 // Implementation of https://en.wikipedia.org/wiki/Levenshtein_distance
-size_t Anope::Distance(const Anope::string &s1, const Anope::string &s2)
+size_t Warden::Distance(const Warden::string &s1, const Warden::string &s2)
 {
 	if (s1.empty())
 		return s2.length();
@@ -1158,7 +1159,7 @@ size_t Anope::Distance(const Anope::string &s1, const Anope::string &s2)
 	return costs[s2.length()];
 }
 
-void Anope::UpdateTime()
+void Warden::UpdateTime()
 {
 #ifdef _WIN32
 	SYSTEMTIME st;
@@ -1181,7 +1182,7 @@ void Anope::UpdateTime()
 #endif
 }
 
-Anope::string Anope::Expand(const Anope::string &base, const Anope::string &fragment)
+Warden::string Warden::Expand(const Warden::string &base, const Warden::string &fragment)
 {
 	if (fragment.empty())
 		return ""; // We can't expand an empty fragment.
@@ -1201,25 +1202,25 @@ Anope::string Anope::Expand(const Anope::string &base, const Anope::string &frag
 	{
 		const auto *homedir = getenv("HOME");
 		if (homedir && *homedir)
-			return Anope::Format("%s%c%s", homedir, separator, fragment.c_str() + 2);
+			return Warden::Format("%s%c%s", homedir, separator, fragment.c_str() + 2);
 	}
 
-	return Anope::Format("%s%c%s", base.c_str(), separator, fragment.c_str());
+	return Warden::Format("%s%c%s", base.c_str(), separator, fragment.c_str());
 }
 
-Anope::string Anope::FormatCTCP(const Anope::string &name, const Anope::string &value)
+Warden::string Warden::FormatCTCP(const Warden::string &name, const Warden::string &value)
 {
 	if (value.empty())
-		return Anope::Format("\1%s\1", name.c_str());
+		return Warden::Format("\1%s\1", name.c_str());
 
-	return Anope::Format("\1%s %s\1", name.c_str(), value.c_str());
+	return Warden::Format("\1%s %s\1", name.c_str(), value.c_str());
 }
 
-Anope::string Anope::FormatISO8601(time_t ts, unsigned long long ms)
+Warden::string Warden::FormatISO8601(time_t ts, unsigned long long ms)
 {
 	static time_t last_ts = -1;
 	static unsigned long long last_ms = -1;
-	static Anope::string timestamp;
+	static Warden::string timestamp;
 	if (ts != last_ts || ms != last_ms)
 	{
 		last_ts = ts;
@@ -1227,13 +1228,13 @@ Anope::string Anope::FormatISO8601(time_t ts, unsigned long long ms)
 		char timebuf[32];
 		const auto *tm = gmtime(&ts);
 		strftime(timebuf, sizeof(timebuf), "%Y-%m-%dT%H:%M:%S", tm);
-		timestamp = Anope::Format("%s.%03lldZ", timebuf, ms);
+		timestamp = Warden::Format("%s.%03lldZ", timebuf, ms);
 	}
 	return timestamp;
 }
 
 
-bool Anope::ParseCTCP(const Anope::string &text, Anope::string &name, Anope::string &body)
+bool Warden::ParseCTCP(const Warden::string &text, Warden::string &name, Warden::string &body)
 {
 	// According to draft-oakley-irc-ctcp-02 a valid CTCP must begin with SOH and
 	// contain at least one octet which is not NUL, SOH, CR, LF, or SPACE. As most
@@ -1272,9 +1273,9 @@ bool Anope::ParseCTCP(const Anope::string &text, Anope::string &name, Anope::str
 	return true;
 }
 
-Anope::string Anope::Template(const Anope::string &str, const Anope::map<Anope::string> &vars)
+Warden::string Warden::Template(const Warden::string &str, const Warden::map<Warden::string> &vars)
 {
-	Anope::string out;
+	Warden::string out;
 	for (size_t idx = 0; idx < str.length(); ++idx)
 	{
 		if (str[idx] != '{')

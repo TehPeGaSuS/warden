@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2008-2011 Adam <Adam@anope.org>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,7 +16,7 @@
 
 #pragma once
 
-#include "anope.h"
+#include "warden.h"
 #include "base.h"
 
 /** The different types of modes
@@ -42,11 +43,11 @@ enum ModeClass
 
 struct ModeData final
 {
-	Anope::string value;
-	Anope::string set_by;
+	Warden::string value;
+	Warden::string set_by;
 	time_t set_at;
 
-	ModeData(const Anope::string &v = "", const Anope::string &s = "", time_t t = 0)
+	ModeData(const Warden::string &v = "", const Warden::string &s = "", time_t t = 0)
 		: value(v)
 		, set_by(s)
 		, set_at(t)
@@ -54,14 +55,14 @@ struct ModeData final
 	}
 };
 
-/** This class is the basis of all modes in Anope
+/** This class is the basis of all modes in Warden
  */
 class CoreExport Mode
 	: public Base
 {
 public:
 	/* Mode name */
-	Anope::string name;
+	Warden::string name;
 	/* Class of mode this is (user/channel) */
 	ModeClass mclass;
 	/* Mode char for this, eg 'b' */
@@ -75,7 +76,7 @@ public:
 	 * @param mc The mode char
 	 * @param type The mode type
 	 */
-	Mode(const Anope::string &mname, ModeClass mclass, char mc, ModeType type);
+	Mode(const Warden::string &mname, ModeClass mclass, char mc, ModeType type);
 	virtual ~Mode() = default;
 };
 
@@ -89,7 +90,7 @@ public:
 	 * @param name The mode name
 	 * @param mc The mode char
 	 */
-	UserMode(const Anope::string &name, char mc);
+	UserMode(const Warden::string &name, char mc);
 
 	/** Can a user set this mode, used for mlock
 	 * @param source The user who is setting the mode.
@@ -106,13 +107,13 @@ public:
 	 * @param name The mode name
 	 * @param mc The mode char
 	 */
-	UserModeParam(const Anope::string &name, char mc);
+	UserModeParam(const Warden::string &name, char mc);
 
 	/** Check if the param is valid
 	 * @param value The param
 	 * @return true or false
 	 */
-	virtual bool IsValid(Anope::string &value) const { return true; }
+	virtual bool IsValid(Warden::string &value) const { return true; }
 };
 
 /** This class is a channel mode, all channel modes use this/inherit from this
@@ -128,7 +129,7 @@ public:
 	 * @param name The mode name
 	 * @param mc The mode char
 	 */
-	ChannelMode(const Anope::string &name, char mc);
+	ChannelMode(const Warden::string &name, char mc);
 
 	/** Can a user set this mode, used for mlock
 	 * @param u The user who is setting the mode.
@@ -143,15 +144,15 @@ public:
 
 	/** 'wrap' this channel mode and param to the underlying mode and param
 	 */
-	virtual ChannelMode *Wrap(Anope::string &param);
+	virtual ChannelMode *Wrap(Warden::string &param);
 
 	/** 'unwrap' this mode to our internal representation
 	 */
-	ChannelMode *Unwrap(Anope::string &param);
+	ChannelMode *Unwrap(Warden::string &param);
 
 	/** called when a mode is being unwrapped, and is asking us if we can unwrap it
 	 */
-	virtual ChannelMode *Unwrap(ChannelMode *, Anope::string &param);
+	virtual ChannelMode *Unwrap(ChannelMode *, Warden::string &param);
 };
 
 /** This is a mode for lists, eg b/e/I. These modes should inherit from this
@@ -164,13 +165,13 @@ public:
 	 * @param name The mode name
 	 * @param mc The mode char
 	 */
-	ChannelModeList(const Anope::string &name, char mc);
+	ChannelModeList(const Warden::string &name, char mc);
 
 	/** Is the mask valid
 	 * @param mask The mask
 	 * @return true for yes, false for no
 	 */
-	virtual bool IsValid(Anope::string &mask) const;
+	virtual bool IsValid(Warden::string &mask) const;
 
 	/** Checks if mask affects user
 	 * Should only be used for extbans or other weird ircd-specific things.
@@ -184,13 +185,13 @@ public:
 	 * @param chan The channel
 	 * @param mask The mask
 	 */
-	virtual void OnAdd(Channel *chan, const Anope::string &mask) { }
+	virtual void OnAdd(Channel *chan, const Warden::string &mask) { }
 
 	/** Called when a mask is removed from a channel
 	 * @param chan The channel
 	 * @param mask The mask
 	 */
-	virtual void OnDel(Channel *chan, const Anope::string &mask) { }
+	virtual void OnDel(Channel *chan, const Warden::string &mask) { }
 };
 
 /** This is a mode with a parameter, eg +k/l. These modes should use/inherit from this
@@ -204,7 +205,7 @@ public:
 	 * @param mc The mode char
 	 * @param minus_no_arg true if this mode sends no arg when unsetting
 	 */
-	ChannelModeParam(const Anope::string &name, char mc, bool minus_no_arg = false);
+	ChannelModeParam(const Warden::string &name, char mc, bool minus_no_arg = false);
 
 	/* Should we send an arg when unsetting this mode? */
 	bool minus_no_arg;
@@ -213,7 +214,7 @@ public:
 	 * @param value The param
 	 * @return true for yes, false for no
 	 */
-	virtual bool IsValid(Anope::string &value) const { return true; }
+	virtual bool IsValid(Warden::string &value) const { return true; }
 };
 
 /** This is a mode that is a channel status, eg +v/h/o/a/q.
@@ -235,7 +236,7 @@ public:
 	 * @param msymbol The symbol for the mode, eg @ %
 	 * @param mlevel A level for the mode, which is usually determined by the PREFIX capab
 	 */
-	ChannelModeStatus(const Anope::string &name, char mc, char msymbol, unsigned mlevel);
+	ChannelModeStatus(const Warden::string &name, char mc, char msymbol, unsigned mlevel);
 };
 
 /** A virtual mode. This mode doesn't natively exist on the IRCd (like extbans),
@@ -246,11 +247,11 @@ class CoreExport ChannelModeVirtual
 	: public T
 {
 protected:
-	Anope::string base;
+	Warden::string base;
 	ChannelMode *basech;
 
 public:
-	ChannelModeVirtual(const Anope::string &mname, const Anope::string &basename);
+	ChannelModeVirtual(const Warden::string &mname, const Warden::string &basename);
 
 	~ChannelModeVirtual();
 
@@ -258,9 +259,9 @@ public:
 
 	ChannelMode *GetBaseMode() override;
 
-	ChannelMode *Wrap(Anope::string &param) override;
+	ChannelMode *Wrap(Warden::string &param) override;
 
-	ChannelMode *Unwrap(ChannelMode *cm, Anope::string &param) override = 0;
+	ChannelMode *Unwrap(ChannelMode *cm, Warden::string &param) override = 0;
 };
 
 /* The status a user has on a channel (+v, +h, +o) etc */
@@ -272,7 +273,7 @@ private:
 
 public:
 	ChannelStatus() = default;
-	ChannelStatus(const Anope::string &modes);
+	ChannelStatus(const Warden::string &modes);
 	void AddMode(char c);
 	void AddMode(ChannelMode *cm);
 	void DelMode(ChannelMode *cm);
@@ -280,14 +281,14 @@ public:
 	bool Empty() const;
 	void Clear();
 	const auto &Modes() const { return modes; }
-	Anope::string BuildModePrefixList() const;
+	Warden::string BuildModePrefixList() const;
 };
 
 class CoreExport UserModeOperOnly
 	: public UserMode
 {
 public:
-	UserModeOperOnly(const Anope::string &mname, char um) : UserMode(mname, um) { }
+	UserModeOperOnly(const Warden::string &mname, char um) : UserMode(mname, um) { }
 
 	bool CanSet(User *source, User *target) const override;
 };
@@ -296,7 +297,7 @@ class CoreExport UserModeNoone
 	: public UserMode
 {
 public:
-	UserModeNoone(const Anope::string &mname, char um) : UserMode(mname, um) { }
+	UserModeNoone(const Warden::string &mname, char um) : UserMode(mname, um) { }
 
 	bool CanSet(User *source, User *target) const override;
 };
@@ -309,7 +310,7 @@ class CoreExport ChannelModeKey
 public:
 	ChannelModeKey(char mc) : ChannelModeParam("KEY", mc) { }
 
-	bool IsValid(Anope::string &value) const override;
+	bool IsValid(Warden::string &value) const override;
 };
 
 /** This class is used for oper only channel modes
@@ -318,7 +319,7 @@ class CoreExport ChannelModeOperOnly
 	: public ChannelMode
 {
 public:
-	ChannelModeOperOnly(const Anope::string &mname, char mc) : ChannelMode(mname, mc) { }
+	ChannelModeOperOnly(const Warden::string &mname, char mc) : ChannelMode(mname, mc) { }
 
 	/* Opers only */
 	bool CanSet(User *u, Channel *c) const override;
@@ -330,13 +331,13 @@ class CoreExport ChannelModeNoone
 	: public ChannelMode
 {
 public:
-	ChannelModeNoone(const Anope::string &mname, char mc) : ChannelMode(mname, mc) { }
+	ChannelModeNoone(const Warden::string &mname, char mc) : ChannelMode(mname, mc) { }
 
 	bool CanSet(User *u, Channel *c) const override;
 };
 
 /** This is the mode manager
- * It contains functions for adding modes to Anope so Anope can track them
+ * It contains functions for adding modes to Warden so Warden can track them
  * and do things such as MLOCK.
  * This also contains a mode stacker that will combine multiple modes and set
  * them on a channel or user at once
@@ -350,24 +351,24 @@ public:
 	static unsigned GenericChannelModes;
 	static unsigned GenericUserModes;
 
-	/** Add a user mode to Anope
+	/** Add a user mode to Warden
 	 * @param um A UserMode or UserMode derived class
 	 * @return true on success, false on error
 	 */
 	static bool AddUserMode(UserMode *um);
 
-	/** Add a channel mode to Anope
+	/** Add a channel mode to Warden
 	 * @param cm A ChannelMode or ChannelMode derived class
 	 * @return true on success, false on error
 	 */
 	static bool AddChannelMode(ChannelMode *cm);
 
-	/** Remove a user mode from Anope
+	/** Remove a user mode from Warden
 	 * @param um A UserMode to remove
 	 */
 	static void RemoveUserMode(UserMode *um);
 
-	/** Remove a channel mode from Anope
+	/** Remove a channel mode from Warden
 	 * @param um A ChanneMode to remove
 	 */
 	static void RemoveChannelMode(ChannelMode *cm);
@@ -388,13 +389,13 @@ public:
 	 * @param name The modename
 	 * @return The mode class
 	 */
-	static ChannelMode *FindChannelModeByName(const Anope::string &name);
+	static ChannelMode *FindChannelModeByName(const Warden::string &name);
 
 	/** Find a user mode
 	 * @param name The modename
 	 * @return The mode class
 	 */
-	static UserMode *FindUserModeByName(const Anope::string &name);
+	static UserMode *FindUserModeByName(const Warden::string &name);
 
 	/** Gets the channel mode char for a symbol (eg + returns v)
 	 * @param symbol The symbol
@@ -440,26 +441,26 @@ public:
  */
 class CoreExport Entry final
 {
-	Anope::string name;
-	Anope::string mask;
+	Warden::string name;
+	Warden::string mask;
 public:
 	unsigned short cidr_len = 0;
 	int family = 0;
-	Anope::string nick, user, host, real;
+	Warden::string nick, user, host, real;
 
 	/** Constructor
 	 * @param mask A full or partial nick!ident@host/cidr#real name mask
 	 * @param mode What mode this host is for, can be empty for unknown/no mode
 	 * @Param real Whether to allow a real name in the mask.
 	 */
-	Entry(const Anope::string &mask, const Anope::string &mode = "", bool real = true);
+	Entry(const Warden::string &mask, const Warden::string &mode = "", bool real = true);
 
 	/** Get the banned mask for this entry
 	 * @return The mask
 	 */
-	Anope::string GetMask() const;
+	Warden::string GetMask() const;
 
-	Anope::string GetCleanMask() const;
+	Warden::string GetCleanMask() const;
 
 	/** Check if this entry matches a user
 	 * @param u The user

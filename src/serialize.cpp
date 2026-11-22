@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -13,7 +14,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "serialize.h"
 #include "modules.h"
 #include "account.h"
@@ -22,9 +23,9 @@
 #include "xline.h"
 #include "access.h"
 
-std::vector<Anope::string> Serialize::Type::TypeOrder;
+std::vector<Warden::string> Serialize::Type::TypeOrder;
 
-std::map<Anope::string, Serialize::Type *> Serialize::Type::Types;
+std::map<Warden::string, Serialize::Type *> Serialize::Type::Types;
 
 std::list<Serializable *> *Serializable::SerializableItems;
 
@@ -60,7 +61,7 @@ void Serialize::CheckTypes()
 	}
 }
 
-Serializable::Serializable(const Anope::string &serialize_type)
+Serializable::Serializable(const Warden::string &serialize_type)
 	: s_name(serialize_type)
 	, s_type(Serialize::Type::Find(serialize_type))
 {
@@ -119,12 +120,12 @@ void Serializable::UpdateCache(Serialize::Data &data)
 
 bool Serializable::IsTSCached()
 {
-	return this->last_commit_time == Anope::CurTime;
+	return this->last_commit_time == Warden::CurTime;
 }
 
 void Serializable::UpdateTS()
 {
-	this->last_commit_time = Anope::CurTime;
+	this->last_commit_time = Warden::CurTime;
 }
 
 const std::list<Serializable *> &Serializable::GetItems()
@@ -132,7 +133,7 @@ const std::list<Serializable *> &Serializable::GetItems()
 	return *SerializableItems;
 }
 
-Serialize::DataType Serialize::Data::GetType(const Anope::string &key) const
+Serialize::DataType Serialize::Data::GetType(const Warden::string &key) const
 {
 	auto it = this->types.find(key);
 	if (it != this->types.end())
@@ -140,12 +141,12 @@ Serialize::DataType Serialize::Data::GetType(const Anope::string &key) const
 	return Serialize::DataType::TEXT;
 }
 
-void Serialize::Data::SetType(const Anope::string &key, Serialize::DataType dt)
+void Serialize::Data::SetType(const Warden::string &key, Serialize::DataType dt)
 {
 	this->types[key] = dt;
 }
 
-Serialize::Type::Type(const Anope::string &n, Module *o)
+Serialize::Type::Type(const Warden::string &n, Module *o)
 	: name(n)
 	, owner(o)
 {
@@ -203,10 +204,10 @@ void Serialize::Type::Check()
 
 void Serialize::Type::UpdateTimestamp()
 {
-	this->timestamp = Anope::CurTime;
+	this->timestamp = Warden::CurTime;
 }
 
-Serialize::Type *Serialize::Type::Find(const Anope::string &name)
+Serialize::Type *Serialize::Type::Find(const Warden::string &name)
 {
 	auto it = Types.find(name);
 	if (it != Types.end())

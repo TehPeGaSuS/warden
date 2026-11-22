@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,27 +15,27 @@
 
 #pragma once
 
-#include "anope.h"
+#include "warden.h"
 
 namespace Language
 {
 
-	/* Languages we support as configured in anope.conf. They are
+	/* Languages we support as configured in warden.conf. They are
 	 * added to this list if we detect a language exists in the correct
 	 * location for each language.
 	 */
-	extern CoreExport std::vector<Anope::string> Languages;
+	extern CoreExport std::vector<Warden::string> Languages;
 
 	/* Domains to search when looking for translations other than the
-	 * default "anope domain. This is used by modules who add their own
-	 * language files (and thus domains) to Anope. If a module is loaded
+	 * default "warden domain. This is used by modules who add their own
+	 * language files (and thus domains) to Warden. If a module is loaded
 	 * and we detect a language file exists for at least one of the supported
 	 * languages for the module, then we add the module's domain (its name)
 	 * here.
 	 *
 	 * When strings are translated they are checked against all domains.
 	 */
-	extern std::vector<Anope::string> Domains;
+	extern std::vector<Warden::string> Domains;
 
 	/** Initialize the language system. Finds valid language files and
 	 * populates the Languages list.

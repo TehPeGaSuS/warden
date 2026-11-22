@@ -1,6 +1,6 @@
-# Anope `rpc_user` RPC interface
+# Warden `rpc_user` RPC interface
 
-## `anope.checkCredentials`
+## `warden.checkCredentials`
 
 Checks whether the specified credentials are valid.
 
@@ -21,7 +21,7 @@ Code   | Description
 
 ### Result
 
-Returns a map containing basic information about the account. More information about the account can be found by calling [the `anope.account` event using the value from the `uniqueid` field (requires the rpc_data module)](./rpc_user.md).
+Returns a map containing basic information about the account. More information about the account can be found by calling [the `warden.account` event using the value from the `uniqueid` field (requires the rpc_data module)](./rpc_user.md).
 
 Key       | Type    | Description
 ---       | ----    | -----------
@@ -39,7 +39,7 @@ uniqueid  | uint    | The unique immutable identifier of the account.
 }
 ```
 
-## `anope.identify`
+## `warden.identify`
 
 Identifies an IRC user to the specified account.
 
@@ -61,7 +61,7 @@ Code   | Description
 
 This procedure returns no result.
 
-## `anope.listCommands`
+## `warden.listCommands`
 
 Lists all commands that exist on the network.
 
@@ -138,7 +138,7 @@ Key                   | Type           | Description
 }
 ```
 
-## `anope.commands`
+## `warden.commands`
 
 Executes the specified command.
 

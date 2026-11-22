@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,13 +25,13 @@ class Index final
 {
 	static const int FLUSH_TIME = 60;
 
-	Anope::unordered_map<time_t> last_login_attempt;
+	Warden::unordered_map<time_t> last_login_attempt;
 	time_t last_clear = 0;
 
 public:
-	Index(const Anope::string &u) : WebPanelPage(u) { }
+	Index(const Warden::string &u) : WebPanelPage(u) { }
 
-	bool OnRequest(HTTP::Provider *, const Anope::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &) override;
+	bool OnRequest(HTTP::Provider *, const Warden::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &) override;
 };
 
 }

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,9 +22,9 @@
 #define UTF_CPP_CPLUSPLUS 201703L
 #include "utfcpp/unchecked.h"
 
-namespace Anope
+namespace Warden
 {
-	/** A single component of the Anope version. */
+	/** A single component of the Warden version. */
 	typedef uint16_t VersionComponent;
 
 	/**
@@ -171,21 +172,21 @@ namespace Anope
 		 * Trim leading and trailing white spaces from the string.
 		 */
 
-		inline string &ltrim(const Anope::string &what = " \t\r\n")
+		inline string &ltrim(const Warden::string &what = " \t\r\n")
 		{
-			while (!this->_string.empty() && what.find(this->_string[0]) != Anope::string::npos)
+			while (!this->_string.empty() && what.find(this->_string[0]) != Warden::string::npos)
 				this->_string.erase(this->_string.begin());
 			return *this;
 		}
 
-		inline string &rtrim(const Anope::string &what = " \t\r\n")
+		inline string &rtrim(const Warden::string &what = " \t\r\n")
 		{
-			while (!this->_string.empty() && what.find(this->_string[this->_string.length() - 1]) != Anope::string::npos)
+			while (!this->_string.empty() && what.find(this->_string[this->_string.length() - 1]) != Warden::string::npos)
 				this->_string.erase(this->_string.length() - 1);
 			return *this;
 		}
 
-		inline string &trim(const Anope::string &what = " \t\r\n")
+		inline string &trim(const Warden::string &what = " \t\r\n")
 		{
 			this->ltrim(what);
 			this->rtrim(what);
@@ -238,7 +239,7 @@ namespace Anope
 		 * The line wrapper will convert this to a space before it is sent to
 		 * clients.
 		 */
-		inline Anope::string nobreak() const { return this->replace_all_cs("\x20", "\x1B"); }
+		inline Warden::string nobreak() const { return this->replace_all_cs("\x20", "\x1B"); }
 
 		/**
 		 * Replace parts of the string.
@@ -251,7 +252,7 @@ namespace Anope
 		template <class InputIterator> inline string replace(iterator first, iterator last, InputIterator f, InputIterator l) { return string(this->_string.replace(first, last, f, l)); }
 		inline string replace_all_cs(const string &_orig, const string &_repl) const
 		{
-			Anope::string new_string = *this;
+			Warden::string new_string = *this;
 			size_type pos = new_string.find(_orig), orig_length = _orig.length(), repl_length = _repl.length();
 			while (pos != npos)
 			{
@@ -262,7 +263,7 @@ namespace Anope
 		}
 		inline string replace_all_ci(const string &_orig, const string &_repl) const
 		{
-			Anope::string new_string = *this;
+			Warden::string new_string = *this;
 			size_type pos = new_string.find_ci(_orig), orig_length = _orig.length(), repl_length = _repl.length();
 			while (pos != npos)
 			{
@@ -277,9 +278,9 @@ namespace Anope
 		 */
 		inline string lower() const
 		{
-			Anope::string new_string = *this;
+			Warden::string new_string = *this;
 			for (auto &chr : new_string)
-				chr = Anope::tolower(chr);
+				chr = Warden::tolower(chr);
 			return new_string;
 		}
 
@@ -288,9 +289,9 @@ namespace Anope
 		 */
 		inline string upper() const
 		{
-			Anope::string new_string = *this;
+			Warden::string new_string = *this;
 			for (auto &chr : new_string)
-				chr = Anope::toupper(chr);
+				chr = Warden::toupper(chr);
 			return new_string;
 		}
 
@@ -365,7 +366,7 @@ namespace Anope
 	template<typename T>
 	using unordered_map = std::unordered_map<string, T, hash_ci, compare>;
 
-	/** The time Anope started.
+	/** The time Warden started.
 	 */
 	extern CoreExport time_t StartTime;
 
@@ -376,7 +377,7 @@ namespace Anope
 	extern sig_atomic_t Signal;
 	extern CoreExport bool Quitting;
 	extern CoreExport bool Restarting;
-	extern CoreExport Anope::string QuitReason;
+	extern CoreExport Warden::string QuitReason;
 
 	/** The current system time, which is pretty close to being accurate.
 	 * Use this unless you need very specific time checks
@@ -392,27 +393,27 @@ namespace Anope
 	 */
 	extern CoreExport bool ReadOnly, NoFork, NoThird, NoDB, NoPID, NoExpire, ProtocolDebug;
 
-	/** The root of the Anope installation. Usually ~/anope
+	/** The root of the Warden installation. Usually ~/warden
 	 */
-	extern CoreExport Anope::string ServicesDir;
+	extern CoreExport Warden::string ServicesDir;
 
-	/** Anope binary name (eg anope)
+	/** Warden binary name (eg warden)
 	 */
-	extern CoreExport Anope::string ServicesBin;
+	extern CoreExport Warden::string ServicesBin;
 
 	/** Various directory paths. These can be set at runtime by command line args
 	 */
-	extern CoreExport Anope::string ConfigDir;
-	extern CoreExport Anope::string DataDir;
-	extern CoreExport Anope::string ModuleDir;
-	extern CoreExport Anope::string LocaleDir;
-	extern CoreExport Anope::string LogDir;
+	extern CoreExport Warden::string ConfigDir;
+	extern CoreExport Warden::string DataDir;
+	extern CoreExport Warden::string ModuleDir;
+	extern CoreExport Warden::string LocaleDir;
+	extern CoreExport Warden::string LogDir;
 
 	/** The uplink we are currently connected to
 	 */
 	extern CoreExport size_t CurrentUplink;
 
-	/** Various methods to determine the Anope version running
+	/** Various methods to determine the Warden version running
 	 */
 	extern CoreExport string Version();
 	extern CoreExport string VersionShort();
@@ -433,7 +434,7 @@ namespace Anope
 	 */
 	extern void Fork();
 
-	/** Does something with the signal in Anope::Signal
+	/** Does something with the signal in Warden::Signal
 	 */
 	extern void HandleSignal();
 
@@ -458,7 +459,7 @@ namespace Anope
 
 	/** Converts a string to hex
 	 * @param the data to be converted
-	 * @return a anope::string containing the hex value
+	 * @return a warden::string containing the hex value
 	 */
 	extern CoreExport string Hex(const string &data);
 	extern CoreExport string Hex(const char *data, unsigned len);
@@ -474,7 +475,7 @@ namespace Anope
 	 * @param src The source string to encrypt
 	 * @param dest The destination where the encrypted string is placed
 	 */
-	extern CoreExport bool Encrypt(const Anope::string &src, Anope::string &dest);
+	extern CoreExport bool Encrypt(const Warden::string &src, Warden::string &dest);
 
 	/** Return the last error code
 	 * @return The error code
@@ -488,13 +489,13 @@ namespace Anope
 
 	/** Determines if a path is a file
 	 */
-	extern CoreExport bool IsFile(const Anope::string &file);
+	extern CoreExport bool IsFile(const Warden::string &file);
 
 	/** Converts a string into seconds
 	 * @param s The string, eg 3d
 	 * @return The time represented by the string, eg 259,200
 	 */
-	extern CoreExport time_t DoTime(const Anope::string &s);
+	extern CoreExport time_t DoTime(const Warden::string &s);
 
 	/** Retrieves a human readable string representing the time in seconds
 	 * @param seconds The time on seconds, eg 60
@@ -502,26 +503,26 @@ namespace Anope
 	 * @param round Whether to round the duration to produce a shorter output.
 	 * @return A human readable string, eg "1 minute"
 	 */
-	extern CoreExport Anope::string Duration(time_t seconds, const NickCore *nc = nullptr, bool round = false);
+	extern CoreExport Warden::string Duration(time_t seconds, const NickCore *nc = nullptr, bool round = false);
 
 	/** Generates a human readable string of type "expires in ..."
 	 * @param expires time in seconds
 	 * @param nc The account to use language settings for to translate this string, if applicable
 	 * @return A human readable string, eg "expires in 5 days"
 	 */
-	extern CoreExport Anope::string Expires(time_t seconds, const NickCore *nc = NULL);
+	extern CoreExport Warden::string Expires(time_t seconds, const NickCore *nc = NULL);
 
 	/** Converts a time in seconds (epoch) to a human readable format.
 	 * @param t The time
 	 * @param nc The account to use language settings for to translate this string, if applicable
 	 * @param short_output If true, the output is just a date (eg, "Apr 12 20:18:22 2009 MSD"), else it includes the date and how long ago/from now that date is, (eg "Apr 12 20:18:22 2009 MSD (1313 days, 9 hours, 32 minutes ago)"
 	 */
-	extern CoreExport Anope::string strftime(time_t t, const NickCore *nc = NULL, bool short_output = false);
+	extern CoreExport Warden::string strftime(time_t t, const NickCore *nc = NULL, bool short_output = false);
 
 	/** Parses a raw message from the uplink and calls its command handler.
 	 * @param message Raw message from the uplink
 	 */
-	extern void Process(const Anope::string &message);
+	extern void Process(const Warden::string &message);
 
 	/** Calls the command handler for an already parsed message.
 	 * @param source Source of the message.
@@ -529,26 +530,26 @@ namespace Anope
 	 * @param params Any extra parameters.
 	 * @param tags IRCv3 message tags.
 	 */
-	extern CoreExport void ProcessInternal(MessageSource &src, const Anope::string &command, const std::vector<Anope::string> &params, const Anope::map<Anope::string> & tags);
+	extern CoreExport void ProcessInternal(MessageSource &src, const Warden::string &command, const std::vector<Warden::string> &params, const Warden::map<Warden::string> & tags);
 
 	/** Does a blocking dns query and returns the first IP.
 	 * @param host host to look up
 	 * @param type inet addr type
 	 * @return the IP if it was found, else the host
 	 */
-	extern Anope::string Resolve(const Anope::string &host, int type);
+	extern Warden::string Resolve(const Warden::string &host, int type);
 
 	/** Does a blocking dns query and returns all IPs.
 	 * @param host host to look up
 	 * @param type inet addr type
 	 * @return A list of all IPs that the host resolves to
 	 */
-	extern std::vector<Anope::string> ResolveMultiple(const Anope::string &host, int type);
+	extern std::vector<Warden::string> ResolveMultiple(const Warden::string &host, int type);
 
 	/** Generate a string of random letters and numbers
 	 * @param len The length of the string returned
 	 */
-	extern CoreExport Anope::string Random(size_t len);
+	extern CoreExport Warden::string Random(size_t len);
 
 	/** Generate a random number. */
 	extern CoreExport int RandomNumber();
@@ -567,7 +568,7 @@ class CoreExport sepstream
 private:
 	/** Original string.
 	 */
-	Anope::string tokens;
+	Warden::string tokens;
 	/** Separator value
 	 */
 	char sep;
@@ -580,7 +581,7 @@ private:
 public:
 	/** Create a sepstream and fill it with the provided data
 	 */
-	sepstream(const Anope::string &source, char separator, bool allowempty = false);
+	sepstream(const Warden::string &source, char separator, bool allowempty = false);
 
 	/** Retrieves the underlying string. */
 	const auto &GetString() const { return tokens; }
@@ -589,14 +590,14 @@ public:
 	 * @param token The next token from the stream is placed here
 	 * @return True if tokens still remain, false if there are none left
 	 */
-	bool GetToken(Anope::string &token);
+	bool GetToken(Warden::string &token);
 
 	/** Gets token number 'num' from the stream
 	 * @param token The token is placed here
 	 * @param num The token number to fetch
 	 * @return True if the token was able to be fetched
 	 */
-	bool GetToken(Anope::string &token, int num);
+	bool GetToken(Warden::string &token, int num);
 
 	/** Gets every token from this stream
 	 * @param token Tokens are pushed back here
@@ -604,7 +605,7 @@ public:
 	template<typename T> void GetTokens(T &token)
 	{
 		token.clear();
-		Anope::string t;
+		Warden::string t;
 		while (this->GetToken(t))
 			token.push_back(t);
 	}
@@ -614,7 +615,7 @@ public:
 	 * @param num The token number to fetch
 	 * @return True if the token was able to be fetched
 	 */
-	bool GetTokenRemainder(Anope::string &token, int num);
+	bool GetTokenRemainder(Warden::string &token, int num);
 
 	/** Determines the number of tokens in this stream.
 	 * @return The number of tokens in this stream
@@ -624,7 +625,7 @@ public:
 	/** Fetch the entire remaining stream, without tokenizing
 	 * @return The remaining part of the stream
 	 */
-	Anope::string GetRemaining();
+	Warden::string GetRemaining();
 
 	/** Returns true if the end of the stream has been reached
 	 * @return True if the end of the stream has been reached, otherwise false
@@ -640,7 +641,7 @@ class commasepstream final
 public:
 	/** Initialize with comma separator
 	 */
-	commasepstream(const Anope::string &source, bool allowempty = false) : sepstream(source, ',', allowempty) { }
+	commasepstream(const Warden::string &source, bool allowempty = false) : sepstream(source, ',', allowempty) { }
 };
 
 /** A derived form of sepstream, which separates on spaces
@@ -651,7 +652,7 @@ class spacesepstream final
 public:
 	/** Initialize with space separator
 	 */
-	spacesepstream(const Anope::string &source) : sepstream(source, ' ') { }
+	spacesepstream(const Warden::string &source) : sepstream(source, ' ') { }
 };
 
 /** This class can be used on its own to represent an exception, or derived to represent a module-specific exception.
@@ -666,18 +667,18 @@ class CoreExport CoreException
 protected:
 	/** Holds the error message to be displayed
 	 */
-	Anope::string err;
+	Warden::string err;
 	/** Source of the exception
 	 */
-	Anope::string source;
+	Warden::string source;
 public:
 	/** This constructor can be used to specify an error message before throwing.
 	 */
-	CoreException(const Anope::string &message) : err(message), source("The core") { }
+	CoreException(const Warden::string &message) : err(message), source("The core") { }
 	/** This constructor can be used to specify an error message before throwing,
 	 * and to specify the source of the exception.
 	 */
-	CoreException(const Anope::string &message, const Anope::string &src) : err(message), source(src) { }
+	CoreException(const Warden::string &message, const Warden::string &src) : err(message), source(src) { }
 	/** This destructor solves world hunger, cancels the world debt, and causes the world to end.
 	 * Actually no, it does nothing. Never mind.
 	 * @throws Nothing!
@@ -686,7 +687,7 @@ public:
 	/** Returns the reason for the exception.
 	 * The module should probably put something informative here as the user will see this upon failure.
 	 */
-	const Anope::string &GetReason() const
+	const Warden::string &GetReason() const
 	{
 		return err;
 	}
@@ -694,7 +695,7 @@ public:
 	{
 		return err.c_str();
 	}
-	const Anope::string &GetSource() const
+	const Warden::string &GetSource() const
 	{
 		return source;
 	}
@@ -706,7 +707,7 @@ class CoreExport ModuleException
 public:
 	/** This constructor can be used to specify an error message before throwing.
 	 */
-	ModuleException(const Anope::string &message) : CoreException(message, "A Module") { }
+	ModuleException(const Warden::string &message) : CoreException(message, "A Module") { }
 	/** This destructor solves world hunger, cancels the world debt, and causes the world to end.
 	 * Actually no, it does nothing. Never mind.
 	 * @throws Nothing!
@@ -720,15 +721,15 @@ public:
  */
 #ifdef DEBUG_BUILD
 # include <typeinfo>
-template<typename T, typename O> inline T anope_dynamic_static_cast(O ptr)
+template<typename T, typename O> inline T warden_dynamic_static_cast(O ptr)
 {
 	T ret = dynamic_cast<T>(ptr);
 	if (ptr != NULL && ret == NULL)
-		throw CoreException(Anope::string("anope_dynamic_static_cast<") + typeid(T).name() + ">(" + typeid(O).name() + ") fail");
+		throw CoreException(Warden::string("warden_dynamic_static_cast<") + typeid(T).name() + ">(" + typeid(O).name() + ") fail");
 	return ret;
 }
 #else
-template<typename T, typename O> inline T anope_dynamic_static_cast(O ptr)
+template<typename T, typename O> inline T warden_dynamic_static_cast(O ptr)
 {
 	return static_cast<T>(ptr);
 }

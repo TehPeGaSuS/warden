@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,18 +25,18 @@ public:
 		this->SetSyntax(_("\037option\037 \037parameters\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
 		source.Reply(_("Sets various nickname options. \037option\037 can be one of:"));
 
-		Anope::string this_name = source.command;
+		Warden::string this_name = source.command;
 		bool hide_privileged_commands = Config->GetBlock("options").Get<bool>("hideprivilegedcommands"),
 		     hide_registered_commands = Config->GetBlock("options").Get<bool>("hideregisteredcommands");
 
@@ -79,19 +80,19 @@ public:
 		this->SetSyntax(_("\037option\037 \037nickname\037 \037parameters\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
 		source.Reply(_("Sets various nickname options. \037option\037 can be one of:"));
 
 		HelpWrapper help;
-		Anope::string this_name = source.command;
+		Warden::string this_name = source.command;
 		for (const auto &[c_name, info] : source.service->commands)
 		{
 			if (c_name.find_ci(this_name + " ") == 0)
@@ -129,15 +130,15 @@ public:
 		this->SetSyntax(_("\037new-password\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
 		}
 
-		const Anope::string &param = params[0];
+		const Warden::string &param = params[0];
 		NickCore *nc = source.nc;
 
 		EventReturn MOD_RESULT;
@@ -145,7 +146,7 @@ public:
 		if (MOD_RESULT == EVENT_STOP)
 			return;
 
-		if (!Anope::Encrypt(param, nc->pass))
+		if (!Warden::Encrypt(param, nc->pass))
 		{
 			source.Reply(TRY_AGAIN_LATER, source.command.nobreak().c_str());
 			return;
@@ -155,7 +156,7 @@ public:
 		source.Reply(_("Password for \002%s\002 changed."), source.nc->display.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -174,9 +175,9 @@ public:
 		this->SetSyntax(_("\037nickname\037 \037new-password\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -189,7 +190,7 @@ public:
 			return;
 		}
 
-		const Anope::string &param = params[1];
+		const Warden::string &param = params[1];
 		NickCore *nc = setter_na->nc;
 
 		if (Config->GetModule("nickserv").Get<bool>("secureadmins", "yes") && source.nc != nc && nc->IsServicesOper())
@@ -204,7 +205,7 @@ public:
 		if (MOD_RESULT == EVENT_STOP)
 			return;
 
-		if (!Anope::Encrypt(param, nc->pass))
+		if (!Warden::Encrypt(param, nc->pass))
 		{
 			source.Reply(TRY_AGAIN_LATER, source.command.nobreak().c_str());
 			return;
@@ -214,7 +215,7 @@ public:
 		source.Reply(_("Password for \002%s\002 changed."), nc->display.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -233,9 +234,9 @@ public:
 		this->SetSyntax(_("\037nickname\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -248,7 +249,7 @@ public:
 			return;
 		}
 
-		Anope::string param = params.size() > 1 ? params[1] : "";
+		Warden::string param = params.size() > 1 ? params[1] : "";
 
 		if (param.equals_ci("ON"))
 		{
@@ -266,7 +267,7 @@ public:
 			this->OnSyntaxError(source, "NOEXPIRE");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -292,7 +293,7 @@ class NSSet final
 	SerializableExtensibleItem<bool> noexpire;
 
 public:
-	NSSet(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	NSSet(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandnsset(this), commandnssaset(this),
 		commandnssetpassword(this), commandnssasetpassword(this),
 		commandnssasetnoexpire(this),

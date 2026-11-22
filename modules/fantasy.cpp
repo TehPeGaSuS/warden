@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,16 +19,16 @@ class CommandBSSetFantasy final
 	: public Command
 {
 public:
-	CommandBSSetFantasy(Module *creator, const Anope::string &sname = "botserv/set/fantasy") : Command(creator, sname, 2, 2)
+	CommandBSSetFantasy(Module *creator, const Warden::string &sname = "botserv/set/fantasy") : Command(creator, sname, 2, 2)
 	{
 		this->SetDesc(_("Enable fantasy commands"));
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
-		const Anope::string &value = params[1];
+		const Warden::string &value = params[1];
 
 		if (ci == NULL)
 		{
@@ -41,7 +42,7 @@ public:
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -67,7 +68,7 @@ public:
 			this->OnSyntaxError(source, source.command);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -81,7 +82,7 @@ public:
 				"MUST have enough access for both the FANTASY "
 				"privilege and the command they are executing."
 			),
-			Config->GetModule(this->owner).Get<const Anope::string>("prefix", "!").c_str());
+			Config->GetModule(this->owner).Get<const Warden::string>("prefix", "!").c_str());
 		return true;
 	}
 };
@@ -92,10 +93,10 @@ class Fantasy final
 private:
 	SerializableExtensibleItem<bool> fantasy;
 	CommandBSSetFantasy commandbssetfantasy;
-	std::vector<Anope::string> prefixes;
+	std::vector<Warden::string> prefixes;
 
 public:
-	Fantasy(const Anope::string &modname, const Anope::string &creator)
+	Fantasy(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, fantasy(this, "BS_FANTASY")
 		, commandbssetfantasy(this)
@@ -105,11 +106,11 @@ public:
 	void OnReload(Configuration::Conf &conf) override
 	{
 		const auto &modconf = conf.GetModule(this);
-		const auto &prefix = modconf.Get<const Anope::string>("prefix", "!");
+		const auto &prefix = modconf.Get<const Warden::string>("prefix", "!");
 		spacesepstream(prefix).GetTokens(prefixes);
 	}
 
-	void OnPrivmsg(User *u, Channel *c, Anope::string &msg, const Anope::map<Anope::string> &tags) override
+	void OnPrivmsg(User *u, Channel *c, Warden::string &msg, const Warden::map<Warden::string> &tags) override
 	{
 		if (!u || !c || !c->ci || !c->ci->bi || msg.empty() || msg[0] == '\1')
 			return;
@@ -117,13 +118,13 @@ public:
 		if (Config->GetClient("BotServ") && !fantasy.HasExt(c->ci))
 			return;
 
-		std::vector<Anope::string> params;
+		std::vector<Warden::string> params;
 		spacesepstream(msg).GetTokens(params);
 
 		if (params.empty())
 			return;
 
-		Anope::string normalized_param0 = Anope::RemoveFormatting(params[0]);
+		Warden::string normalized_param0 = Warden::RemoveFormatting(params[0]);
 		if (normalized_param0.find_ci(c->ci->bi->nick) == 0)
 		{
 			params.erase(params.begin());
@@ -136,7 +137,7 @@ public:
 				return;
 
 			auto sz = params[0].find(*it);
-			if (sz == Anope::string::npos)
+			if (sz == Warden::string::npos)
 				return; /* normalized_param0 is a subset of params[0] so this can't happen */
 
 			params[0].erase(0, sz + it->length());
@@ -151,13 +152,13 @@ public:
 		unsigned count = 0;
 		for (unsigned max = params.size(); it == Config->Fantasy.end() && max > 0; --max)
 		{
-			Anope::string full_command;
+			Warden::string full_command;
 			for (unsigned i = 0; i < max; ++i)
 				full_command += " " + params[i];
 			full_command.erase(full_command.begin());
 
 			++count;
-			it = Config->Fantasy.find(Anope::RemoveFormatting(full_command));
+			it = Config->Fantasy.find(Warden::RemoveFormatting(full_command));
 		}
 
 		if (it == Config->Fantasy.end())
@@ -191,7 +192,7 @@ public:
 		if (params.size() < cmd->min_params)
 			return;
 
-		Anope::string msgid;
+		Warden::string msgid;
 		auto iter = tags.find("msgid");
 		if (iter != tags.end())
 			msgid = iter->second;

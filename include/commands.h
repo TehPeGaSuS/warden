@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,26 +16,26 @@
 #pragma once
 
 #include "service.h"
-#include "anope.h"
+#include "warden.h"
 #include "channels.h"
 #include "textproc.h"
 
 struct CommandGroup final
 {
-	Anope::string name, description;
+	Warden::string name, description;
 };
 
 /* Used in BotInfo::commands */
 struct CommandInfo final
 {
-	typedef Anope::map<CommandInfo> map;
+	typedef Warden::map<CommandInfo> map;
 
 	/* Service name of the command */
-	Anope::string name;
+	Warden::string name;
 	/* Permission required to execute the command */
-	Anope::string permission;
+	Warden::string permission;
 	/* Group this command is in */
-	Anope::string group;
+	Warden::string group;
 	/* Whether to hide this command in help and suggestions */
 	bool hide = false;
 	/* Whether to prepend the channel name (only used with fantasy) */
@@ -49,22 +50,22 @@ struct CommandInfo final
 struct CoreExport CommandReply
 {
 	virtual ~CommandReply() = default;
-	virtual void SendMessage(BotInfo *source, const Anope::string &msg) = 0;
-	virtual void SendMessage(CommandSource &source, const Anope::string &msg);
+	virtual void SendMessage(BotInfo *source, const Warden::string &msg) = 0;
+	virtual void SendMessage(CommandSource &source, const Warden::string &msg);
 };
 
 /* The source for a command */
 class CoreExport CommandSource final
 {
 	/* The nick executing the command */
-	Anope::string nick;
+	Warden::string nick;
 	/* User executing the command, may be NULL */
 	Reference<User> u;
 public:
 	/* The account executing the command */
 	Reference<NickCore> nc;
 	/* for web clients */
-	Anope::string ip;
+	Warden::string ip;
 	/* Where the reply should go */
 	CommandReply *reply;
 	/* Channel the command was executed on (fantasy) */
@@ -72,15 +73,15 @@ public:
 	/* The service this command is on */
 	Reference<BotInfo> service;
 	/* The actual name of the command being executed */
-	Anope::string command;
+	Warden::string command;
 	/* The permission of the command being executed */
-	Anope::string permission;
+	Warden::string permission;
 	/* The unique identifier of the executing message. */
-	Anope::string msgid;
+	Warden::string msgid;
 
-	CommandSource(const Anope::string &n, User *user, NickCore *core, CommandReply *reply, BotInfo *bi, const Anope::string &m = "");
+	CommandSource(const Warden::string &n, User *user, NickCore *core, CommandReply *reply, BotInfo *bi, const Warden::string &m = "");
 
-	const Anope::string &GetNick() const;
+	const Warden::string &GetNick() const;
 	User *GetUser();
 	NickCore *GetAccount();
 	AccessGroup AccessFor(ChannelInfo *ci);
@@ -88,15 +89,15 @@ public:
 
 	void Reply(const char *message, ...) ATTR_FORMAT(2, 3);
 	void Reply(int count, const char *singular, const char *plural, ...) ATTR_FORMAT(4, 5);
-	void Reply(const Anope::string &message);
+	void Reply(const Warden::string &message);
 
 	const char *Translate(const char *message);
-	const char *Translate(const Anope::string &message);
+	const char *Translate(const Warden::string &message);
 	const char *Translate(int count, const char *single, const char *plural);
-	const char *Translate(int count, const Anope::string &single, const Anope::string &plural);
+	const char *Translate(int count, const Warden::string &single, const Warden::string &plural);
 
-	bool HasCommand(const Anope::string &cmd);
-	bool HasPriv(const Anope::string &cmd);
+	bool HasCommand(const Warden::string &cmd);
+	bool HasPriv(const Warden::string &cmd);
 	bool IsServicesOper();
 	bool IsOper();
 };
@@ -106,8 +107,8 @@ public:
 class CoreExport Command
 	: public Service
 {
-	Anope::string desc;
-	std::vector<std::pair<Anope::string, std::function<bool(CommandSource&)>>> syntax;
+	Warden::string desc;
+	std::vector<std::pair<Warden::string, std::function<bool(CommandSource&)>>> syntax;
 	/* Allow unregistered users to use this command */
 	bool allow_unregistered = false;
 	/* Command requires that a user is executing it */
@@ -130,16 +131,16 @@ protected:
 	 * @param max_params The maximum number of parameters the parser will create, after max_params, all will be combined into the last argument.
 	 * NOTE: If max_params is not set (default), there is no limit to the max number of params.
 	 */
-	Command(Module *owner, const Anope::string &sname, size_t min_params, size_t max_params = 0);
+	Command(Module *owner, const Warden::string &sname, size_t min_params, size_t max_params = 0);
 
 public:
 	virtual ~Command() = default;
 
 protected:
-	void SetDesc(const Anope::string &d);
+	void SetDesc(const Warden::string &d);
 
 	void ClearSyntax();
-	void SetSyntax(const Anope::string &s, const std::function<bool(CommandSource&)> &p = nullptr);
+	void SetSyntax(const Warden::string &s, const std::function<bool(CommandSource&)> &p = nullptr);
 	virtual void SendSyntax(CommandSource &);
 
 	void AllowUnregistered(bool b);
@@ -153,13 +154,13 @@ public:
 	 * @param source The source wanting the command description
 	 * @return The commands description
 	 */
-	virtual Anope::string GetDesc(CommandSource &source) const;
+	virtual Warden::string GetDesc(CommandSource &source) const;
 
 	/** Execute this command.
 	 * @param source The source
 	 * @param params Command parameters
 	 */
-	virtual void Execute(CommandSource &source, const std::vector<Anope::string> &params) = 0;
+	virtual void Execute(CommandSource &source, const std::vector<Warden::string> &params) = 0;
 
 	/** Called when help is requested for the client this command is on.
 	 * @param source The source
@@ -171,21 +172,21 @@ public:
 	 * @param subcommand The subcommand the user is requesting help on, or an empty string. (e.g. /ns help set foo bar lol gives a subcommand of "FOO BAR LOL")
 	 * @return true if help was provided to the user, false otherwise.
 	 */
-	virtual bool OnHelp(CommandSource &source, const Anope::string &subcommand);
+	virtual bool OnHelp(CommandSource &source, const Warden::string &subcommand);
 
 	/** Requested when the user provides bad syntax to this command (not enough params, etc).
 	 * @param source The source
 	 * @param subcommand The subcommand the user tried to use
 	 */
-	virtual void OnSyntaxError(CommandSource &source, const Anope::string &subcommand);
+	virtual void OnSyntaxError(CommandSource &source, const Warden::string &subcommand);
 
 	/** Runs a command
 	 * @param source The source of the command
 	 * @param message The full message to run, the command is at the beginning of the message
 	 */
-	static bool Run(CommandSource &source, const Anope::string &message);
+	static bool Run(CommandSource &source, const Warden::string &message);
 
-	bool Run(CommandSource &source, const Anope::string &, const CommandInfo &, std::vector<Anope::string> &params);
+	bool Run(CommandSource &source, const Warden::string &, const CommandInfo &, std::vector<Warden::string> &params);
 
 	/** Looks up a command name from the service name.
 	 * Note that if the same command exists multiple places this will return the first one encountered
@@ -194,5 +195,5 @@ public:
 	 * @param name If found, is set to the command name, eg REGISTER
 	 * @return true if the given command service exists
 	 */
-	static bool FindFromService(const Anope::string &command_service, BotInfo *&bi, Anope::string &name);
+	static bool FindFromService(const Warden::string &command_service, BotInfo *&bi, Warden::string &name);
 };

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,16 +19,16 @@ class CommandNSSetMessage
 	: public Command
 {
 public:
-	CommandNSSetMessage(Module *creator, const Anope::string &sname = "nickserv/set/message", size_t min = 1)
+	CommandNSSetMessage(Module *creator, const Warden::string &sname = "nickserv/set/message", size_t min = 1)
 		: Command(creator, sname, min, min + 1)
 	{
 		this->SetDesc(_("Change the communication method of services"));
 		this->SetSyntax("{ON | OFF}");
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -63,16 +64,16 @@ public:
 			this->OnSyntaxError(source, "MSG");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params[0]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
-		Anope::string cmd = source.command;
+		Warden::string cmd = source.command;
 		size_t i = cmd.find_last_of(' ');
-		if (i != Anope::string::npos)
+		if (i != Warden::string::npos)
 			cmd = cmd.substr(i + 1);
 
 		this->SendSyntax(source);
@@ -97,7 +98,7 @@ public:
 		this->SetSyntax(_("\037nickname\037 {ON | OFF}"));
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -109,7 +110,7 @@ public:
 		return true;
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params[1]);
 	}
@@ -125,7 +126,7 @@ private:
 	SerializableExtensibleItem<bool> message;
 
 public:
-	NSSetMessage(const Anope::string &modname, const Anope::string &creator)
+	NSSetMessage(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnssetmessage(this)
 		, commandnssasetmessage(this)

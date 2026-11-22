@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2008-2011 Robin Burchell <w00t@inspircd.org>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,13 +16,13 @@
 
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "opertype.h"
 #include "config.h"
 
 std::vector<Oper *> Oper::opers;
 
-Oper::Oper(const Anope::string &n, OperType *o) : name(n), ot(o)
+Oper::Oper(const Warden::string &n, OperType *o) : name(n), ot(o)
 {
 	opers.push_back(this);
 }
@@ -33,7 +34,7 @@ Oper::~Oper()
 		opers.erase(it);
 }
 
-Oper *Oper::Find(const Anope::string &name)
+Oper *Oper::Find(const Warden::string &name)
 {
 	for (auto *o : opers)
 	{
@@ -44,7 +45,7 @@ Oper *Oper::Find(const Anope::string &name)
 	return NULL;
 }
 
-OperType *OperType::Find(const Anope::string &name)
+OperType *OperType::Find(const Warden::string &name)
 {
 	for (auto *ot : Config->MyOperTypes)
 	{
@@ -55,17 +56,17 @@ OperType *OperType::Find(const Anope::string &name)
 	return NULL;
 }
 
-OperType::OperType(const Anope::string &nname) : name(nname)
+OperType::OperType(const Warden::string &nname) : name(nname)
 {
 }
 
-bool OperType::HasCommand(const Anope::string &cmdstr) const
+bool OperType::HasCommand(const Warden::string &cmdstr) const
 {
 	for (const auto &command : this->commands)
 	{
-		if (!command.find('~') && Anope::Match(cmdstr, command.substr(1)))
+		if (!command.find('~') && Warden::Match(cmdstr, command.substr(1)))
 			return false;
-		else if (Anope::Match(cmdstr, command))
+		else if (Warden::Match(cmdstr, command))
 			return true;
 	}
 	for (auto *ot : this->inheritances)
@@ -77,13 +78,13 @@ bool OperType::HasCommand(const Anope::string &cmdstr) const
 	return false;
 }
 
-bool OperType::HasPriv(const Anope::string &privstr) const
+bool OperType::HasPriv(const Warden::string &privstr) const
 {
 	for (const auto &priv : this->privs)
 	{
-		if (!priv.find('~') && Anope::Match(privstr, priv.substr(1)))
+		if (!priv.find('~') && Warden::Match(privstr, priv.substr(1)))
 			return false;
-		else if (Anope::Match(privstr, priv))
+		else if (Warden::Match(privstr, priv))
 			return true;
 	}
 	for (auto *ot : this->inheritances)
@@ -95,17 +96,17 @@ bool OperType::HasPriv(const Anope::string &privstr) const
 	return false;
 }
 
-void OperType::AddCommand(const Anope::string &cmdstr)
+void OperType::AddCommand(const Warden::string &cmdstr)
 {
 	this->commands.push_back(cmdstr);
 }
 
-void OperType::AddPriv(const Anope::string &privstr)
+void OperType::AddPriv(const Warden::string &privstr)
 {
 	this->privs.push_back(privstr);
 }
 
-const Anope::string &OperType::GetName() const
+const Warden::string &OperType::GetName() const
 {
 	return this->name;
 }
@@ -116,9 +117,9 @@ void OperType::Inherits(OperType *ot)
 		this->inheritances.insert(ot);
 }
 
-std::list<Anope::string> OperType::GetCommands() const
+std::list<Warden::string> OperType::GetCommands() const
 {
-	std::list<Anope::string> cmd_list = this->commands;
+	std::list<Warden::string> cmd_list = this->commands;
 	for (auto *ot : this->inheritances)
 	{
 		for (const auto &cmd : ot->GetCommands())
@@ -127,9 +128,9 @@ std::list<Anope::string> OperType::GetCommands() const
 	return cmd_list;
 }
 
-std::list<Anope::string> OperType::GetPrivs() const
+std::list<Warden::string> OperType::GetPrivs() const
 {
-	std::list<Anope::string> priv_list = this->privs;
+	std::list<Warden::string> priv_list = this->privs;
 	for (auto *ot : this->inheritances)
 	{
 		for (const auto &priv : ot->GetPrivs())

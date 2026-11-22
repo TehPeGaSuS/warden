@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,14 +17,14 @@
 
 namespace
 {
-	bool NetworkNameGiven(Command *cmd, CommandSource &source, const std::vector<Anope::string> &params)
+	bool NetworkNameGiven(Command *cmd, CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		if (!Config->GetModule(cmd->owner).Get<bool>("requirename"))
 			return true; // Not necesary.
 
 		if (params.empty())
 			cmd->OnSyntaxError(source, source.command);
-		else if (!params[0].equals_cs(Config->GetBlock("networkinfo").Get<Anope::string>("networkname")))
+		else if (!params[0].equals_cs(Config->GetBlock("networkinfo").Get<Warden::string>("networkname")))
 			source.Reply(_("The network name you specified is incorrect. Did you mean to run %s on a different network?"), source.command.nobreak().c_str());
 		else
 			return true; // Name was specified correctly
@@ -42,17 +43,17 @@ public:
 			this->SetSyntax(_("\037network-name\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!NetworkNameGiven(this, source, params))
 			return;
 
 		Log(LOG_ADMIN, source, this);
-		Anope::QuitReason = source.command + " command received from " + source.GetNick();
-		Anope::Quitting = true;
+		Warden::QuitReason = source.command + " command received from " + source.GetNick();
+		Warden::Quitting = true;
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -77,18 +78,18 @@ public:
 			this->SetSyntax(_("\037network-name\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!NetworkNameGiven(this, source, params))
 			return;
 
 		Log(LOG_ADMIN, source, this);
-		Anope::QuitReason = source.command + " command received from " + source.GetNick();
-		Anope::Quitting = Anope::Restarting = true;
-		Anope::SaveDatabases();
+		Warden::QuitReason = source.command + " command received from " + source.GetNick();
+		Warden::Quitting = Warden::Restarting = true;
+		Warden::SaveDatabases();
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(_(
@@ -110,18 +111,18 @@ public:
 			this->SetSyntax(_("\037network-name\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!NetworkNameGiven(this, source, params))
 			return;
 
 		Log(LOG_ADMIN, source, this);
-		Anope::QuitReason = source.command + " command received from " + source.GetNick();
-		Anope::Quitting = true;
-		Anope::SaveDatabases();
+		Warden::QuitReason = source.command + " command received from " + source.GetNick();
+		Warden::Quitting = true;
+		Warden::SaveDatabases();
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -138,7 +139,7 @@ class OSShutdown final
 	CommandOSShutdown commandosshutdown;
 
 public:
-	OSShutdown(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSShutdown(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandosquit(this), commandosrestart(this), commandosshutdown(this)
 	{
 

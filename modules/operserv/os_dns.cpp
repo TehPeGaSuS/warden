@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -23,15 +24,15 @@ class DNSServer;
 static Serialize::Checker<std::vector<DNSZone *> > zones("DNSZone");
 static Serialize::Checker<std::vector<DNSServer *> > dns_servers("DNSServer");
 
-static std::map<Anope::string, std::list<time_t> > server_quit_times;
+static std::map<Warden::string, std::list<time_t> > server_quit_times;
 
 struct DNSZone final
 	: Serializable
 {
-	Anope::string name;
-	std::set<Anope::string, ci::less> servers;
+	Warden::string name;
+	std::set<Warden::string, ci::less> servers;
 
-	DNSZone(const Anope::string &n) : Serializable("DNSZone"), name(n)
+	DNSZone(const Warden::string &n) : Serializable("DNSZone"), name(n)
 	{
 		zones->push_back(this);
 	}
@@ -43,7 +44,7 @@ struct DNSZone final
 			zones->erase(it);
 	}
 
-	static DNSZone *Find(const Anope::string &name)
+	static DNSZone *Find(const Warden::string &name)
 	{
 		for (auto *zone : *zones)
 		{
@@ -71,19 +72,19 @@ struct DNSZoneType final
 		data.Store("name", zone->name);
 		unsigned count = 0;
 		for (const auto &server : zone->servers)
-			data.Store("server" + Anope::ToString(count++), server);
+			data.Store("server" + Warden::ToString(count++), server);
 	}
 
 	Serializable *Unserialize(Serializable *obj, Serialize::Data &data) const override
 	{
 		DNSZone *zone;
-		Anope::string zone_name;
+		Warden::string zone_name;
 
 		zone_name = data.Load("name");
 
 		if (obj)
 		{
-			zone = anope_dynamic_static_cast<DNSZone *>(obj);
+			zone = warden_dynamic_static_cast<DNSZone *>(obj);
 			zone->name = data.Load("name");
 		}
 		else
@@ -92,7 +93,7 @@ struct DNSZoneType final
 		zone->servers.clear();
 		for (unsigned count = 0; true; ++count)
 		{
-			const auto server_str = data.Load(Anope::Format("server%u", count));
+			const auto server_str = data.Load(Warden::Format("server%u", count));
 			if (server_str.empty())
 				break;
 
@@ -106,8 +107,8 @@ struct DNSZoneType final
 class DNSServer final
 	: public Serializable
 {
-	Anope::string server_name;
-	std::vector<Anope::string> ips;
+	Warden::string server_name;
+	std::vector<Warden::string> ips;
 	unsigned limit = 0;
 	/* wants to be in the pool */
 	bool pooled = false;
@@ -117,10 +118,10 @@ class DNSServer final
 public:
 	friend struct DNSServerType;
 
-	std::set<Anope::string, ci::less> zones;
+	std::set<Warden::string, ci::less> zones;
 	time_t repool = 0;
 
-	DNSServer(const Anope::string &sn) : Serializable("DNSServer"), server_name(sn)
+	DNSServer(const Warden::string &sn) : Serializable("DNSServer"), server_name(sn)
 	{
 		dns_servers->push_back(this);
 	}
@@ -132,8 +133,8 @@ public:
 			dns_servers->erase(it);
 	}
 
-	const Anope::string &GetName() const { return server_name; }
-	std::vector<Anope::string> &GetIPs() { return ips; }
+	const Warden::string &GetName() const { return server_name; }
+	std::vector<Warden::string> &GetIPs() { return ips; }
 	unsigned GetLimit() const { return limit; }
 	void SetLimit(unsigned l) { limit = l; }
 
@@ -160,7 +161,7 @@ public:
 		}
 	}
 
-	static DNSServer *Find(const Anope::string &s)
+	static DNSServer *Find(const Warden::string &s)
 	{
 		for (auto *serv : *dns_servers)
 			if (serv->GetName().equals_ci(s))
@@ -185,12 +186,12 @@ struct DNSServerType final
 		const auto *req = static_cast<const DNSServer *>(obj);
 		data.Store("server_name", req->server_name);
 		for (unsigned i = 0; i < req->ips.size(); ++i)
-			data.Store("ip" + Anope::ToString(i), req->ips[i]);
+			data.Store("ip" + Warden::ToString(i), req->ips[i]);
 		data.Store("limit", req->limit);
 		data.Store("pooled", req->pooled);
 		unsigned count = 0;
 		for (const auto &zone : req->zones)
-			data.Store("zone" + Anope::ToString(count++), zone);
+			data.Store("zone" + Warden::ToString(count++), zone);
 	}
 
 	Serializable *Unserialize(Serializable *obj, Serialize::Data &data) const override
@@ -200,7 +201,7 @@ struct DNSServerType final
 		DNSServer *req;
 		if (obj)
 		{
-			req = anope_dynamic_static_cast<DNSServer *>(obj);
+			req = warden_dynamic_static_cast<DNSServer *>(obj);
 			req->server_name = server_name;
 		}
 		else
@@ -208,7 +209,7 @@ struct DNSServerType final
 
 		for (unsigned i = 0; true; ++i)
 		{
-			const auto ip_str = data.Load(Anope::Format("ip%u", i));
+			const auto ip_str = data.Load(Warden::Format("ip%u", i));
 			if (ip_str.empty())
 				break;
 
@@ -221,7 +222,7 @@ struct DNSServerType final
 		req->zones.clear();
 		for (unsigned i = 0; true; ++i)
 		{
-			const auto zone_str = data.Load(Anope::Format("zone%u", i));
+			const auto zone_str = data.Load(Warden::Format("zone%u", i));
 			if (zone_str.empty())
 				break;
 
@@ -253,9 +254,9 @@ class CommandOSDNS final
 
 			ListFormatter::ListEntry entry;
 			entry["Server"] = s->GetName();
-			entry["Limit"] = s->GetLimit() ? Anope::ToString(s->GetLimit()) : source.Translate(_("None"));
+			entry["Limit"] = s->GetLimit() ? Warden::ToString(s->GetLimit()) : source.Translate(_("None"));
 
-			Anope::string ip_str;
+			Warden::string ip_str;
 			for (const auto &ip : s->GetIPs())
 				ip_str += ip + " ";
 			ip_str.trim();
@@ -271,7 +272,7 @@ class CommandOSDNS final
 				entry["State"] = source.Translate(_("Unpooled"));
 
 			if (!srv)
-				entry["State"] += Anope::string(" ") + source.Translate(_("(Split)"));
+				entry["State"] += Warden::string(" ") + source.Translate(_("(Split)"));
 
 			lf.AddEntry(entry);
 		}
@@ -293,7 +294,7 @@ class CommandOSDNS final
 				ListFormatter::ListEntry entry;
 				entry["Zone"] = z->name;
 
-				Anope::string server_str;
+				Warden::string server_str;
 				for (const auto &server : z->servers)
 					server_str += server + " ";
 				server_str.trim();
@@ -309,9 +310,9 @@ class CommandOSDNS final
 		}
 	}
 
-	void AddZone(CommandSource &source, const std::vector<Anope::string> &params)
+	void AddZone(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &zone = params[1];
+		const Warden::string &zone = params[1];
 
 		if (DNSZone::Find(zone))
 		{
@@ -319,7 +320,7 @@ class CommandOSDNS final
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 
 		Log(LOG_ADMIN, source, this) << "to add zone " << zone;
@@ -328,9 +329,9 @@ class CommandOSDNS final
 		source.Reply(_("Added zone %s."), zone.c_str());
 	}
 
-	void DelZone(CommandSource &source, const std::vector<Anope::string> &params)
+	void DelZone(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &zone = params[1];
+		const Warden::string &zone = params[1];
 
 		DNSZone *z = DNSZone::Find(zone);
 		if (!z)
@@ -339,7 +340,7 @@ class CommandOSDNS final
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 
 		Log(LOG_ADMIN, source, this) << "to delete zone " << z->name;
@@ -361,10 +362,10 @@ class CommandOSDNS final
 		delete z;
 	}
 
-	void AddServer(CommandSource &source, const std::vector<Anope::string> &params)
+	void AddServer(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		DNSServer *s = DNSServer::Find(params[1]);
-		const Anope::string &zone = params.size() > 2 ? params[2] : "";
+		const Warden::string &zone = params.size() > 2 ? params[2] : "";
 
 		if (s)
 		{
@@ -386,7 +387,7 @@ class CommandOSDNS final
 					return;
 				}
 
-				if (Anope::ReadOnly)
+				if (Warden::ReadOnly)
 					source.Reply(READ_ONLY_MODE);
 
 				z->servers.insert(s->GetName());
@@ -416,7 +417,7 @@ class CommandOSDNS final
 		s = new DNSServer(params[1]);
 		if (zone.empty())
 		{
-			if (Anope::ReadOnly)
+			if (Warden::ReadOnly)
 				source.Reply(READ_ONLY_MODE);
 
 			Log(LOG_ADMIN, source, this) << "to add server " << s->GetName();
@@ -432,7 +433,7 @@ class CommandOSDNS final
 				return;
 			}
 
-			if (Anope::ReadOnly)
+			if (Warden::ReadOnly)
 				source.Reply(READ_ONLY_MODE);
 
 			Log(LOG_ADMIN, source, this) << "to add server " << s->GetName() << " to zone " << zone;
@@ -448,10 +449,10 @@ class CommandOSDNS final
 		}
 	}
 
-	void DelServer(CommandSource &source, const std::vector<Anope::string> &params)
+	void DelServer(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		DNSServer *s = DNSServer::Find(params[1]);
-		const Anope::string &zone = params.size() > 2 ? params[2] : "";
+		const Warden::string &zone = params.size() > 2 ? params[2] : "";
 
 		if (!s)
 		{
@@ -472,7 +473,7 @@ class CommandOSDNS final
 				return;
 			}
 
-			if (Anope::ReadOnly)
+			if (Warden::ReadOnly)
 				source.Reply(READ_ONLY_MODE);
 
 			Log(LOG_ADMIN, source, this) << "to remove server " << s->GetName() << " from zone " << z->name;
@@ -501,7 +502,7 @@ class CommandOSDNS final
 				z->servers.erase(s->GetName());
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 
 		if (dnsmanager)
@@ -512,7 +513,7 @@ class CommandOSDNS final
 		delete s;
 	}
 
-	void AddIP(CommandSource &source, const std::vector<Anope::string> &params)
+	void AddIP(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		DNSServer *s = DNSServer::Find(params[1]);
 
@@ -538,7 +539,7 @@ class CommandOSDNS final
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 
 		s->GetIPs().push_back(params[2]);
@@ -553,7 +554,7 @@ class CommandOSDNS final
 		}
 	}
 
-	void DelIP(CommandSource &source, const std::vector<Anope::string> &params)
+	void DelIP(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		DNSServer *s = DNSServer::Find(params[1]);
 
@@ -563,7 +564,7 @@ class CommandOSDNS final
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 
 		for (unsigned i = 0; i < s->GetIPs().size(); ++i)
@@ -592,7 +593,7 @@ class CommandOSDNS final
 		source.Reply(_("IP %s does not exist for %s."), params[2].c_str(), s->GetName().c_str());
 	}
 
-	static void OnSet(CommandSource &source, const std::vector<Anope::string> &params)
+	static void OnSet(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		DNSServer *s = DNSServer::Find(params[1]);
 
@@ -602,12 +603,12 @@ class CommandOSDNS final
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 
 		if (params[2].equals_ci("LIMIT"))
 		{
-			if (auto l = Anope::TryConvert<unsigned>(params[3]))
+			if (auto l = Warden::TryConvert<unsigned>(params[3]))
 			{
 				s->SetLimit(l.value());
 				if (s->GetLimit())
@@ -624,7 +625,7 @@ class CommandOSDNS final
 			source.Reply(_("Unknown SET option."));
 	}
 
-	void OnPool(CommandSource &source, const std::vector<Anope::string> &params)
+	void OnPool(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		DNSServer *s = DNSServer::Find(params[1]);
 
@@ -649,7 +650,7 @@ class CommandOSDNS final
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 
 		s->SetActive(true);
@@ -659,7 +660,7 @@ class CommandOSDNS final
 	}
 
 
-	void OnDepool(CommandSource &source, const std::vector<Anope::string> &params)
+	void OnDepool(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		DNSServer *s = DNSServer::Find(params[1]);
 
@@ -674,7 +675,7 @@ class CommandOSDNS final
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 
 		s->Pool(false);
@@ -698,7 +699,7 @@ public:
 		this->SetSyntax(_("DEPOOL \037server.name\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (params.empty())
 			this->DisplayPoolState(source);
@@ -724,7 +725,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -765,7 +766,7 @@ class ModuleDNS final
 	time_t last_warn = 0;
 
 public:
-	ModuleDNS(const Anope::string &modname, const Anope::string &creator)
+	ModuleDNS(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, EXTRA | VENDOR)
 		, commandosdns(this)
 	{
@@ -855,23 +856,23 @@ public:
 			if (this->user_drop_mark > 0)
 			{
 				std::list<time_t>& times = server_quit_times[u->server->GetName()];
-				times.push_back(Anope::CurTime);
+				times.push_back(Warden::CurTime);
 				if (times.size() > static_cast<unsigned>(this->user_drop_mark))
 					times.pop_front();
 
 				if (times.size() == static_cast<unsigned>(this->user_drop_mark))
 				{
-					time_t diff = Anope::CurTime - *times.begin();
+					time_t diff = Warden::CurTime - *times.begin();
 
 					/* Check for very fast user drops */
 					if (s->Active() && diff <= this->user_drop_time)
 					{
 						Log(this) << "Depooling server " << s->GetName() << ": dropped " << this->user_drop_mark << " users in " << diff << " seconds";
-						s->repool = Anope::CurTime + this->user_drop_readd_time;
+						s->repool = Warden::CurTime + this->user_drop_readd_time;
 						s->SetActive(false);
 					}
 					/* Check for needing to re-pool a server that dropped users */
-					else if (!s->Active() && s->repool && s->repool <= Anope::CurTime)
+					else if (!s->Active() && s->repool && s->repool <= Warden::CurTime)
 					{
 						s->SetActive(true);
 						s->repool = 0;
@@ -903,7 +904,7 @@ public:
 
 				for (const auto &ip : s->GetIPs())
 				{
-					DNS::QueryType q_type = ip.find(':') != Anope::string::npos ? DNS::QUERY_AAAA : DNS::QUERY_A;
+					DNS::QueryType q_type = ip.find(':') != Warden::string::npos ? DNS::QUERY_AAAA : DNS::QUERY_A;
 
 					if (q.type == DNS::QUERY_AXFR || q.type == DNS::QUERY_ANY || q_type == q.type)
 					{
@@ -926,7 +927,7 @@ public:
 
 				for (const auto &ip : s->GetIPs())
 				{
-					DNS::QueryType q_type = ip.find(':') != Anope::string::npos ? DNS::QUERY_AAAA : DNS::QUERY_A;
+					DNS::QueryType q_type = ip.find(':') != Warden::string::npos ? DNS::QUERY_AAAA : DNS::QUERY_A;
 
 					if (q.type == DNS::QUERY_AXFR || q.type == DNS::QUERY_ANY || q_type == q.type)
 					{
@@ -941,9 +942,9 @@ public:
 
 		if (packet->answers.size() == answer_size)
 		{
-			if (last_warn + 60 < Anope::CurTime)
+			if (last_warn + 60 < Warden::CurTime)
 			{
-				last_warn = Anope::CurTime;
+				last_warn = Warden::CurTime;
 				Log(this) << "Warning! There are no pooled servers!";
 			}
 
@@ -952,7 +953,7 @@ public:
 			{
 				for (const auto &ip : s->GetIPs())
 				{
-					DNS::QueryType q_type = ip.find(':') != Anope::string::npos ? DNS::QUERY_AAAA : DNS::QUERY_A;
+					DNS::QueryType q_type = ip.find(':') != Warden::string::npos ? DNS::QUERY_AAAA : DNS::QUERY_A;
 
 					if (q.type == DNS::QUERY_AXFR || q.type == DNS::QUERY_ANY || q_type == q.type)
 					{

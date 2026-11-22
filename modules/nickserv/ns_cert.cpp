@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,11 +25,11 @@ struct NSCertInfo final
 	NSCertInfo(Extensible *ext)
 		: Serializable(NICKSERV_CERT_TYPE)
 	{
-		account = anope_dynamic_static_cast<NickCore *>(ext);
+		account = warden_dynamic_static_cast<NickCore *>(ext);
 	}
 };
 
-static Anope::unordered_map<NSCertInfo *> certmap;
+static Warden::unordered_map<NSCertInfo *> certmap;
 
 struct CertServiceImpl final
 	: NickServ::CertService
@@ -38,7 +39,7 @@ struct CertServiceImpl final
 	{
 	}
 
-	NickCore *FindAccountFromCert(const Anope::string &cert) override
+	NickCore *FindAccountFromCert(const Warden::string &cert) override
 	{
 		auto it = certmap.find(cert);
 		if (it != certmap.end())
@@ -46,7 +47,7 @@ struct CertServiceImpl final
 		return NULL;
 	}
 
-	void ReplaceCert(const Anope::string &oldcert, const Anope::string &newcert) override
+	void ReplaceCert(const Warden::string &oldcert, const Warden::string &newcert) override
 	{
 		auto *nc = FindAccountFromCert(oldcert);
 		if (!nc)
@@ -67,7 +68,7 @@ struct NSCertListImpl final
 	std::vector<NSCertInfo *> certs;
 
 public:
-	NSCertListImpl(Extensible *obj) : nc(anope_dynamic_static_cast<NickCore *>(obj)) { }
+	NSCertListImpl(Extensible *obj) : nc(warden_dynamic_static_cast<NickCore *>(obj)) { }
 
 	~NSCertListImpl() override
 	{
@@ -80,7 +81,7 @@ public:
 	 *
 	 * Adds a new entry into the cert list.
 	 */
-	NickServ::Cert *AddCert(const Anope::string &entry) override
+	NickServ::Cert *AddCert(const Warden::string &entry) override
 	{
 		auto *cert = new NSCertInfo(nc);
 		cert->fingerprint = entry;
@@ -118,7 +119,7 @@ public:
 	 *
 	 * Search for an fingerprint within the cert list.
 	 */
-	bool FindCert(const Anope::string &entry) const override
+	bool FindCert(const Warden::string &entry) const override
 	{
 		auto it = std::find_if(this->certs.begin(), this->certs.end(), [&entry](const NSCertInfo *cert) {
 			return cert->fingerprint == entry;
@@ -132,7 +133,7 @@ public:
 	 *
 	 * Removes the specified fingerprint from the cert list.
 	 */
-	void EraseCert(const Anope::string &entry) override
+	void EraseCert(const Warden::string &entry) override
 	{
 		auto it = std::find_if(this->certs.begin(), this->certs.end(), [&entry](const NSCertInfo *cert) {
 			return cert->fingerprint == entry;
@@ -147,7 +148,7 @@ public:
 		}
 	}
 
-	void ReplaceCert(const Anope::string &oldentry, const Anope::string &newentry) override
+	void ReplaceCert(const Warden::string &oldentry, const Warden::string &newentry) override
 	{
 		auto oldit = std::find_if(this->certs.begin(), this->certs.end(), [&oldentry](const NSCertInfo *cert) {
 			return cert->fingerprint == oldentry;
@@ -199,7 +200,7 @@ public:
 	struct ExtensibleItem final
 		: ::ExtensibleItem<NSCertListImpl>
 	{
-		ExtensibleItem(Module *m, const Anope::string &ename) : ::ExtensibleItem<NSCertListImpl>(m, ename) { }
+		ExtensibleItem(Module *m, const Warden::string &ename) : ::ExtensibleItem<NSCertListImpl>(m, ename) { }
 
 		void ExtensibleUnserialize(Extensible *e, Serializable *s, Serialize::Data &data) override
 		{
@@ -211,7 +212,7 @@ public:
 			if (certstr.empty())
 				return; // Nothing to do.
 
-			auto *nc = anope_dynamic_static_cast<NickCore *>(e);
+			auto *nc = warden_dynamic_static_cast<NickCore *>(e);
 			auto *cl = this->Require(nc);
 
 			// Try to avoid breaking autologin compatibility for upgrading users.
@@ -227,7 +228,7 @@ public:
 
 			// Add the new cert list
 			spacesepstream sep(certstr);
-			for (Anope::string buf; sep.GetToken(buf); )
+			for (Warden::string buf; sep.GetToken(buf); )
 			{
 				auto *cert = new NSCertInfo(e);
 				cert->fingerprint = buf;
@@ -267,7 +268,7 @@ public:
 
 		NSCertInfo *cert;
 		if (obj)
-			cert = anope_dynamic_static_cast<NSCertInfo *>(obj);
+			cert = warden_dynamic_static_cast<NSCertInfo *>(obj);
 		else
 			cert = new NSCertInfo(nc);
 
@@ -291,7 +292,7 @@ class CommandNSCert final
 	: public Command
 {
 private:
-	void DoAdd(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoAdd(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		auto *nc = FindTarget(source, params.size() == 3 ? params[1] : "", true);
 		if (!nc)
@@ -323,14 +324,14 @@ private:
 		}
 
 		auto *cert = cl->AddCert(certfp);
-		cert->created = Anope::CurTime;
+		cert->created = Warden::CurTime;
 		cert->creator = source.GetNick();
 
 		Log(nc == source.GetAccount() ? LOG_COMMAND : LOG_ADMIN, source, this) << "to ADD certificate fingerprint " << certfp << " to " << nc->display;
 		source.Reply(_("\002%s\002 added to %s's certificate list."), certfp.c_str(), nc->display.c_str());
 	}
 
-	void DoDel(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoDel(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		auto *nc = FindTarget(source, params.size() == 3 ? params[1] : "", true);
 		if (!nc)
@@ -353,7 +354,7 @@ private:
 		source.Reply(_("\002%s\002 deleted from %s's certificate list."), certfp.c_str(), nc->display.c_str());
 	}
 
-	void DoList(CommandSource &source, const std::vector<Anope::string> &params, bool full)
+	void DoList(CommandSource &source, const std::vector<Warden::string> &params, bool full)
 	{
 		auto *nc = FindTarget(source, params.size() > 1 ? params[1] : "", false);
 		if (!nc)
@@ -398,7 +399,7 @@ private:
 			if (full)
 			{
 				entry["Created"] = cert->created
-					? Anope::strftime(cert->created, nullptr, true)
+					? Warden::strftime(cert->created, nullptr, true)
 					: TIME_UNKNOWN;
 
 				entry["Creator"] = cert->creator.empty()
@@ -412,7 +413,7 @@ private:
 		list.SendTo(source);
 	}
 
-	Anope::string FindFingerprint(CommandSource &source, const std::vector<Anope::string> &params, const NickCore *nc, bool del)
+	Warden::string FindFingerprint(CommandSource &source, const std::vector<Warden::string> &params, const NickCore *nc, bool del)
 	{
 		if (source.GetAccount() != nc || del)
 		{
@@ -431,7 +432,7 @@ private:
 		return "";
 	}
 
-	NickCore *FindTarget(CommandSource &source, const Anope::string &nick, bool modify)
+	NickCore *FindTarget(CommandSource &source, const Warden::string &nick, bool modify)
 	{
 		if (!nick.empty())
 		{
@@ -477,14 +478,14 @@ public:
 		this->SetSyntax(_("VIEW [\037nickname\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[0];
+		const Warden::string &cmd = params[0];
 		if (cmd.equals_ci("LIST"))
 			return this->DoList(source, params, false);
 		if (cmd.equals_ci("VIEW"))
 			return this->DoList(source, params, true);
-		else if (Anope::ReadOnly)
+		else if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 		else if (cmd.equals_ci("ADD"))
 			return this->DoAdd(source, params);
@@ -494,7 +495,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -548,16 +549,16 @@ class CommandNSSetAutologin
 	: public Command
 {
 public:
-	CommandNSSetAutologin(Module *creator, const Anope::string &sname = "nickserv/set/autologin", size_t min = 1)
+	CommandNSSetAutologin(Module *creator, const Warden::string &sname = "nickserv/set/autologin", size_t min = 1)
 		: Command(creator, sname, min, min + 1)
 	{
 		this->SetDesc(_("Set whether you should automatically be logged in when you connect using a known SSL certificate."));
 		this->SetSyntax("{ON | OFF}");
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -592,12 +593,12 @@ public:
 			this->OnSyntaxError(source, "AUTOLOGIN");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params[0]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -624,12 +625,12 @@ public:
 		this->SetSyntax(_("\037nickname\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params[1]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -678,7 +679,7 @@ private:
 	}
 
 public:
-	NSCert(const Anope::string &modname, const Anope::string &creator)
+	NSCert(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnscert(this)
 		, commandnssetautologin(this)
@@ -711,14 +712,14 @@ public:
 		Log(NickServ) << u->GetMask() << " automatically identified for account " << nc->display << " via SSL certificate fingerprint " << u->fingerprint;
 	}
 
-	void OnNickRegister(User *u, NickAlias *na, const Anope::string &pass) override
+	void OnNickRegister(User *u, NickAlias *na, const Warden::string &pass) override
 	{
 		if (!Config->GetModule(this).Get<bool>("automatic", "yes") || !u || u->fingerprint.empty())
 			return;
 
 		auto *cl = certs.Require(na->nc);
 		auto *cert = cl->AddCert(u->fingerprint);
-		cert->created = Anope::CurTime;
+		cert->created = Warden::CurTime;
 		cert->creator = u->nick;
 
 		auto *NickServ = Config->GetClient("NickServ");

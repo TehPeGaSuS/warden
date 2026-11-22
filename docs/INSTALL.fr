@@ -1,27 +1,27 @@
-Instructions d'installation d'Anope
+Instructions d'installation d'Warden
 -----------------------------------
 
-1) Installation d'Anope
-2) Mettre à jour Anope
+1) Installation d'Warden
+2) Mettre à jour Warden
 3) Configuration de l'IRCd
-4) Mettre en route Anope
+4) Mettre en route Warden
 5) Mettre en place un crontab
 
 Note : Vous devrez également lire les fichiers README et FAQ !
 
-1) Installation d'Anope
+1) Installation d'Warden
 
     NOTE IMPORTANTE : il est déconseillé d'utiliser (et même d'installer)
-                      Anope en tant que root. Utilisez un utilisateur non
+                      Warden en tant que root. Utilisez un utilisateur non
                       privilégié. Celui que vous utilisez pour l'IRCd ou
 		              un utilisateur dédié suffira.
 
-    La première chose que vous devez faire est d'obtenir le package Anope
+    La première chose que vous devez faire est d'obtenir le package Warden
     (si ce n'est déjà fait). Vous pouvez le trouver ici :
 
         https://www.anope.org/
 
-    Anope nécessite cmake pour être compilé. Vous pouvez vérifier si CMake
+    Warden nécessite cmake pour être compilé. Vous pouvez vérifier si CMake
     est déjà installé sur votre système avec la commande :
 
         cmake --version
@@ -42,7 +42,7 @@ Note : Vous devrez également lire les fichiers README et FAQ !
     pouvez les activer plus tard.
 
     Maintenant, tapez ./Config pour lancer le script de configuration. Il
-    va vous poser quelques questions, et déterminer comment compiler Anope
+    va vous poser quelques questions, et déterminer comment compiler Warden
     sur votre système. Si vous ne savez pas comment répondre à une question,
     utilisez la valeur par défaut.
 
@@ -55,34 +55,34 @@ Note : Vous devrez également lire les fichiers README et FAQ !
     mots de passe ne sont pas chiffrés, ou lire les mémos de tous les
     utilisateurs.
 
-    Allez maintenant dans le répertoire conf (par défaut, ~/anope/conf).
-    Copiez l'exemple de fichier de configuration (anope.example.conf) en
-    anope.conf et ouvrez ce dernier avec votre éditeur de texte favori.
-    Il contient toutes les directives de configuration qu'Anope va utiliser
+    Allez maintenant dans le répertoire conf (par défaut, ~/warden/conf).
+    Copiez l'exemple de fichier de configuration (warden.example.conf) en
+    warden.conf et ouvrez ce dernier avec votre éditeur de texte favori.
+    Il contient toutes les directives de configuration qu'Warden va utiliser
     en démarrant. Lisez attentivement les instructions contenues dans le
     fichier. L'utilisation des valeurs par défaut n'est pas toujours
-    recommandée, et Anope ne fonctionnera probablement pas !
+    recommandée, et Warden ne fonctionnera probablement pas !
 
     Si vous avez besoin d'aide, vous pouvez aller sur le site
-    https://forum.anope.org/ ou le canal #anope sur irc.teranova.net.
+    https://github.com/TehPeGaSuS/warden/discussions.
     Fournissez *l'essemble* des erreurs qui apparaîssent, en plus de
     toutes informations utiles, comme les versions de votre OS, du
     compilateur utilisé et de la librairie C++. Lisez le fichier README
     pour plus d'informations.
 
-2) Mettre à jour Anope
+2) Mettre à jour Warden
 
-    Pour mettre à jour Anope, suivez simplement les instructions
+    Pour mettre à jour Warden, suivez simplement les instructions
     d'installation décrites dans la section 1. Prenez garde cependant :
 
         * IMPORTANT : Sauvegardez vos anciennes bases de données !
         * Si vous mettez à jour vers une nouvelle version majeure,
           recommencez *toujours* toute votre configuration à partir du
-          fichier anope.example.conf.
+          fichier warden.example.conf.
 
 3) Configuration de l'IRCd
 
-    Anope agit comme un serveur IRC avec des pseudo-clients.
+    Warden agit comme un serveur IRC avec des pseudo-clients.
     Pour les relier à votre réseau, vous aurez besoin de configurer votre
     IRCd pour permettre aux services de se connecter.
 
@@ -92,14 +92,14 @@ Note : Vous devrez également lire les fichiers README et FAQ !
     sur le port donné dans le bloc link.
 
     Des exemples de configurations de bloc link peuvent être trouvés dans
-    le fichier anope.example.conf pour certains des IRCd les plus populaires.
+    le fichier warden.example.conf pour certains des IRCd les plus populaires.
 
     Souvenez-vous de /rehash votre IRCd pour appliquer les changements.
 
-4) Mettre en route Anope
+4) Mettre en route Warden
 
     Allez dans le répertoire où les fichiers binaires ont été installés
-    (par défaut, ~/anope/bin). Tapez ./anope pour lancer Anope.
+    (par défaut, ~/warden/bin). Tapez ./warden pour lancer Warden.
 
     S'il y a des erreurs de syntaxe dans le fichier de configuration, elles
     seront affichées à l'écran. Corrigez-les jusqu'à ce qu'il n'y en ait
@@ -109,31 +109,31 @@ Note : Vous devrez également lire les fichiers README et FAQ !
     réseau, car certains IRCds sur certains systèmes peuvent être très
     lents pour le processus de liaison. Si rien ne se passe après environ
     une minute, il y a probablement un problème de configuration. Essayez
-    de lancer Anope en mode debug avec ./anope -debug -nofork pour voir
+    de lancer Warden en mode debug avec ./warden -debug -nofork pour voir
     toutes les erreurs rencontrées et essayez de les corriger.
 
     Si vous avez besoin d'aide pour résoudre des erreurs, n'hésitez pas à
-    vous abonner à la liste de diffusion Anope et d'y poser vos question.
+    vous abonner à la liste de diffusion Warden et d'y poser vos question.
     Voir le fichier README pour plus de détails.
 
 5) Mettre en place un crontab
 
-    Une entrée crontab vous permettra de vérifier périodiquement si Anope
+    Une entrée crontab vous permettra de vérifier périodiquement si Warden
     est toujours en cours d'exécution et de le redémarrer s'il n'est pas.
 
     D'abord renommez le script cron.example.sh qui est dans les dossiers
-    d'Anope (par défaut, ~/anope/conf) en cron.sh et modifiez-le.
+    d'Warden (par défaut, ~/warden/conf) en cron.sh et modifiez-le.
     Vous aurez besoin de modifier la partie CONFIGURATION du fichier.
     Assurez-vous ensuite que le fichier est marqué comme exécutable en
     tapant chmod +x cron.sh et essayez de lancer le script pour voir
-    si cela fonctionne (Anope ne doit pas être en marche lorsque vous
+    si cela fonctionne (Warden ne doit pas être en marche lorsque vous
     testez cela ;))
 
     Lorsque c'est fait, vous devrez ajouter l'entrée crontab. Entrez
     crontab -e. Cela va ouvrir l'éditeur de texte par défaut avec le
     fichier crontab. Entrez la ligne suivante (avec le chemin correct) :
 
-        */5 * * * * /home/ircd/anope/conf/cron.sh > /dev/null 2>&1
+        */5 * * * * /home/ircd/warden/conf/cron.sh > /dev/null 2>&1
 
     Le */5 au début signifie "vérifier toutes les 5 minutes". Vous pouvez
     remplacer le 5 par un autre numéro si vous voulez (mais moins de 60).

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -26,24 +27,24 @@
 #endif
 
 /* Command-line options: */
-unsigned Anope::Debug = 0;
-bool Anope::ReadOnly = false, Anope::NoFork = false, Anope::NoThird = false, Anope::NoDB = false, Anope::NoPID = false, Anope::NoExpire = false, Anope::ProtocolDebug = false;
-Anope::string Anope::ServicesDir;
-Anope::string Anope::ServicesBin;
+unsigned Warden::Debug = 0;
+bool Warden::ReadOnly = false, Warden::NoFork = false, Warden::NoThird = false, Warden::NoDB = false, Warden::NoPID = false, Warden::NoExpire = false, Warden::ProtocolDebug = false;
+Warden::string Warden::ServicesDir;
+Warden::string Warden::ServicesBin;
 
-int Anope::ReturnValue = 0;
-sig_atomic_t Anope::Signal = 0;
-bool Anope::Quitting = false;
-bool Anope::Restarting = false;
-Anope::string Anope::QuitReason;
+int Warden::ReturnValue = 0;
+sig_atomic_t Warden::Signal = 0;
+bool Warden::Quitting = false;
+bool Warden::Restarting = false;
+Warden::string Warden::QuitReason;
 
-static Anope::string BinaryDir;       /* Full path to services bin directory */
+static Warden::string BinaryDir;       /* Full path to services bin directory */
 
-time_t Anope::StartTime = 0;
-time_t Anope::CurTime = 0;
-long long Anope::CurTimeNs = 0;
+time_t Warden::StartTime = 0;
+time_t Warden::CurTime = 0;
+long long Warden::CurTimeNs = 0;
 
-size_t Anope::CurrentUplink = -1;
+size_t Warden::CurrentUplink = -1;
 
 class UpdateTimer final
 	: public Timer
@@ -56,7 +57,7 @@ public:
 
 	bool Tick() override
 	{
-		Anope::SaveDatabases();
+		Warden::SaveDatabases();
 		return true;
 	}
 };
@@ -77,18 +78,18 @@ public:
 	}
 };
 
-void Anope::SaveDatabases()
+void Warden::SaveDatabases()
 {
-	if (Anope::ReadOnly)
+	if (Warden::ReadOnly)
 		return;
 
 	Log(LOG_DEBUG) << "Saving databases";
 	FOREACH_MOD(OnSaveDatabase, ());
 }
 
-/** The following comes from InspIRCd to get the full path of the Anope executable
+/** The following comes from InspIRCd to get the full path of the Warden executable
  */
-static Anope::string GetFullProgDir(const Anope::string &argv0)
+static Warden::string GetFullProgDir(const Warden::string &argv0)
 {
 #ifdef _WIN32
 	/* Windows has specific API calls to get the EXE path that never fail.
@@ -98,9 +99,9 @@ static Anope::string GetFullProgDir(const Anope::string &argv0)
 	char buffer[MAX_PATH];
 	if (GetModuleFileName(NULL, buffer, MAX_PATH))
 	{
-		Anope::string fullpath = buffer;
-		Anope::string::size_type n = fullpath.rfind("\\");
-		Anope::ServicesBin = fullpath.substr(n + 1, fullpath.length());
+		Warden::string fullpath = buffer;
+		Warden::string::size_type n = fullpath.rfind("\\");
+		Warden::ServicesBin = fullpath.substr(n + 1, fullpath.length());
 		return fullpath.substr(0, n);
 	}
 #else
@@ -108,16 +109,16 @@ static Anope::string GetFullProgDir(const Anope::string &argv0)
 	char buffer[PATH_MAX];
 	if (getcwd(buffer, PATH_MAX))
 	{
-		Anope::string remainder = argv0;
+		Warden::string remainder = argv0;
 
-		Anope::ServicesBin = remainder;
-		Anope::string::size_type n = Anope::ServicesBin.rfind("/");
-		Anope::string fullpath;
-		if (Anope::ServicesBin[0] == '/')
-			fullpath = Anope::ServicesBin.substr(0, n);
+		Warden::ServicesBin = remainder;
+		Warden::string::size_type n = Warden::ServicesBin.rfind("/");
+		Warden::string fullpath;
+		if (Warden::ServicesBin[0] == '/')
+			fullpath = Warden::ServicesBin.substr(0, n);
 		else
-			fullpath = Anope::string(buffer) + "/" + Anope::ServicesBin.substr(0, n);
-		Anope::ServicesBin = Anope::ServicesBin.substr(n + 1, remainder.length());
+			fullpath = Warden::string(buffer) + "/" + Warden::ServicesBin.substr(0, n);
+		Warden::ServicesBin = Warden::ServicesBin.substr(n + 1, remainder.length());
 		return fullpath;
 	}
 #endif
@@ -129,18 +130,18 @@ static Anope::string GetFullProgDir(const Anope::string &argv0)
 int main(int ac, char **av, char **envp)
 {
 	/* String comparisons won't work until we build the case map cache, so do it first */
-	Anope::CaseMapRebuild();
+	Warden::CaseMapRebuild();
 
 	BinaryDir = GetFullProgDir(av[0]);
 	if (BinaryDir[BinaryDir.length() - 1] == '.')
 		BinaryDir = BinaryDir.substr(0, BinaryDir.length() - 2);
 
 #ifdef _WIN32
-	Anope::string::size_type n = BinaryDir.rfind('\\');
+	Warden::string::size_type n = BinaryDir.rfind('\\');
 #else
-	Anope::string::size_type n = BinaryDir.rfind('/');
+	Warden::string::size_type n = BinaryDir.rfind('/');
 #endif
-	Anope::ServicesDir = BinaryDir.substr(0, n);
+	Warden::ServicesDir = BinaryDir.substr(0, n);
 
 #ifdef _WIN32
 	/* Clean out the module runtime directory prior to running, just in case files were left behind during a previous run */
@@ -152,8 +153,8 @@ int main(int ac, char **av, char **envp)
 	try
 	{
 		/* General initialization first */
-		if (!Anope::Init(ac, av))
-			return Anope::ReturnValue;
+		if (!Warden::Init(ac, av))
+			return Warden::ReturnValue;
 	}
 	catch (const CoreException &ex)
 	{
@@ -167,34 +168,34 @@ int main(int ac, char **av, char **envp)
 	}
 	catch (const SocketException &ex)
 	{
-		Log(LOG_TERMINAL) << "Unable to connect to uplink #" << (Anope::CurrentUplink + 1) << " (" << Config->Uplinks[Anope::CurrentUplink].str() << "): " << ex.GetReason();
+		Log(LOG_TERMINAL) << "Unable to connect to uplink #" << (Warden::CurrentUplink + 1) << " (" << Config->Uplinks[Warden::CurrentUplink].str() << "): " << ex.GetReason();
 	}
 
 	/* Set up timers */
-	time_t last_check = Anope::CurTime;
+	time_t last_check = Warden::CurTime;
 	UpdateTimer updateTimer(Config->GetBlock("options").Get<time_t>("updatetimeout", "2m"));
 	ExpireTimer expireTimer(Config->GetBlock("options").Get<time_t>("expiretimeout", "30m"));
 
 	/*** Main loop. ***/
-	while (!Anope::Quitting)
+	while (!Warden::Quitting)
 	{
 		Log(LOG_DEBUG_2) << "Top of main loop";
 
 		/* Process timers */
-		if (Anope::CurTime - last_check >= Config->TimeoutCheck)
+		if (Warden::CurTime - last_check >= Config->TimeoutCheck)
 		{
 			TimerManager::TickTimers();
-			last_check = Anope::CurTime;
+			last_check = Warden::CurTime;
 		}
 
 		/* Process the socket engine */
 		SocketEngine::Process();
 
-		if (Anope::Signal)
-			Anope::HandleSignal();
+		if (Warden::Signal)
+			Warden::HandleSignal();
 	}
 
-	if (Anope::Restarting)
+	if (Warden::Restarting)
 	{
 		FOREACH_MOD(OnRestart, ());
 	}
@@ -203,9 +204,9 @@ int main(int ac, char **av, char **envp)
 		FOREACH_MOD(OnShutdown, ());
 	}
 
-	if (Anope::QuitReason.empty())
-		Anope::QuitReason = "Terminating, reason unknown";
-	Log() << Anope::QuitReason;
+	if (Warden::QuitReason.empty())
+		Warden::QuitReason = "Terminating, reason unknown";
+	Log() << Warden::QuitReason;
 
 	delete UplinkSock;
 
@@ -220,21 +221,21 @@ int main(int ac, char **av, char **envp)
 	OnShutdown();
 #endif
 
-	if (Anope::Restarting)
+	if (Warden::Restarting)
 	{
-		auto pidfile = Anope::ExpandData(Config->GetBlock("serverinfo").Get<const Anope::string>("pid"));
+		auto pidfile = Warden::ExpandData(Config->GetBlock("serverinfo").Get<const Warden::string>("pid"));
 		if (!pidfile.empty())
 			remove(pidfile.c_str());
 
 		if (chdir(BinaryDir.c_str()) == 0)
 		{
-			Anope::string sbin = "./" + Anope::ServicesBin;
+			Warden::string sbin = "./" + Warden::ServicesBin;
 			av[0] = const_cast<char *>(sbin.c_str());
-			execve(Anope::ServicesBin.c_str(), av, envp);
+			execve(Warden::ServicesBin.c_str(), av, envp);
 		}
 		Log() << "Restart failed: " << strerror(errno);
-		Anope::ReturnValue = -1;
+		Warden::ReturnValue = -1;
 	}
 
-	return Anope::ReturnValue;
+	return Warden::ReturnValue;
 }

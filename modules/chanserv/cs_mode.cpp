@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,13 +19,13 @@
 class ModeFormatter final
 {
 private:
-	Anope::string addmodes;
-	Anope::string addparams;
-	Anope::string delmodes;
-	Anope::string delparams;
+	Warden::string addmodes;
+	Warden::string addparams;
+	Warden::string delmodes;
+	Warden::string delparams;
 
 public:
-	bool GetString(Anope::string &out, bool complete = true) const
+	bool GetString(Warden::string &out, bool complete = true) const
 	{
 		if (addmodes.empty() && delmodes.empty())
 			return false;
@@ -33,12 +34,12 @@ public:
 		return true;
 	}
 
-	void Push(ChannelMode *cm, const Anope::string &param, bool adding)
+	void Push(ChannelMode *cm, const Warden::string &param, bool adding)
 	{
 		Push(cm->mchar, param, adding);
 	}
 
-	void Push(char mchar, const Anope::string &param, bool adding)
+	void Push(char mchar, const Warden::string &param, bool adding)
 	{
 		if (adding)
 		{
@@ -55,9 +56,9 @@ public:
 		}
 	}
 
-	Anope::string ToString(bool complete) const
+	Warden::string ToString(bool complete) const
 	{
-		Anope::string buffer;
+		Warden::string buffer;
 		if (!addmodes.empty())
 			buffer.append("+").append(addmodes);
 		if (!delmodes.empty())
@@ -107,7 +108,7 @@ struct ModeLocksImpl final
 	Serialize::Checker<ChanServ::ModeLockList> mlocks;
 
 	ModeLocksImpl(Extensible *obj)
-		: ci(anope_dynamic_static_cast<ChannelInfo *>(obj))
+		: ci(warden_dynamic_static_cast<ChannelInfo *>(obj))
 		, mlocks(CHANSERV_MODE_LOCK_TYPE)
 	{
 	}
@@ -122,7 +123,7 @@ struct ModeLocksImpl final
 		}
 	}
 
-	bool HasMLock(ChannelMode *mode, const Anope::string &param, bool status) const override
+	bool HasMLock(ChannelMode *mode, const Warden::string &param, bool status) const override
 	{
 		if (!mode)
 			return false;
@@ -136,7 +137,7 @@ struct ModeLocksImpl final
 		return false;
 	}
 
-	bool SetMLock(ChannelMode *mode, bool status, const Anope::string &param, Anope::string setter, time_t created = Anope::CurTime) override
+	bool SetMLock(ChannelMode *mode, bool status, const Warden::string &param, Warden::string setter, time_t created = Warden::CurTime) override
 	{
 		if (!mode)
 			return false;
@@ -166,7 +167,7 @@ struct ModeLocksImpl final
 		return true;
 	}
 
-	bool RemoveMLock(ChannelMode *mode, bool status, const Anope::string &param = "") override
+	bool RemoveMLock(ChannelMode *mode, bool status, const Warden::string &param = "") override
 	{
 		if (!mode)
 			return false;
@@ -216,7 +217,7 @@ struct ModeLocksImpl final
 		return this->mlocks;
 	}
 
-	std::list<ChanServ::ModeLock *> GetModeLockList(const Anope::string &name) override
+	std::list<ChanServ::ModeLock *> GetModeLockList(const Warden::string &name) override
 	{
 		std::list<ChanServ::ModeLock *> mlist;
 		for (auto *m : *this->mlocks)
@@ -227,7 +228,7 @@ struct ModeLocksImpl final
 		return mlist;
 	}
 
-	const ChanServ::ModeLock *GetMLock(const Anope::string &mname, const Anope::string &param = "") override
+	const ChanServ::ModeLock *GetMLock(const Warden::string &mname, const Warden::string &param = "") override
 	{
 		for (auto *m : *this->mlocks)
 		{
@@ -238,7 +239,7 @@ struct ModeLocksImpl final
 		return NULL;
 	}
 
-	Anope::string GetMLockAsString(bool complete) const override
+	Warden::string GetMLockAsString(bool complete) const override
 	{
 		ModeFormatter mlock;
 		for (auto *ml : *this->mlocks)
@@ -276,7 +277,7 @@ Serializable *ModeLockTypeImpl::Unserialize(Serializable *obj, Serialize::Data &
 
 	ModeLockImpl *ml;
 	if (obj)
-		ml = anope_dynamic_static_cast<ModeLockImpl *>(obj);
+		ml = warden_dynamic_static_cast<ModeLockImpl *>(obj);
 	else
 	{
 		ml = new ModeLockImpl();
@@ -318,20 +319,20 @@ class CommandCSMode final
 				return true;
 
 			case MODE_PARAM:
-				return adding || !anope_dynamic_static_cast<ChannelModeParam *>(cm)->minus_no_arg;
+				return adding || !warden_dynamic_static_cast<ChannelModeParam *>(cm)->minus_no_arg;
 		}
 		return false;
 	}
 
-	void DoLock(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoLock(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &subcommand = params[2];
-		const Anope::string &param = params.size() > 3 ? params[3] : "";
+		const Warden::string &subcommand = params[2];
+		const Warden::string &param = params.size() > 3 ? params[3] : "";
 
 		bool override = !source.AccessFor(ci).HasPriv("MODE");
 		auto *modelocks = ci->Require<ChanServ::ModeLocks>(CHANSERV_MODE_LOCK_EXT);
 
-		if (Anope::ReadOnly && !subcommand.equals_ci("LIST"))
+		if (Warden::ReadOnly && !subcommand.equals_ci("LIST"))
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -385,10 +386,10 @@ class CommandCSMode final
 						continue;
 
 					ListFormatter::ListEntry entry;
-					entry["Mode"] = Anope::Format("%c%c", ml->set ? '+' : '-', cm->mchar);
+					entry["Mode"] = Warden::Format("%c%c", ml->set ? '+' : '-', cm->mchar);
 					entry["Param"] = ml->param;
 					entry["Creator"] = ml->setter;
-					entry["Created"] = Anope::strftime(ml->created, NULL, true);
+					entry["Created"] = Warden::strftime(ml->created, NULL, true);
 					list.AddEntry(entry);
 				}
 
@@ -400,10 +401,10 @@ class CommandCSMode final
 			this->OnSyntaxError(source, subcommand);
 	}
 
-	void DoLockChange(CommandSource &source, ChannelInfo *ci, ChanServ::ModeLocks *modelocks, const Anope::string &param, bool override, bool setting)
+	void DoLockChange(CommandSource &source, ChannelInfo *ci, ChanServ::ModeLocks *modelocks, const Warden::string &param, bool override, bool setting)
 	{
 		spacesepstream sep(param);
-		Anope::string modes;
+		Warden::string modes;
 		sep.GetToken(modes);
 
 		ModeFormatter cannotset, missingparam, unknownmode; // ADD/DEL/SET
@@ -429,7 +430,7 @@ class CommandCSMode final
 						unknownmode.Push(mode, {}, adding);
 						break;
 					}
-					Anope::string mode_param;
+					Warden::string mode_param;
 					if (NeedsParam(cm, adding && setting) && !sep.GetToken(mode_param))
 					{
 						missingparam.Push(cm, mode_param, adding);
@@ -473,7 +474,7 @@ class CommandCSMode final
 			}
 		}
 
-		Anope::string reply;
+		Warden::string reply;
 		if (unknownmode.GetString(reply))
 			source.Reply(_("Unknown modes %s ignored."), reply.c_str());
 		if (missingparam.GetString(reply))
@@ -507,7 +508,7 @@ class CommandCSMode final
 			source.Reply(_("Nothing to do."));
 	}
 
-	void DoSet(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoSet(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
 		User *u = source.GetUser();
 
@@ -515,7 +516,7 @@ class CommandCSMode final
 		bool can_override = source.HasPriv("chanserv/administration");
 
 		spacesepstream sep(params.size() > 3 ? params[3] : "");
-		Anope::string modes = params[2], param;
+		Warden::string modes = params[2], param;
 
 		bool override = !source.AccessFor(ci).HasPriv("MODE") && source.HasPriv("chanserv/administration");
 
@@ -582,7 +583,7 @@ class CommandCSMode final
 
 							AccessGroup u_access = source.AccessFor(ci);
 
-							if (param.find_first_of("*?") != Anope::string::npos)
+							if (param.find_first_of("*?") != Warden::string::npos)
 							{
 								if (!this->CanSet(source, ci, cm, false))
 								{
@@ -623,7 +624,7 @@ class CommandCSMode final
 										}
 									}
 
-									if (Anope::Match(memb->user->GetMask(), param))
+									if (Warden::Match(memb->user->GetMask(), param))
 									{
 										if (adding)
 											ci->c->SetMode(NULL, cm, memb->user->GetUID());
@@ -696,10 +697,10 @@ class CommandCSMode final
 							}
 							else
 							{
-								std::vector<Anope::string> v = ci->c->GetModeList(cm->name);
+								std::vector<Warden::string> v = ci->c->GetModeList(cm->name);
 								for (const auto &mode :  v)
 								{
-									if (Anope::Match(mode, param))
+									if (Warden::Match(mode, param))
 										ci->c->RemoveMode(NULL, cm, mode);
 								}
 							}
@@ -710,13 +711,13 @@ class CommandCSMode final
 		Log(override ? LOG_OVERRIDE : LOG_COMMAND, source, this, ci) << "to set " << modes << (params.size() > 3 ? " " + params[3] : "");
 	}
 
-	void DoClear(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoClear(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &param = params.size() > 2 ? params[2] : "";
+		const Warden::string &param = params.size() > 2 ? params[2] : "";
 
 		if (param.empty())
 		{
-			std::vector<Anope::string> new_params;
+			std::vector<Warden::string> new_params;
 			new_params.push_back(params[0]);
 			new_params.emplace_back("SET");
 			new_params.emplace_back("-*");
@@ -752,10 +753,10 @@ class CommandCSMode final
 			return;
 		}
 
-		std::vector<Anope::string> new_params;
+		std::vector<Warden::string> new_params;
 		new_params.push_back(params[0]);
 		new_params.emplace_back("SET");
-		new_params.push_back("-" + Anope::ToString(cm->mchar));
+		new_params.push_back("-" + Warden::ToString(cm->mchar));
 		new_params.emplace_back("*");
 		this->DoSet(source, ci, new_params);
 	}
@@ -769,9 +770,9 @@ public:
 		this->SetSyntax(_("\037channel\037 CLEAR [\037what\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &subcommand = params[1];
+		const Warden::string &subcommand = params[1];
 
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
 
@@ -799,7 +800,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -839,7 +840,7 @@ public:
 	}
 };
 
-static Anope::map<std::pair<bool, Anope::string> > modes;
+static Warden::map<std::pair<bool, Warden::string> > modes;
 
 class CommandCSModes final
 	: public Command
@@ -850,7 +851,7 @@ private:
 		auto *u = source.GetUser();
 
 		AccessGroup u_access = source.AccessFor(ci), targ_access = ci->AccessFor(targ);
-		const std::pair<bool, Anope::string> &m = modes[source.command];
+		const std::pair<bool, Warden::string> &m = modes[source.command];
 
 		bool can_override = source.HasPriv("chanserv/administration");
 		bool override = false;
@@ -903,7 +904,7 @@ public:
 		this->SetSyntax(_("\037channel\037 [\037user\037]+"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		auto *ci = ChannelInfo::Find(params[0]);
 		if (!ci)
@@ -939,23 +940,23 @@ public:
 		}
 	}
 
-	Anope::string GetDesc(CommandSource &source) const override
+	Warden::string GetDesc(CommandSource &source) const override
 	{
-		const std::pair<bool, Anope::string> &m = modes[source.command];
+		const std::pair<bool, Warden::string> &m = modes[source.command];
 		if (!m.second.empty())
 		{
 			if (m.first)
-				return Anope::Format(source.Translate(_("Gives you or the specified nick %s status on a channel")), m.second.c_str());
+				return Warden::Format(source.Translate(_("Gives you or the specified nick %s status on a channel")), m.second.c_str());
 			else
-				return Anope::Format(source.Translate(_("Removes %s status from you or the specified nick on a channel")), m.second.c_str());
+				return Warden::Format(source.Translate(_("Removes %s status from you or the specified nick on a channel")), m.second.c_str());
 		}
 		else
 			return "";
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
-		const std::pair<bool, Anope::string> &m = modes[source.command];
+		const std::pair<bool, Warden::string> &m = modes[source.command];
 		if (m.second.empty())
 			return false;
 
@@ -987,7 +988,7 @@ class CSMode final
 	ModeLockTypeImpl modelocks_type;
 
 public:
-	CSMode(const Anope::string &modname, const Anope::string &creator)
+	CSMode(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandcsmode(this)
 		, commandcsmodes(this)
@@ -1001,14 +1002,14 @@ public:
 
 		for (const auto &[_,  block] : conf.GetBlocks("command"))
 		{
-			const Anope::string &cname = block.Get<const Anope::string>("name"),
-					&cmd = block.Get<const Anope::string>("command");
+			const Warden::string &cname = block.Get<const Warden::string>("name"),
+					&cmd = block.Get<const Warden::string>("command");
 
 			if (cname.empty() || cmd != "chanserv/modes")
 				continue;
 
-			const Anope::string &set = block.Get<const Anope::string>("set"),
-					&unset = block.Get<const Anope::string>("unset");
+			const Warden::string &set = block.Get<const Warden::string>("set"),
+					&unset = block.Get<const Warden::string>("unset");
 
 			if (set.empty() && unset.empty())
 				continue;
@@ -1043,7 +1044,7 @@ public:
 					/* If the channel doesn't have the mode, or it does and it isn't set correctly */
 					if (ml->set)
 					{
-						Anope::string param;
+						Warden::string param;
 						c->GetParam(cm->name, param);
 
 						if (!c->HasMode(cm->name) || (!param.empty() && !ml->param.empty() && !param.equals_cs(ml->param)))
@@ -1070,8 +1071,8 @@ public:
 	void OnChanRegistered(ChannelInfo *ci) override
 	{
 		ChanServ::ModeLocks *ml = modelocks.Require(ci);
-		Anope::string mlock;
-		spacesepstream sep(Config->GetModule(this).Get<const Anope::string>("mlock", "+nt"));
+		Warden::string mlock;
+		spacesepstream sep(Config->GetModule(this).Get<const Warden::string>("mlock", "+nt"));
 		if (sep.GetToken(mlock))
 		{
 			bool add = true;
@@ -1093,10 +1094,10 @@ public:
 				if (!cm)
 					continue;
 
-				Anope::string param;
+				Warden::string param;
 				if (cm->type == MODE_PARAM)
 				{
-					auto *cmp = anope_dynamic_static_cast<ChannelModeParam *>(cm);
+					auto *cmp = warden_dynamic_static_cast<ChannelModeParam *>(cm);
 					if (add || !cmp->minus_no_arg)
 					{
 						sep.GetToken(param);

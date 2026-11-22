@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,7 +20,7 @@ static unsigned int HARDMAX = 65536;
 class CommandOSLogSearch final
 	: public Command
 {
-	static inline Anope::string CreateLogName(const Anope::string &file, time_t t = Anope::CurTime)
+	static inline Warden::string CreateLogName(const Warden::string &file, time_t t = Warden::CurTime)
 	{
 		char timestamp[32];
 
@@ -27,7 +28,7 @@ class CommandOSLogSearch final
 
 		strftime(timestamp, sizeof(timestamp), "%Y%m%d", tm);
 
-		return Anope::ExpandLog(file + "." + timestamp);
+		return Warden::ExpandLog(file + "." + timestamp);
 	}
 
 public:
@@ -37,7 +38,7 @@ public:
 		this->SetSyntax(_("[+\037days\037d] [+\037limit\037l] \037pattern\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		int days = 7, replies = 50;
 
@@ -49,8 +50,8 @@ public:
 				case 'd':
 					if (params[i].length() > 2)
 					{
-						Anope::string dur = params[i].substr(1, params[i].length() - 2);
-						auto d = Anope::Convert<int>(dur, 0);
+						Warden::string dur = params[i].substr(1, params[i].length() - 2);
+						auto d = Warden::Convert<int>(dur, 0);
 						if (d > 0)
 							days = d;
 						else
@@ -60,8 +61,8 @@ public:
 				case 'l':
 					if (params[i].length() > 2)
 					{
-						Anope::string dur = params[i].substr(1, params[i].length() - 2);
-						auto r = Anope::Convert<int>(dur, 0);
+						Warden::string dur = params[i].substr(1, params[i].length() - 2);
+						auto r = Warden::Convert<int>(dur, 0);
 						if (r > 0)
 							replies = r;
 						else
@@ -79,35 +80,35 @@ public:
 			return;
 		}
 
-		Anope::string search_string = params[i++];
+		Warden::string search_string = params[i++];
 		for (; i < params.size(); ++i)
 			search_string += " " + params[i];
 
 		Log(LOG_ADMIN, source, this) << "for " << search_string;
 
-		bool wildcard = search_string.find_first_of("?*") != Anope::string::npos;
+		bool wildcard = search_string.find_first_of("?*") != Warden::string::npos;
 		bool regex = !search_string.empty() && search_string[0] == '/' && search_string[search_string.length() - 1] == '/';
 
-		const Anope::string &logfile_name = Config->GetModule(this->owner).Get<const Anope::string>("logname");
-		std::vector<Anope::string> matches;
+		const Warden::string &logfile_name = Config->GetModule(this->owner).Get<const Warden::string>("logname");
+		std::vector<Warden::string> matches;
 		for (int d = days - 1; d >= 0; --d)
 		{
-			Anope::string lf_name = CreateLogName(logfile_name, Anope::CurTime - (d * 86400));
+			Warden::string lf_name = CreateLogName(logfile_name, Warden::CurTime - (d * 86400));
 			Log(LOG_DEBUG) << "Searching " << lf_name;
 			std::fstream fd(lf_name.c_str(), std::ios_base::in);
 			if (!fd.is_open())
 				continue;
 
-			for (Anope::string buf, token; std::getline(fd, buf.str());)
+			for (Warden::string buf, token; std::getline(fd, buf.str());)
 			{
 				bool match = false;
 
 				if (regex)
-					match = Anope::Match(buf, search_string, false, true);
+					match = Warden::Match(buf, search_string, false, true);
 				else if (wildcard)
-					match = Anope::Match(buf, "*" + search_string + "*");
+					match = Warden::Match(buf, "*" + search_string + "*");
 				else
-					match = buf.find_ci(search_string) != Anope::string::npos;
+					match = buf.find_ci(search_string) != Warden::string::npos;
 
 				if (match)
 				{
@@ -146,7 +147,7 @@ public:
 		source.Reply(_("Showed %zu/%zu matches for \002%s\002."), matches.size(), found, search_string.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -160,8 +161,8 @@ public:
 		));
 
 		ExampleWrapper examples;
-		examples.AddEntry("+21d +500l Anope", _(
-			"Searches the last 21 days worth of logs for messages containing Anope and lists the "
+		examples.AddEntry("+21d +500l Warden", _(
+			"Searches the last 21 days worth of logs for messages containing Warden and lists the "
 			"most recent 500 of them."
 		));
 		examples.SendTo(source);
@@ -176,7 +177,7 @@ class OSLogSearch final
 	CommandOSLogSearch commandoslogsearch;
 
 public:
-	OSLogSearch(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSLogSearch(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandoslogsearch(this)
 	{
 	}

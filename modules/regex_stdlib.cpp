@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -23,7 +24,7 @@ private:
 	std::regex regex;
 
 public:
-	StdLibRegex(const Anope::string &expr, std::regex::flag_type type)
+	StdLibRegex(const Warden::string &expr, std::regex::flag_type type)
 		: Regex(expr)
 	{
 		try
@@ -36,7 +37,7 @@ public:
 		}
 	}
 
-	bool Matches(const Anope::string &str)
+	bool Matches(const Warden::string &str)
 	{
 		return std::regex_search(str.str(), regex);
 	}
@@ -53,7 +54,7 @@ public:
 	{
 	}
 
-	Regex *Compile(const Anope::string &expression) override
+	Regex *Compile(const Warden::string &expression) override
 	{
 		return new StdLibRegex(expression, type);
 	}
@@ -66,7 +67,7 @@ private:
 	StdLibRegexProvider stdlib_regex_provider;
 
 public:
-	ModuleRegexStdLib(const Anope::string &modname, const Anope::string &creator)
+	ModuleRegexStdLib(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, EXTRA | VENDOR)
 		, stdlib_regex_provider(this)
 	{
@@ -77,7 +78,7 @@ public:
 	{
 		const auto &block = conf.GetModule(this);
 
-		const Anope::string syntax = block.Get<const Anope::string>("syntax", "ecmascript");
+		const Warden::string syntax = block.Get<const Warden::string>("syntax", "ecmascript");
 		if (syntax == "awk")
 			stdlib_regex_provider.type = std::regex::awk;
 		else if (syntax == "basic")

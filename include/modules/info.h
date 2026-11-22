@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,7 +20,7 @@ class OperInfo
 protected:
 	OperInfo() = default;
 
-	OperInfo(const Anope::string &t, const Anope::string &i, const Anope::string &a, time_t c)
+	OperInfo(const Warden::string &t, const Warden::string &i, const Warden::string &a, time_t c)
 		: target(t)
 		, info(i)
 		, adder(a)
@@ -28,9 +29,9 @@ protected:
 	}
 
 public:
-	Anope::string target;
-	Anope::string info;
-	Anope::string adder;
+	Warden::string target;
+	Warden::string info;
+	Warden::string adder;
 	time_t created = 0;
 
 	virtual ~OperInfo() = default;

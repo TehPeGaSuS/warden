@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,9 +25,9 @@ public:
 		this->SetSyntax(_("[\037key\037|\037#X-Y\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &key = !params.empty() ? params[0] : "";
+		const Warden::string &key = !params.empty() ? params[0] : "";
 		int from = 0, to = 0, counter = 1;
 
 		/**
@@ -36,7 +37,7 @@ public:
 		if (!key.empty() && key[0] == '#')
 		{
 			size_t tmp = key.find('-');
-			if (tmp == Anope::string::npos || tmp == key.length() || tmp == 1)
+			if (tmp == Warden::string::npos || tmp == key.length() || tmp == 1)
 			{
 				source.Reply(LIST_INCORRECT_RANGE);
 				return;
@@ -49,8 +50,8 @@ public:
 					return;
 				}
 
-				from = Anope::Convert<int>(key.substr(1, tmp - 1), 0);
-				to = Anope::Convert<int>(key.substr(tmp + 1), 0);
+				from = Warden::Convert<int>(key.substr(1, tmp - 1), 0);
+				to = Warden::Convert<int>(key.substr(tmp + 1), 0);
 			}
 		}
 
@@ -67,16 +68,16 @@ public:
 
 			if (!key.empty() && key[0] != '#')
 			{
-				if ((Anope::Match(na->nick, key) || Anope::Match(na->GetVHostHost(), key)) && display_counter < listmax)
+				if ((Warden::Match(na->nick, key) || Warden::Match(na->GetVHostHost(), key)) && display_counter < listmax)
 				{
 					++display_counter;
 
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(display_counter);
+					entry["Number"] = Warden::ToString(display_counter);
 					entry["Nick"] = na->nick;
 					entry["VHost"] = na->GetVHostMask();
 					entry["Creator"] = na->GetVHostCreator();
-					entry["Created"] = Anope::strftime(na->GetVHostCreated(), NULL, true);
+					entry["Created"] = Warden::strftime(na->GetVHostCreated(), NULL, true);
 					list.AddEntry(entry);
 				}
 			}
@@ -90,11 +91,11 @@ public:
 				{
 					++display_counter;
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(display_counter);
+					entry["Number"] = Warden::ToString(display_counter);
 					entry["Nick"] = na->nick;
 					entry["VHost"] = na->GetVHostMask();
 					entry["Creator"] = na->GetVHostCreator();
-					entry["Created"] = Anope::strftime(na->GetVHostCreated(), NULL, true);
+					entry["Created"] = Warden::strftime(na->GetVHostCreated(), NULL, true);
 					list.AddEntry(entry);
 				}
 			}
@@ -120,7 +121,7 @@ public:
 		list.SendTo(source);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -143,7 +144,7 @@ class HSList final
 	CommandHSList commandhslist;
 
 public:
-	HSList(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	HSList(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandhslist(this)
 	{
 		if (!IRCD || !IRCD->CanSetVHost)

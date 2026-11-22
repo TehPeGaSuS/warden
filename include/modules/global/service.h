@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -55,14 +56,14 @@ public:
 	/** Retrieves the messages queue for the specified user.
 	 * @param nc The account to retrieve queued messages for.
 	 */
-	virtual const std::vector<Anope::string> *GetQueue(NickCore *nc) const = 0;
+	virtual const std::vector<Warden::string> *GetQueue(NickCore *nc) const = 0;
 
 	/** Queues a message to be sent later.
 	 * @param nc The account to queue the message for.
 	 * @param message The message to queue.
 	 * @return The new number of messages in the queue.
 	 */
-	virtual size_t Queue(NickCore *nc, const Anope::string &message) = 0;
+	virtual size_t Queue(NickCore *nc, const Warden::string &message) = 0;
 
 	/** Sends a single message to all users on the network.
 	 * @param message The message to send.
@@ -71,7 +72,7 @@ public:
 	 * @param server If non-nullptr then the server to send messages to.
 	 * @return If the message was sent then true; otherwise, false.
 	 */
-	virtual bool SendSingle(const Anope::string &message, CommandSource *source = nullptr, BotInfo *sender = nullptr, Server *server = nullptr) = 0;
+	virtual bool SendSingle(const Warden::string &message, CommandSource *source = nullptr, BotInfo *sender = nullptr, Server *server = nullptr) = 0;
 
 	/** Sends a message queue to all users on the network.
 	 * @param source The source of the message.

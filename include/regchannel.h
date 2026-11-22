@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -22,7 +23,7 @@
 #include "serialize.h"
 #include "bots.h"
 
-typedef Anope::unordered_map<ChannelInfo *> registered_channel_map;
+typedef Warden::unordered_map<ChannelInfo *> registered_channel_map;
 
 extern CoreExport Serialize::Checker<registered_channel_map> RegisteredChannelList;
 
@@ -43,24 +44,24 @@ public:
 
 private:
 	/* channels who reference this one */
-	Anope::map<int> references;
+	Warden::map<int> references;
 	Serialize::Reference<NickCore> founder;					/* Channel founder */
 	Serialize::Reference<NickCore> successor;                               /* Who gets the channel if the founder nick is dropped or expires */
 	Serialize::Checker<std::vector<ChanAccess *> > access;			/* List of authorized users */
-	Anope::map<int16_t> levels;
+	Warden::map<int16_t> levels;
 
 public:
 	friend class ChanAccess;
 	friend class AutoKick;
 
-	Anope::string name;                       /* Channel name */
-	Anope::string desc;
+	Warden::string name;                       /* Channel name */
+	Warden::string desc;
 
 	time_t registered;
 	time_t last_used;
 
-	Anope::string last_topic;                 /* The last topic that was set on this channel */
-	Anope::string last_topic_setter;          /* Setter */
+	Warden::string last_topic;                 /* The last topic that was set on this channel */
+	Warden::string last_topic_setter;          /* Setter */
 	time_t last_topic_time = 0;               /* Time */
 
 	Channel::ModeList last_modes;             /* The last modes set on this channel */
@@ -79,7 +80,7 @@ public:
 	/** Constructor
 	 * @param chname The channel name
 	 */
-	ChannelInfo(const Anope::string &chname);
+	ChannelInfo(const Warden::string &chname);
 
 	/** Copy constructor
 	 * @param ci The ChannelInfo to copy settings from
@@ -154,25 +155,25 @@ public:
 	/** Get the level entries for the channel.
 	 * @return The levels for the channel.
 	 */
-	const Anope::map<int16_t> &GetLevelEntries();
+	const Warden::map<int16_t> &GetLevelEntries();
 
 	/** Get the level for a privilege
 	 * @param priv The privilege name
 	 * @return the level
 	 * @throws CoreException if priv is not a valid privilege
 	 */
-	int16_t GetLevel(const Anope::string &priv) const;
+	int16_t GetLevel(const Warden::string &priv) const;
 
 	/** Set the level for a privilege
 	 * @param priv The privilege priv
 	 * @param level The new level
 	 */
-	void SetLevel(const Anope::string &priv, int16_t level);
+	void SetLevel(const Warden::string &priv, int16_t level);
 
 	/** Remove a privilege from the channel
 	 * @param priv The privilege
 	 */
-	void RemoveLevel(const Anope::string &priv);
+	void RemoveLevel(const Warden::string &priv);
 
 	/** Clear all privileges from the channel
 	 */
@@ -183,17 +184,17 @@ public:
 	 * @param u The user
 	 * @return A ban mask that affects the user
 	 */
-	Anope::string GetIdealBan(User *u) const;
+	Warden::string GetIdealBan(User *u) const;
 
 	/** Finds a ChannelInfo
 	 * @param name channel name to lookup
 	 * @return the ChannelInfo associated with the channel
 	 */
-	static ChannelInfo *Find(const Anope::string &name);
+	static ChannelInfo *Find(const Warden::string &name);
 
-	void AddChannelReference(const Anope::string &what);
-	void RemoveChannelReference(const Anope::string &what);
-	void GetChannelReferences(std::deque<Anope::string> &chans);
+	void AddChannelReference(const Warden::string &what);
+	void RemoveChannelReference(const Warden::string &what);
+	void GetChannelReferences(std::deque<Warden::string> &chans);
 };
 
 /** Is the user the real founder?

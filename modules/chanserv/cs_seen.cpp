@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -20,19 +21,19 @@ enum TypeInfo
 };
 
 struct SeenInfo;
-static SeenInfo *FindInfo(const Anope::string &nick);
-typedef Anope::unordered_map<SeenInfo *> database_map;
+static SeenInfo *FindInfo(const Warden::string &nick);
+typedef Warden::unordered_map<SeenInfo *> database_map;
 database_map database;
 
 struct SeenInfo final
 	: Serializable
 {
-	Anope::string nick;
-	Anope::string vhost;
+	Warden::string nick;
+	Warden::string vhost;
 	TypeInfo type;
-	Anope::string nick2;    // for nickchanges and kicks
-	Anope::string channel;  // for join/part/kick
-	Anope::string message;  // for part/kick/quit
+	Warden::string nick2;    // for nickchanges and kicks
+	Warden::string channel;  // for join/part/kick
+	Warden::string message;  // for part/kick/quit
 	time_t last;            // the time when the user was last seen
 
 	SeenInfo() : Serializable("SeenInfo")
@@ -55,7 +56,7 @@ struct SeenInfoType final
 	{
 	}
 
-	static Anope::string TypeToString(TypeInfo ti)
+	static Warden::string TypeToString(TypeInfo ti)
 	{
 		switch (ti)
 		{
@@ -77,7 +78,7 @@ struct SeenInfoType final
 		return ""; // Should never happen.
 	}
 
-	static TypeInfo StringToType(const Anope::string &ti)
+	static TypeInfo StringToType(const Warden::string &ti)
 	{
 		if (ti.equals_ci("NEW") || ti.equals_ci("0"))
 			return NEW;
@@ -115,7 +116,7 @@ struct SeenInfoType final
 
 		SeenInfo *s;
 		if (obj)
-			s = anope_dynamic_static_cast<SeenInfo *>(obj);
+			s = warden_dynamic_static_cast<SeenInfo *>(obj);
 		else
 		{
 			SeenInfo *&info = database[snick];
@@ -138,7 +139,7 @@ struct SeenInfoType final
 	}
 };
 
-static SeenInfo *FindInfo(const Anope::string &nick)
+static SeenInfo *FindInfo(const Warden::string &nick)
 {
 	auto iter = database.find(nick);
 	if (iter != database.end())
@@ -146,7 +147,7 @@ static SeenInfo *FindInfo(const Anope::string &nick)
 	return NULL;
 }
 
-static bool ShouldHide(const Anope::string &channel, User *u)
+static bool ShouldHide(const Warden::string &channel, User *u)
 {
 	Channel *targetchan = Channel::Find(channel);
 	const ChannelInfo *targetchan_ci = targetchan ? *targetchan->ci : ChannelInfo::Find(channel);
@@ -171,7 +172,7 @@ public:
 		this->SetSyntax(_("CLEAR \037time\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (params[0].equals_ci("STATS"))
 		{
@@ -179,7 +180,7 @@ public:
 			mem_counter = sizeof(database_map);
 			for (auto &[nick, si] : database)
 			{
-				mem_counter += (5 * sizeof(Anope::string)) + sizeof(TypeInfo) + sizeof(time_t);
+				mem_counter += (5 * sizeof(Warden::string)) + sizeof(TypeInfo) + sizeof(time_t);
 				mem_counter += nick.capacity();
 				mem_counter += si->vhost.capacity();
 				mem_counter += si->nick2.capacity();
@@ -191,12 +192,12 @@ public:
 		else if (params[0].equals_ci("CLEAR"))
 		{
 			time_t time = 0;
-			if ((params.size() < 2) || (0 >= (time = Anope::DoTime(params[1]))))
+			if ((params.size() < 2) || (0 >= (time = Warden::DoTime(params[1]))))
 			{
 				this->OnSyntaxError(source, params[0]);
 				return;
 			}
-			time = Anope::CurTime - time;
+			time = Warden::CurTime - time;
 			database_map::iterator buf;
 			size_t counter = 0;
 			for (auto it = database.begin(), it_end = database.end(); it != it_end;)
@@ -205,19 +206,19 @@ public:
 				++it;
 				if (time < buf->second->last)
 				{
-					Log(LOG_DEBUG) << buf->first << " was last seen " << Anope::strftime(buf->second->last) << ", deleting entry";
+					Log(LOG_DEBUG) << buf->first << " was last seen " << Warden::strftime(buf->second->last) << ", deleting entry";
 					delete buf->second;
 					counter++;
 				}
 			}
-			Log(LOG_ADMIN, source, this) << "CLEAR and removed " << counter << " nicks that were added after " << Anope::strftime(time, NULL, true);
-			source.Reply(_("Database cleared, removed %lu nicks that were added after %s."), counter, Anope::strftime(time, source.nc, true).c_str());
+			Log(LOG_ADMIN, source, this) << "CLEAR and removed " << counter << " nicks that were added after " << Warden::strftime(time, NULL, true);
+			source.Reply(_("Database cleared, removed %lu nicks that were added after %s."), counter, Warden::strftime(time, source.nc, true).c_str());
 		}
 		else
 			this->SendSyntax(source);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -247,9 +248,9 @@ public:
 		this->AllowUnregistered(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &target = params[0];
+		const Warden::string &target = params[0];
 
 		if (target.length() > IRCD->MaxNick)
 		{
@@ -277,14 +278,14 @@ public:
 		}
 
 		User *u2 = User::Find(target, true);
-		Anope::string onlinestatus;
+		Warden::string onlinestatus;
 		if (u2)
 			onlinestatus = ".";
 		else
-			onlinestatus = Anope::Format(source.Translate(_(" but %s mysteriously dematerialized.")), target.c_str());
+			onlinestatus = Warden::Format(source.Translate(_(" but %s mysteriously dematerialized.")), target.c_str());
 
-		Anope::string timebuf = Anope::Duration(Anope::CurTime - info->last, source.nc);
-		Anope::string timebuf2 = Anope::strftime(info->last, source.nc, true);
+		Warden::string timebuf = Warden::Duration(Warden::CurTime - info->last, source.nc);
+		Warden::string timebuf2 = Warden::strftime(info->last, source.nc, true);
 
 		if (info->type == NEW)
 		{
@@ -295,9 +296,9 @@ public:
 		{
 			u2 = User::Find(info->nick2, true);
 			if (u2)
-				onlinestatus = Anope::Format(source.Translate(_(". %s is still online.")), u2->nick.c_str());
+				onlinestatus = Warden::Format(source.Translate(_(". %s is still online.")), u2->nick.c_str());
 			else
-				onlinestatus = Anope::Format(source.Translate(_(", but %s mysteriously dematerialized.")), info->nick2.c_str());
+				onlinestatus = Warden::Format(source.Translate(_(", but %s mysteriously dematerialized.")), info->nick2.c_str());
 
 			source.Reply(_("%s (%s) was last seen changing nick to %s %s ago%s"),
 				target.c_str(), info->vhost.c_str(), info->nick2.c_str(), timebuf.c_str(), onlinestatus.c_str());
@@ -341,7 +342,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -361,7 +362,7 @@ class CSSeen final
 	CommandSeen commandseen;
 	CommandOSSeen commandosseen;
 public:
-	CSSeen(const Anope::string &modname, const Anope::string &creator)
+	CSSeen(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandseen(this)
 		, commandosseen(this)
@@ -380,9 +381,9 @@ public:
 			auto cur = it;
 			++it;
 
-			if ((Anope::CurTime - cur->second->last) > purgetime)
+			if ((Warden::CurTime - cur->second->last) > purgetime)
 			{
-				Log(LOG_DEBUG) << cur->first << " was last seen " << Anope::strftime(cur->second->last) << ", purging entries";
+				Log(LOG_DEBUG) << cur->first << " was last seen " << Warden::strftime(cur->second->last) << ", purging entries";
 				delete cur->second;
 			}
 		}
@@ -395,13 +396,13 @@ public:
 			UpdateUser(u, NEW, u->nick, "", "", "");
 	}
 
-	void OnUserNickChange(User *u, const Anope::string &oldnick) override
+	void OnUserNickChange(User *u, const Warden::string &oldnick) override
 	{
 		UpdateUser(u, NICK_TO, oldnick, u->nick, "", "");
 		UpdateUser(u, NICK_FROM, u->nick, oldnick, "", "");
 	}
 
-	void OnUserQuit(User *u, const Anope::string &msg) override
+	void OnUserQuit(User *u, const Warden::string &msg) override
 	{
 		UpdateUser(u, QUIT, u->nick, "", "", msg);
 	}
@@ -411,18 +412,18 @@ public:
 		UpdateUser(u, JOIN, u->nick, "", c->name, "");
 	}
 
-	void OnPartChannel(User *u, Channel *c, const Anope::string &channel, const Anope::string &msg) override
+	void OnPartChannel(User *u, Channel *c, const Warden::string &channel, const Warden::string &msg) override
 	{
 		UpdateUser(u, PART, u->nick, "", channel, msg);
 	}
 
-	void OnPreUserKicked(const MessageSource &source, Membership *memb, const Anope::string &msg) override
+	void OnPreUserKicked(const MessageSource &source, Membership *memb, const Warden::string &msg) override
 	{
 		UpdateUser(memb->user, KICK, memb->user->nick, source.GetSource(), memb->chan->name, msg);
 	}
 
 private:
-	static void UpdateUser(const User *u, const TypeInfo Type, const Anope::string &nick, const Anope::string &nick2, const Anope::string &channel, const Anope::string &message)
+	static void UpdateUser(const User *u, const TypeInfo Type, const Warden::string &nick, const Warden::string &nick2, const Warden::string &channel, const Warden::string &message)
 	{
 		if (!u->server->IsSynced())
 			return;
@@ -433,7 +434,7 @@ private:
 		info->nick = nick;
 		info->vhost = u->GetVIdent() + "@" + u->GetDisplayedHost();
 		info->type = Type;
-		info->last = Anope::CurTime;
+		info->last = Warden::CurTime;
 		info->nick2 = nick2;
 		info->channel = channel;
 		info->message = message;

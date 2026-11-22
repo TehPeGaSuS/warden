@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,16 +19,16 @@ class CommandNSSetKeepModes
 	: public Command
 {
 public:
-	CommandNSSetKeepModes(Module *creator, const Anope::string &sname = "nickserv/set/keepmodes", size_t min = 1)
+	CommandNSSetKeepModes(Module *creator, const Warden::string &sname = "nickserv/set/keepmodes", size_t min = 1)
 		: Command(creator, sname, min, min + 1)
 	{
 		this->SetDesc(_("Configure keeping user modes set across connections"));
 		this->SetSyntax("{ON | OFF}");
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -62,12 +63,12 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params[0]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -91,12 +92,12 @@ public:
 		this->SetSyntax(_("\037nickname\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params[1]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -120,7 +121,7 @@ private:
 	struct KeepModes final
 		: SerializableExtensibleItem<bool>
 	{
-		KeepModes(Module *m, const Anope::string &n) : SerializableExtensibleItem<bool>(m, n) { }
+		KeepModes(Module *m, const Warden::string &n) : SerializableExtensibleItem<bool>(m, n) { }
 
 		void ExtensibleSerialize(const Extensible *e, const Serializable *s, Serialize::Data &data) const override
 		{
@@ -129,8 +130,8 @@ private:
 			if (s->GetSerializableType()->GetName() != NICKCORE_TYPE)
 				return;
 
-			const auto *nc = anope_dynamic_static_cast<const NickCore *>(s);
-			Anope::string modes;
+			const auto *nc = warden_dynamic_static_cast<const NickCore *>(s);
+			Warden::string modes;
 			for (const auto &[last_mode, last_data] : nc->last_modes)
 			{
 				if (!modes.empty())
@@ -140,7 +141,7 @@ private:
 				modes += last_mode;
 				if (!last_data.value.empty())
 				{
-					modes += "," + Anope::ToString(last_data.set_at);
+					modes += "," + Warden::ToString(last_data.set_at);
 					modes += "," + last_data.set_by;
 					modes += "," + last_data.value;
 				}
@@ -155,11 +156,11 @@ private:
 			if (s->GetSerializableType()->GetName() != NICKCORE_TYPE)
 				return;
 
-			auto *nc = anope_dynamic_static_cast<NickCore *>(s);
+			auto *nc = warden_dynamic_static_cast<NickCore *>(s);
 			nc->last_modes.clear();
 
 			spacesepstream sep(data.Load("last_modes"));
-			for (Anope::string modes; sep.GetToken(modes);)
+			for (Warden::string modes; sep.GetToken(modes);)
 			{
 				if (modes[0] == '+')
 				{
@@ -168,9 +169,9 @@ private:
 					modes.erase(0, 1);
 
 					ModeData info;
-					Anope::string set_at;
+					Warden::string set_at;
 					mode.GetToken(set_at);
-					info.set_at = Anope::Convert(set_at, 0);
+					info.set_at = Warden::Convert(set_at, 0);
 					mode.GetToken(info.set_by);
 					info.value = mode.GetRemaining();
 
@@ -181,7 +182,7 @@ private:
 				{
 					// Begin 2.0 compatibility.
 					size_t c = modes.find(',');
-					if (c == Anope::string::npos)
+					if (c == Warden::string::npos)
 						nc->last_modes.emplace(modes, ModeData());
 					else
 						nc->last_modes.emplace(modes.substr(0, c), ModeData(modes.substr(c + 1)));
@@ -192,7 +193,7 @@ private:
 	} keep_modes;
 
 public:
-	NSSetKeepModes(const Anope::string &modname, const Anope::string &creator)
+	NSSetKeepModes(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnssetkeepmodes(this)
 		, commandnssasetkeepmodes(this)
@@ -209,13 +210,13 @@ public:
 			info.AddOption(_("Keep modes"));
 	}
 
-	void OnUserModeSet(const MessageSource &setter, User *u, const Anope::string &mname) override
+	void OnUserModeSet(const MessageSource &setter, User *u, const Warden::string &mname) override
 	{
 		if (u->IsIdentified() && setter.GetUser() == u)
 			u->Account()->last_modes = u->GetModeList();
 	}
 
-	void OnUserModeUnset(const MessageSource &setter, User *u, const Anope::string &mname) override
+	void OnUserModeUnset(const MessageSource &setter, User *u, const Warden::string &mname) override
 	{
 		if (u->IsIdentified() && setter.GetUser() == u)
 			u->Account()->last_modes = u->GetModeList();
@@ -225,12 +226,12 @@ public:
 	{
 		if (keep_modes.HasExt(u->Account()))
 		{
-			const auto norestore = Config->GetModule(this).Get<const Anope::string>("norestore");
+			const auto norestore = Config->GetModule(this).Get<const Warden::string>("norestore");
 			User::ModeList modes = u->Account()->last_modes;
 			for (const auto &[last_mode, last_data] : modes)
 			{
 				auto *um = ModeManager::FindUserModeByName(last_mode);
-				if (um && um->CanSet(nullptr, u) && norestore.find(um->mchar) == Anope::string::npos)
+				if (um && um->CanSet(nullptr, u) && norestore.find(um->mchar) == Warden::string::npos)
 					u->SetMode(nullptr, last_mode, last_data);
 			}
 		}

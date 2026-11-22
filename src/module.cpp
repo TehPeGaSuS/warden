@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -22,15 +23,15 @@
 # include <libintl.h>
 #endif
 
-Module::Module(const Anope::string &modname, const Anope::string &, ModType modtype) : name(modname), type(modtype)
+Module::Module(const Warden::string &modname, const Warden::string &, ModType modtype) : name(modname), type(modtype)
 {
 	this->handle = NULL;
 	this->permanent = false;
-	this->created = Anope::CurTime;
-	this->SetVersion(Anope::Version());
+	this->created = Warden::CurTime;
+	this->SetVersion(Warden::Version());
 
 	if (type & VENDOR)
-		this->SetAuthor("Anope");
+		this->SetAuthor("Warden");
 	else
 	{
 		/* Not vendor implies third */
@@ -41,10 +42,10 @@ Module::Module(const Anope::string &modname, const Anope::string &, ModType modt
 	if (ModuleManager::FindModule(this->name))
 		throw CoreException("Module already exists!");
 
-	if (Anope::NoDB && type & DATABASE)
+	if (Warden::NoDB && type & DATABASE)
 		throw ModuleException("Database modules may not be loaded");
 
-	if (Anope::NoThird && type & THIRD)
+	if (Warden::NoThird && type & THIRD)
 		throw ModuleException("Third party modules may not be loaded");
 
 	ModuleManager::Modules.push_back(this);
@@ -53,13 +54,13 @@ Module::Module(const Anope::string &modname, const Anope::string &, ModType modt
 	for (const auto &language : Language::Languages)
 	{
 		/* Remove .UTF-8 or any other suffix */
-		Anope::string lang;
+		Warden::string lang;
 		sepstream(language, '.').GetToken(lang);
 
-		if (Anope::IsFile(Anope::ExpandLocale(lang + "/LC_MESSAGES/" + modname + ".mo")))
+		if (Warden::IsFile(Warden::ExpandLocale(lang + "/LC_MESSAGES/" + modname + ".mo")))
 		{
-			if (!bindtextdomain(this->name.c_str(), Anope::LocaleDir.c_str()))
-				Log() << "Error calling bindtextdomain, " << Anope::LastError();
+			if (!bindtextdomain(this->name.c_str(), Warden::LocaleDir.c_str()))
+				Log() << "Error calling bindtextdomain, " << Warden::LastError();
 			else
 			{
 				Log() << "Found language file " << lang << " for " << modname;
@@ -102,12 +103,12 @@ bool Module::GetPermanent() const
 	return this->permanent;
 }
 
-void Module::SetVersion(const Anope::string &nversion)
+void Module::SetVersion(const Warden::string &nversion)
 {
 	this->version = nversion;
 }
 
-void Module::SetAuthor(const Anope::string &nauthor)
+void Module::SetAuthor(const Warden::string &nauthor)
 {
 	this->author = nauthor;
 }

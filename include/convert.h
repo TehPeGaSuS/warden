@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,14 +17,14 @@
 
 #include <optional>
 
-namespace Anope
+namespace Warden
 {
 	/** Attempts to convert a string to any type.
 	 * @param in The value to convert.
 	 * @param leftover If non-nullptr then the location to store leftover data.
 	 */
 	template<typename T>
-	inline std::optional<T> TryConvert(const Anope::string &in, Anope::string *leftover = nullptr)
+	inline std::optional<T> TryConvert(const Warden::string &in, Warden::string *leftover = nullptr)
 	{
 		std::istringstream tmp(in.str());
 		T out;
@@ -50,7 +51,7 @@ namespace Anope
 	 * @param leftover If non-nullptr then the location to store leftover data.
 	 */
 	template<typename T>
-	inline T Convert(const Anope::string &in, T def, Anope::string *leftover = nullptr)
+	inline T Convert(const Warden::string &in, T def, Warden::string *leftover = nullptr)
 	{
 		return TryConvert<T>(in, leftover).value_or(def);
 	}
@@ -59,7 +60,7 @@ namespace Anope
 	 * @param in The value to convert.
 	 */
 	template <class T>
-	inline std::optional<Anope::string> TryString(const T &in)
+	inline std::optional<Warden::string> TryString(const T &in)
 	{
 		std::ostringstream tmp;
 		if (!(tmp << in))
@@ -130,6 +131,6 @@ namespace Anope
 	template <class T>
 	inline std::enable_if_t<!std::is_arithmetic_v<T>, string> ToString(const T &in)
 	{
-		return TryString(in).value_or(Anope::string());
+		return TryString(in).value_or(Warden::string());
 	}
 }

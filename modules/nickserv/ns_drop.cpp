@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,7 +19,7 @@ class CommandNSDrop final
 	: public Command
 {
 private:
-	PrimitiveExtensibleItem<Anope::string> dropcode;
+	PrimitiveExtensibleItem<Warden::string> dropcode;
 
 public:
 	CommandNSDrop(Module *creator)
@@ -29,11 +30,11 @@ public:
 		this->SetDesc(_("Cancel the registration of a nickname"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &nick = params[0];
+		const Warden::string &nick = params[0];
 
-		if (Anope::ReadOnly && !source.HasPriv("nickserv/drop"))
+		if (Warden::ReadOnly && !source.HasPriv("nickserv/drop"))
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -71,8 +72,8 @@ public:
 		{
 			if (!code)
 			{
-				code = na->Extend<Anope::string>("nickname-dropcode");
-				*code = Anope::Random(Config->GetBlock("options").Get<size_t>("codelength", "15"));
+				code = na->Extend<Warden::string>("nickname-dropcode");
+				*code = Warden::Random(Config->GetBlock("options").Get<size_t>("codelength", "15"));
 			}
 
 			source.Reply(CONFIRM_DROP, na->nick.c_str(), source.service->GetQueryCommand("nickserv/drop").c_str(),
@@ -88,7 +89,7 @@ public:
 		source.Reply(_("Nickname \002%s\002 has been dropped."), nick.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -123,7 +124,7 @@ class NSDrop final
 	CommandNSDrop commandnsdrop;
 
 public:
-	NSDrop(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	NSDrop(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandnsdrop(this)
 	{
 

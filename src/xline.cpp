@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,15 +25,15 @@
 
 /* List of XLine managers we check users against in XLineManager::CheckAll */
 std::list<XLineManager *> XLineManager::XLineManagers;
-Serialize::Checker<std::multimap<Anope::string, XLine *, ci::less> > XLineManager::XLinesByUID(XLINE_TYPE);
+Serialize::Checker<std::multimap<Warden::string, XLine *, ci::less> > XLineManager::XLinesByUID(XLINE_TYPE);
 
 void XLine::Init()
 {
-	if (this->mask.length() >= 2 && this->mask[0] == '/' && this->mask[this->mask.length() - 1] == '/' && !Config->GetBlock("options").Get<const Anope::string>("regexengine").empty())
+	if (this->mask.length() >= 2 && this->mask[0] == '/' && this->mask[this->mask.length() - 1] == '/' && !Config->GetBlock("options").Get<const Warden::string>("regexengine").empty())
 	{
-		Anope::string stripped_mask = this->mask.substr(1, this->mask.length() - 2);
+		Warden::string stripped_mask = this->mask.substr(1, this->mask.length() - 2);
 
-		ServiceReference<RegexProvider> provider("Regex", Config->GetBlock("options").Get<const Anope::string>("regexengine"));
+		ServiceReference<RegexProvider> provider("Regex", Config->GetBlock("options").Get<const Warden::string>("regexengine"));
 		if (provider)
 		{
 			try
@@ -47,38 +48,38 @@ void XLine::Init()
 	}
 
 	size_t nick_t = this->mask.find('!');
-	if (nick_t != Anope::string::npos)
+	if (nick_t != Warden::string::npos)
 		nick = this->mask.substr(0, nick_t);
 
 	size_t user_t = this->mask.find('!'), host_t = this->mask.find('@');
-	if (host_t != Anope::string::npos)
+	if (host_t != Warden::string::npos)
 	{
-		if (user_t != Anope::string::npos && host_t > user_t)
+		if (user_t != Warden::string::npos && host_t > user_t)
 			user = this->mask.substr(user_t + 1, host_t - user_t - 1);
 		else
 			user = this->mask.substr(0, host_t);
 	}
 
 	size_t real_t = this->mask.find('#');
-	if (host_t != Anope::string::npos)
+	if (host_t != Warden::string::npos)
 	{
-		if (real_t != Anope::string::npos && real_t > host_t)
+		if (real_t != Warden::string::npos && real_t > host_t)
 			host = this->mask.substr(host_t + 1, real_t - host_t - 1);
 		else
 			host = this->mask.substr(host_t + 1);
 	}
 	else
 	{
-		if (real_t != Anope::string::npos)
+		if (real_t != Warden::string::npos)
 			host = this->mask.substr(0, real_t);
 		else
 			host = this->mask;
 	}
 
-	if (real_t != Anope::string::npos)
+	if (real_t != Warden::string::npos)
 		real = this->mask.substr(real_t + 1);
 
-	if (host.find('/') != Anope::string::npos)
+	if (host.find('/') != Warden::string::npos)
 	{
 		c = new cidr(host);
 		if (!c->valid())
@@ -89,7 +90,7 @@ void XLine::Init()
 	}
 }
 
-XLine::XLine(const Anope::string &ma, const Anope::string &r, const Anope::string &uid)
+XLine::XLine(const Warden::string &ma, const Warden::string &r, const Warden::string &uid)
 	: Serializable(XLINE_TYPE)
 	, mask(ma)
 	, by(Me->GetName())
@@ -103,11 +104,11 @@ XLine::XLine(const Anope::string &ma, const Anope::string &r, const Anope::strin
 	this->Init();
 }
 
-XLine::XLine(const Anope::string &ma, const Anope::string &b, const time_t ex, const Anope::string &r, const Anope::string &uid)
+XLine::XLine(const Warden::string &ma, const Warden::string &b, const time_t ex, const Warden::string &r, const Warden::string &uid)
 	: Serializable(XLINE_TYPE)
 	, mask(ma)
 	, by(b)
-	, created(Anope::CurTime)
+	, created(Warden::CurTime)
 	, expires(ex)
 	, reason(r)
 	, id(uid)
@@ -128,29 +129,29 @@ XLine::~XLine()
 	delete c;
 }
 
-const Anope::string &XLine::GetNick() const
+const Warden::string &XLine::GetNick() const
 {
 	return nick;
 }
 
-const Anope::string &XLine::GetUser() const
+const Warden::string &XLine::GetUser() const
 {
 	return user;
 }
 
-const Anope::string &XLine::GetHost() const
+const Warden::string &XLine::GetHost() const
 {
 	return host;
 }
 
-const Anope::string &XLine::GetReal() const
+const Warden::string &XLine::GetReal() const
 {
 	return real;
 }
 
-Anope::string XLine::GetReason() const
+Warden::string XLine::GetReason() const
 {
-	Anope::string r = this->reason;
+	Warden::string r = this->reason;
 	if (!this->id.empty())
 		r += " (ID: " + this->id + ")";
 	return r;
@@ -194,7 +195,7 @@ Serializable *XLine::Type::Unserialize(Serializable *obj, Serialize::Data &data)
 	XLine *xl;
 	if (obj)
 	{
-		xl = anope_dynamic_static_cast<XLine *>(obj);
+		xl = warden_dynamic_static_cast<XLine *>(obj);
 		xl->mask = data.Load("mask");
 		xl->by = data.Load("by");
 		xl->reason = data.Load("reason");
@@ -241,9 +242,9 @@ void XLineManager::CheckAll(User *u)
 	}
 }
 
-Anope::string XLineManager::GenerateUID()
+Warden::string XLineManager::GenerateUID()
 {
-	Anope::string id;
+	Warden::string id;
 	int count = 0;
 	do
 	{
@@ -259,7 +260,7 @@ Anope::string XLineManager::GenerateUID()
 		{
 			char c;
 			do
-				c = (Anope::RandomNumber() % 75) + 48;
+				c = (Warden::RandomNumber() % 75) + 48;
 			while (!isupper(c) && !isdigit(c));
 			id += c;
 		}
@@ -269,7 +270,7 @@ Anope::string XLineManager::GenerateUID()
 	return id;
 }
 
-XLineManager::XLineManager(Module *creator, const Anope::string &xname, char t)
+XLineManager::XLineManager(Module *creator, const Warden::string &xname, char t)
 	: Service(creator, "XLineManager", xname)
 	, type(t)
 	, xlines(XLINE_TYPE)
@@ -380,7 +381,7 @@ void XLineManager::Clear()
 	}
 }
 
-bool XLineManager::CanAdd(CommandSource &source, const Anope::string &mask, time_t expires, const Anope::string &reason)
+bool XLineManager::CanAdd(CommandSource &source, const Warden::string &mask, time_t expires, const Warden::string &reason)
 {
 	for (unsigned i = this->GetCount(); i > 0; --i)
 	{
@@ -412,12 +413,12 @@ bool XLineManager::CanAdd(CommandSource &source, const Anope::string &mask, time
 
 			return false;
 		}
-		else if (Anope::Match(mask, x->mask) && (!x->expires || x->expires >= expires))
+		else if (Warden::Match(mask, x->mask) && (!x->expires || x->expires >= expires))
 		{
 			source.Reply(_("%s is already covered by %s."), mask.c_str(), x->mask.c_str());
 			return false;
 		}
-		else if (Anope::Match(x->mask, mask) && (!expires || x->expires <= expires))
+		else if (Warden::Match(x->mask, mask) && (!expires || x->expires <= expires))
 		{
 			source.Reply(_("Removing %s because %s covers it."), x->mask.c_str(), mask.c_str());
 			this->DelXLine(x);
@@ -427,7 +428,7 @@ bool XLineManager::CanAdd(CommandSource &source, const Anope::string &mask, time
 	return true;
 }
 
-XLine *XLineManager::HasEntry(const Anope::string &mask)
+XLine *XLineManager::HasEntry(const Warden::string &mask)
 {
 	auto it = XLinesByUID->find(mask);
 	if (it != XLinesByUID->end())
@@ -455,7 +456,7 @@ XLine *XLineManager::CheckAllXLines(User *u)
 	{
 		XLine *x = this->xlines->at(i - 1);
 
-		if (x->expires && x->expires < Anope::CurTime)
+		if (x->expires && x->expires < Warden::CurTime)
 		{
 			this->OnExpire(x);
 			this->DelXLine(x);

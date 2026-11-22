@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,7 +19,7 @@ class EPOSIX final
 	: public Module
 {
 public:
-	EPOSIX(const Anope::string &modname, const Anope::string &creator)
+	EPOSIX(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, ENCRYPTION | VENDOR)
 	{
 		if (ModuleManager::FindFirstOf(ENCRYPTION) == this)
@@ -33,20 +34,20 @@ public:
 
 		NickCore *nc = na->nc;
 		auto pos = nc->pass.find(':');
-		if (pos == Anope::string::npos)
+		if (pos == Warden::string::npos)
 			return;
 
-		Anope::string hash_method(nc->pass.begin(), nc->pass.begin() + pos);
+		Warden::string hash_method(nc->pass.begin(), nc->pass.begin() + pos);
 		if (!hash_method.equals_cs("posix"))
 			return;
 
-		Anope::string pass_hash(nc->pass.begin() + pos + 1, nc->pass.end());
+		Warden::string pass_hash(nc->pass.begin() + pos + 1, nc->pass.end());
 		if (pass_hash.equals_cs(crypt(req->GetPassword().c_str(), pass_hash.c_str())))
 		{
 			// If we are NOT the first encryption module we want to re-encrypt
 			// the password with the primary encryption method.
 			if (ModuleManager::FindFirstOf(ENCRYPTION) != this)
-				Anope::Encrypt(req->GetPassword(), nc->pass);
+				Warden::Encrypt(req->GetPassword(), nc->pass);
 			req->Success(this, na);
 		}
 	}

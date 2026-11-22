@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,12 +19,12 @@ class CommandBSBot final
 	: public Command
 {
 private:
-	void DoAdd(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoAdd(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &nick = params[1];
-		const Anope::string &user = params[2];
-		const Anope::string &host = params[3];
-		const Anope::string &real = params[4];
+		const Warden::string &nick = params[1];
+		const Warden::string &user = params[2];
+		const Warden::string &host = params[3];
+		const Warden::string &real = params[4];
 
 		if (BotInfo::Find(nick, true))
 		{
@@ -93,13 +94,13 @@ private:
 		FOREACH_MOD(OnBotCreate, (bi));
 	}
 
-	void DoChange(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoChange(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &oldnick = params[1];
-		const Anope::string &nick = params.size() > 2 ? params[2] : "";
-		const Anope::string &user = params.size() > 3 ? params[3] : "";
-		const Anope::string &host = params.size() > 4 ? params[4] : "";
-		const Anope::string &real = params.size() > 5 ? params[5] : "";
+		const Warden::string &oldnick = params[1];
+		const Warden::string &nick = params.size() > 2 ? params[2] : "";
+		const Warden::string &user = params.size() > 3 ? params[3] : "";
+		const Warden::string &host = params.size() > 4 ? params[4] : "";
+		const Warden::string &real = params.size() > 5 ? params[5] : "";
 
 		if (oldnick.empty() || nick.empty())
 		{
@@ -231,9 +232,9 @@ private:
 		FOREACH_MOD(OnBotChange, (bi));
 	}
 
-	void DoDel(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoDel(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &nick = params[1];
+		const Warden::string &nick = params[1];
 
 		if (nick.empty())
 		{
@@ -270,11 +271,11 @@ public:
 		this->SetSyntax(_("\002DEL \037nick\037\002"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[0];
+		const Warden::string &cmd = params[0];
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -295,7 +296,7 @@ public:
 				return;
 			}
 
-			std::vector<Anope::string> tempparams = params;
+			std::vector<Warden::string> tempparams = params;
 			// ADD takes less params than CHANGE, so we need to take 6 if given and append it with a space to 5.
 			if (tempparams.size() >= 6)
 				tempparams[4] = tempparams[4] + " " + tempparams[5];
@@ -341,7 +342,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -395,7 +396,7 @@ class BSBot final
 	CommandBSBot commandbsbot;
 
 public:
-	BSBot(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	BSBot(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandbsbot(this)
 	{
 

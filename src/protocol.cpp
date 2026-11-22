@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,7 +26,7 @@
 
 IRCDProto *IRCD = NULL;
 
-IRCDProto::IRCDProto(Module *creator, const Anope::string &p)
+IRCDProto::IRCDProto(Module *creator, const Warden::string &p)
 	: Service(creator, "IRCDProto", creator->name)
 	, proto_name(p)
 	, MaxChannel(Config->GetBlock("networkinfo").Get<unsigned>("chanlen", "32"))
@@ -43,7 +44,7 @@ IRCDProto::~IRCDProto()
 		IRCD = NULL;
 }
 
-static inline char nextID(int pos, Anope::string &buf)
+static inline char nextID(int pos, Warden::string &buf)
 {
 	char &c = buf[pos];
 	if (c == 'Z')
@@ -57,12 +58,12 @@ static inline char nextID(int pos, Anope::string &buf)
 	return c;
 }
 
-Anope::string IRCDProto::UID_Retrieve()
+Warden::string IRCDProto::UID_Retrieve()
 {
 	if (!IRCD || !IRCD->RequiresID)
 		return "";
 
-	static Anope::string current_uid = "AAAAAA";
+	static Warden::string current_uid = "AAAAAA";
 
 	do
 	{
@@ -74,12 +75,12 @@ Anope::string IRCDProto::UID_Retrieve()
 	return Me->GetSID() + current_uid;
 }
 
-Anope::string IRCDProto::SID_Retrieve()
+Warden::string IRCDProto::SID_Retrieve()
 {
 	if (!IRCD || !IRCD->RequiresID)
 		return "";
 
-	static Anope::string current_sid = Config->GetBlock("serverinfo").Get<const Anope::string>("id");
+	static Warden::string current_sid = Config->GetBlock("serverinfo").Get<const Warden::string>("id");
 	if (current_sid.empty())
 		current_sid = "00A";
 
@@ -93,36 +94,36 @@ Anope::string IRCDProto::SID_Retrieve()
 	return current_sid;
 }
 
-time_t IRCDProto::ExtractTimestamp(const Anope::string &str)
+time_t IRCDProto::ExtractTimestamp(const Warden::string &str)
 {
-	auto ts = Anope::TryConvert<time_t>(str);
+	auto ts = Warden::TryConvert<time_t>(str);
 	if (!ts.has_value())
 		throw ProtocolException("Invalid timestamp: " + str);
 	return ts.value();
 }
 
-void IRCDProto::SendError(const Anope::string &reason)
+void IRCDProto::SendError(const Warden::string &reason)
 {
 	Uplink::Send("ERROR", reason);
 }
 
-void IRCDProto::SendKill(const MessageSource &source, const Anope::string &target, const Anope::string &reason)
+void IRCDProto::SendKill(const MessageSource &source, const Warden::string &target, const Warden::string &reason)
 {
 	Uplink::Send(source, "KILL", target, reason);
 }
 
-void IRCDProto::SendSVSKill(const MessageSource &source, User *user, const Anope::string &buf)
+void IRCDProto::SendSVSKill(const MessageSource &source, User *user, const Warden::string &buf)
 {
 	Uplink::Send(source, "KILL", user->GetUID(), buf);
 }
 
 static auto BuildModeChange(const ModeManager::Change &change)
 {
-	std::list<std::pair<Anope::string, std::vector<Anope::string>>> modes;
+	std::list<std::pair<Warden::string, std::vector<Warden::string>>> modes;
 
-	Anope::string modebuf;
+	Warden::string modebuf;
 	size_t modecount = 0;
-	std::vector<Anope::string> parambuf;
+	std::vector<Warden::string> parambuf;
 	size_t paramlen = 0;
 
 	auto adding = true;
@@ -171,7 +172,7 @@ void IRCDProto::SendMode(const MessageSource &source, Channel *chan, const ModeM
 		IRCD->SendModeInternal(source, chan, modes, params);
 }
 
-void IRCDProto::SendModeInternal(const MessageSource &source, Channel *chan, const Anope::string &modes, const std::vector<Anope::string> &values)
+void IRCDProto::SendModeInternal(const MessageSource &source, Channel *chan, const Warden::string &modes, const std::vector<Warden::string> &values)
 {
 	auto params = values;
 	params.insert(params.begin(), { chan->name, modes });
@@ -184,14 +185,14 @@ void IRCDProto::SendMode(const MessageSource &source, User *dest, const ModeMana
 		IRCD->SendModeInternal(source, dest, modes, params);
 }
 
-void IRCDProto::SendModeInternal(const MessageSource &source, User *dest, const Anope::string &modes, const std::vector<Anope::string> &values)
+void IRCDProto::SendModeInternal(const MessageSource &source, User *dest, const Warden::string &modes, const std::vector<Warden::string> &values)
 {
 	auto params = values;
 	params.insert(params.begin(), { dest->GetUID(), modes });
 	Uplink::SendInternal({}, source, "MODE", params);
 }
 
-void IRCDProto::SendKick(const MessageSource &source, const Channel *c, User *u, const Anope::string &r)
+void IRCDProto::SendKick(const MessageSource &source, const Channel *c, User *u, const Warden::string &r)
 {
 	if (!r.empty())
 		Uplink::Send(source, "KICK", c->name, u->GetUID(), r);
@@ -199,23 +200,23 @@ void IRCDProto::SendKick(const MessageSource &source, const Channel *c, User *u,
 		Uplink::Send(source, "KICK", c->name, u->GetUID());
 }
 
-void IRCDProto::SendNotice(const MessageSource &source, const Anope::string &dest, const Anope::string &msg, const Anope::map<Anope::string> &tags)
+void IRCDProto::SendNotice(const MessageSource &source, const Warden::string &dest, const Warden::string &msg, const Warden::map<Warden::string> &tags)
 {
 	Uplink::Send(tags, source, "NOTICE", dest, msg.empty() ? " " : msg);
 }
 
-void IRCDProto::SendPrivmsg(const MessageSource &source, const Anope::string &dest, const Anope::string &msg, const Anope::map<Anope::string> &tags)
+void IRCDProto::SendPrivmsg(const MessageSource &source, const Warden::string &dest, const Warden::string &msg, const Warden::map<Warden::string> &tags)
 {
 	Uplink::Send(tags, source, "PRIVMSG", dest, msg.empty() ? " " : msg);
 }
 
-void IRCDProto::SendTagmsg(const MessageSource &source, const Anope::string &dest, const Anope::map<Anope::string> &tags)
+void IRCDProto::SendTagmsg(const MessageSource &source, const Warden::string &dest, const Warden::map<Warden::string> &tags)
 {
 	if (CanTagMessage)
 		Uplink::Send(tags, source, "TAGMSG", dest);
 }
 
-void IRCDProto::SendQuit(User *u, const Anope::string &buf, const Anope::string &operbuf)
+void IRCDProto::SendQuit(User *u, const Warden::string &buf, const Warden::string &operbuf)
 {
 	if (!buf.empty())
 		Uplink::Send(u, "QUIT", buf);
@@ -223,7 +224,7 @@ void IRCDProto::SendQuit(User *u, const Anope::string &buf, const Anope::string 
 		Uplink::Send(u, "QUIT");
 }
 
-void IRCDProto::SendPart(User *u, const Channel *chan, const Anope::string &buf)
+void IRCDProto::SendPart(User *u, const Channel *chan, const Warden::string &buf)
 {
 	if (!buf.empty())
 		Uplink::Send(u, "PART", chan->name, buf);
@@ -231,14 +232,14 @@ void IRCDProto::SendPart(User *u, const Channel *chan, const Anope::string &buf)
 		Uplink::Send(u, "PART", chan->name);
 }
 
-void IRCDProto::SendGlobops(const MessageSource &source, const Anope::string &message)
+void IRCDProto::SendGlobops(const MessageSource &source, const Warden::string &message)
 {
 	Uplink::Send(source, "GLOBOPS", message);
 }
 
-void IRCDProto::SendNumericInternal(unsigned numeric, const Anope::string &dest, const std::vector<Anope::string> &params)
+void IRCDProto::SendNumericInternal(unsigned numeric, const Warden::string &dest, const std::vector<Warden::string> &params)
 {
-	Anope::string n = Anope::ToString(numeric);
+	Warden::string n = Warden::ToString(numeric);
 	if (numeric < 10)
 		n = "0" + n;
 	if (numeric < 100)
@@ -254,7 +255,7 @@ void IRCDProto::SendTopic(const MessageSource &source, Channel *c)
 	Uplink::Send(source, "TOPIC", c->name, c->topic);
 }
 
-void IRCDProto::SendPing(const Anope::string &servname, const Anope::string &who)
+void IRCDProto::SendPing(const Warden::string &servname, const Warden::string &who)
 {
 	if (servname.empty())
 		Uplink::Send("PING", who);
@@ -268,7 +269,7 @@ void IRCDProto::SendPing(const Anope::string &servname, const Anope::string &who
  * @param servname Daemon or client that is responding to the PING.
  * @param who Origin of the PING and destination of the PONG message.
  **/
-void IRCDProto::SendPong(const Anope::string &servname, const Anope::string &who)
+void IRCDProto::SendPong(const Warden::string &servname, const Warden::string &who)
 {
 	if (servname.empty())
 		Uplink::Send("PONG", who);
@@ -281,22 +282,22 @@ void IRCDProto::SendInvite(const MessageSource &source, const Channel *c, User *
 	Uplink::Send(source, "INVITE", u->GetUID(), c->name);
 }
 
-void IRCDProto::SendSquit(Server *s, const Anope::string &message)
+void IRCDProto::SendSquit(Server *s, const Warden::string &message)
 {
 	Uplink::Send("SQUIT", s->GetSID(), message);
 }
 
-void IRCDProto::SendNickChange(User *u, const Anope::string &newnick)
+void IRCDProto::SendNickChange(User *u, const Warden::string &newnick)
 {
-	Uplink::Send(u, "NICK", newnick, Anope::CurTime);
+	Uplink::Send(u, "NICK", newnick, Warden::CurTime);
 }
 
-void IRCDProto::SendForceNickChange(User *u, const Anope::string &newnick, time_t when)
+void IRCDProto::SendForceNickChange(User *u, const Warden::string &newnick, time_t when)
 {
 	Uplink::Send("SVSNICK", u->GetUID(), newnick, when);
 }
 
-bool IRCDProto::IsNickValid(const Anope::string &nick)
+bool IRCDProto::IsNickValid(const Warden::string &nick)
 {
 	/**
 	 * RFC: definition of a valid nick
@@ -309,30 +310,30 @@ bool IRCDProto::IsNickValid(const Anope::string &nick)
 	 if (nick.empty())
 		return false;
 
-	Anope::string special = "[]\\`_^{|}";
+	Warden::string special = "[]\\`_^{|}";
 
 	for (unsigned i = 0; i < nick.length(); ++i)
 		if ((nick[i] < 'A' || nick[i] > 'Z') && (nick[i] < 'a' || nick[i] > 'z')
-		  && special.find(nick[i]) == Anope::string::npos
-		  && (Config && Config->NickChars.find(nick[i]) == Anope::string::npos)
+		  && special.find(nick[i]) == Warden::string::npos
+		  && (Config && Config->NickChars.find(nick[i]) == Warden::string::npos)
 		  && (!i || ((nick[i] < '0' || nick[i] > '9') && nick[i] != '-')))
 			return false;
 
 	return true;
 }
 
-bool IRCDProto::IsChannelValid(const Anope::string &chan)
+bool IRCDProto::IsChannelValid(const Warden::string &chan)
 {
 	if (chan.empty() || chan[0] != '#' || chan.length() > IRCD->MaxChannel)
 		return false;
 
-	if (chan.find_first_of(" ,") != Anope::string::npos)
+	if (chan.find_first_of(" ,") != Warden::string::npos)
 		return false;
 
 	return true;
 }
 
-bool IRCDProto::IsIdentValid(const Anope::string &ident)
+bool IRCDProto::IsIdentValid(const Warden::string &ident)
 {
 	if (ident.empty() || ident.length() > IRCD->MaxUser)
 		return false;
@@ -348,18 +349,18 @@ bool IRCDProto::IsIdentValid(const Anope::string &ident)
 	return true;
 }
 
-bool IRCDProto::IsHostValid(const Anope::string &host)
+bool IRCDProto::IsHostValid(const Warden::string &host)
 {
 	if (host.empty() || host.length() > IRCD->MaxHost)
 		return false;
 
 	const auto &block = Config->GetBlock("networkinfo");
-	const auto &vhostdisablebe = block.Get<const Anope::string>("disallow_start_or_end", ".-/");
-	const auto &vhostchars = block.Get<const Anope::string>("vhost_chars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-/");
+	const auto &vhostdisablebe = block.Get<const Warden::string>("disallow_start_or_end", ".-/");
+	const auto &vhostchars = block.Get<const Warden::string>("vhost_chars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-/");
 
-	if (vhostdisablebe.find_first_of(host[0]) != Anope::string::npos)
+	if (vhostdisablebe.find_first_of(host[0]) != Warden::string::npos)
 		return false;
-	else if (vhostdisablebe.find_first_of(host[host.length() - 1]) != Anope::string::npos)
+	else if (vhostdisablebe.find_first_of(host[host.length() - 1]) != Warden::string::npos)
 		return false;
 
 	int dots = 0;
@@ -367,7 +368,7 @@ bool IRCDProto::IsHostValid(const Anope::string &host)
 	{
 		if (chr == '.')
 			++dots;
-		if (vhostchars.find_first_of(chr) == Anope::string::npos)
+		if (vhostchars.find_first_of(chr) == Warden::string::npos)
 			return false;
 	}
 
@@ -385,33 +386,33 @@ size_t IRCDProto::GetMaxListFor(Channel *c, ChannelMode *cm)
 	return c->HasMode("LBAN") ? 0 : Config->GetBlock("networkinfo").Get<size_t>("modelistsize", "100");
 }
 
-Anope::string IRCDProto::NormalizeMask(const Anope::string &mask)
+Warden::string IRCDProto::NormalizeMask(const Warden::string &mask)
 {
 	if (IsExtbanValid(mask))
 		return mask;
 	return Entry(mask).GetCleanMask();
 }
 
-void IRCDProto::SendContextNotice(BotInfo *bi, User *target, Channel *context, const Anope::string &msg, const Anope::map<Anope::string> &tags)
+void IRCDProto::SendContextNotice(BotInfo *bi, User *target, Channel *context, const Warden::string &msg, const Warden::map<Warden::string> &tags)
 {
 	auto newtags = tags;
 	newtags["+channel-context"] = context->name;
-	IRCD->SendNotice(bi, target->GetUID(), Anope::Format("[%s] %s", context->name.c_str(), msg.c_str()), newtags);
+	IRCD->SendNotice(bi, target->GetUID(), Warden::Format("[%s] %s", context->name.c_str(), msg.c_str()), newtags);
 }
 
-void IRCDProto::SendContextPrivmsg(BotInfo *bi, User *target, Channel *context, const Anope::string &msg, const Anope::map<Anope::string> &tags)
+void IRCDProto::SendContextPrivmsg(BotInfo *bi, User *target, Channel *context, const Warden::string &msg, const Warden::map<Warden::string> &tags)
 {
 	auto newtags = tags;
 	newtags["+channel-context"] = context->name;
-	IRCD->SendPrivmsg(bi, target->GetUID(), Anope::Format("[%s] %s", context->name.c_str(), msg.c_str()), newtags);
+	IRCD->SendPrivmsg(bi, target->GetUID(), Warden::Format("[%s] %s", context->name.c_str(), msg.c_str()), newtags);
 }
 
-MessageSource::MessageSource(const Anope::string &src) : source(src)
+MessageSource::MessageSource(const Warden::string &src) : source(src)
 {
 	/* no source for incoming message is our uplink */
 	if (src.empty())
 		this->s = Servers::GetUplink();
-	else if (IRCD->RequiresID || src.find('.') != Anope::string::npos)
+	else if (IRCD->RequiresID || src.find('.') != Warden::string::npos)
 		this->s = Server::Find(src);
 	if (this->s == NULL)
 		this->u = User::Find(src);
@@ -425,7 +426,7 @@ MessageSource::MessageSource(Server *_s) : source(_s ? _s->GetName() : ""), s(_s
 {
 }
 
-const Anope::string &MessageSource::GetName() const
+const Warden::string &MessageSource::GetName() const
 {
 	if (this->s)
 		return this->s->GetName();
@@ -435,7 +436,7 @@ const Anope::string &MessageSource::GetName() const
 		return this->source;
 }
 
-const Anope::string &MessageSource::GetSource() const
+const Warden::string &MessageSource::GetSource() const
 {
 	return this->source;
 }
@@ -455,7 +456,7 @@ Server *MessageSource::GetServer() const
 	return this->s;
 }
 
-IRCDMessage::IRCDMessage(Module *o, const Anope::string &n, size_t pc)
+IRCDMessage::IRCDMessage(Module *o, const Warden::string &n, size_t pc)
 	: Service(o, "IRCDMessage", o->name + "/" + n.lower())
 	, name(n)
 	, param_count(pc)

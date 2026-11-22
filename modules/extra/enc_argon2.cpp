@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -35,15 +36,15 @@ class Argon2Context final
 	: public Encryption::Context
 {
 private:
-	Anope::string buffer;
+	Warden::string buffer;
 	argon2_type type;
 
-	Anope::string GenerateSalt()
+	Warden::string GenerateSalt()
 	{
 		static std::random_device device;
 		static std::mt19937 engine(device());
 		static std::uniform_int_distribution<int> dist(CHAR_MIN, CHAR_MAX);
-		Anope::string saltbuf(this->salt_length, ' ');
+		Warden::string saltbuf(this->salt_length, ' ');
 		for (size_t i = 0; i < this->salt_length; ++i)
 			saltbuf[i] = static_cast<char>(dist(engine));
 		return saltbuf;
@@ -66,7 +67,7 @@ public:
 		buffer.append(reinterpret_cast<const char *>(data), len);
 	}
 
-	Anope::string Finalize() override
+	Warden::string Finalize() override
 	{
 		auto salt = GenerateSalt();
 
@@ -81,7 +82,7 @@ public:
 			ARGON2_VERSION_NUMBER);
 
 		if (result == ARGON2_OK)
-			return Anope::string(digest.data(), digest.size());
+			return Warden::string(digest.data(), digest.size());
 
 		Log(LOG_DEBUG_2) << "Argon2 error: " << argon2_error_message(result);
 		return {};
@@ -107,7 +108,7 @@ public:
 	{
 	}
 
-	bool Compare(const Anope::string &hash, const Anope::string &plain) override
+	bool Compare(const Warden::string &hash, const Warden::string &plain) override
 	{
 		return argon2_verify(hash.c_str(), plain.c_str(), plain.length(), this->type) == ARGON2_OK;
 	}
@@ -117,7 +118,7 @@ public:
 		return std::make_unique<Argon2Context>(this->type);
 	}
 
-	Anope::string ToPrintable(const Anope::string &hash) override
+	Warden::string ToPrintable(const Warden::string &hash) override
 	{
 		// We have no way to make this printable without the creating context
 		// so we always return the printed form.
@@ -134,7 +135,7 @@ private:
 	Argon2Provider argon2iprovider;
 	Argon2Provider argon2idprovider;
 
-	Encryption::Provider *GetAlgorithm(const Anope::string &algorithm)
+	Encryption::Provider *GetAlgorithm(const Warden::string &algorithm)
 	{
 		if (algorithm == "argon2d")
 			return &argon2dprovider;
@@ -145,7 +146,7 @@ private:
 		return nullptr;
 	}
 
-	bool ShouldRehash(Encryption::Provider *provider, const Anope::string &password)
+	bool ShouldRehash(Encryption::Provider *provider, const Warden::string &password)
 	{
 		if (provider != defaultprovider)
 			return true;
@@ -156,27 +157,27 @@ private:
 		if (!std::regex_match(password.str(), matches, pattern))
 			return true; // Unable to determine, assume yes.
 
-		const auto version = Anope::TryConvert<uint32_t>(matches[1].str());
+		const auto version = Warden::TryConvert<uint32_t>(matches[1].str());
 		if (!version || *version != ARGON2_VERSION_NUMBER)
 			return true;
 
-		const auto memory_cost = Anope::TryConvert<uint32_t>(matches[2].str());
+		const auto memory_cost = Warden::TryConvert<uint32_t>(matches[2].str());
 		if (!memory_cost || *memory_cost != Argon2Context::memory_cost)
 			return true;
 
-		const auto time_cost = Anope::TryConvert<uint32_t>(matches[3].str());
+		const auto time_cost = Warden::TryConvert<uint32_t>(matches[3].str());
 		if (!time_cost || *time_cost != Argon2Context::time_cost)
 			return true;
 
-		const auto parallelism = Anope::TryConvert<uint32_t>(matches[4].str());
+		const auto parallelism = Warden::TryConvert<uint32_t>(matches[4].str());
 		if (!parallelism || *parallelism != Argon2Context::parallelism)
 			return true;
 
-		const auto salt = Anope::B64Decode(matches[5].str());
+		const auto salt = Warden::B64Decode(matches[5].str());
 		if (salt.length() != Argon2Context::salt_length)
 			return true;
 
-		const auto hash = Anope::B64Decode(matches[6].str());
+		const auto hash = Warden::B64Decode(matches[6].str());
 		if (hash.length() != Argon2Context::hash_length)
 			return true;
 
@@ -184,7 +185,7 @@ private:
 	}
 
 public:
-	EArgon2(const Anope::string &modname, const Anope::string &creator)
+	EArgon2(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, ENCRYPTION | VENDOR)
 		, argon2dprovider(this, Argon2_d)
 		, argon2iprovider(this, Argon2_i)
@@ -207,7 +208,7 @@ public:
 	void OnReload(Configuration::Conf &conf) override
 	{
 		const auto &block = Config->GetModule(this);
-		this->defaultprovider      = GetAlgorithm(block.Get<const Anope::string>("algorithm", "argon2id"));
+		this->defaultprovider      = GetAlgorithm(block.Get<const Warden::string>("algorithm", "argon2id"));
 		Argon2Context::memory_cost = block.Get<uint32_t>("memory_cost", "131072");
 		Argon2Context::time_cost   = block.Get<uint32_t>("time_cost",   "3");
 		Argon2Context::parallelism = block.Get<uint32_t>("parallelism", "1");
@@ -215,7 +216,7 @@ public:
 		Argon2Context::salt_length = block.Get<uint32_t>("salt_length", "32");
 	}
 
-	EventReturn OnEncrypt(const Anope::string &src, Anope::string &dest) override
+	EventReturn OnEncrypt(const Warden::string &src, Warden::string &dest) override
 	{
 		if (!defaultprovider)
 			return EVENT_CONTINUE;
@@ -236,22 +237,22 @@ public:
 
 		NickCore *nc = na->nc;
 		auto pos = nc->pass.find(':');
-		if (pos == Anope::string::npos)
+		if (pos == Warden::string::npos)
 			return;
 
-		Anope::string hash_method(nc->pass.begin(), nc->pass.begin() + pos);
+		Warden::string hash_method(nc->pass.begin(), nc->pass.begin() + pos);
 		auto provider = GetAlgorithm(hash_method);
 		if (!provider)
 			return; // Not a hash for this module.
 
-		Anope::string hash_value(nc->pass.begin() + pos + 1, nc->pass.end());
+		Warden::string hash_value(nc->pass.begin() + pos + 1, nc->pass.end());
 		if (provider->Compare(hash_value, req->GetPassword()))
 		{
 			// If we are NOT the first encryption module or the algorithm is
 			// different we want to re-encrypt the password with the primary
 			// encryption method.
 			if (ModuleManager::FindFirstOf(ENCRYPTION) != this || ShouldRehash(provider, hash_value))
-				Anope::Encrypt(req->GetPassword(), nc->pass);
+				Warden::Encrypt(req->GetPassword(), nc->pass);
 			req->Success(this, na);
 		}
 	}

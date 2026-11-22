@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -26,12 +27,12 @@ public:
 		this->SetSyntax(_("[+\037expiry\037] \037channel\037 \037reason\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!akills)
 			return;
 
-		Anope::string expiry, channel;
+		Warden::string expiry, channel;
 		unsigned last_param = 1;
 		Channel *c;
 
@@ -43,7 +44,7 @@ public:
 			last_param = 2;
 		}
 
-		time_t expires = !expiry.empty() ? Anope::DoTime(expiry) : Config->GetModule("operserv").Get<time_t>("autokillexpiry", "30d");
+		time_t expires = !expiry.empty() ? Warden::DoTime(expiry) : Config->GetModule("operserv").Get<time_t>("autokillexpiry", "30d");
 		if (!expiry.empty() && isdigit(expiry[expiry.length() - 1]))
 			expires *= 86400;
 		if (expires && expires < 60)
@@ -52,7 +53,7 @@ public:
 			return;
 		}
 		else if (expires > 0)
-			expires += Anope::CurTime;
+			expires += Warden::CurTime;
 
 		if (params.size() <= last_param)
 		{
@@ -60,12 +61,12 @@ public:
 			return;
 		}
 
-		Anope::string reason = params[last_param];
+		Warden::string reason = params[last_param];
 		if (params.size() > last_param + 1)
 			reason += params[last_param + 1];
 		if (!reason.empty())
 		{
-			Anope::string realreason;
+			Warden::string realreason;
 			if (Config->GetModule("operserv").Get<bool>("addakiller") && !source.GetNick().empty())
 				realreason = "[" + source.GetNick() + "] " + reason;
 			else
@@ -78,7 +79,7 @@ public:
 					if (uc->user->server == Me || uc->user->HasMode("OPER"))
 						continue;
 
-					Anope::string akillmask = "*@" + uc->user->host;
+					Warden::string akillmask = "*@" + uc->user->host;
 					if (akills->HasEntry(akillmask))
 						continue;
 
@@ -94,7 +95,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -113,7 +114,7 @@ class OSChanKill final
 	CommandOSChanKill commandoschankill;
 
 public:
-	OSChanKill(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSChanKill(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandoschankill(this)
 	{
 

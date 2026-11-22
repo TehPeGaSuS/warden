@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,10 +25,10 @@ public:
 		this->SetSyntax(_("\037nick\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 
-		const Anope::string &recipient = params[0];
+		const Warden::string &recipient = params[0];
 
 		bool found = false;
 
@@ -53,9 +54,9 @@ public:
 				found = true; /* Yes, we've found the memo */
 
 				if (m->unread)
-					source.Reply(_("The last memo you sent to %s (sent on %s) has not yet been read."), na->nick.c_str(), Anope::strftime(m->time, source.GetAccount()).c_str());
+					source.Reply(_("The last memo you sent to %s (sent on %s) has not yet been read."), na->nick.c_str(), Warden::strftime(m->time, source.GetAccount()).c_str());
 				else
-					source.Reply(_("The last memo you sent to %s (sent on %s) has been read."), na->nick.c_str(), Anope::strftime(m->time, source.GetAccount()).c_str());
+					source.Reply(_("The last memo you sent to %s (sent on %s) has been read."), na->nick.c_str(), Warden::strftime(m->time, source.GetAccount()).c_str());
 				break;
 			}
 		}
@@ -64,7 +65,7 @@ public:
 			source.Reply(_("Nick %s doesn't have a memo from you."), na->nick.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -82,7 +83,7 @@ class MSCheck final
 	CommandMSCheck commandmscheck;
 
 public:
-	MSCheck(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	MSCheck(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandmscheck(this)
 	{
 

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,12 +25,12 @@
 
 Serialize::Checker<registered_channel_map> RegisteredChannelList(CHANNELINFO_TYPE);
 
-ChannelInfo::ChannelInfo(const Anope::string &chname)
+ChannelInfo::ChannelInfo(const Warden::string &chname)
 	: Serializable(CHANNELINFO_TYPE)
 	, access(CHANACCESS_TYPE)
 	, name(chname)
-	, registered(Anope::CurTime)
-	, last_used(Anope::CurTime)
+	, registered(Warden::CurTime)
+	, last_used(Warden::CurTime)
 {
 	if (chname.empty())
 		throw CoreException("Empty channel passed to ChannelInfo constructor");
@@ -120,9 +121,9 @@ void ChannelInfo::Type::Serialize(Serializable *obj, Serialize::Data &data) cons
 	data.Store("last_topic_time", ci->last_topic_time);
 	data.Store("bantype", ci->bantype);
 	{
-		Anope::string levels_buffer;
+		Warden::string levels_buffer;
 		for (const auto &[name, level] : ci->levels)
-			levels_buffer += name + " " + Anope::ToString(level) + " ";
+			levels_buffer += name + " " + Warden::ToString(level) + " ";
 		data.Store("levels", levels_buffer);
 	}
 	if (ci->bi)
@@ -142,7 +143,7 @@ Serializable *ChannelInfo::Type::Unserialize(Serializable *obj, Serialize::Data 
 {
 	ChannelInfo *ci;
 	if (obj)
-		ci = anope_dynamic_static_cast<ChannelInfo *>(obj);
+		ci = warden_dynamic_static_cast<ChannelInfo *>(obj);
 	else
 		ci = new ChannelInfo(data.Load("name"));
 
@@ -160,7 +161,7 @@ Serializable *ChannelInfo::Type::Unserialize(Serializable *obj, Serialize::Data 
 	ci->last_topic_time = data.Load<time_t>("last_topic_time");
 	ci->bantype = data.Load<int16_t>("bantype");
 	{
-		std::vector<Anope::string> v;
+		std::vector<Warden::string> v;
 		spacesepstream(data.Load("levels")).GetTokens(v);
 		for (unsigned i = 0; i + 1 < v.size(); i += 2)
 		{
@@ -169,7 +170,7 @@ Serializable *ChannelInfo::Type::Unserialize(Serializable *obj, Serialize::Data 
 				v[i] = "FANTASY";
 			// End 2.0 compatibility.
 
-			if (auto level = Anope::TryConvert<int16_t>(v[i + 1]))
+			if (auto level = Warden::TryConvert<int16_t>(v[i + 1]))
 				ci->levels[v[i]] = level.value();
 		}
 	}
@@ -186,7 +187,7 @@ Serializable *ChannelInfo::Type::Unserialize(Serializable *obj, Serialize::Data 
 	ci->banexpire = data.Load<time_t>("banexpire");
 	ci->memos.memomax = data.Load<int16_t>("memomax");
 	{
-		Anope::string buf;
+		Warden::string buf;
 		buf = data.Load("memoignores");
 		spacesepstream sep(buf);
 		ci->memos.ignores.clear();
@@ -221,7 +222,7 @@ Serializable *ChannelInfo::Type::Unserialize(Serializable *obj, Serialize::Data 
 
 	// Begin 2.0 compatibility.
 	if (!ci->registered)
-		ci->registered = ci->last_used ? ci->last_used : Anope::CurTime; // Probably corrupt database.
+		ci->registered = ci->last_used ? ci->last_used : Warden::CurTime; // Probably corrupt database.
 	// End 2.0 compatibility.
 
 	return ci;
@@ -347,12 +348,12 @@ AccessGroup ChannelInfo::AccessFor(const User *u, bool updateLastUsed)
 	if (group.founder || !group.paths.empty())
 	{
 		if (updateLastUsed)
-			this->last_used = Anope::CurTime;
+			this->last_used = Warden::CurTime;
 
 		for (auto &p : group.paths)
 		{
 			for (auto *ca : p)
-				ca->last_seen = Anope::CurTime;
+				ca->last_seen = Warden::CurTime;
 		}
 	}
 
@@ -371,7 +372,7 @@ AccessGroup ChannelInfo::AccessFor(const NickCore *nc, bool updateLastUsed)
 
 	if (group.founder || !group.paths.empty())
 		if (updateLastUsed)
-			this->last_used = Anope::CurTime;
+			this->last_used = Warden::CurTime;
 
 	/* don't update access last seen here, this isn't the user requesting access */
 
@@ -429,12 +430,12 @@ void ChannelInfo::ClearAccess()
 		delete this->GetAccess(i - 1);
 }
 
-const Anope::map<int16_t> &ChannelInfo::GetLevelEntries()
+const Warden::map<int16_t> &ChannelInfo::GetLevelEntries()
 {
 	return this->levels;
 }
 
-int16_t ChannelInfo::GetLevel(const Anope::string &priv) const
+int16_t ChannelInfo::GetLevel(const Warden::string &priv) const
 {
 	if (PrivilegeManager::FindPrivilege(priv) == NULL)
 	{
@@ -448,7 +449,7 @@ int16_t ChannelInfo::GetLevel(const Anope::string &priv) const
 	return it->second;
 }
 
-void ChannelInfo::SetLevel(const Anope::string &priv, int16_t level)
+void ChannelInfo::SetLevel(const Warden::string &priv, int16_t level)
 {
 	if (PrivilegeManager::FindPrivilege(priv) == NULL)
 	{
@@ -459,7 +460,7 @@ void ChannelInfo::SetLevel(const Anope::string &priv, int16_t level)
 	this->levels[priv] = level;
 }
 
-void ChannelInfo::RemoveLevel(const Anope::string &priv)
+void ChannelInfo::RemoveLevel(const Warden::string &priv)
 {
 	this->levels.erase(priv);
 }
@@ -469,7 +470,7 @@ void ChannelInfo::ClearLevels()
 	this->levels.clear();
 }
 
-Anope::string ChannelInfo::GetIdealBan(User *u) const
+Warden::string ChannelInfo::GetIdealBan(User *u) const
 {
 	switch (this->bantype)
 	{
@@ -488,7 +489,7 @@ Anope::string ChannelInfo::GetIdealBan(User *u) const
 	}
 }
 
-ChannelInfo *ChannelInfo::Find(const Anope::string &name)
+ChannelInfo *ChannelInfo::Find(const Warden::string &name)
 {
 	auto it = RegisteredChannelList->find(name);
 	if (it != RegisteredChannelList->end())
@@ -515,19 +516,19 @@ bool IsFounder(const User *user, const ChannelInfo *ci)
 }
 
 
-void ChannelInfo::AddChannelReference(const Anope::string &what)
+void ChannelInfo::AddChannelReference(const Warden::string &what)
 {
 	++references[what];
 }
 
-void ChannelInfo::RemoveChannelReference(const Anope::string &what)
+void ChannelInfo::RemoveChannelReference(const Warden::string &what)
 {
 	int &i = references[what];
 	if (--i <= 0)
 		references.erase(what);
 }
 
-void ChannelInfo::GetChannelReferences(std::deque<Anope::string> &chans)
+void ChannelInfo::GetChannelReferences(std::deque<Warden::string> &chans)
 {
 	chans.clear();
 	for (auto &[chan, _] : references)

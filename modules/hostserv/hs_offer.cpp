@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2017-2018 Matt Schatz <genius3000@g3k.solutions>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -22,21 +23,21 @@ class HostOfferList;
 namespace
 {
 	HostOfferList* host_offers = nullptr;
-	Anope::string network_name;
+	Warden::string network_name;
 	time_t take_delay = 0;
 
-	Anope::string GetVHostMask(const Anope::string &ident, const Anope::string &host)
+	Warden::string GetVHostMask(const Warden::string &ident, const Warden::string &host)
 	{
-		Anope::string buffer;
+		Warden::string buffer;
 		if (!ident.empty())
 			buffer.append(ident).append("@");
 		buffer.append(host);
 		return buffer;
 	}
 
-	Anope::string Template(const Anope::string &ih, const Anope::string &nick)
+	Warden::string Template(const Warden::string &ih, const Warden::string &nick)
 	{
-		if (ih.empty() || ih.find_first_of("{}") == Anope::string::npos)
+		if (ih.empty() || ih.find_first_of("{}") == Warden::string::npos)
 			return ih;
 
 		NickAlias *na = nullptr;
@@ -48,16 +49,16 @@ namespace
 			auto tm = localtime(&(na->registered));
 			char buf[128];
 			strftime(buf, sizeof(buf), "%Y-%m-%d", tm);
-			return Anope::string(buf);
+			return Warden::string(buf);
 		};
 
 		// NOTE: when updating this also update dummy_template.
-		return Anope::Template(ih, {
+		return Warden::Template(ih, {
 			{ "account",  na ? na->nc->display : ""                 },
 			{ "nick",     na ? na->nick : ""                        },
 			{ "network",  network_name                              },
 			{ "regdate",  na ? regdate(na) : ""                     },
-			{ "regepoch", na ? Anope::ToString(na->registered) : "" },
+			{ "regepoch", na ? Warden::ToString(na->registered) : "" },
 
 		});
 	}
@@ -67,10 +68,10 @@ class HostOffer final
 	: public Serializable
 {
 public:
-	Anope::string ident;
-	Anope::string host;
-	Anope::string creator;
-	Anope::string reason;
+	Warden::string ident;
+	Warden::string host;
+	Warden::string creator;
+	Warden::string reason;
 	time_t created = 0;
 	time_t expires = 0;
 
@@ -79,7 +80,7 @@ public:
 	{
 	}
 
-	HostOffer(const Anope::string &i, const Anope::string &h,  const Anope::string &cr, const Anope::string &r, time_t cd, time_t e)
+	HostOffer(const Warden::string &i, const Warden::string &h,  const Warden::string &cr, const Warden::string &r, time_t cd, time_t e)
 		: Serializable(HOSTOFFER_TYPE)
 		, ident(i)
 		, host(h)
@@ -90,7 +91,7 @@ public:
 	{
 	}
 
-	Anope::string GetMask() const
+	Warden::string GetMask() const
 	{
 		return GetVHostMask(ident, host);
 	}
@@ -143,12 +144,12 @@ public:
 		return offers->size();
 	}
 
-	HostOffer *Get(const Anope::string &match)
+	HostOffer *Get(const Warden::string &match)
 	{
 		for (auto i = offers->size(); i > 0; --i)
 		{
 			auto* ho = offers->at(i - 1);
-			if (ho->expires && ho->expires <= Anope::CurTime)
+			if (ho->expires && ho->expires <= Warden::CurTime)
 				Expire(ho);
 			else if (match.equals_ci(ho->GetMask()))
 				return ho;
@@ -163,7 +164,7 @@ public:
 			return nullptr;
 
 		auto *ho = offers->at(number);
-		if (ho->expires && ho->expires <= Anope::CurTime)
+		if (ho->expires && ho->expires <= Warden::CurTime)
 		{
 			Expire(ho);
 			return nullptr;
@@ -179,7 +180,7 @@ public:
 		for (auto i = offers->size(); i > 0; --i)
 		{
 			auto *ho = offers->at(i - 1);
-			if (ho->expires && ho->expires <= Anope::CurTime)
+			if (ho->expires && ho->expires <= Warden::CurTime)
 				Expire(ho);
 			else
 				list.push_back(ho);
@@ -219,7 +220,7 @@ public:
 	{
 		HostOffer *ho;
 		if (obj)
-			ho = anope_dynamic_static_cast<HostOffer *>(obj);
+			ho = warden_dynamic_static_cast<HostOffer *>(obj);
 		else
 			ho = new HostOffer();
 
@@ -244,10 +245,10 @@ private:
 	CommandSource &source;
 	Command *cmd;
 	size_t deleted = 0;
-	Anope::string lastdeleted;
+	Warden::string lastdeleted;
 
 public:
-	OfferDelCallback(const Anope::string &numlist, CommandSource &_source, Command *c)
+	OfferDelCallback(const Warden::string &numlist, CommandSource &_source, Command *c)
 		: NumberList(numlist, true)
 		, source(_source)
 		, cmd(c)
@@ -297,7 +298,7 @@ private:
 	ListFormatter &list;
 
 public:
-	OfferListCallback(const Anope::string &numlist, CommandSource &_source, ListFormatter &_list)
+	OfferListCallback(const Warden::string &numlist, CommandSource &_source, ListFormatter &_list)
 		: NumberList(numlist, false)
 		, source(_source)
 		, list(_list)
@@ -314,12 +315,12 @@ public:
 			return;
 
 		ListFormatter::ListEntry entry;
-		entry["Number"] = Anope::ToString(number);
+		entry["Number"] = Warden::ToString(number);
 		entry["VHost"] = ho->GetMask();
 		entry["Reason"] = ho->reason;
 		entry["Creator"] = ho->creator;
-		entry["Created"] = Anope::strftime(ho->created, source.GetAccount(), true);
-		entry["Expires"] = Anope::Expires(ho->expires, source.GetAccount());
+		entry["Created"] = Warden::strftime(ho->created, source.GetAccount(), true);
+		entry["Expires"] = Warden::Expires(ho->expires, source.GetAccount());
 		list.AddEntry(entry);
 	}
 };
@@ -328,9 +329,9 @@ class CommandHSOffer final
 	: public Command
 {
 private:
-	void DoAdd(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoAdd(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -349,21 +350,21 @@ private:
 		time_t expiry = 0;
 		if (expiry_idx != 0)
 		{
-			expiry = Anope::DoTime(params[expiry_idx].substr(1));
+			expiry = Warden::DoTime(params[expiry_idx].substr(1));
 			if (expiry < 0)
 			{
 				source.Reply(BAD_EXPIRY_TIME);
 				return;
 			}
 			else if (expiry)
-				expiry += Anope::CurTime;
+				expiry += Warden::CurTime;
 		}
 
 		const auto &vhost = params[vhost_idx];
 
-		Anope::string ident, host;
+		Warden::string ident, host;
 		const auto at = vhost.find('@');
-		if (at == Anope::string::npos)
+		if (at == Warden::string::npos)
 			host = vhost;
 		else
 		{
@@ -377,9 +378,9 @@ private:
 			return;
 		}
 
-		auto dummy_template = [](const Anope::string &v)
+		auto dummy_template = [](const Warden::string &v)
 		{
-			return Anope::Template(v, {
+			return Warden::Template(v, {
 				{ "account",  "a"          },
 				{ "nick",     "a"          },
 				{ "network",  network_name },
@@ -428,20 +429,20 @@ private:
 			return;
 		}
 
-		Anope::string reason;
+		Warden::string reason;
 		for (auto idx = reason_idx; idx < params.size(); ++idx)
 			reason.append(reason.empty() ? "" : " ").append(params[idx]);
 
-		auto *ho = new HostOffer(ident, host, source.GetNick(), reason, Anope::CurTime, expiry);
+		auto *ho = new HostOffer(ident, host, source.GetNick(), reason, Warden::CurTime, expiry);
 		host_offers->Add(ho);
 
 		Log(LOG_ADMIN, source, this) << "to add a host offer of " << full_vhost << " (reason: " << reason << ")";
 		source.Reply(_("\002%s\002 added to the host offer list."), full_vhost.c_str());
 	}
 
-	void DoDel(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoDel(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -460,7 +461,7 @@ private:
 			return;
 		}
 
-		if (isdigit(match[0]) && match.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (isdigit(match[0]) && match.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			OfferDelCallback nl_list(match, source, this);
 			nl_list.Process();
@@ -482,7 +483,7 @@ private:
 		}
 	}
 
-	void DoList(CommandSource &source, const std::vector<Anope::string> &params, bool view)
+	void DoList(CommandSource &source, const std::vector<Warden::string> &params, bool view)
 	{
 		if (host_offers->GetCount() == 0)
 		{
@@ -511,7 +512,7 @@ private:
 			});
 		}
 
-		if (!match.empty() && isdigit(match[0]) && match.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (!match.empty() && isdigit(match[0]) && match.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			OfferListCallback nl_list(match, source, list);
 			nl_list.Process();
@@ -523,15 +524,15 @@ private:
 			{
 				const auto *ho = list_offers.at(i);
 				const auto vhost = ho->GetMask();
-				if (match.empty() || match.equals_ci(vhost) || Anope::Match(vhost, match))
+				if (match.empty() || match.equals_ci(vhost) || Warden::Match(vhost, match))
 				{
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(i + 1);
+					entry["Number"] = Warden::ToString(i + 1);
 					entry["VHost"] = vhost;
 					entry["Reason"] = ho->reason;
 					entry["Creator"] = ho->creator;
-					entry["Created"] = Anope::strftime(ho->created, source.GetAccount(), true);
-					entry["Expires"] = Anope::Expires(ho->expires, source.GetAccount());
+					entry["Created"] = Warden::strftime(ho->created, source.GetAccount(), true);
+					entry["Expires"] = Warden::Expires(ho->expires, source.GetAccount());
 					list.AddEntry(entry);
 				}
 			}
@@ -549,7 +550,7 @@ private:
 
 	void DoClear(CommandSource &source)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -579,7 +580,7 @@ public:
 		this->SetSyntax(_("VIEW [\037vhost-mask\037 | \037entry-num\037 | \037list\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		const auto &subcmd = params[0];
 		if (subcmd.equals_ci("ADD"))
@@ -596,7 +597,7 @@ public:
 			this->OnSyntaxError(source, subcmd);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -644,7 +645,7 @@ private:
 	bool show_all;
 
 public:
-	OfferListListCallback(const Anope::string &numlist, CommandSource &_source, ListFormatter &_list, bool sa)
+	OfferListListCallback(const Warden::string &numlist, CommandSource &_source, ListFormatter &_list, bool sa)
 		: NumberList(numlist, false)
 		, source(_source)
 		, list(_list)
@@ -669,14 +670,14 @@ public:
 		{
 			if (!show_all)
 				return;
-			mask = Anope::Format(source.Translate(_("%s [Invalid]")), mask.c_str());
+			mask = Warden::Format(source.Translate(_("%s [Invalid]")), mask.c_str());
 		}
 
 		ListFormatter::ListEntry entry;
-		entry["Number"] = Anope::ToString(number);
+		entry["Number"] = Warden::ToString(number);
 		entry["Offered vhost"] = ho->GetMask();
 		entry["Your vhost"] = mask;
-		entry["Expires"] = Anope::Expires(ho->expires, source.GetAccount());
+		entry["Expires"] = Warden::Expires(ho->expires, source.GetAccount());
 		entry["Reason"] = ho->reason;
 		list.AddEntry(entry);
 	}
@@ -686,9 +687,9 @@ class CommandHSOfferList final
 	: public Command
 {
 private:
-	void DoTake(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoTake(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -707,9 +708,9 @@ private:
 			return;
 		}
 
-		if (take_delay > 0 && na->HasVHost() && na->GetVHostCreated() + take_delay > Anope::CurTime)
+		if (take_delay > 0 && na->HasVHost() && na->GetVHostCreated() + take_delay > Warden::CurTime)
 		{
-			source.Reply(_("Please wait %s before taking a new vhost."), Anope::Duration(take_delay, source.GetAccount()).c_str());
+			source.Reply(_("Please wait %s before taking a new vhost."), Warden::Duration(take_delay, source.GetAccount()).c_str());
 			return;
 		}
 
@@ -727,9 +728,9 @@ private:
 		}
 
 		const HostOffer *ho = nullptr;
-		if (match.find_first_not_of("1234567890") == Anope::string::npos)
+		if (match.find_first_not_of("1234567890") == Warden::string::npos)
 		{
-			const auto number = Anope::TryConvert<size_t>(match);
+			const auto number = Warden::TryConvert<size_t>(match);
 			if (number)
 				ho = host_offers->Get(*number - 1);
 
@@ -778,7 +779,7 @@ private:
 		FOREACH_MOD(OnSetVHost, (na));
 	}
 
-	void DoList(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoList(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		const auto *na = NickAlias::Find(source.GetNick());
 		const auto *sourcenc = source.GetAccount();
@@ -813,7 +814,7 @@ private:
 
 		const auto &match = params.size() > 0 ? params[0] : "";
 		const auto show_all = params.size() > 1 && params[1].equals_ci("ALL");
-		if (!match.empty() && isdigit(match[0]) && match.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (!match.empty() && isdigit(match[0]) && match.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			OfferListListCallback nl_list(match, source, list, show_all);
 			nl_list.Process();
@@ -825,7 +826,7 @@ private:
 			{
 				const auto *ho = list_offers.at(i);
 				const auto vhost = ho->GetMask();
-				if (match.empty() || match.equals_ci(vhost) || Anope::Match(vhost, match, false, true))
+				if (match.empty() || match.equals_ci(vhost) || Warden::Match(vhost, match, false, true))
 				{
 					const auto &ident = Template(ho->ident, source.GetNick());
 					const auto &host = Template(ho->host, source.GetNick());
@@ -835,14 +836,14 @@ private:
 					{
 						if (!show_all)
 							continue;
-						mask = Anope::Format(source.Translate(_("%s [Invalid]")), mask.c_str());
+						mask = Warden::Format(source.Translate(_("%s [Invalid]")), mask.c_str());
 					}
 
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(i + 1);
+					entry["Number"] = Warden::ToString(i + 1);
 					entry["Offered vhost"] = vhost;
 					entry["Your vhost"] = mask;
-					entry["Expires"] = Anope::Expires(ho->expires, source.GetAccount());
+					entry["Expires"] = Warden::Expires(ho->expires, source.GetAccount());
 					entry["Reason"] = ho->reason;
 					list.AddEntry(entry);
 				}
@@ -869,7 +870,7 @@ public:
 		this->RequireUser(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!params.empty() && params[0].equals_ci("TAKE"))
 			this->DoTake(source, params);
@@ -877,7 +878,7 @@ public:
 			this->DoList(source, params);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -904,7 +905,7 @@ public:
 				"you can not take another one for %s."
 			),
 			source.command.c_str(),
-			Anope::Duration(take_delay, source.GetAccount()).c_str());
+			Warden::Duration(take_delay, source.GetAccount()).c_str());
 		return true;
 	}
 };
@@ -919,7 +920,7 @@ private:
 	CommandHSOfferList commandhsofferlist;
 
 public:
-	HSOffer(const Anope::string &modname, const Anope::string &creator)
+	HSOffer(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandhsoffer(this)
 		, commandhsofferlist(this)
@@ -931,7 +932,7 @@ public:
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		network_name = Config->GetBlock("networkinfo").Get<const Anope::string>("networkname");
+		network_name = Config->GetBlock("networkinfo").Get<const Warden::string>("networkname");
 		take_delay = conf.GetModule(this).Get<time_t>("takedelay");
 	}
 };

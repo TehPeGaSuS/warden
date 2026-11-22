@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,16 +19,16 @@ class CommandNSSetProtect
 	: public Command
 {
 public:
-	CommandNSSetProtect(Module *creator, const Anope::string &sname = "nickserv/set/protect", size_t min = 1)
+	CommandNSSetProtect(Module *creator, const Warden::string &sname = "nickserv/set/protect", size_t min = 1)
 		: Command(creator, sname, min, min + 1)
 	{
 		this->SetDesc(_("Turn protection on or off"));
 		this->SetSyntax(_("{ON | \037delay\037 | OFF}"));
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -68,7 +69,7 @@ public:
 		}
 		else
 		{
-			auto iparam = Anope::TryConvert<time_t>(param);
+			auto iparam = Warden::TryConvert<time_t>(param);
 			if (!iparam)
 			{
 				this->OnSyntaxError(source, "PROTECT");
@@ -81,8 +82,8 @@ public:
 			if (*iparam < minprotect || *iparam > maxprotect)
 			{
 				source.Reply(_("Protection delay must be between %s and %s."),
-					Anope::Duration(minprotect, source.GetAccount()).c_str(),
-					Anope::Duration(maxprotect, source.GetAccount()).c_str());
+					Warden::Duration(minprotect, source.GetAccount()).c_str(),
+					Warden::Duration(maxprotect, source.GetAccount()).c_str());
 				return;
 			}
 
@@ -93,12 +94,12 @@ public:
 		}
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params[0]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -123,12 +124,12 @@ public:
 		this->SetSyntax(_("\037nickname\037 {ON | \037delay\037 | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params[1]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -154,7 +155,7 @@ private:
 	SerializableExtensibleItem<time_t> protectafter;
 
 public:
-	NSSetProtect(const Anope::string &modname, const Anope::string &creator)
+	NSSetProtect(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnssetprotect(this)
 		, commandnssasetprotect(this)
@@ -173,7 +174,7 @@ public:
 		{
 			auto protectafter = na->nc->GetExt<time_t>("PROTECT_AFTER");
 			auto protect = protectafter ? *protectafter : Config->GetModule("nickserv").Get<time_t>("defaultprotect", "1m");
-			info[_("Protection after")] = Anope::Duration(protect, source.GetAccount());
+			info[_("Protection after")] = Warden::Duration(protect, source.GetAccount());
 		}
 	}
 };

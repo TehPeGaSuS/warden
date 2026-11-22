@@ -1,10 +1,11 @@
 #!/bin/sh
 #
-# Anope IRC Services <https://www.anope.org/>
+# Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 #
 # Copyright (C) 2003-2026 Anope Contributors
+# Copyright (C) 2026 Warden Contributors
 #
-# Anope is free software. You can use, modify, and/or distribute it under the
+# Warden is free software. You can use, modify, and/or distribute it under the
 # terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 # for the complete terms of this license and docs/AUTHORS.txt for a list of
 # contributors.
@@ -14,21 +15,21 @@
 #
 # SPDX-License-Identifier: GPL-2.0-only
 
-ANOPEPID="@INSTDIR@/data/anope.pid"
-ANOPROG="@INSTDIR@/bin/anope"
+WARDENPID="@INSTDIR@/data/warden.pid"
+ANOPROG="@INSTDIR@/bin/warden"
 LOG="@INSTDIR@/logs/"
 ARCVERSION="@VERSION_FULL@"
 
-isAnopeRunning () {
-	if [ ! -f $ANOPEPID ] ; then
-		echo "Warning: Anope is not currently running"
+isWardenRunning () {
+	if [ ! -f $WARDENPID ] ; then
+		echo "Warning: Warden is not currently running"
 		exit 1
 	fi
 
-	PID=`cat $ANOPEPID`
+	PID=`cat $WARDENPID`
 	kill -0 $PID 2>/dev/null
 	if [ $? -ne 0 ] ; then
-		echo "Warning: Anope is not currently running"
+		echo "Warning: Warden is not currently running"
 		exit 1
 	fi
 }
@@ -40,56 +41,56 @@ fi
 
 if [ "$UID" = "0" ] ; then
 	echo "######################################";
-	echo "# Warning: Do NOT run Anope as root! #";
+	echo "# Warning: Do NOT run Warden as root! #";
 	echo "######################################";
 	exit 1
 fi
 
 if [ "$1" = "start" ] ; then
-	if [ -f $ANOPEPID ] ; then
-		PID=`cat $ANOPEPID`
+	if [ -f $WARDENPID ] ; then
+		PID=`cat $WARDENPID`
 		kill -0 $PID 2>/dev/null
 		if [ $? -eq 0 ] ; then
-			echo "Warning! Anope is already running"
+			echo "Warning! Warden is already running"
 			exit 1
 		fi
 	fi
 
-	echo "Starting Anope"
+	echo "Starting Warden"
 	shift
 	$ANOPROG $*
 
 	if [ "$?" -ne "0" ] ; then
 		echo ""
-	        echo "Unfortunately it seems Anope did not start successfully"
-                echo "This error has been logged in your Anope Log file"
+	        echo "Unfortunately it seems Warden did not start successfully"
+                echo "This error has been logged in your Warden Log file"
                 echo "Located in "$LOG""
                 echo "This may help you diagnose the problem"
-                echo "Further help may be available from https://www.anope.org/"
+                echo "Further help may be available from https://github.com/TehPeGaSuS/warden/discussions"
 		exit 1
 	fi
 
 elif [ "$1" = "stop" ] ; then
-	isAnopeRunning
-	echo "Terminating Anope"
-	kill -15 `cat $ANOPEPID`
+	isWardenRunning
+	echo "Terminating Warden"
+	kill -15 `cat $WARDENPID`
 
 elif [ "$1" = "status" ] ; then
-	if [ -f $ANOPEPID ] ; then
-		PID=`cat $ANOPEPID`
+	if [ -f $WARDENPID ] ; then
+		PID=`cat $WARDENPID`
 		kill -0 $PID 2>/dev/null
 		if [ $? -eq 0 ] ; then
-		        echo "Anope is currently running"
+		        echo "Warden is currently running"
 		        exit 0
 	        fi
 	fi
 
-	echo "Anope is not currently running"
+	echo "Warden is not currently running"
 
 elif [ "$1" = "restart" ] ; then
-	isAnopeRunning
-	echo "Restarting Anope"
-	kill -15 `cat $ANOPEPID`
+	isWardenRunning
+	echo "Restarting Warden"
+	kill -15 `cat $WARDENPID`
 	sleep 1
 
 	shift
@@ -97,18 +98,18 @@ elif [ "$1" = "restart" ] ; then
 
 	if [ "$?" -ne "0" ] ; then
 		echo ""
-	        echo "Unfortunately it seems Anope did not start successfully"
-                echo "This error has been logged in your Anope Log file"
+	        echo "Unfortunately it seems Warden did not start successfully"
+                echo "This error has been logged in your Warden Log file"
                 echo "Located in "$LOG""
                 echo "This may help you diagnose the problem"
-                echo "Further help may be available from https://www.anope.org/"
+                echo "Further help may be available from https://github.com/TehPeGaSuS/warden/discussions"
 		exit 1
 	fi
 
 elif [ "$1" = "rehash" ] ; then
-	isAnopeRunning
+	isWardenRunning
 	echo "Saving Databases and Rehashing Configuration"
-	kill -1 `cat $ANOPEPID`
+	kill -1 `cat $WARDENPID`
 
 elif [ "$1" = "version" ] ; then
 	$ANOPROG -version
@@ -117,21 +118,21 @@ elif [ "$1" = "help" ] ; then
 	if [ "$2" = "paramlist" ] ; then
 		$ANOPROG -help
 	else
-		echo "AnopeRC is a remote control script for easy"
-		echo "controlling of Anope from the command console"
-		echo "$0 start          Start Anope."
-		echo "$0 stop           Shutdown Anope"
-		echo "$0 status         Show Anope's Status"
-		echo "$0 restart        Restart Anope (Databases will be saved)."
+		echo "WardenRC is a remote control script for easy"
+		echo "controlling of Warden from the command console"
+		echo "$0 start          Start Warden."
+		echo "$0 stop           Shutdown Warden"
+		echo "$0 status         Show Warden's Status"
+		echo "$0 restart        Restart Warden (Databases will be saved)."
 		echo "$0 rehash         Rehash Configuration and Save Databases"
-		echo "$0 version        Return Anope Version and Build Information"
+		echo "$0 version        Return Warden Version and Build Information"
 		echo "$0 help           Show this help menu"
 		echo "If you need further help please check the /docs/"
 		echo "folder or make use of our extensive online support at"
-		echo "https://www.anope.org/"
+		echo "https://github.com/TehPeGaSuS/warden/discussions"
 	fi
 
 else
-	echo "Anope Remote Control ($ARCVERSION)"
+	echo "Warden Remote Control ($ARCVERSION)"
 	echo "Usage: $0 [start|stop|status|restart|rehash|version|help]"
 fi

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -22,7 +23,7 @@
 
 extern Module *me;
 
-extern Anope::string template_base, page_title;
+extern Warden::string template_base, page_title;
 
 namespace WebPanel
 {
@@ -36,26 +37,26 @@ namespace WebPanel
 	 * @param r Replacements, reply from command goes back here into key
 	 * @param key The key to put the replies into r
 	 */
-	extern void RunCommand(HTTP::Client *client, const Anope::string &user, NickCore *nc, const Anope::string &service, const Anope::string &c, std::vector<Anope::string> &params, TemplateFileServer::Replacements &r, const Anope::string &key = "MESSAGES");
+	extern void RunCommand(HTTP::Client *client, const Warden::string &user, NickCore *nc, const Warden::string &service, const Warden::string &c, std::vector<Warden::string> &params, TemplateFileServer::Replacements &r, const Warden::string &key = "MESSAGES");
 
-	extern void RunCommandWithName(HTTP::Client *client, NickCore *nc, const Anope::string &service, const Anope::string &c, const Anope::string &cmdname, std::vector<Anope::string> &params, TemplateFileServer::Replacements &r, const Anope::string &key = "MESSAGES");
+	extern void RunCommandWithName(HTTP::Client *client, NickCore *nc, const Warden::string &service, const Warden::string &c, const Warden::string &cmdname, std::vector<Warden::string> &params, TemplateFileServer::Replacements &r, const Warden::string &key = "MESSAGES");
 
-	extern bool CheckParams(const std::vector<Anope::string> &params);
+	extern bool CheckParams(const std::vector<Warden::string> &params);
 
-	extern Anope::string GetRequestData(const std::map<Anope::string, Anope::string, ci::less> &data, const Anope::string &key);
+	extern Warden::string GetRequestData(const std::map<Warden::string, Warden::string, ci::less> &data, const Warden::string &key);
 
 	extern bool IsAllowedOrigin(const HTTP::Message &message);
 }
 
 struct SubSection final
 {
-	Anope::string name;
-	Anope::string url;
+	Warden::string name;
+	Warden::string url;
 };
 
 struct Section
 {
-	Anope::string name;
+	Warden::string name;
 	std::vector<SubSection> subsections;
 };
 
@@ -65,7 +66,7 @@ class Panel final
 	, public Service
 {
 public:
-	Panel(Module *c, const Anope::string &n) : Service(c, "Panel", n) { }
+	Panel(Module *c, const Warden::string &n) : Service(c, "Panel", n) { }
 
 	std::vector<Section> sections;
 
@@ -74,7 +75,7 @@ public:
 		if (!client)
 			return NULL;
 
-		const Anope::string &acc = msg.cookies["account"], &id = msg.cookies["id"];
+		const Warden::string &acc = msg.cookies["account"], &id = msg.cookies["id"];
 
 		if (acc.empty() || id.empty())
 			return NULL;
@@ -83,7 +84,7 @@ public:
 		if (na == NULL)
 			return NULL;
 
-		Anope::string *n_id = na->GetExt<Anope::string>("webcpanel_id"), *n_ip = na->GetExt<Anope::string>("webcpanel_ip");
+		Warden::string *n_id = na->GetExt<Warden::string>("webcpanel_id"), *n_ip = na->GetExt<Warden::string>("webcpanel_ip");
 		if (n_id == NULL || n_ip == NULL)
 			return NULL;
 		else if (id != *n_id)
@@ -99,24 +100,24 @@ class WebPanelPage
 	: public HTTP::Page
 {
 public:
-	WebPanelPage(const Anope::string &u, const Anope::string &ct = "text/html") : HTTP::Page(u, ct)
+	WebPanelPage(const Warden::string &u, const Warden::string &ct = "text/html") : HTTP::Page(u, ct)
 	{
 	}
 
-	virtual bool OnRequest(HTTP::Provider *, const Anope::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &) = 0;
+	virtual bool OnRequest(HTTP::Provider *, const Warden::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &) = 0;
 };
 
 class WebPanelProtectedPage
 	: public WebPanelPage
 {
-	Anope::string category;
+	Warden::string category;
 
 public:
-	WebPanelProtectedPage(const Anope::string &cat, const Anope::string &u, const Anope::string &ct = "text/html") : WebPanelPage(u, ct), category(cat)
+	WebPanelProtectedPage(const Warden::string &cat, const Warden::string &u, const Warden::string &ct = "text/html") : WebPanelPage(u, ct), category(cat)
 	{
 	}
 
-	bool OnRequest(HTTP::Provider *provider, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply) override final
+	bool OnRequest(HTTP::Provider *provider, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply) override final
 	{
 		if (!WebPanel::IsAllowedOrigin(message))
 		{
@@ -131,7 +132,7 @@ public:
 		if (!panel || !(na = panel->GetNickFromSession(client, message)))
 		{
 			reply.error = HTTP::FOUND;
-			reply.headers["Location"] = Anope::string("http") + (provider->IsSSL() ? "s" : "") + "://" + message.headers["Host"] + "/";
+			reply.headers["Location"] = Warden::string("http") + (provider->IsSSL() ? "s" : "") + "://" + message.headers["Host"] + "/";
 			return true; // Access denied
 		}
 
@@ -144,7 +145,7 @@ public:
 		if (na->nc->IsServicesOper())
 			replacements["IS_OPER"];
 
-		Anope::string sections, get;
+		Warden::string sections, get;
 
 		for (const auto &[key, value] : message.get_data)
 		{
@@ -177,10 +178,10 @@ public:
 		return this->OnRequest(provider, page_name, client, message, reply, na, replacements);
 	}
 
-	virtual bool OnRequest(HTTP::Provider *, const Anope::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) = 0;
+	virtual bool OnRequest(HTTP::Provider *, const Warden::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &, NickAlias *, TemplateFileServer::Replacements &) = 0;
 
 	/* What get data should be appended to links in the navbar */
-	virtual std::set<Anope::string> GetData() { return std::set<Anope::string>(); }
+	virtual std::set<Warden::string> GetData() { return std::set<Warden::string>(); }
 };
 
 #include "pages/index.h"

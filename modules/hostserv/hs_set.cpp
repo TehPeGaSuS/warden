@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,15 +25,15 @@ public:
 		this->SetSyntax(_("\037nick\037 \037hostmask\037 [SYNC]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
 		}
 
-		const Anope::string &nick = params[0];
+		const Warden::string &nick = params[0];
 
 		NickAlias *na = NickAlias::Find(nick);
 		if (na == NULL)
@@ -54,12 +55,12 @@ public:
 			sync = true;
 		}
 
-		Anope::string rawhostmask = params[1];
+		Warden::string rawhostmask = params[1];
 
-		Anope::string user, host;
+		Warden::string user, host;
 		size_t a = rawhostmask.find('@');
 
-		if (a == Anope::string::npos)
+		if (a == Warden::string::npos)
 			host = rawhostmask;
 		else
 		{
@@ -121,7 +122,7 @@ public:
 
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -143,7 +144,7 @@ private:
 	CommandHSSet commandhsset;
 
 public:
-	HSSet(const Anope::string &modname, const Anope::string &creator)
+	HSSet(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandhsset(this)
 	{

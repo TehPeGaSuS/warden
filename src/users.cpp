@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -34,7 +35,7 @@ time_t MaxUserTime = 0;
 
 std::list<User *> User::quitting_users;
 
-User::User(const Anope::string &snick, const Anope::string &sident, const Anope::string &shost, const Anope::string &svhost, const Anope::string &uip, Server *sserver, const Anope::string &srealname, time_t ts, const Anope::string &smodes, const std::vector<Anope::string> &smodeparams, const Anope::string &suid, NickCore *account)
+User::User(const Warden::string &snick, const Warden::string &sident, const Warden::string &shost, const Warden::string &svhost, const Warden::string &uip, Server *sserver, const Warden::string &srealname, time_t ts, const Warden::string &smodes, const std::vector<Warden::string> &smodeparams, const Warden::string &suid, NickCore *account)
 	: ip(uip)
 {
 	if (snick.empty() || sident.empty() || shost.empty())
@@ -78,7 +79,7 @@ User::User(const Anope::string &snick, const Anope::string &sident, const Anope:
 	if (UserListByNick.size() > MaxUserCount)
 	{
 		MaxUserCount = UserListByNick.size();
-		MaxUserTime = Anope::CurTime;
+		MaxUserTime = Warden::CurTime;
 		if (sserver && sserver->IsSynced())
 			Log(this, "maxusers") << "connected - new maximum user count: " << UserListByNick.size();
 	}
@@ -89,7 +90,7 @@ User::User(const Anope::string &snick, const Anope::string &sident, const Anope:
 	FOREACH_MOD(OnUserConnect, (this, exempt));
 }
 
-static void CollideKill(User *target, const Anope::string &reason)
+static void CollideKill(User *target, const Warden::string &reason)
 {
 	if (target->server != Me)
 		target->Kill(Me, reason);
@@ -106,7 +107,7 @@ static void CollideKill(User *target, const Anope::string &reason)
 	}
 }
 
-static void Collide(User *u, const Anope::string &id, const Anope::string &type)
+static void Collide(User *u, const Warden::string &id, const Warden::string &type)
 {
 	// Kill incoming user
 	IRCD->SendKill(Me, id, type);
@@ -114,7 +115,7 @@ static void Collide(User *u, const Anope::string &id, const Anope::string &type)
 	CollideKill(u, type);
 }
 
-User *User::OnIntroduce(const Anope::string &snick, const Anope::string &sident, const Anope::string &shost, const Anope::string &svhost, const Anope::string &sip, Server *sserver, const Anope::string &srealname, time_t ts, const Anope::string &smodes, const Anope::string &suid, NickCore *nc, const std::vector<Anope::string> &smodeparams)
+User *User::OnIntroduce(const Warden::string &snick, const Warden::string &sident, const Warden::string &shost, const Warden::string &svhost, const Warden::string &sip, Server *sserver, const Warden::string &srealname, time_t ts, const Warden::string &smodes, const Warden::string &suid, NickCore *nc, const std::vector<Warden::string> &smodeparams)
 {
 	// How IRCds handle collisions varies a lot, for safety well just always kill both sides
 	// With properly set qlines, this can almost never happen anyway
@@ -139,7 +140,7 @@ User *User::OnIntroduce(const Anope::string &snick, const Anope::string &sident,
 	return new User(snick, sident, shost, svhost, sip, sserver, srealname, ts, smodes, smodeparams, suid, nc);
 }
 
-void User::ChangeNick(const Anope::string &newnick, time_t ts)
+void User::ChangeNick(const Warden::string &newnick, time_t ts)
 {
 	/* Sanity check to make sure we don't segfault */
 	if (newnick.empty())
@@ -148,7 +149,7 @@ void User::ChangeNick(const Anope::string &newnick, time_t ts)
 	this->super_admin = false;
 	Log(this, "nick") << "(" << this->realname << ") changed nick to " << newnick;
 
-	Anope::string old = this->nick;
+	Warden::string old = this->nick;
 	this->timestamp = ts;
 
 	if (this->nick.equals_ci(newnick))
@@ -157,7 +158,7 @@ void User::ChangeNick(const Anope::string &newnick, time_t ts)
 	{
 		NickAlias *old_na = NickAlias::Find(this->nick);
 		if (old_na && this->IsIdentified(true))
-			old_na->last_seen = Anope::CurTime;
+			old_na->last_seen = Warden::CurTime;
 
 		UserListByNick.erase(this->nick);
 
@@ -175,7 +176,7 @@ void User::ChangeNick(const Anope::string &newnick, time_t ts)
 		NickAlias *na = NickAlias::Find(this->nick);
 		if (na && na->nc == this->Account())
 		{
-			na->last_seen = Anope::CurTime;
+			na->last_seen = Warden::CurTime;
 			this->UpdateHost();
 		}
 	}
@@ -183,7 +184,7 @@ void User::ChangeNick(const Anope::string &newnick, time_t ts)
 	FOREACH_MOD(OnUserNickChange, (this, old));
 }
 
-void User::SetDisplayedHost(const Anope::string &shost)
+void User::SetDisplayedHost(const Warden::string &shost)
 {
 	if (shost.empty())
 		throw CoreException("empty host? in MY services? it seems it's more likely than I thought.");
@@ -197,7 +198,7 @@ void User::SetDisplayedHost(const Anope::string &shost)
 	this->UpdateHost();
 }
 
-const Anope::string &User::GetDisplayedHost() const
+const Warden::string &User::GetDisplayedHost() const
 {
 	if (!this->vhost.empty())
 		return this->vhost;
@@ -207,7 +208,7 @@ const Anope::string &User::GetDisplayedHost() const
 		return this->host;
 }
 
-void User::SetCloakedHost(const Anope::string &newhost)
+void User::SetCloakedHost(const Warden::string &newhost)
 {
 	if (newhost.empty())
 		throw CoreException("empty host in User::SetCloakedHost");
@@ -219,12 +220,12 @@ void User::SetCloakedHost(const Anope::string &newhost)
 	this->UpdateHost();
 }
 
-const Anope::string &User::GetCloakedHost() const
+const Warden::string &User::GetCloakedHost() const
 {
 	return chost;
 }
 
-const Anope::string &User::GetUID() const
+const Warden::string &User::GetUID() const
 {
 	if (!this->uid.empty() && IRCD->RequiresID)
 		return this->uid;
@@ -232,7 +233,7 @@ const Anope::string &User::GetUID() const
 		return this->nick;
 }
 
-void User::SetVIdent(const Anope::string &sident)
+void User::SetVIdent(const Warden::string &sident)
 {
 	this->vident = sident;
 
@@ -241,7 +242,7 @@ void User::SetVIdent(const Anope::string &sident)
 	this->UpdateHost();
 }
 
-const Anope::string &User::GetVIdent() const
+const Warden::string &User::GetVIdent() const
 {
 	if (!this->vident.empty())
 		return this->vident;
@@ -249,7 +250,7 @@ const Anope::string &User::GetVIdent() const
 		return this->ident;
 }
 
-void User::SetIdent(const Anope::string &sident)
+void User::SetIdent(const Warden::string &sident)
 {
 	this->ident = sident;
 
@@ -258,22 +259,22 @@ void User::SetIdent(const Anope::string &sident)
 	this->UpdateHost();
 }
 
-const Anope::string &User::GetIdent() const
+const Warden::string &User::GetIdent() const
 {
 	return this->ident;
 }
 
-Anope::string User::GetMask() const
+Warden::string User::GetMask() const
 {
 	return this->nick + "!" + this->ident + "@" + this->host;
 }
 
-Anope::string User::GetDisplayedMask() const
+Warden::string User::GetDisplayedMask() const
 {
 	return this->nick + "!" + this->GetVIdent() + "@" + this->GetDisplayedHost();
 }
 
-void User::SetRealname(const Anope::string &srealname)
+void User::SetRealname(const Warden::string &srealname)
 {
 	if (srealname.empty())
 		throw CoreException("realname empty in SetRealname");
@@ -315,8 +316,8 @@ void User::SendMessage(BotInfo *source, const char *fmt, ...)
 {
 	const char *translated_message = Language::Translate(this, fmt);
 
-	Anope::string buf;
-	ANOPE_FORMAT(fmt, translated_message, buf);
+	Warden::string buf;
+	WARDEN_FORMAT(fmt, translated_message, buf);
 	this->SendMessage(source, buf);
 }
 
@@ -324,17 +325,17 @@ void User::SendMessage(BotInfo *source, int count, const char *singular, const c
 {
 	const char *translated_message = Language::Translate(this, count, singular, plural);
 
-	Anope::string buf;
-	ANOPE_FORMAT(plural, translated_message, buf);
+	Warden::string buf;
+	WARDEN_FORMAT(plural, translated_message, buf);
 	this->SendMessage(source, buf);
 }
 
 namespace
 {
-	void SendMessageInternal(BotInfo *source, User *target, const Anope::string &msg, const Anope::map<Anope::string> &tags)
+	void SendMessageInternal(BotInfo *source, User *target, const Warden::string &msg, const Warden::map<Warden::string> &tags)
 	{
 		LineWrapper lw(Language::Translate(target, msg.c_str()));
-		for (Anope::string line; lw.GetLine(line); )
+		for (Warden::string line; lw.GetLine(line); )
 		{
 			if (target->ShouldPrivmsg())
 				IRCD->SendPrivmsg(source, target->GetUID(), line, tags);
@@ -344,14 +345,14 @@ namespace
 	}
 }
 
-void User::SendMessage(BotInfo *source, const Anope::string &msg)
+void User::SendMessage(BotInfo *source, const Warden::string &msg)
 {
 	SendMessageInternal(source, this, msg, {});
 }
 
-void User::SendMessage(CommandSource &source, const Anope::string &msg)
+void User::SendMessage(CommandSource &source, const Warden::string &msg)
 {
-	Anope::map<Anope::string> tags;
+	Warden::map<Warden::string> tags;
 	if (!source.msgid.empty())
 		tags["+reply"] = source.msgid;
 
@@ -374,7 +375,7 @@ void User::Identify(NickAlias *na)
 		if (!this->nc->o->ot->modes.empty())
 		{
 			auto *um = ModeManager::FindUserModeByName("OPER");
-			if (um && !this->HasMode("OPER") && this->nc->o->ot->modes.find(um->mchar) != Anope::string::npos)
+			if (um && !this->HasMode("OPER") && this->nc->o->ot->modes.find(um->mchar) != Warden::string::npos)
 				IRCD->SendOper(this);
 
 			this->SetModes(NULL, this->nc->o->ot->modes);
@@ -474,11 +475,11 @@ bool User::IsServicesOper()
 	if (!oper->hosts.empty())
 	{
 		bool match = false;
-		Anope::string match_host = this->GetIdent() + "@" + this->host;
-		Anope::string match_ip = this->GetIdent() + "@" + this->ip.addr();
+		Warden::string match_host = this->GetIdent() + "@" + this->host;
+		Warden::string match_ip = this->GetIdent() + "@" + this->ip.addr();
 		for (const auto &userhost : oper->hosts)
 		{
-			if (Anope::Match(match_host, userhost) || Anope::Match(match_ip, userhost))
+			if (Warden::Match(match_host, userhost) || Warden::Match(match_ip, userhost))
 			{
 				match = true;
 				break;
@@ -493,14 +494,14 @@ bool User::IsServicesOper()
 	return MOD_RESULT != EVENT_STOP;
 }
 
-bool User::HasCommand(const Anope::string &command)
+bool User::HasCommand(const Warden::string &command)
 {
 	if (this->IsServicesOper())
 		return this->nc->o->ot->HasCommand(command);
 	return false;
 }
 
-bool User::HasPriv(const Anope::string &priv)
+bool User::HasPriv(const Warden::string &priv)
 {
 	if (this->IsServicesOper())
 		return this->nc->o->ot->HasPriv(priv);
@@ -517,7 +518,7 @@ void User::UpdateHost()
 		na->UpdateSeen(this);
 }
 
-void User::SetAway(const Anope::string &msg, time_t ts)
+void User::SetAway(const Warden::string &msg, time_t ts)
 {
 	FOREACH_MOD(OnUserAway, (this, msg));
 	if (msg.empty())
@@ -529,13 +530,13 @@ void User::SetAway(const Anope::string &msg, time_t ts)
 	else
 	{
 		this->awaymsg = msg;
-		this->awaytime = ts ? ts : Anope::CurTime;
+		this->awaytime = ts ? ts : Warden::CurTime;
 		Log(this, "away") << "is now away: " << msg;
 	}
 }
 
 
-bool User::HasMode(const Anope::string &mname) const
+bool User::HasMode(const Warden::string &mname) const
 {
 	return this->modes.count(mname);
 }
@@ -556,7 +557,7 @@ void User::SetModeInternal(const MessageSource &source, UserMode *um, const Mode
 			if (!this->nc->o->ot->modes.empty())
 			{
 				auto *oper = ModeManager::FindUserModeByName("OPER");
-				if (oper && !this->HasMode("OPER") && this->nc->o->ot->modes.find(oper->mchar) != Anope::string::npos)
+				if (oper && !this->HasMode("OPER") && this->nc->o->ot->modes.find(oper->mchar) != Warden::string::npos)
 					IRCD->SendOper(this);
 
 				this->SetModes(NULL, this->nc->o->ot->modes);
@@ -610,12 +611,12 @@ void User::SetMode(BotInfo *bi, UserMode *um, const ModeData &data)
 	SetModeInternal(bi, um, data);
 }
 
-void User::SetMode(BotInfo *bi, const Anope::string &uname, const ModeData &data)
+void User::SetMode(BotInfo *bi, const Warden::string &uname, const ModeData &data)
 {
 	SetMode(bi, ModeManager::FindUserModeByName(uname), data);
 }
 
-void User::RemoveMode(BotInfo *bi, UserMode *um, const Anope::string &param)
+void User::RemoveMode(BotInfo *bi, UserMode *um, const Warden::string &param)
 {
 	if (!um || !HasMode(um->name))
 		return;
@@ -624,21 +625,21 @@ void User::RemoveMode(BotInfo *bi, UserMode *um, const Anope::string &param)
 	RemoveModeInternal(bi, um);
 }
 
-void User::RemoveMode(BotInfo *bi, const Anope::string &name, const Anope::string &param)
+void User::RemoveMode(BotInfo *bi, const Warden::string &name, const Warden::string &param)
 {
 	RemoveMode(bi, ModeManager::FindUserModeByName(name), param);
 }
 
 void User::SetModes(BotInfo *bi, const char *umodes, ...)
 {
-	Anope::string buf;
-	ANOPE_FORMAT(umodes, umodes, buf);
+	Warden::string buf;
+	WARDEN_FORMAT(umodes, umodes, buf);
 	SetModes(bi, buf);
 }
 
-void User::SetModes(BotInfo *bi, const Anope::string &umodes)
+void User::SetModes(BotInfo *bi, const Warden::string &umodes)
 {
-	Anope::string modebuf, sbuf;
+	Warden::string modebuf, sbuf;
 	int add = -1;
 	spacesepstream sep(umodes);
 	sep.GetToken(modebuf);
@@ -674,9 +675,9 @@ void User::SetModes(BotInfo *bi, const Anope::string &umodes)
 	}
 }
 
-void User::SetModesInternal(const MessageSource &source, const Anope::string &umodes, const std::vector<Anope::string> &umodeparams)
+void User::SetModesInternal(const MessageSource &source, const Warden::string &umodes, const std::vector<Warden::string> &umodeparams)
 {
-	if (this->server && this->server->IsSynced() && Anope::string(umodes) != "+")
+	if (this->server && this->server->IsSynced() && Warden::string(umodes) != "+")
 		Log(this, "mode") << "changes modes to " << umodes;
 
 	int add = -1;
@@ -703,7 +704,7 @@ void User::SetModesInternal(const MessageSource &source, const Anope::string &um
 
 		if (add)
 		{
-			Anope::string sbuf;
+			Warden::string sbuf;
 			if (um->type == MODE_PARAM && paramit != umodeparams.end())
 				this->SetModeInternal(source, um, *paramit++);
 			else
@@ -714,9 +715,9 @@ void User::SetModesInternal(const MessageSource &source, const Anope::string &um
 	}
 }
 
-Anope::string User::GetModes() const
+Warden::string User::GetModes() const
 {
-	Anope::string m, params;
+	Warden::string m, params;
 
 	for (const auto &[mode, data] : this->modes)
 	{
@@ -751,14 +752,14 @@ bool User::IsProtected()
 	return this->HasMode("PROTECTED") || this->HasMode("GOD") || this->HasPriv("protected") || (this->server && this->server->IsULined());
 }
 
-void User::Kill(const MessageSource &source, const Anope::string &reason)
+void User::Kill(const MessageSource &source, const Warden::string &reason)
 {
-	Anope::string real_reason = source.GetName() + " (" + reason + ")";
+	Warden::string real_reason = source.GetName() + " (" + reason + ")";
 
 	IRCD->SendSVSKill(source, this, real_reason);
 }
 
-void User::KillInternal(const MessageSource &source, const Anope::string &reason)
+void User::KillInternal(const MessageSource &source, const Warden::string &reason)
 {
 	if (this->quit)
 	{
@@ -771,7 +772,7 @@ void User::KillInternal(const MessageSource &source, const Anope::string &reason
 	this->Quit(reason);
 }
 
-void User::Quit(const Anope::string &reason)
+void User::Quit(const Warden::string &reason)
 {
 	if (this->quit)
 	{
@@ -790,11 +791,11 @@ bool User::Quitting() const
 	return this->quit;
 }
 
-Anope::string User::Mask() const
+Warden::string User::Mask() const
 {
-	Anope::string mask;
-	const Anope::string &mident = this->GetIdent();
-	const Anope::string &mhost = this->GetDisplayedHost();
+	Warden::string mask;
+	const Warden::string &mident = this->GetIdent();
+	const Warden::string &mhost = this->GetDisplayedHost();
 
 	if (mident[0] == '~')
 		mask = "*" + mident + "@";
@@ -805,12 +806,12 @@ Anope::string User::Mask() const
 	if (addr.valid() && addr.sa.sa_family == AF_INET)
 	{
 		size_t dot = mhost.rfind('.');
-		mask += mhost.substr(0, dot) + (dot == Anope::string::npos ? "" : ".*");
+		mask += mhost.substr(0, dot) + (dot == Warden::string::npos ? "" : ".*");
 	}
 	else
 	{
 		size_t dot = mhost.find('.');
-		if (dot != Anope::string::npos && mhost.find('.', dot + 1) != Anope::string::npos)
+		if (dot != Warden::string::npos && mhost.find('.', dot + 1) != Warden::string::npos)
 			mask += "*" + mhost.substr(dot);
 		else
 			mask += mhost;
@@ -826,11 +827,11 @@ bool User::BadPassword()
 		return false;
 
 	const auto badpasstimeout = Config->GetBlock("options").Get<time_t>("badpasstimeout");
-	if (badpasstimeout > 0 && this->invalid_pw_time > 0 && this->invalid_pw_time < Anope::CurTime - badpasstimeout)
+	if (badpasstimeout > 0 && this->invalid_pw_time > 0 && this->invalid_pw_time < Warden::CurTime - badpasstimeout)
 		this->invalid_pw_count = 0;
 
 	++this->invalid_pw_count;
-	this->invalid_pw_time = Anope::CurTime;
+	this->invalid_pw_time = Warden::CurTime;
 	if (this->invalid_pw_count >= badpasslimit)
 	{
 		this->Kill(Me, "Too many invalid passwords");
@@ -849,7 +850,7 @@ bool User::ShouldPrivmsg() const
 	return (!nc && Config->DefPrivmsg) || (nc && msg && msg->HasExt(nc));
 }
 
-User *User::Find(const Anope::string &name, bool nick_only)
+User *User::Find(const Warden::string &name, bool nick_only)
 {
 	if (!nick_only && IRCD && IRCD->RequiresID)
 	{

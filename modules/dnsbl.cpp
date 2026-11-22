@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,15 +26,15 @@ struct Blacklist final
 	struct Reply final
 	{
 		int code = 0;
-		Anope::string reason;
+		Warden::string reason;
 		bool allow_account = false;
 
 		Reply() = default;
 	};
 
-	Anope::string name;
+	Warden::string name;
 	time_t bantime = 0;
-	Anope::string reason;
+	Warden::string reason;
 	std::vector<Reply> replies;
 
 	const Reply *Find(int code)
@@ -53,7 +54,7 @@ class DNSBLResolver final
 	bool add_to_akill;
 
 public:
-	DNSBLResolver(Module *c, User *u, const Blacklist &b, const Anope::string &host, bool add_akill) : Request(dnsmanager, c, host, QUERY_A, true), user(u), blacklist(b), add_to_akill(add_akill) { }
+	DNSBLResolver(Module *c, User *u, const Blacklist &b, const Warden::string &host, bool add_akill) : Request(dnsmanager, c, host, QUERY_A, true), user(u), blacklist(b), add_to_akill(add_akill) { }
 
 	void OnLookupComplete(const Query *record) override
 	{
@@ -77,19 +78,19 @@ public:
 			return;
 
 		auto addr = user->ip.addr();
-		auto reason = Anope::Template(this->blacklist.reason, {
+		auto reason = Warden::Template(this->blacklist.reason, {
 			{ "nick",    user->nick                                                              },
 			{ "user",    user->GetIdent()                                                        },
 			{ "real",    user->realname                                                          },
 			{ "host",    user->host                                                              },
 			{ "ip",      addr                                                                    },
 			{ "reply",   reply ? reply->reason : ""                                              },
-			{ "network", Config->GetBlock("networkinfo").Get<const Anope::string>("networkname") },
+			{ "network", Config->GetBlock("networkinfo").Get<const Warden::string>("networkname") },
 		});
 
 		BotInfo *OperServ = Config->GetClient("OperServ");
 		Log(creator, "dnsbl", OperServ) << user->GetMask() << " (" << addr << ") appears in " << this->blacklist.name;
-		auto *x = new XLine("*@" + addr, OperServ ? OperServ->nick : "dnsbl", Anope::CurTime + this->blacklist.bantime, reason, XLineManager::GenerateUID());
+		auto *x = new XLine("*@" + addr, OperServ ? OperServ->nick : "dnsbl", Warden::CurTime + this->blacklist.bantime, reason, XLineManager::GenerateUID());
 		if (this->add_to_akill && akills)
 		{
 			akills->AddXLine(x);
@@ -113,7 +114,7 @@ class ModuleDNSBL final
 	bool add_to_akill;
 
 public:
-	ModuleDNSBL(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR | EXTRA)
+	ModuleDNSBL(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR | EXTRA)
 	{
 
 	}
@@ -130,18 +131,18 @@ public:
 		{
 			Blacklist blacklist;
 
-			blacklist.name = bl.Get<Anope::string>("name");
+			blacklist.name = bl.Get<Warden::string>("name");
 			if (blacklist.name.empty())
 				continue;
 			blacklist.bantime = bl.Get<time_t>("time", "4h");
-			blacklist.reason = bl.Get<Anope::string>("reason");
+			blacklist.reason = bl.Get<Warden::string>("reason");
 
 			for (const auto &[_, reply] : block.GetBlocks("reply"))
 			{
 				Blacklist::Reply r;
 
 				r.code = reply.Get<int>("code");
-				r.reason = reply.Get<Anope::string>("reason");
+				r.reason = reply.Get<Warden::string>("reason");
 				r.allow_account = reply.Get<bool>("allow_account");
 
 				blacklist.replies.push_back(r);
@@ -153,7 +154,7 @@ public:
 		this->exempts.clear();
 		for (const auto &[_, bl] : block.GetBlocks("exempt"))
 		{
-			this->exempts.insert(bl.Get<Anope::string>("ip"));
+			this->exempts.insert(bl.Get<Warden::string>("ip"));
 		}
 	}
 
@@ -178,11 +179,11 @@ public:
 			return;
 		}
 
-		Anope::string reverse = user->ip.reverse();
+		Warden::string reverse = user->ip.reverse();
 
 		for (const auto &b : this->blacklists)
 		{
-			Anope::string dnsbl_host = reverse + "." + b.name;
+			Warden::string dnsbl_host = reverse + "." + b.name;
 			DNSBLResolver *res = NULL;
 			try
 			{

@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2008-2011 Robin Burchell <w00t@inspircd.org>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,7 +16,7 @@
 
 #pragma once
 
-#include "anope.h"
+#include "warden.h"
 #include "modes.h"
 #include "extensible.h"
 #include "serialize.h"
@@ -23,7 +24,7 @@
 #include "account.h"
 #include "sockets.h"
 
-typedef Anope::unordered_map<User *> user_map;
+typedef Warden::unordered_map<User *> user_map;
 
 extern CoreExport user_map UserListByNick, UserListByUID;
 
@@ -43,11 +44,11 @@ class CoreExport User
 	static std::list<User *> quitting_users;
 
 public:
-	typedef std::map<Anope::string, ModeData> ModeList;
+	typedef std::map<Warden::string, ModeData> ModeList;
 protected:
-	Anope::string vident;
-	Anope::string ident;
-	Anope::string uid;
+	Warden::string vident;
+	Warden::string ident;
+	Warden::string uid;
 	/* Map of user modes and the params this user has (if any) */
 	ModeList modes;
 	/* NickCore account the user is currently logged in as, if they are logged in */
@@ -61,18 +62,18 @@ protected:
 
 public: // XXX: exposing a tiny bit too much
 	/* User's current nick */
-	Anope::string nick;
+	Warden::string nick;
 
 	/* User's real hostname */
-	Anope::string host;
+	Warden::string host;
 	/* User's virtual hostname */
-	Anope::string vhost;
+	Warden::string vhost;
 	/* User's cloaked hostname */
-	Anope::string chost;
+	Warden::string chost;
 	/* Realname */
-	Anope::string realname;
+	Warden::string realname;
 	/* SSL Fingerprint */
-	Anope::string fingerprint;
+	Warden::string fingerprint;
 	/* User's IP */
 	sockaddrs ip;
 	/* Server user is connected to */
@@ -84,7 +85,7 @@ public: // XXX: exposing a tiny bit too much
 	/* Is the user as super admin? */
 	bool super_admin;
 	/* The away message of the user */
-	Anope::string awaymsg;
+	Warden::string awaymsg;
 	/* The time the user went away */
 	time_t awaytime = 0;
 
@@ -115,81 +116,81 @@ protected:
 	 * @param suid The unique identifier of the user.
 	 * @param nc The account the user is identified as, if any
 	 */
-	User(const Anope::string &snick, const Anope::string &sident, const Anope::string &shost, const Anope::string &svhost, const Anope::string &sip, Server *sserver, const Anope::string &srealname, time_t ts, const Anope::string &smodes, const std::vector<Anope::string> &smodeparams, const Anope::string &suid, NickCore *nc);
+	User(const Warden::string &snick, const Warden::string &sident, const Warden::string &shost, const Warden::string &svhost, const Warden::string &sip, Server *sserver, const Warden::string &srealname, time_t ts, const Warden::string &smodes, const std::vector<Warden::string> &smodeparams, const Warden::string &suid, NickCore *nc);
 
 	/** Destroy a user.
 	 */
 	virtual ~User();
 
 public:
-	static User *OnIntroduce(const Anope::string &snick, const Anope::string &sident, const Anope::string &shost, const Anope::string &svhost, const Anope::string &sip, Server *sserver, const Anope::string &srealname, time_t ts, const Anope::string &smodes, const Anope::string &suid, NickCore *nc, const std::vector<Anope::string> &smodeparams = {});
+	static User *OnIntroduce(const Warden::string &snick, const Warden::string &sident, const Warden::string &shost, const Warden::string &svhost, const Warden::string &sip, Server *sserver, const Warden::string &srealname, time_t ts, const Warden::string &smodes, const Warden::string &suid, NickCore *nc, const std::vector<Warden::string> &smodeparams = {});
 
 	/** Update the nickname of a user record accordingly, should be
 	 * called from ircd protocol.
 	 * @param newnick The new username
 	 * @param ts The time the nick was changed, User::timestamp will be updated to this.
 	 */
-	void ChangeNick(const Anope::string &newnick, time_t ts = Anope::CurTime);
+	void ChangeNick(const Warden::string &newnick, time_t ts = Warden::CurTime);
 
 	/** Update the displayed (vhost) of a user record.
 	 * This is used (if set) instead of real host.
 	 * @param host The new displayed host to give the user.
 	 */
-	void SetDisplayedHost(const Anope::string &host);
+	void SetDisplayedHost(const Warden::string &host);
 
 	/** Get the displayed vhost of a user record.
 	 * @return The displayed vhost of the user, where ircd-supported, or the user's real host.
 	 */
-	const Anope::string &GetDisplayedHost() const;
+	const Warden::string &GetDisplayedHost() const;
 
 	/** Update the cloaked host of a user
 	 * @param host The cloaked host
 	 */
-	void SetCloakedHost(const Anope::string &newhost);
+	void SetCloakedHost(const Warden::string &newhost);
 
 	/** Get the cloaked host of a user
 	 * @return The cloaked host
 	 */
-	const Anope::string &GetCloakedHost() const;
+	const Warden::string &GetCloakedHost() const;
 
 	/** Retrieves the UID of the user, if set, else the nick.
 	 * @return The UID of the user.
 	 */
-	const Anope::string &GetUID() const;
+	const Warden::string &GetUID() const;
 
 	/** Update the displayed ident (username) of a user record.
 	 * @param ident The new ident to give this user.
 	 */
-	void SetVIdent(const Anope::string &ident);
+	void SetVIdent(const Warden::string &ident);
 
 	/** Get the displayed ident (username) of this user.
 	 * @return The displayed ident of this user.
 	 */
-	const Anope::string &GetVIdent() const;
+	const Warden::string &GetVIdent() const;
 
 	/** Update the real ident (username) of a user record.
 	 * @param ident The new ident to give this user.
 	 * NOTE: Where possible, you should use the Get/SetVIdent() equivalents.
 	 */
-	void SetIdent(const Anope::string &ident);
+	void SetIdent(const Warden::string &ident);
 
 	/** Get the real ident (username) of this user.
 	 * @return The displayed ident of this user.
 	 * NOTE: Where possible, you should use the Get/SetVIdent() equivalents.
 	 */
-	const Anope::string &GetIdent() const;
+	const Warden::string &GetIdent() const;
 
 	/** Get the full mask (nick!ident@realhost) of a user
 	 */
-	Anope::string GetMask() const;
+	Warden::string GetMask() const;
 
 	/** Get the full display mask (nick!vident@vhost/chost)
 	 */
-	Anope::string GetDisplayedMask() const;
+	Warden::string GetDisplayedMask() const;
 
 	/** Updates the realname of the user record.
 	 */
-	void SetRealname(const Anope::string &realname);
+	void SetRealname(const Warden::string &realname);
 
 	/**
 	 * Send a message (notice or privmsg, depending on settings) to a user
@@ -199,8 +200,8 @@ public:
 	 */
 	void SendMessage(BotInfo *source, const char *fmt, ...) ATTR_FORMAT(3, 4);
 	void SendMessage(BotInfo *source, int count, const char *singular, const char *plural, ...) ATTR_FORMAT(5, 6);
-	void SendMessage(BotInfo *source, const Anope::string &msg) override;
-	void SendMessage(CommandSource &source, const Anope::string &msg) override;
+	void SendMessage(BotInfo *source, const Warden::string &msg) override;
+	void SendMessage(CommandSource &source, const Warden::string &msg) override;
 
 	/** Identify the user to a nick.
 	 * updates last_seen, logs the user in,
@@ -249,19 +250,19 @@ public:
 	  * @param cmdstr The string to check, e.g. botserv/set/private.
 	  * @return True if this user may run the specified command, false otherwise.
 	  */
-	bool HasCommand(const Anope::string &cmdstr);
+	bool HasCommand(const Warden::string &cmdstr);
 
 	/** Check whether this user has access to the given special permission.
 	  * @param privstr The priv to check for, e.g. users/auspex.
 	  * @return True if this user has the specified priv, false otherwise.
 	  */
-	bool HasPriv(const Anope::string &privstr);
+	bool HasPriv(const Warden::string &privstr);
 
 	/** Update the last mask stored for a user. */
 	void UpdateHost();
 
 	/** Update the away state for a user. */
-	void SetAway(const Anope::string &msg = "", time_t ts = 0);
+	void SetAway(const Warden::string &msg = "", time_t ts = 0);
 
 	/** Determines whether this user is away. */
 	auto IsAway() const { return !awaymsg.empty(); }
@@ -270,7 +271,7 @@ public:
 	 * @param name Mode name
 	 * @return true or false
 	 */
-	bool HasMode(const Anope::string &name) const;
+	bool HasMode(const Warden::string &name) const;
 
 	/** Set a mode internally on the user, the IRCd is not informed
 	 * @param setter who/what is setting the mode
@@ -297,40 +298,40 @@ public:
 	 * @param name The mode name
 	 * @param data Data about the mode
 	 */
-	void SetMode(BotInfo *bi, const Anope::string &name, const ModeData &data = {});
+	void SetMode(BotInfo *bi, const Warden::string &name, const ModeData &data = {});
 
 	/** Remove a mode on the user
 	 * @param bi The client setting the mode
 	 * @param um The user mode
 	 * @param param Optional param for the mode
 	 */
-	void RemoveMode(BotInfo *bi, UserMode *um, const Anope::string &param = "");
+	void RemoveMode(BotInfo *bi, UserMode *um, const Warden::string &param = "");
 
 	/** Remove a mode from the user
 	 * @param bi The client setting the mode
 	 * @param name The mode name
 	 * @param param Optional param for the mode
 	 */
-	void RemoveMode(BotInfo *bi, const Anope::string &name, const Anope::string &param = "");
+	void RemoveMode(BotInfo *bi, const Warden::string &name, const Warden::string &param = "");
 
 	/** Set a string of modes on a user
 	 * @param bi The client setting the modes
 	 * @param umodes The modes
 	 */
 	void SetModes(BotInfo *bi, const char *umodes, ...) ATTR_FORMAT(3, 4);
-	void SetModes(BotInfo *bi, const Anope::string &umodes);
+	void SetModes(BotInfo *bi, const Warden::string &umodes);
 
 	/** Set a string of modes on a user internally
 	 * @param setter who/what is setting the mode
 	 * @param umodes The mode letters
 	 * @param umodeparams The mode values
 	 */
-	void SetModesInternal(const MessageSource &source, const Anope::string &umodes, const std::vector<Anope::string> &umodeparams = {});
+	void SetModesInternal(const MessageSource &source, const Warden::string &umodes, const std::vector<Warden::string> &umodeparams = {});
 
 	/** Get modes set for this user.
 	 * @return A string of modes set on the user
 	 */
-	Anope::string GetModes() const;
+	Warden::string GetModes() const;
 
 	const ModeList &GetModeList() const;
 
@@ -351,18 +352,18 @@ public:
 	 * @param source The user/server doing the kill
 	 * @param reason The reason for the kill
 	 */
-	void Kill(const MessageSource &source, const Anope::string &reason);
+	void Kill(const MessageSource &source, const Warden::string &reason);
 
 	/** Process a kill for a user
 	 * @param source The user/server doing the kill
 	 * @param reason The reason for the kill
 	 */
-	void KillInternal(const MessageSource &source, const Anope::string &reason);
+	void KillInternal(const MessageSource &source, const Warden::string &reason);
 
 	/** Processes a quit for the user, and marks them as quit
 	 * @param reason The reason for the quit
 	 */
-	void Quit(const Anope::string &reason = "");
+	void Quit(const Warden::string &reason = "");
 
 	bool Quitting() const;
 
@@ -372,7 +373,7 @@ public:
 	 * the leftmost part of the name unless the  name only contains two parts.
 	 * If the username begins with a ~, replace with *.
 	 */
-	Anope::string Mask() const;
+	Warden::string Mask() const;
 
 	/** Notes the usage of an incorrect password. If too many
 	 * incorrect passwords are used the user might be killed.
@@ -388,7 +389,7 @@ public:
 	 * @param nick_only set to true to only look up by nick, not UID
 	 * @return the user, if they exist
 	 */
-	static User *Find(const Anope::string &name, bool nick_only = false);
+	static User *Find(const Warden::string &name, bool nick_only = false);
 
 	/** Quits all users who are pending to be quit
 	 */

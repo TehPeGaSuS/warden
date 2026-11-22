@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -33,29 +34,29 @@ public:
 
 private:
 	void Init();
-	Anope::string nick, user, host, real;
+	Warden::string nick, user, host, real;
 public:
 	cidr *c;
-	Anope::string mask;
+	Warden::string mask;
 	Regex *regex;
-	Anope::string by;
+	Warden::string by;
 	time_t created = 0;
 	time_t expires = 0;
-	Anope::string reason;
+	Warden::string reason;
 	XLineManager *manager;
-	Anope::string id;
+	Warden::string id;
 
-	XLine(const Anope::string &mask, const Anope::string &reason = "", const Anope::string &uid = "");
+	XLine(const Warden::string &mask, const Warden::string &reason = "", const Warden::string &uid = "");
 
-	XLine(const Anope::string &mask, const Anope::string &by, const time_t expires, const Anope::string &reason, const Anope::string &uid = "");
+	XLine(const Warden::string &mask, const Warden::string &by, const time_t expires, const Warden::string &reason, const Warden::string &uid = "");
 	~XLine();
 
-	const Anope::string &GetNick() const;
-	const Anope::string &GetUser() const;
-	const Anope::string &GetHost() const;
-	const Anope::string &GetReal() const;
+	const Warden::string &GetNick() const;
+	const Warden::string &GetUser() const;
+	const Warden::string &GetHost() const;
+	const Warden::string &GetReal() const;
 
-	Anope::string GetReason() const;
+	Warden::string GetReason() const;
 
 	bool HasNickOrReal() const;
 	bool IsRegex() const;
@@ -69,7 +70,7 @@ class CoreExport XLineManager
 	/* List of XLines in this XLineManager */
 	Serialize::Checker<std::vector<XLine *> > xlines;
 	/* Akills can have the same IDs, sometimes */
-	static Serialize::Checker<std::multimap<Anope::string, XLine *, ci::less> > XLinesByUID;
+	static Serialize::Checker<std::multimap<Warden::string, XLine *, ci::less> > XLinesByUID;
 public:
 	/* List of XLine managers we check users against in XLineManager::CheckAll */
 	static std::list<XLineManager *> XLineManagers;
@@ -96,11 +97,11 @@ public:
 	/** Generate a unique ID for this XLine
 	 * @return A unique ID
 	 */
-	static Anope::string GenerateUID();
+	static Warden::string GenerateUID();
 
 	/** Constructor
 	 */
-	XLineManager(Module *creator, const Anope::string &name, char t);
+	XLineManager(Module *creator, const Warden::string &name, char t);
 
 	/** Destructor
 	 */
@@ -152,13 +153,13 @@ public:
 	 * @param reason the reason
 	 * @return true if the mask can be added
 	 */
-	bool CanAdd(CommandSource &source, const Anope::string &mask, time_t expires, const Anope::string &reason);
+	bool CanAdd(CommandSource &source, const Warden::string &mask, time_t expires, const Warden::string &reason);
 
 	/** Checks if this list has an entry
 	 * @param mask The mask
 	 * @return The XLine the user matches, or NULL
 	 */
-	XLine *HasEntry(const Anope::string &mask);
+	XLine *HasEntry(const Warden::string &mask);
 
 	/** Check a user against all of the xlines in this XLineManager
 	 * @param u The user

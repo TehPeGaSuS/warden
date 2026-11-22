@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,13 +25,13 @@ public:
 		this->SetSyntax(_("\037server\037 [\037reason\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &jserver = params[0];
-		const Anope::string &reason = params.size() > 1 ? params[1] : "";
+		const Warden::string &jserver = params[0];
+		const Warden::string &reason = params.size() > 1 ? params[1] : "";
 		Server *server = Server::Find(jserver, true);
 
-		if (!IRCD->IsHostValid(jserver) || jserver.find('.') == Anope::string::npos)
+		if (!IRCD->IsHostValid(jserver) || jserver.find('.') == Warden::string::npos)
 			source.Reply(_("Please use a valid server name when juping."));
 		else if (server == Me || server == Servers::GetUplink())
 			source.Reply(_("You can not jupe your services' pseudoserver or your uplink server."));
@@ -38,9 +39,9 @@ public:
 			source.Reply(_("You can not jupe an already juped server."));
 		else
 		{
-			Anope::string rbuf = "Juped by " + source.GetNick() + (!reason.empty() ? ": " + reason : "");
+			Warden::string rbuf = "Juped by " + source.GetNick() + (!reason.empty() ? ": " + reason : "");
 			/* Generate the new sid before quitting the old server, so they can't collide */
-			Anope::string sid = IRCD->SID_Retrieve();
+			Warden::string sid = IRCD->SID_Retrieve();
 			if (server)
 			{
 				IRCD->SendSquit(server, rbuf);
@@ -53,7 +54,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -77,7 +78,7 @@ class OSJupe final
 	CommandOSJupe commandosjupe;
 
 public:
-	OSJupe(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSJupe(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandosjupe(this)
 	{
 

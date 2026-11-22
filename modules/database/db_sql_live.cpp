@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -22,7 +23,7 @@ class DBMySQL final
 	, public Pipe
 {
 private:
-	Anope::string prefix;
+	Warden::string prefix;
 	ServiceReference<Provider> SQL;
 	time_t lastwarn;
 	bool ro;
@@ -33,9 +34,9 @@ private:
 	{
 		if (SQL)
 		{
-			if (Anope::ReadOnly && this->ro)
+			if (Warden::ReadOnly && this->ro)
 			{
-				Anope::ReadOnly = this->ro = false;
+				Warden::ReadOnly = this->ro = false;
 				Log() << "Found SQL again, going out of readonly mode...";
 			}
 
@@ -43,11 +44,11 @@ private:
 		}
 		else
 		{
-			if (Anope::CurTime - Config->GetBlock("options").Get<time_t>("updatetimeout", "2m") > lastwarn)
+			if (Warden::CurTime - Config->GetBlock("options").Get<time_t>("updatetimeout", "2m") > lastwarn)
 			{
 				Log() << "Unable to locate SQL reference, going to readonly...";
-				Anope::ReadOnly = this->ro = true;
-				this->lastwarn = Anope::CurTime;
+				Warden::ReadOnly = this->ro = true;
+				this->lastwarn = Warden::CurTime;
 			}
 
 			return false;
@@ -59,7 +60,7 @@ private:
 		return init && SQL;
 	}
 
-	Anope::string GetTableName(Serialize::Type *s_type)
+	Warden::string GetTableName(Serialize::Type *s_type)
 	{
 		return this->prefix + s_type->GetName();
 	}
@@ -79,7 +80,7 @@ private:
 	}
 
 public:
-	DBMySQL(const Anope::string &modname, const Anope::string &creator)
+	DBMySQL(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, DATABASE | VENDOR)
 		, SQL("SQL::Provider")
 	{
@@ -157,8 +158,8 @@ public:
 	{
 		const auto &block = conf.GetModule(this);
 
-		this->SQL.SetServiceName(block.Get<const Anope::string>("engine"));
-		this->prefix = block.Get<const Anope::string>("prefix", "anope21_");
+		this->SQL.SetServiceName(block.Get<const Warden::string>("engine"));
+		this->prefix = block.Get<const Warden::string>("prefix", "warden21_");
 	}
 
 	void OnSerializableConstruct(Serializable *obj) override
@@ -178,7 +179,7 @@ public:
 		if (s_type)
 		{
 			if (obj->object_id > 0)
-				this->RunQuery("DELETE FROM `" + GetTableName(s_type) + "` WHERE `id` = " + Anope::ToString(obj->object_id));
+				this->RunQuery("DELETE FROM `" + GetTableName(s_type) + "` WHERE `id` = " + Warden::ToString(obj->object_id));
 			s_type->objects.erase(obj->object_id);
 		}
 		this->updated_items.erase(obj);
@@ -186,12 +187,12 @@ public:
 
 	void OnSerializeTypeCheck(Serialize::Type *obj) override
 	{
-		if (!this->CheckInit() || obj->GetTimestamp() == Anope::CurTime)
+		if (!this->CheckInit() || obj->GetTimestamp() == Warden::CurTime)
 			return;
 
-		Anope::string sql = Anope::Format("SELECT * from `%s`", GetTableName(obj).c_str());
+		Warden::string sql = Warden::Format("SELECT * from `%s`", GetTableName(obj).c_str());
 		if (obj->GetTimestamp())
-			sql += Anope::Format(" WHERE (`timestamp` >= %s OR `timestamp` IS NULL)", this->SQL->FromUnixtime(obj->GetTimestamp()).c_str());
+			sql += Warden::Format(" WHERE (`timestamp` >= %s OR `timestamp` IS NULL)", this->SQL->FromUnixtime(obj->GetTimestamp()).c_str());
 
 		Query query(sql);
 
@@ -202,11 +203,11 @@ public:
 		bool clear_null = false;
 		for (int i = 0; i < res.Rows(); ++i)
 		{
-			const std::map<Anope::string, Anope::string> &row = res.Row(i);
+			const std::map<Warden::string, Warden::string> &row = res.Row(i);
 
 
 
-			auto oid = Anope::TryConvert<Serializable::Id>(res.Get(i, "id"));
+			auto oid = Warden::TryConvert<Serializable::Id>(res.Get(i, "id"));
 			if (!oid.has_value())
 			{
 				Log(LOG_DEBUG) << "Unable to convert id from " << obj->GetName();
@@ -255,7 +256,7 @@ public:
 				else
 				{
 					if (!s)
-						this->RunQuery("UPDATE `" + GetTableName(obj) + "` SET `timestamp` = " + this->SQL->FromUnixtime(obj->GetTimestamp()) + " WHERE `id` = " + Anope::ToString(id));
+						this->RunQuery("UPDATE `" + GetTableName(obj) + "` SET `timestamp` = " + this->SQL->FromUnixtime(obj->GetTimestamp()) + " WHERE `id` = " + Warden::ToString(id));
 					else
 						delete s;
 				}

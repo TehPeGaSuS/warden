@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -36,9 +37,9 @@ namespace HTTP
 struct HTTP::Reply final
 {
 	HTTP::Error error = HTTP::OK;
-	Anope::string content_type;
-	std::map<Anope::string, Anope::string, ci::less> headers;
-	typedef std::list<std::pair<Anope::string, Anope::string> > cookie;
+	Warden::string content_type;
+	std::map<Warden::string, Warden::string, ci::less> headers;
+	typedef std::list<std::pair<Warden::string, Warden::string> > cookie;
 	std::vector<cookie> cookies;
 
 	Reply() = default;
@@ -84,7 +85,7 @@ struct HTTP::Reply final
 	std::deque<Data *> out;
 	size_t length = 0;
 
-	void Write(const Anope::string &message)
+	void Write(const Warden::string &message)
 	{
 		this->out.push_back(new Data(message.c_str(), message.length()));
 		this->length += message.length();
@@ -100,29 +101,29 @@ struct HTTP::Reply final
 /* A message from someone */
 struct HTTP::Message final
 {
-	std::map<Anope::string, Anope::string, ci::less> headers;
-	std::map<Anope::string, Anope::string, ci::less> cookies;
-	std::map<Anope::string, Anope::string, ci::less> get_data;
-	std::map<Anope::string, Anope::string, ci::less> post_data;
-	Anope::string content;
+	std::map<Warden::string, Warden::string, ci::less> headers;
+	std::map<Warden::string, Warden::string, ci::less> cookies;
+	std::map<Warden::string, Warden::string, ci::less> get_data;
+	std::map<Warden::string, Warden::string, ci::less> post_data;
+	Warden::string content;
 };
 
 class HTTP::Page
 	: public virtual Base
 {
-	Anope::string url;
-	Anope::string content_type;
+	Warden::string url;
+	Warden::string content_type;
 
 public:
-	Page(const Anope::string &u, const Anope::string &ct = "text/html")
+	Page(const Warden::string &u, const Warden::string &ct = "text/html")
 		: url(u)
 		, content_type(ct)
 	{
 	}
 
-	const Anope::string &GetURL() const { return this->url; }
+	const Warden::string &GetURL() const { return this->url; }
 
-	const Anope::string &GetContentType() const { return this->content_type; }
+	const Warden::string &GetContentType() const { return this->content_type; }
 
 	/** Called when this page is requested
 	 * @param The server this page is on
@@ -131,7 +132,7 @@ public:
 	 * @param The HTTP header sent from the client to request the page
 	 * @param The HTTP header that will be sent back to the client
 	 */
-	virtual bool OnRequest(HTTP::Provider *, const Anope::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &) = 0;
+	virtual bool OnRequest(HTTP::Provider *, const Warden::string &, HTTP::Client *, HTTP::Message &, HTTP::Reply &) = 0;
 };
 
 class HTTP::Client
@@ -140,7 +141,7 @@ class HTTP::Client
 	, public Base
 {
 protected:
-	void WriteClient(const Anope::string &message)
+	void WriteClient(const Warden::string &message)
 	{
 		BinarySocket::Write(message + "\r\n");
 	}
@@ -152,12 +153,12 @@ public:
 	{
 	}
 
-	virtual Anope::string GetIP() const
+	virtual Warden::string GetIP() const
 	{
 		return this->clientaddr.addr();
 	}
 
-	virtual void SendError(HTTP::Error err, const Anope::string &msg) = 0;
+	virtual void SendError(HTTP::Error err, const Warden::string &msg) = 0;
 	virtual void SendReply(HTTP::Reply *) = 0;
 };
 
@@ -167,15 +168,15 @@ class HTTP::Provider
 	: public ListenSocket
 	, public Service
 {
-	Anope::string ip;
+	Warden::string ip;
 	unsigned short port;
 	bool ssl;
 public:
-	std::vector<Anope::string> ext_ips;
-	std::vector<Anope::string> ext_headers;
+	std::vector<Warden::string> ext_ips;
+	std::vector<Warden::string> ext_headers;
 
-	Provider(Module *c, const Anope::string &n, const Anope::string &i, const unsigned short p, bool s)
-		: ListenSocket(i, p, i.find(':') != Anope::string::npos)
+	Provider(Module *c, const Warden::string &n, const Warden::string &i, const unsigned short p, bool s)
+		: ListenSocket(i, p, i.find(':') != Warden::string::npos)
 		, Service(c, HTTP_PROVIDER, n)
 		, ip(i)
 		, port(p)
@@ -183,7 +184,7 @@ public:
 	{
 	}
 
-	const Anope::string &GetIP() const
+	const Warden::string &GetIP() const
 	{
 		return this->ip;
 	}
@@ -200,14 +201,14 @@ public:
 
 	virtual bool RegisterPage(HTTP::Page *page) = 0;
 	virtual void UnregisterPage(HTTP::Page *page) = 0;
-	virtual HTTP::Page *FindPage(const Anope::string &name) = 0;
+	virtual HTTP::Page *FindPage(const Warden::string &name) = 0;
 };
 
 namespace HTTP
 {
-	inline Anope::string URLDecode(const Anope::string &url)
+	inline Warden::string URLDecode(const Warden::string &url)
 	{
-		Anope::string decoded;
+		Warden::string decoded;
 
 		for (unsigned i = 0; i < url.length(); ++i)
 		{
@@ -215,8 +216,8 @@ namespace HTTP
 
 			if (c == '%' && i + 2 < url.length())
 			{
-				Anope::string dest;
-				Anope::Unhex(url.substr(i + 1, 2), dest);
+				Warden::string dest;
+				Warden::Unhex(url.substr(i + 1, 2), dest);
 				decoded += dest;
 				i += 2;
 			}
@@ -229,9 +230,9 @@ namespace HTTP
 		return decoded;
 	}
 
-	inline Anope::string URLEncode(const Anope::string &url)
+	inline Warden::string URLEncode(const Warden::string &url)
 	{
-		Anope::string encoded;
+		Warden::string encoded;
 
 		for (const auto c : url)
 		{
@@ -240,15 +241,15 @@ namespace HTTP
 			else if (c == ' ')
 				encoded += '+';
 			else
-				encoded += "%" + Anope::Hex(c);
+				encoded += "%" + Warden::Hex(c);
 		}
 
 		return encoded;
 	}
 
-	inline Anope::string Escape(const Anope::string &src)
+	inline Warden::string Escape(const Warden::string &src)
 	{
-		Anope::string dst;
+		Warden::string dst;
 
 		for (const auto c : src)
 		{

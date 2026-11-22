@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,11 +22,11 @@ class NSGroupRequest final
 {
 	CommandSource source;
 	Command *cmd;
-	Anope::string nick;
+	Warden::string nick;
 	Reference<NickAlias> target;
 
 public:
-	NSGroupRequest(Module *o, CommandSource &src, Command *c, const Anope::string &n, NickAlias *targ, const Anope::string &pass)
+	NSGroupRequest(Module *o, CommandSource &src, Command *c, const Warden::string &n, NickAlias *targ, const Warden::string &pass)
 		: IdentifyRequest(o, targ->nc->display, pass, src.ip)
 		, source(src)
 		, cmd(c)
@@ -53,7 +54,7 @@ public:
 		}
 
 		na = new NickAlias(nick, target->nc);
-		na->registered = na->last_seen = Anope::CurTime;
+		na->registered = na->last_seen = Warden::CurTime;
 
 		if (u != NULL)
 		{
@@ -68,7 +69,7 @@ public:
 		source.Reply(_("Your nickname now belongs to the account \002%s\002."), target->nick.c_str());
 
 		if (u)
-			u->lastnickreg = Anope::CurTime;
+			u->lastnickreg = Warden::CurTime;
 	}
 
 	void OnFail() override
@@ -98,11 +99,11 @@ public:
 		this->AllowUnregistered(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		User *user = source.GetUser();
 
-		Anope::string nick;
+		Warden::string nick;
 		if (params.empty())
 		{
 			NickCore *core = source.GetAccount();
@@ -118,9 +119,9 @@ public:
 			return;
 		}
 
-		const Anope::string &pass = params.size() > 1 ? params[1] : "";
+		const Warden::string &pass = params.size() > 1 ? params[1] : "";
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -136,7 +137,7 @@ public:
 		{
 			for (auto *o : Oper::opers)
 			{
-				if (user != NULL && !user->HasMode("OPER") && user->nick.find_ci(o->name) != Anope::string::npos)
+				if (user != NULL && !user->HasMode("OPER") && user->nick.find_ci(o->name) != Warden::string::npos)
 				{
 					source.Reply(NICK_CANNOT_BE_REGISTERED, user->nick.c_str());
 					return;
@@ -150,10 +151,10 @@ public:
 		auto maxaliases = modconf.Get<unsigned>("maxaliases");
 		if (!(target = NickAlias::Find(nick)))
 			source.Reply(NICK_X_NOT_REGISTERED, nick.c_str());
-		else if (user && Anope::CurTime < user->lastnickreg + reg_delay)
+		else if (user && Warden::CurTime < user->lastnickreg + reg_delay)
 		{
-			auto waitperiod = (unsigned long)(reg_delay + user->lastnickreg) - Anope::CurTime;
-			source.Reply(_("Please wait %s before using the GROUP command again."), Anope::Duration(waitperiod, source.GetAccount()).c_str());
+			auto waitperiod = (unsigned long)(reg_delay + user->lastnickreg) - Warden::CurTime;
+			source.Reply(_("Please wait %s before using the GROUP command again."), Warden::Duration(waitperiod, source.GetAccount()).c_str());
 		}
 		else if (target->nc->HasExt("NS_SUSPENDED"))
 		{
@@ -198,7 +199,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -244,9 +245,9 @@ public:
 		this->SetSyntax(_("[\037nick\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		Anope::string nick = !params.empty() ? params[0] : "";
+		Warden::string nick = !params.empty() ? params[0] : "";
 		NickAlias *na = NickAlias::Find(!nick.empty() ? nick : source.GetNick());
 
 		if (source.GetAccount()->aliases->size() == 1)
@@ -288,7 +289,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -313,9 +314,9 @@ public:
 		this->SetSyntax(_("[\037nickname\037]"), [](auto &source) { return source.IsServicesOper(); });
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &nick = !params.empty() ? params[0] : "";
+		const Warden::string &nick = !params.empty() ? params[0] : "";
 		const NickCore *nc;
 
 		if (!nick.empty())
@@ -350,19 +351,19 @@ public:
 		       unconfirmed_expire = Config->GetModule("ns_register").Get<time_t>("unconfirmedexpire", "1d");
 		for (auto *na2 : *nc->aliases)
 		{
-			Anope::string expires;
+			Warden::string expires;
 			if (na2->HasExt("NS_NO_EXPIRE"))
 				expires = NO_EXPIRE;
-			else if (!nickserv_expire || Anope::NoExpire)
+			else if (!nickserv_expire || Warden::NoExpire)
 				;
 			else if (na2->nc->HasExt("UNCONFIRMED") && unconfirmed_expire)
-				expires = Anope::strftime(na2->registered + unconfirmed_expire, source.GetAccount());
+				expires = Warden::strftime(na2->registered + unconfirmed_expire, source.GetAccount());
 			else
-				expires = Anope::strftime(na2->last_seen + nickserv_expire, source.GetAccount());
+				expires = Warden::strftime(na2->last_seen + nickserv_expire, source.GetAccount());
 
 			ListFormatter::ListEntry entry;
 			entry["Nick"] = na2->nick;
-			entry["Registered"] = Anope::strftime(na2->registered);
+			entry["Registered"] = Warden::strftime(na2->registered);
 			entry["Expires"] = expires;
 			list.AddEntry(entry);
 		}
@@ -372,7 +373,7 @@ public:
 		source.Reply(nc->aliases->size(), N_("%zu nickname in the account.", "%zu nicknames in the account."), nc->aliases->size());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		if (source.IsServicesOper())
@@ -398,16 +399,16 @@ class CommandNSSetDisplay
 	: public Command
 {
 public:
-	CommandNSSetDisplay(Module *creator, const Anope::string &sname = "nickserv/set/display", size_t min = 1)
+	CommandNSSetDisplay(Module *creator, const Warden::string &sname = "nickserv/set/display", size_t min = 1)
 		: Command(creator, sname, min, min + 1)
 	{
 		this->SetDesc(_("Set the display nickname for your account"));
 		this->SetSyntax(_("\037new-display\037"));
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -443,12 +444,12 @@ public:
 		source.Reply(NICK_SET_DISPLAY_CHANGED, user_nc->display.c_str());
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params[0]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -471,12 +472,12 @@ public:
 		this->SetSyntax(_("\037nickname\037 \037new-display\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params[1]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -499,7 +500,7 @@ private:
 	CommandNSSASetDisplay commandnssasetdisplay;
 
 public:
-	NSGroup(const Anope::string &modname, const Anope::string &creator)
+	NSGroup(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnsgroup(this)
 		, commandnsungroup(this)

@@ -1,4 +1,4 @@
-Anope Modules
+Warden Modules
 -------------
 
 1) Introduction
@@ -12,8 +12,8 @@ Anope Modules
 
 1) Introduction
 
-    Anope supports external modules. External modules are pieces
-    of code that can be attached to a running Anope process dynamically. These
+    Warden supports external modules. External modules are pieces
+    of code that can be attached to a running Warden process dynamically. These
     modules can serve several purposes, and perform all kind of operations to
     enhance your network.
 
@@ -22,20 +22,20 @@ Anope Modules
     1. If modules are supported by your system, they will be configured
        automatically when you run ./Config. The modules will be installed
        to the modules directory in your data path (by default this will
-       be ~/anope/data/modules).
+       be ~/warden/data/modules).
 
-    2. Compile Anope as usual using ./Config. The "make" process will now
-       compile module support into Anope, and compile the default sample
+    2. Compile Warden as usual using ./Config. The "make" process will now
+       compile module support into Warden, and compile the default sample
        modules, and any other module located in the modules folder or any
        of its sub-directories, eg. modules/extra.
 
-    3. Install Anope as usual. The "make install" process will place the
+    3. Install Warden as usual. The "make install" process will place the
        compiled modules in their runtime location, making them available
        for loading.
 
-    4. Start or restart services to make use of the new Anope executable.
+    4. Start or restart services to make use of the new Warden executable.
        Note that you do not need to restart to load new or changed modules,
-       only to make use of a new Anope executable.
+       only to make use of a new Warden executable.
 
 3) Usage
 
@@ -63,7 +63,7 @@ Anope Modules
     -OperServ- Module ns_identify loaded
 
     /msg OperServ modinfo ns_identify
-    -OperServ- Module: ns_identify Version: 1.9.7 Author: Anope loaded: Jun 17 18:43:08 2012 BST (2 minutes ago)
+    -OperServ- Module: ns_identify Version: 1.9.7 Author: Warden loaded: Jun 17 18:43:08 2012 BST (2 minutes ago)
     -OperServ-    Providing service: nickserv/identify
     -OperServ-    Command ID on NickServ is linked to nickserv/identify
     -OperServ-    Command IDENTIFY on NickServ is linked to nickserv/identify
@@ -89,33 +89,33 @@ Anope Modules
 
     You can download more useful modules from https://modules.anope.org/. Just
     grab the module file (usually with a .cpp extension). Place the module
-    file in your modules (anope-1.9.x/modules/third) folder; although any of
+    file in your modules (warden-1.9.x/modules/third) folder; although any of
     the other folders within the modules directory will work.
 
     The new modules need to be compiled and installed before you can make
     use of them:
 
-    1. Make sure you're in the main source directory. (usually anope-1.X.XX/)
+    1. Make sure you're in the main source directory. (usually warden-1.X.XX/)
     2. Run ./Config to find and configure modules, then `cd build`.
-    3. Run `make` to compile Anope, and any modules.
-    4. Run `make install` to copy the compiled binaries to the ~/anope/
+    3. Run `make` to compile Warden, and any modules.
+    4. Run `make install` to copy the compiled binaries to the ~/warden/
        directory.
 
     You can now use /msg OperServ MODLOAD to load the new modules.
 
 6) Support
 
-    The Anope team is not responsible or liable for any unofficial module
-    (i.e. anything other than what was released with the Anope package).
+    The Warden team is not responsible or liable for any unofficial module
+    (i.e. anything other than what was released with the Warden package).
 
     Use modules at your own risk, and make sure you get them from a
     reputable source. You might get module support by contacting the module
-    author, posting on our online forum, or maybe on our #anope channel
-    at /server irc.teranova.net.
+    author, or asking in GitHub Discussions:
+    https://github.com/TehPeGaSuS/warden/discussions.
 
 7) Information for Developers
 
-    There are a number of useful documents on the Anope Wiki. The Anope Wiki
+    There are a number of useful documents on the Warden Wiki. The Warden Wiki
     can be reached at:
 
     * https://wiki.anope.org/
@@ -124,5 +124,5 @@ Anope Modules
 
     You can find modules at https://modules.anope.org/
 
-    These modules are 3rd party and as such are not supported by the Anope Team.
-    Contact the Module Author directly with problems, not the Anope Team.
+    These modules are 3rd party and as such are not supported by the Warden Team.
+    Contact the Module Author directly with problems, not the Warden Team.

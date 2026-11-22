@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -22,22 +23,22 @@ int pipe(int fds[2])
 	int cfd = socket(AF_INET, SOCK_STREAM, 0), lfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (cfd == -1 || lfd == -1)
 	{
-		anope_close(cfd);
-		anope_close(lfd);
+		warden_close(cfd);
+		warden_close(lfd);
 		return -1;
 	}
 
 	if (bind(lfd, &localhost.sa, localhost.size()) == -1)
 	{
-		anope_close(cfd);
-		anope_close(lfd);
+		warden_close(cfd);
+		warden_close(lfd);
 		return -1;
 	}
 
 	if (listen(lfd, 1) == -1)
 	{
-		anope_close(cfd);
-		anope_close(lfd);
+		warden_close(cfd);
+		warden_close(lfd);
 		return -1;
 	}
 
@@ -47,16 +48,16 @@ int pipe(int fds[2])
 
 	if (connect(cfd, &lfd_addr.sa, lfd_addr.size()))
 	{
-		anope_close(cfd);
-		anope_close(lfd);
+		warden_close(cfd);
+		warden_close(lfd);
 		return -1;
 	}
 
 	int afd = accept(lfd, NULL, NULL);
-	anope_close(lfd);
+	warden_close(lfd);
 	if (afd == -1)
 	{
-		anope_close(cfd);
+		warden_close(cfd);
 		return -1;
 	}
 

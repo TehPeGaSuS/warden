@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,10 +25,10 @@ public:
 		this->SetSyntax(_("\037nick\037 \037newnick\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &nick = params[0];
-		Anope::string newnick = params[1];
+		const Warden::string &nick = params[0];
+		Warden::string newnick = params[1];
 		User *u2;
 
 		if (!IRCD->CanSVSNick)
@@ -60,11 +61,11 @@ public:
 		{
 			source.Reply(_("The nick \002%s\002 is now being changed to \002%s\002."), nick.c_str(), newnick.c_str());
 			Log(LOG_ADMIN, source, this) << "to change " << nick << " to " << newnick;
-			IRCD->SendForceNickChange(u2, newnick, Anope::CurTime);
+			IRCD->SendForceNickChange(u2, newnick, Warden::CurTime);
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -83,7 +84,7 @@ public:
 		this->SetSyntax(_("\037nick\037 \037channel\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!IRCD->CanSVSJoin)
 		{
@@ -109,7 +110,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -128,7 +129,7 @@ public:
 		this->SetSyntax(_("\037nick\037 \037channel\037 [\037reason\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!IRCD->CanSVSJoin)
 		{
@@ -138,7 +139,7 @@ public:
 
 		User *target = User::Find(params[0], true);
 		Channel *c = Channel::Find(params[1]);
-		const Anope::string &reason = params.size() > 2 ? params[2] : "";
+		const Warden::string &reason = params.size() > 2 ? params[2] : "";
 		if (target == NULL)
 			source.Reply(NICK_X_NOT_IN_USE, params[0].c_str());
 		else if (source.GetUser() != target && (target->IsProtected() || target->server == Me))
@@ -158,7 +159,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -175,7 +176,7 @@ class OSSVS final
 	CommandOSSVSPart commandossvspart;
 
 public:
-	OSSVS(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSSVS(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandossvsnick(this), commandossvsjoin(this), commandossvspart(this)
 	{
 	}

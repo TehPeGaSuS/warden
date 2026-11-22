@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -56,12 +57,12 @@ bool BufferedSocket::ProcessWrite()
 	return true;
 }
 
-Anope::string BufferedSocket::GetLine()
+Warden::string BufferedSocket::GetLine()
 {
 	size_t s = this->read_buffer.find('\n');
-	if (s == Anope::string::npos)
+	if (s == Warden::string::npos)
 		return "";
-	Anope::string str = this->read_buffer.substr(0, s + 1);
+	Warden::string str = this->read_buffer.substr(0, s + 1);
 	this->read_buffer.erase(0, s + 1);
 	this->read_buffer.ltrim("\r\n");
 	return str.trim("\r\n");
@@ -69,7 +70,7 @@ Anope::string BufferedSocket::GetLine()
 
 void BufferedSocket::Write(const char *buffer, size_t l)
 {
-	this->write_buffer += buffer + Anope::string("\r\n");
+	this->write_buffer += buffer + Warden::string("\r\n");
 	SocketEngine::Change(this, true, SF_WRITABLE);
 }
 
@@ -78,12 +79,12 @@ void BufferedSocket::Write(const char *message, ...)
 	if (!message)
 		return;
 
-	Anope::string tbuffer;
-	ANOPE_FORMAT(message, message, tbuffer);
+	Warden::string tbuffer;
+	WARDEN_FORMAT(message, message, tbuffer);
 	this->Write(tbuffer.c_str(), tbuffer.length());
 }
 
-void BufferedSocket::Write(const Anope::string &message)
+void BufferedSocket::Write(const Warden::string &message)
 {
 	this->Write(message.c_str(), message.length());
 }
@@ -165,12 +166,12 @@ void BinarySocket::Write(const char *message, ...)
 	if (!message)
 		return;
 
-	Anope::string tbuffer;
-	ANOPE_FORMAT(message, message, tbuffer);
+	Warden::string tbuffer;
+	WARDEN_FORMAT(message, message, tbuffer);
 	this->Write(tbuffer.c_str(), tbuffer.length());
 }
 
-void BinarySocket::Write(const Anope::string &message)
+void BinarySocket::Write(const Warden::string &message)
 {
 	this->Write(message.c_str(), message.length());
 }

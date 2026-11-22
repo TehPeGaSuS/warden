@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -13,10 +14,10 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "textproc.h"
 
-static const Anope::string Base64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+static const Warden::string Base64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const char Pad64 = '=';
 
 /* (From RFC1521 and draft-ietf-dnssec-secext-03.txt)
@@ -82,12 +83,12 @@ static const char Pad64 = '=';
 	   characters followed by one "=" padding character.
    */
 
-Anope::string Anope::B64Encode(const Anope::string &src)
+Warden::string Warden::B64Encode(const Warden::string &src)
 {
 	size_t src_pos = 0, src_len = src.length();
 	unsigned char input[3] = { '\0', '\0', '\0' };
 
-	Anope::string target;
+	Warden::string target;
 
 	while (src_len - src_pos > 2)
 	{
@@ -124,12 +125,12 @@ Anope::string Anope::B64Encode(const Anope::string &src)
    src from base - 64 numbers into three 8 bit bytes in the target area.
  */
 
-Anope::string Anope::B64Decode(const Anope::string &src)
+Warden::string Warden::B64Decode(const Warden::string &src)
 {
-	Anope::string target;
+	Warden::string target;
 
 	unsigned state = 0;
-	Anope::string::const_iterator ch = src.begin(), end = src.end();
+	Warden::string::const_iterator ch = src.begin(), end = src.end();
 	for (; ch != end; ++ch)
 	{
 		if (isspace(*ch)) /* Skip whitespace anywhere */
@@ -139,7 +140,7 @@ Anope::string Anope::B64Decode(const Anope::string &src)
 			break;
 
 		size_t pos = Base64.find(*ch);
-		if (pos == Anope::string::npos) /* A non-base64 character */
+		if (pos == Warden::string::npos) /* A non-base64 character */
 			return {};
 
 		switch (state)

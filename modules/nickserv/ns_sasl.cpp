@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -20,8 +21,8 @@ class SASLService final
 	, public Timer
 {
 private:
-	Anope::map<std::pair<time_t, unsigned short>> badpasswords;
-	Anope::map<SASL::Session *> sessions;
+	Warden::map<std::pair<time_t, unsigned short>> badpasswords;
+	Warden::map<SASL::Session *> sessions;
 
 public:
 	unsigned badpasslimit;
@@ -69,7 +70,7 @@ public:
 				return;
 			}
 
-			Anope::string hostname, ip;
+			Warden::string hostname, ip;
 			if (session)
 			{
 				// Copy over host/ip to mech-specific session
@@ -113,16 +114,16 @@ public:
 		}
 	}
 
-	Anope::string GetAgent()
+	Warden::string GetAgent()
 	{
-		auto agent = Config->GetModule(Service::owner).Get<Anope::string>("agent", "NickServ");
+		auto agent = Config->GetModule(Service::owner).Get<Warden::string>("agent", "NickServ");
 		BotInfo *bi = Config->GetClient(agent);
 		if (bi)
 			agent = bi->GetUID();
 		return agent;
 	}
 
-	SASL::Session *GetSession(const Anope::string &uid) override
+	SASL::Session *GetSession(const Warden::string &uid) override
 	{
 		auto it = sessions.find(uid);
 		if (it != sessions.end())
@@ -149,7 +150,7 @@ public:
 		}
 	}
 
-	void SendMessage(SASL::Session *session, const Anope::string &mtype, const Anope::string &data) override
+	void SendMessage(SASL::Session *session, const Warden::string &mtype, const Warden::string &data) override
 	{
 		SASL::Message msg;
 		msg.source = this->GetAgent();
@@ -199,11 +200,11 @@ public:
 			it = badpasswords.emplace(session->uid, std::make_pair(0, 0)).first;
 		auto &[invalid_pw_time, invalid_pw_count] = it->second;
 
-		if (badpasstimeout > 0 && invalid_pw_time > 0 && invalid_pw_time < Anope::CurTime - badpasstimeout)
+		if (badpasstimeout > 0 && invalid_pw_time > 0 && invalid_pw_time < Warden::CurTime - badpasstimeout)
 			invalid_pw_count = 0;
 
 		invalid_pw_count++;
-		invalid_pw_time = Anope::CurTime;
+		invalid_pw_time = Warden::CurTime;
 		if (invalid_pw_count >= badpasslimit)
 		{
 			IRCD->SendKill(BotInfo::Find(GetAgent()), session->uid, "Too many invalid passwords");
@@ -213,8 +214,8 @@ public:
 
 	void SendMechs(SASL::Session *session)
 	{
-		std::vector<Anope::string> mechs = Service::GetServiceKeys("SASL::Mechanism");
-		Anope::string buf;
+		std::vector<Warden::string> mechs = Service::GetServiceKeys("SASL::Mechanism");
+		Warden::string buf;
 		for (const auto &mech : mechs)
 			buf += "," + mech;
 
@@ -225,7 +226,7 @@ public:
 	{
 		for (auto it = badpasswords.begin(); it != badpasswords.end(); )
 		{
-			if (it->second.first + badpasstimeout < Anope::CurTime)
+			if (it->second.first + badpasstimeout < Warden::CurTime)
 				it = badpasswords.erase(it);
 			else
 				it++;
@@ -234,7 +235,7 @@ public:
 		for (auto it = sessions.begin(); it != sessions.end(); )
 		{
 			const auto [uid, sess] = *it++;
-			if (!sess || sess->created + 60 < Anope::CurTime)
+			if (!sess || sess->created + 60 < Warden::CurTime)
 			{
 				delete sess;
 				sessions.erase(uid);
@@ -249,11 +250,11 @@ class ModuleSASL final
 {
 private:
 	SASLService sasl;
-	std::vector<Anope::string> mechs;
+	std::vector<Warden::string> mechs;
 
 	void CheckMechs()
 	{
-		std::vector<Anope::string> newmechs = ::Service::GetServiceKeys("SASL::Mechanism");
+		std::vector<Warden::string> newmechs = ::Service::GetServiceKeys("SASL::Mechanism");
 		if (newmechs == mechs || !SASL::protocol_interface)
 			return;
 
@@ -265,7 +266,7 @@ private:
 	}
 
 public:
-	ModuleSASL(const Anope::string &modname, const Anope::string &creator)
+	ModuleSASL(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, sasl(this)
 	{

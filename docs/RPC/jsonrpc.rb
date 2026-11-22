@@ -4,8 +4,8 @@ require "base64"
 require "json"
 require "net/http"
 
-# Implements methods for accessing an Anope JSON-RPC server.
-class AnopeRPC
+# Implements methods for accessing an Warden JSON-RPC server.
+class WardenRPC
 
 	# The RPC host base URL.
 	attr_accessor :host
@@ -13,7 +13,7 @@ class AnopeRPC
 	# The bearer token for authorizing with the RPC interface.
 	attr_accessor :token
 
-	# Initializes a new AnopeRPC instance with the specified RPC host.
+	# Initializes a new WardenRPC instance with the specified RPC host.
 	#
 	# @param host [String] The RPC host base URL.
 	# @param token [String] The bearer token for authorizing with the RPC interface.
@@ -56,7 +56,7 @@ class AnopeRPC
 	# @return [Hash] If the detail level is set to :full then a hash of information about the
 	#                accounts.
 	def list_accounts(detail = :name)
-		self.run("anope.listAccounts", detail)
+		self.run("warden.listAccounts", detail)
 	end
 
 	# Retrieves information about the specified account.
@@ -66,7 +66,7 @@ class AnopeRPC
 	# @param name [String] The name of the account.
 	# @return [Hash] A hash containing information about the account.
 	def account(name)
-		self.run("anope.account", name)
+		self.run("warden.account", name)
 	end
 
 	# Retrieves a list of channels.
@@ -78,7 +78,7 @@ class AnopeRPC
 	# @return [Hash] If the detail level is set to :full then a hash of information about the
 	#                channels.
 	def list_channels(detail = :name)
-		self.run("anope.listChannels", detail)
+		self.run("warden.listChannels", detail)
 	end
 
 	# Retrieves information about the specified channel.
@@ -88,7 +88,7 @@ class AnopeRPC
 	# @param name [String] The name of the channel.
 	# @return [Hash] A hash containing information about the channel.
 	def channel(name)
-		self.run("anope.channel", name)
+		self.run("warden.channel", name)
 	end
 
 	# Retrieves a list of services operators.
@@ -100,7 +100,7 @@ class AnopeRPC
 	# @return [Hash] If the detail level is set to :full then a hash of information about the
 	#                services operators.
 	def list_opers(detail = :name)
-		self.run("anope.listOpers", detail)
+		self.run("warden.listOpers", detail)
 	end
 
 	# Retrieves information about the specified services operator.
@@ -110,7 +110,7 @@ class AnopeRPC
 	# @param name [String] The name of the services operator.
 	# @return [Hash] A hash containing information about the services operator.
 	def oper(name)
-		self.run("anope.oper", name)
+		self.run("warden.oper", name)
 	end
 
 	# Retrieves a list of servers.
@@ -122,7 +122,7 @@ class AnopeRPC
 	# @return [Hash] If the detail level is set to :full then a hash of information about the
 	#                servers.
 	def list_servers(detail = :name)
-		self.run("anope.listServers", detail)
+		self.run("warden.listServers", detail)
 	end
 
 	# Retrieves information about the specified server.
@@ -132,7 +132,7 @@ class AnopeRPC
 	# @param name [String] The name of the server.
 	# @return [Hash] A hash containing information about the server.
 	def server(name)
-		self.run("anope.server", name)
+		self.run("warden.server", name)
 	end
 
 	# Retrieves a list of users.
@@ -144,7 +144,7 @@ class AnopeRPC
 	# @return [Hash] If the detail level is set to :full then a hash of information about the
 	#                users.
 	def list_users(detail = :name)
-		self.run("anope.listUsers", detail)
+		self.run("warden.listUsers", detail)
 	end
 
 	# Retrieves information about the specified user.
@@ -154,7 +154,7 @@ class AnopeRPC
 	# @param name [String] The name of the user.
 	# @return [Hash] A hash containing information about the user.
 	def user(name)
-		self.run("anope.user", name)
+		self.run("warden.user", name)
 	end
 
 	# Sends a message to every user on the network.
@@ -163,7 +163,7 @@ class AnopeRPC
 	#
 	# @param messages [Array<String>] One or more messages to send.
 	def message_network(*messages)
-		self.run("anope.messageNetwork", *messages)
+		self.run("warden.messageNetwork", *messages)
 	end
 
 	# Sends a message to every user on the specified server.
@@ -173,7 +173,7 @@ class AnopeRPC
 	# @param name [String] The name of the server.
 	# @param messages [Array<String>] One or more messages to send.
 	def message_server(server, *messages)
-		self.run("anope.messageServer", server, *messages)
+		self.run("warden.messageServer", server, *messages)
 	end
 
 	# Sends a message to the specified user.
@@ -184,7 +184,7 @@ class AnopeRPC
 	# @param target [String] The target user to send the message to.
 	# @param messages [Array<String>] One or more messages to send.
 	def message_user(source, target, *messages)
-		self.run("anope.messageUser", source, target, *messages)
+		self.run("warden.messageUser", source, target, *messages)
 	end
 
 	# Checks whether the specified credentials are valid.
@@ -195,7 +195,7 @@ class AnopeRPC
 	# @param password [String] The password for the specified account.
 	# @return [Hash] A hash containing basic information about the account.
 	def check_credentials(account, password)
-		self.run("anope.checkCredentials", account, password)
+		self.run("warden.checkCredentials", account, password)
 	end
 
 	# Identifies an IRC user to the specified account.
@@ -206,7 +206,7 @@ class AnopeRPC
 	#                         identify to.
 	# @param password [String] The nickname of the IRC user to identify to the account.
 	def identify(account, user)
-		self.run("anope.identify", account, user)
+		self.run("warden.identify", account, user)
 	end
 
 	# Lists all commands that exist on the network.
@@ -216,7 +216,7 @@ class AnopeRPC
 	# @param services [Array<String>] The nicknames of the services to list commands for.
 	# @return [Hash] A hash containing information about the available commands.
 	def list_commands(*services)
-		self.run("anope.listCommands", *services)
+		self.run("warden.listCommands", *services)
 	end
 
 	# Lists all commands that exist on the network.
@@ -228,12 +228,12 @@ class AnopeRPC
 	# @param command [Array<String>] The the command to execute and any parameters to pass to it.
 	# @return [Hash] A hash containing information about the available commands.
 	def command(account, service, *command)
-		self.run("anope.command", account, service, *command)
+		self.run("warden.command", account, service, *command)
 	end
 end
 
 =begin
-arpc = AnopeRPC.new("http://127.0.0.1:8080/jsonrpc")
+arpc = WardenRPC.new("http://127.0.0.1:8080/jsonrpc")
 begin
 	pp arpc.list_servers(:full)
 rescue StandardError => err

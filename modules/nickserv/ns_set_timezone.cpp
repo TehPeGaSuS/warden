@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -27,17 +28,17 @@
 
 namespace
 {
-	Anope::map<std::vector<Anope::string>> timeregions;
-	std::vector<Anope::string> timezones;
+	Warden::map<std::vector<Warden::string>> timeregions;
+	std::vector<Warden::string> timezones;
 }
 
 class CommandNSSetTimezone
 	: public Command
 {
 protected:
-	SerializableExtensibleItem<Anope::string> &timezone;
+	SerializableExtensibleItem<Warden::string> &timezone;
 
-	bool SendZones(CommandSource &source, const Anope::string &subcommand)
+	bool SendZones(CommandSource &source, const Warden::string &subcommand)
 	{
 		auto timeregion = timeregions.find(subcommand);
 		if (timeregion == timeregions.end())
@@ -47,7 +48,7 @@ protected:
 			timeregion->first.c_str());
 
 		const auto max_length = Config->GetBlock("options").Get<size_t>("linelength", "100");
-		Anope::string buffer;
+		Warden::string buffer;
 		for (const auto &timezone : timeregion->second)
 		{
 			if (buffer.length() + 2 + timezone.length() >= max_length)
@@ -68,7 +69,7 @@ protected:
 	}
 
 public:
-	CommandNSSetTimezone(Module *creator, SerializableExtensibleItem<Anope::string> &tz, const Anope::string &sname = "nickserv/set/timezone", size_t min = 0)
+	CommandNSSetTimezone(Module *creator, SerializableExtensibleItem<Warden::string> &tz, const Warden::string &sname = "nickserv/set/timezone", size_t min = 0)
 		: Command(creator, sname, min, min + 1)
 		, timezone(tz)
 	{
@@ -76,9 +77,9 @@ public:
 		this->SetSyntax(_("[\037timezone\037]"));
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -97,7 +98,7 @@ public:
 		if (MOD_RESULT == EVENT_STOP)
 			return;
 
-		Anope::string usertz;
+		Warden::string usertz;
 		if (param.empty())
 		{
 			usertz = "UTC";
@@ -137,12 +138,12 @@ public:
 			source.Reply(_("Timezone for \002%s\002 changed to \002%s\002."), nc->display.c_str(), usertz.c_str());
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params.empty() ? "" : params[0]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		if (subcommand.empty())
 		{
@@ -176,19 +177,19 @@ class CommandNSSASetTimezone final
 	: public CommandNSSetTimezone
 {
 public:
-	CommandNSSASetTimezone(Module *creator, SerializableExtensibleItem<Anope::string> &tz)
+	CommandNSSASetTimezone(Module *creator, SerializableExtensibleItem<Warden::string> &tz)
 		: CommandNSSetTimezone(creator, tz, "nickserv/saset/timezone", 1)
 	{
 		this->ClearSyntax();
 		this->SetSyntax(_("\037nickname\037 [\037timezone\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params.size() > 1 ? params[1] : "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		if (subcommand.empty())
 		{
@@ -219,12 +220,12 @@ class NSSetTimezone final
 	: public Module
 {
 private:
-	SerializableExtensibleItem<Anope::string> timezone;
+	SerializableExtensibleItem<Warden::string> timezone;
 	CommandNSSetTimezone commandnssettimezone;
 	CommandNSSASetTimezone commandnssasettimezone;
 
 public:
-	NSSetTimezone(const Anope::string &modname, const Anope::string &creator)
+	NSSetTimezone(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, timezone(this, "timezone")
 		, commandnssettimezone(this, timezone)
@@ -245,7 +246,7 @@ public:
 		for (const auto &timezone : timezones)
 		{
 			const auto tzsep = timezone.rfind('/');
-			auto region = tzsep == Anope::string::npos ? "Misc" : timezone.substr(0, tzsep);
+			auto region = tzsep == Warden::string::npos ? "Misc" : timezone.substr(0, tzsep);
 			timeregions[region].push_back(timezone);
 		}
 
@@ -257,7 +258,7 @@ public:
 			if (!timeregion.equals_ci("Misc") && timezones.size() < 2)
 			{
 				const auto trsep = timeregion.rfind('/');
-				auto region = trsep == Anope::string::npos ? "Misc" : timeregion.substr(0, trsep);
+				auto region = trsep == Warden::string::npos ? "Misc" : timeregion.substr(0, trsep);
 
 				auto& parentregion = timeregions[region];
 				parentregion.insert(parentregion.end(), timezones.begin(), timezones.end());

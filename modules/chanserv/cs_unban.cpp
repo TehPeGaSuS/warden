@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,9 +25,9 @@ public:
 		this->SetSyntax(_("\037channel\037 [\037nick\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const auto &mode = Config->GetCommand(source).Get<Anope::string>("mode", "BAN");
+		const auto &mode = Config->GetCommand(source).Get<Warden::string>("mode", "BAN");
 		auto *cm = ModeManager::FindChannelModeByName(mode);
 		if (!cm)
 			return;
@@ -105,7 +106,7 @@ public:
 			source.Reply(_("\002%s\002 has been unbanned from \002%s\002."), u2->nick.c_str(), ci->c->name.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -130,7 +131,7 @@ class CSUnban final
 	CommandCSUnban commandcsunban;
 
 public:
-	CSUnban(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	CSUnban(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandcsunban(this)
 	{
 

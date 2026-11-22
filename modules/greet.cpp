@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,16 +19,16 @@ class CommandBSSetGreet final
 	: public Command
 {
 public:
-	CommandBSSetGreet(Module *creator, const Anope::string &sname = "botserv/set/greet") : Command(creator, sname, 2, 2)
+	CommandBSSetGreet(Module *creator, const Warden::string &sname = "botserv/set/greet") : Command(creator, sname, 2, 2)
 	{
 		this->SetDesc(_("Enable greet messages"));
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
-		const Anope::string &value = params[1];
+		const Warden::string &value = params[1];
 
 		if (ci == NULL)
 		{
@@ -41,7 +42,7 @@ public:
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -67,7 +68,7 @@ public:
 			this->OnSyntaxError(source, source.command);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -85,15 +86,15 @@ class CommandNSSetGreet
 	: public Command
 {
 public:
-	CommandNSSetGreet(Module *creator, const Anope::string &sname = "nickserv/set/greet", size_t min = 0) : Command(creator, sname, min, min + 1)
+	CommandNSSetGreet(Module *creator, const Warden::string &sname = "nickserv/set/greet", size_t min = 0) : Command(creator, sname, min, min + 1)
 	{
 		this->SetDesc(_("Associate a greet message with your nickname"));
 		this->SetSyntax(_("[\037message\037]"));
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -115,23 +116,23 @@ public:
 		if (!param.empty())
 		{
 			Log(nc == source.GetAccount() ? LOG_COMMAND : LOG_ADMIN, source, this) << "to change the greet of " << nc->display;
-			nc->Extend<Anope::string>("greet", param);
+			nc->Extend<Warden::string>("greet", param);
 			source.Reply(_("Greet message for \002%s\002 changed to \002%s\002."), nc->display.c_str(), param.c_str());
 		}
 		else
 		{
 			Log(nc == source.GetAccount() ? LOG_COMMAND : LOG_ADMIN, source, this) << "to unset the greet of " << nc->display;
-			nc->Shrink<Anope::string>("greet");
+			nc->Shrink<Warden::string>("greet");
 			source.Reply(_("Greet message for \002%s\002 unset."), nc->display.c_str());
 		}
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params.size() > 0 ? params[0] : "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -163,12 +164,12 @@ public:
 		this->SetSyntax(_("\037nickname\037 [\037message\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params.size() > 1 ? params[1] : "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -197,14 +198,14 @@ class Greet final
 	/* channel setting for whether or not greet should be shown */
 	SerializableExtensibleItem<bool> bs_greet;
 	/* user greets */
-	SerializableExtensibleItem<Anope::string> ns_greet;
+	SerializableExtensibleItem<Warden::string> ns_greet;
 
 	CommandBSSetGreet commandbssetgreet;
 	CommandNSSetGreet commandnssetgreet;
 	CommandNSSASetGreet commandnssasetgreet;
 
 public:
-	Greet(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	Greet(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		bs_greet(this, "BS_GREET"),
 		ns_greet(this, "greet"),
 		commandbssetgreet(this),
@@ -221,18 +222,18 @@ public:
 		if (!c->ci || !c->ci->bi || !user->server->IsSynced() || !user->IsIdentified())
 			return;
 
-		Anope::string *greet = ns_greet.Get(user->Account());
+		Warden::string *greet = ns_greet.Get(user->Account());
 		if (bs_greet.HasExt(c->ci) && greet != NULL && !greet->empty() && c->FindUser(c->ci->bi) && c->ci->AccessFor(user).HasPriv("GREET"))
 		{
-			const auto message = Anope::Format("[%s] %s", user->Account()->display.c_str(), greet->c_str());
+			const auto message = Warden::Format("[%s] %s", user->Account()->display.c_str(), greet->c_str());
 			IRCD->SendPrivmsg(*c->ci->bi, c->name, message);
-			c->ci->bi->lastmsg = Anope::CurTime;
+			c->ci->bi->lastmsg = Warden::CurTime;
 		}
 	}
 
 	void OnNickInfo(CommandSource &source, NickAlias *na, InfoFormatter &info, bool show_hidden) override
 	{
-		Anope::string *greet = ns_greet.Get(na->nc);
+		Warden::string *greet = ns_greet.Get(na->nc);
 		if (greet != NULL)
 			info[_("Greet")] = *greet;
 	}

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,7 +26,7 @@ namespace Encryption
 		/** Updates the encryption context with the specified data.
 		 * @param str The data to update the context with.
 		 */
-		inline void Update(const Anope::string &str)
+		inline void Update(const Warden::string &str)
 		{
 			Update(reinterpret_cast<const unsigned char *>(str.c_str()), str.length());
 		}
@@ -37,7 +38,7 @@ namespace Encryption
 		virtual void Update(const unsigned char *data, size_t len) = 0;
 
 		/** Finalises the encryption context and returns the digest. */
-		virtual Anope::string Finalize() = 0;
+		virtual Warden::string Finalize() = 0;
 	};
 
 	/** Provider of encryption contexts. */
@@ -57,7 +58,7 @@ namespace Encryption
 		 * @param bs The byte size of the block cipher.
 		 * @param ds The byte size of the resulting digest.
 		 */
-		Provider(Module *creator, const Anope::string &algorithm, size_t bs, size_t ds)
+		Provider(Module *creator, const Warden::string &algorithm, size_t bs, size_t ds)
 			: Service(creator, "Encryption::Provider", algorithm)
 			, block_size(bs)
 			, digest_size(ds)
@@ -67,13 +68,13 @@ namespace Encryption
 		virtual ~Provider() = default;
 
 		/** Checks whether a plain text value matches a hash created by this provider. */
-		virtual bool Compare(const Anope::string &hash, const Anope::string &plain)
+		virtual bool Compare(const Warden::string &hash, const Warden::string &plain)
 		{
 			return !hash.empty() && hash.equals_cs(ToPrintable(Encrypt(plain)));
 		}
 
 		/** Called on initialising a encryption provider to check it works properly. */
-		void Check(const Anope::map<Anope::string> &checks)
+		void Check(const Warden::map<Warden::string> &checks)
 		{
 			for (const auto &[hash, plain] : checks)
 			{
@@ -88,7 +89,7 @@ namespace Encryption
 
 		/** Quickly encrypts the specified values and returns the digest. */
 		template<typename... Args>
-		Anope::string Encrypt(Args &&...args)
+		Warden::string Encrypt(Args &&...args)
 		{
 			auto context = CreateContext();
 			context->Update(std::forward<Args>(args)...);
@@ -96,7 +97,7 @@ namespace Encryption
 		}
 
 		/** Calculates the  RFC 2104 hash-based message authentication code for the specified data. */
-		inline Anope::string HMAC(const Anope::string &key, const Anope::string &data)
+		inline Warden::string HMAC(const Warden::string &key, const Warden::string &data)
 		{
 			if (!block_size)
 				return {};
@@ -104,8 +105,8 @@ namespace Encryption
 			auto keybuf = key.length() > block_size ? Encrypt(key) : key;
 			keybuf.resize(block_size);
 
-			Anope::string hmac1;
-			Anope::string hmac2;
+			Warden::string hmac1;
+			Warden::string hmac2;
 			for (size_t i = 0; i < block_size; ++i)
 			{
 				hmac1.push_back(static_cast<char>(keybuf[i] ^ 0x5C));
@@ -118,9 +119,9 @@ namespace Encryption
 		}
 
 		/** Converts a hash to its printable form. */
-		virtual Anope::string ToPrintable(const Anope::string &hash)
+		virtual Warden::string ToPrintable(const Warden::string &hash)
 		{
-			return Anope::Hex(hash);
+			return Warden::Hex(hash);
 		}
 	};
 
@@ -136,7 +137,7 @@ namespace Encryption
 		 * @param bs The byte size of the block cipher.
 		 * @param ds The byte size of the resulting digest.
 		 */
-		SimpleProvider(Module *creator, const Anope::string &algorithm, size_t bs, size_t ds)
+		SimpleProvider(Module *creator, const Warden::string &algorithm, size_t bs, size_t ds)
 			: Provider(creator, algorithm, bs, ds)
 		{
 		}

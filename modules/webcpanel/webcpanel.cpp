@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,15 +16,15 @@
 #include "webcpanel.h"
 
 Module *me;
-Anope::string template_base, page_title;
-std::vector<Anope::string> allowed_origins;
+Warden::string template_base, page_title;
+std::vector<Warden::string> allowed_origins;
 
 class ModuleWebCPanel final
 	: public Module
 {
 	ServiceReference<HTTP::Provider> provider;
 	Panel panel;
-	PrimitiveExtensibleItem<Anope::string> id, ip;
+	PrimitiveExtensibleItem<Warden::string> id, ip;
 	PrimitiveExtensibleItem<time_t> last_login;
 
 	StaticFileServer style_css, logo_png, cubes_png, favicon_ico;
@@ -53,7 +54,7 @@ class ModuleWebCPanel final
 
 
 public:
-	ModuleWebCPanel(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, EXTRA | VENDOR),
+	ModuleWebCPanel(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, EXTRA | VENDOR),
 		provider(HTTP_PROVIDER),
 		panel(this, "webcpanel"),
 		id(this, "webcpanel_id"), ip(this, "webcpanel_ip"), last_login(this, "webcpanel_last_login"),
@@ -68,11 +69,11 @@ public:
 		me = this;
 
 		const auto &block = Config->GetModule(this);
-		template_base = Anope::ExpandData(block.Get<const Anope::string>("template_dir", "webcpanel/templates/default"));
-		page_title = block.Get<const Anope::string>("title", "Anope IRC Services");
-		spacesepstream(block.Get<const Anope::string>("allowed_origins")).GetTokens(allowed_origins);
+		template_base = Warden::ExpandData(block.Get<const Warden::string>("template_dir", "webcpanel/templates/default"));
+		page_title = block.Get<const Warden::string>("title", "Warden IRC Services");
+		spacesepstream(block.Get<const Warden::string>("allowed_origins")).GetTokens(allowed_origins);
 
-		provider.SetServiceName(block.Get<const Anope::string>("server", "httpd/main"));
+		provider.SetServiceName(block.Get<const Warden::string>("server", "httpd/main"));
 		if (!provider)
 			throw ModuleException("Unable to find HTTPD provider. Is httpd loaded?");
 
@@ -238,24 +239,24 @@ public:
 
 namespace WebPanel
 {
-	bool CheckParams(const std::vector<Anope::string> &params)
+	bool CheckParams(const std::vector<Warden::string> &params)
 	{
-		static Anope::string invalid("\r\n\0", 3);
-		for (std::vector<Anope::string>::const_iterator it = params.begin(); it != params.end(); ++it)
+		static Warden::string invalid("\r\n\0", 3);
+		for (std::vector<Warden::string>::const_iterator it = params.begin(); it != params.end(); ++it)
 		{
-			if (it->length() > 512 || it->find_first_of(invalid) != Anope::string::npos)
+			if (it->length() > 512 || it->find_first_of(invalid) != Warden::string::npos)
 				return false;
 		}
 		return true;
 	}
 
-	Anope::string GetRequestData(const std::map<Anope::string, Anope::string, ci::less> &data, const Anope::string &key)
+	Warden::string GetRequestData(const std::map<Warden::string, Warden::string, ci::less> &data, const Warden::string &key)
 	{
 		const auto dit = data.find(key);
 		if (dit == data.end() || dit->second.length() > 512)
 			return ""; // No data or too long.
 
-		return Anope::ReplaceUnsafe(dit->second);
+		return Warden::ReplaceUnsafe(dit->second);
 	}
 
 	bool IsAllowedOrigin(const HTTP::Message &message)
@@ -263,19 +264,19 @@ namespace WebPanel
 		if (allowed_origins.empty())
 			return true; // No allowed origins specified.
 
-		std::map<Anope::string, Anope::string, ci::less>::const_iterator it = message.headers.find("Origin");
+		std::map<Warden::string, Warden::string, ci::less>::const_iterator it = message.headers.find("Origin");
 		if (it == message.headers.end())
 			return true; // Not a POST.
 
-		for (std::vector<Anope::string>::const_iterator allowed_origin = allowed_origins.begin(); allowed_origin != allowed_origins.end(); ++allowed_origin)
+		for (std::vector<Warden::string>::const_iterator allowed_origin = allowed_origins.begin(); allowed_origin != allowed_origins.end(); ++allowed_origin)
 		{
-			if (Anope::Match(it->second, *allowed_origin))
+			if (Warden::Match(it->second, *allowed_origin))
 				return true;
 		}
 		return false;
 	}
 
-	void RunCommand(HTTP::Client *client, const Anope::string &user, NickCore *nc, const Anope::string &service, const Anope::string &c, std::vector<Anope::string> &params, TemplateFileServer::Replacements &r, const Anope::string &key)
+	void RunCommand(HTTP::Client *client, const Warden::string &user, NickCore *nc, const Warden::string &service, const Warden::string &c, std::vector<Warden::string> &params, TemplateFileServer::Replacements &r, const Warden::string &key)
 	{
 		ServiceReference<Command> cmd("Command", c);
 		if (!cmd)
@@ -305,11 +306,11 @@ namespace WebPanel
 			: CommandReply
 		{
 			TemplateFileServer::Replacements &re;
-			const Anope::string &k;
+			const Warden::string &k;
 
-			MyComandReply(TemplateFileServer::Replacements &_r, const Anope::string &_k) : re(_r), k(_k) { }
+			MyComandReply(TemplateFileServer::Replacements &_r, const Warden::string &_k) : re(_r), k(_k) { }
 
-			void SendMessage(BotInfo *source, const Anope::string &msg) override
+			void SendMessage(BotInfo *source, const Warden::string &msg) override
 			{
 				re[k] = msg.replace_all_cs("\x1A", "\x20");
 			}
@@ -325,7 +326,7 @@ namespace WebPanel
 		cmd->Run(source, "", info, params);
 	}
 
-	void RunCommandWithName(HTTP::Client *client, NickCore *nc, const Anope::string &service, const Anope::string &c, const Anope::string &cmdname, std::vector<Anope::string> &params, TemplateFileServer::Replacements &r, const Anope::string &key)
+	void RunCommandWithName(HTTP::Client *client, NickCore *nc, const Warden::string &service, const Warden::string &c, const Warden::string &cmdname, std::vector<Warden::string> &params, TemplateFileServer::Replacements &r, const Warden::string &key)
 	{
 		ServiceReference<Command> cmd("Command", c);
 		if (!cmd)
@@ -352,11 +353,11 @@ namespace WebPanel
 			: CommandReply
 		{
 			TemplateFileServer::Replacements &re;
-			const Anope::string &k;
+			const Warden::string &k;
 
-			MyComandReply(TemplateFileServer::Replacements &_r, const Anope::string &_k) : re(_r), k(_k) { }
+			MyComandReply(TemplateFileServer::Replacements &_r, const Warden::string &_k) : re(_r), k(_k) { }
 
-			void SendMessage(BotInfo *source, const Anope::string &msg) override
+			void SendMessage(BotInfo *source, const Warden::string &msg) override
 			{
 				re[k] = msg.replace_all_cs("\x1A", "\x20");
 			}

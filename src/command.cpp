@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2008-2011 Robin Burchell <w00t@inspircd.org>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,12 +25,12 @@
 #include "regchannel.h"
 #include "channels.h"
 
-void CommandReply::SendMessage(CommandSource &source, const Anope::string &msg)
+void CommandReply::SendMessage(CommandSource &source, const Warden::string &msg)
 {
 	SendMessage(source.service, msg);
 }
 
-CommandSource::CommandSource(const Anope::string &n, User *user, NickCore *core, CommandReply *r, BotInfo *bi, const Anope::string &m)
+CommandSource::CommandSource(const Warden::string &n, User *user, NickCore *core, CommandReply *r, BotInfo *bi, const Warden::string &m)
 	: nick(n)
 	, u(user)
 	, nc(core)
@@ -40,7 +41,7 @@ CommandSource::CommandSource(const Anope::string &n, User *user, NickCore *core,
 {
 }
 
-const Anope::string &CommandSource::GetNick() const
+const Warden::string &CommandSource::GetNick() const
 {
 	return this->nick;
 }
@@ -74,7 +75,7 @@ bool CommandSource::IsFounder(ChannelInfo *ci)
 	return false;
 }
 
-bool CommandSource::HasCommand(const Anope::string &cmd)
+bool CommandSource::HasCommand(const Warden::string &cmd)
 {
 	if (this->u)
 		return this->u->HasCommand(cmd);
@@ -83,7 +84,7 @@ bool CommandSource::HasCommand(const Anope::string &cmd)
 	return false;
 }
 
-bool CommandSource::HasPriv(const Anope::string &cmd)
+bool CommandSource::HasPriv(const Warden::string &cmd)
 {
 	if (this->u)
 		return this->u->HasPriv(cmd);
@@ -114,8 +115,8 @@ void CommandSource::Reply(const char *message, ...)
 {
 	const char *translated_message = Translate(message);
 
-	Anope::string buf;
-	ANOPE_FORMAT(message, translated_message, buf);
+	Warden::string buf;
+	WARDEN_FORMAT(message, translated_message, buf);
 	this->reply->SendMessage(*this, buf);
 }
 
@@ -123,12 +124,12 @@ void CommandSource::Reply(int count, const char *single, const char *plural, ...
 {
 	const char *translated_message = Translate(count, single, plural);
 
-	Anope::string buf;
-	ANOPE_FORMAT(plural, translated_message, buf);
+	Warden::string buf;
+	WARDEN_FORMAT(plural, translated_message, buf);
 	this->reply->SendMessage(*this, buf);
 }
 
-void CommandSource::Reply(const Anope::string &message)
+void CommandSource::Reply(const Warden::string &message)
 {
 	const char *translated_message = Translate(message.c_str());
 	this->reply->SendMessage(*this, translated_message);
@@ -139,12 +140,12 @@ const char *CommandSource::Translate(const char *message)
 	return Language::Translate(GetAccount(), message);
 }
 
-const char *CommandSource::Translate(const Anope::string &message)
+const char *CommandSource::Translate(const Warden::string &message)
 {
 	return Language::Translate(GetAccount(), message.c_str());
 }
 
-const char *CommandSource::Translate(int count, const Anope::string &single, const Anope::string &plural)
+const char *CommandSource::Translate(int count, const Warden::string &single, const Warden::string &plural)
 {
 	return Language::Translate(GetAccount(), count, single.c_str(), plural.c_str());
 }
@@ -154,11 +155,11 @@ const char *CommandSource::Translate(int count, const char *single, const char *
 	return Language::Translate(GetAccount(), count, single, plural);
 }
 
-Command::Command(Module *o, const Anope::string &sname, size_t minparams, size_t maxparams) : Service(o, "Command", sname), max_params(maxparams), min_params(minparams), module(o)
+Command::Command(Module *o, const Warden::string &sname, size_t minparams, size_t maxparams) : Service(o, "Command", sname), max_params(maxparams), min_params(minparams), module(o)
 {
 }
 
-void Command::SetDesc(const Anope::string &d)
+void Command::SetDesc(const Warden::string &d)
 {
 	this->desc = d;
 }
@@ -168,7 +169,7 @@ void Command::ClearSyntax()
 	this->syntax.clear();
 }
 
-void Command::SetSyntax(const Anope::string &s, const std::function<bool(CommandSource&)> &p)
+void Command::SetSyntax(const Warden::string &s, const std::function<bool(CommandSource&)> &p)
 {
 	this->syntax.emplace_back(s, p);
 }
@@ -180,8 +181,8 @@ void Command::SendSyntax(CommandSource &source)
 	const auto *monospace = !flexible && sourcenc && sourcenc->HasExt("NS_MONOSPACE") ? "\021" : "";
 
 	auto first = true;
-	Anope::string prefix = source.Translate(_("Syntax"));
-	Anope::string padding(prefix.utf8length(), ' ');
+	Warden::string prefix = source.Translate(_("Syntax"));
+	Warden::string padding(prefix.utf8length(), ' ');
 	for (const auto &[syntax, predicate] : this->syntax)
 	{
 		if (predicate && !predicate(source))
@@ -217,7 +218,7 @@ void Command::RequireUser(bool b)
 	this->require_user = b;
 }
 
-Anope::string Command::GetDesc(CommandSource &) const
+Warden::string Command::GetDesc(CommandSource &) const
 {
 	return this->desc;
 }
@@ -227,7 +228,7 @@ void Command::OnServHelp(CommandSource &source, HelpWrapper &help)
 	help.AddEntry(source.command, this->GetDesc(source));
 }
 
-bool Command::OnHelp(CommandSource &source, const Anope::string &subcommand)
+bool Command::OnHelp(CommandSource &source, const Warden::string &subcommand)
 {
 	this->SendSyntax(source);
 	source.Reply(" ");
@@ -235,7 +236,7 @@ bool Command::OnHelp(CommandSource &source, const Anope::string &subcommand)
 	return true;
 }
 
-void Command::OnSyntaxError(CommandSource &source, const Anope::string &subcommand)
+void Command::OnSyntaxError(CommandSource &source, const Warden::string &subcommand)
 {
 	this->SendSyntax(source);
 
@@ -250,18 +251,18 @@ void Command::OnSyntaxError(CommandSource &source, const Anope::string &subcomma
 
 namespace
 {
-	void HandleUnknownCommand(CommandSource &source, const Anope::string &message)
+	void HandleUnknownCommand(CommandSource &source, const Warden::string &message)
 	{
 		// Try to find a similar command.
 		auto distance = Config->GetBlock("options").Get<size_t>("didyoumeandifference", "4");
-		Anope::string similar;
+		Warden::string similar;
 		auto umessage = message.upper();
 		for (const auto &[command, info] : source.service->commands)
 		{
 			if (info.hide)
 				continue; // Don't suggest a hidden alias.
 
-			size_t dist = Anope::Distance(umessage, command);
+			size_t dist = Warden::Distance(umessage, command);
 			if (dist < distance)
 			{
 				ServiceReference<Command> cmd("Command", info.name);
@@ -295,16 +296,16 @@ namespace
 	}
 }
 
-bool Command::Run(CommandSource &source, const Anope::string &message)
+bool Command::Run(CommandSource &source, const Warden::string &message)
 {
-	std::vector<Anope::string> params;
+	std::vector<Warden::string> params;
 	spacesepstream(message).GetTokens(params);
 
 	auto it = source.service->commands.end();
 	unsigned count = 0;
 	for (unsigned max = params.size(); it == source.service->commands.end() && max > 0; --max)
 	{
-		Anope::string full_command;
+		Warden::string full_command;
 		for (unsigned i = 0; i < max; ++i)
 			full_command += " " + params[i];
 		full_command.erase(full_command.begin());
@@ -340,7 +341,7 @@ bool Command::Run(CommandSource &source, const Anope::string &message)
 	return c->Run(source, it->first, info, params);
 }
 
-bool Command::Run(CommandSource &source, const Anope::string &cmdname, const CommandInfo &info, std::vector<Anope::string> &params)
+bool Command::Run(CommandSource &source, const Warden::string &cmdname, const CommandInfo &info, std::vector<Warden::string> &params)
 {
 	if (this->RequireUser() && !source.GetUser())
 		return false;
@@ -382,7 +383,7 @@ bool Command::Run(CommandSource &source, const Anope::string &cmdname, const Com
 	return true;
 }
 
-bool Command::FindFromService(const Anope::string &command_service, BotInfo *&bot, Anope::string &name)
+bool Command::FindFromService(const Warden::string &command_service, BotInfo *&bot, Warden::string &name)
 {
 	bot = nullptr;
 	name.clear();

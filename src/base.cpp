@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -13,11 +14,11 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "service.h"
 
-std::map<Anope::string, std::map<Anope::string, Service *> > Service::Services;
-std::map<Anope::string, std::map<Anope::string, Anope::string> > Service::Aliases;
+std::map<Warden::string, std::map<Warden::string, Service *> > Service::Services;
+std::map<Warden::string, std::map<Warden::string, Warden::string> > Service::Aliases;
 
 Base::~Base()
 {

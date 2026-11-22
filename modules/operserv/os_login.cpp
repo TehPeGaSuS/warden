@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,7 +20,7 @@ class CommandOSLogin final
 	: public Command
 {
 private:
-	bool ComparePassword(const Oper *o, const Anope::string &password)
+	bool ComparePassword(const Oper *o, const Warden::string &password)
 	{
 		if (o->password_hash.empty())
 			return o->password.equals_cs(password); // Plaintext password.
@@ -39,7 +40,7 @@ public:
 		this->RequireUser(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		User *u = source.GetUser();
 		Oper *o = source.nc->o;
@@ -62,7 +63,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -75,9 +76,9 @@ public:
 		return true;
 	}
 
-	Anope::string GetDesc(CommandSource &source) const override
+	Warden::string GetDesc(CommandSource &source) const override
 	{
-		return Anope::Format(source.Translate(_("Login to %s")), source.service->nick.c_str());
+		return Warden::Format(source.Translate(_("Login to %s")), source.service->nick.c_str());
 	}
 };
 
@@ -90,7 +91,7 @@ public:
 		this->RequireUser(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		User *u = source.GetUser();
 		Oper *o = source.nc->o;
@@ -108,7 +109,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -121,9 +122,9 @@ public:
 		return true;
 	}
 
-	Anope::string GetDesc(CommandSource &source) const override
+	Warden::string GetDesc(CommandSource &source) const override
 	{
-		return Anope::Format(source.Translate(_("Logout from %s")), source.service->nick.c_str());
+		return Warden::Format(source.Translate(_("Logout from %s")), source.service->nick.c_str());
 	}
 };
 
@@ -135,7 +136,7 @@ class OSLogin final
 	ExtensibleItem<bool> os_login;
 
 public:
-	OSLogin(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSLogin(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandoslogin(this), commandoslogout(this), os_login(this, "os_login")
 	{
 

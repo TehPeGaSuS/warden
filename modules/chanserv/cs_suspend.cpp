@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -44,7 +45,7 @@ struct CSSuspendInfoType final
 	{
 		CSSuspendInfo *si;
 		if (obj)
-			si = anope_dynamic_static_cast<CSSuspendInfo *>(obj);
+			si = warden_dynamic_static_cast<CSSuspendInfo *>(obj);
 		else
 		{
 			auto *ci = ChannelInfo::Find(data.Load("chan"));
@@ -73,9 +74,9 @@ public:
 		this->SetSyntax(_("\037channel\037 [+\037expiry\037] [\037reason\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -101,7 +102,7 @@ public:
 		time_t expiry_secs = Config->GetModule(this->owner).Get<time_t>("suspendexpire");
 		if (expiry_idx != 0)
 		{
-			expiry_secs = Anope::DoTime(params[expiry_idx].substr(1));
+			expiry_secs = Warden::DoTime(params[expiry_idx].substr(1));
 			if (expiry_secs < 0)
 			{
 				source.Reply(BAD_EXPIRY_TIME);
@@ -109,7 +110,7 @@ public:
 			}
 		}
 
-		Anope::string reason;
+		Warden::string reason;
 		for (auto idx = reason_idx; idx < params.size(); ++idx)
 			reason.append(reason.empty() ? "" : " ").append(params[idx]);
 
@@ -117,8 +118,8 @@ public:
 		si->what = ci->name;
 		si->by = source.GetNick();
 		si->reason = reason;
-		si->when = Anope::CurTime;
-		si->expires = expiry_secs ? expiry_secs + Anope::CurTime : 0;
+		si->when = Warden::CurTime;
+		si->expires = expiry_secs ? expiry_secs + Warden::CurTime : 0;
 
 		if (ci->c)
 		{
@@ -135,13 +136,13 @@ public:
 				ci->c->Kick(NULL, user, "%s", !reason.empty() ? reason.c_str() : Language::Translate(user, _("This channel has been suspended.")));
 		}
 
-		Log(LOG_ADMIN, source, this, ci) << "(" << (!reason.empty() ? reason : "No reason") << "), expires on " << (expiry_secs ? Anope::strftime(Anope::CurTime + expiry_secs) : "never");
+		Log(LOG_ADMIN, source, this, ci) << "(" << (!reason.empty() ? reason : "No reason") << "), expires on " << (expiry_secs ? Warden::strftime(Warden::CurTime + expiry_secs) : "never");
 		source.Reply(_("Channel \002%s\002 is now suspended."), ci->name.c_str());
 
 		FOREACH_MOD(OnChanSuspend, (ci));
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -169,10 +170,10 @@ public:
 		this->SetSyntax(_("\037channel\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
@@ -199,7 +200,7 @@ public:
 		FOREACH_MOD(OnChanUnsuspend, (ci));
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -218,11 +219,11 @@ class CSSuspend final
 	CommandCSUnSuspend commandcsunsuspend;
 	ExtensibleItem<CSSuspendInfo> suspend;
 	CSSuspendInfoType suspend_type;
-	std::vector<Anope::string> show;
+	std::vector<Warden::string> show;
 
 	struct trim final
 	{
-		Anope::string operator()(Anope::string s) const
+		Warden::string operator()(Warden::string s) const
 		{
 			return s.trim();
 		}
@@ -235,13 +236,13 @@ class CSSuspend final
 	}
 
 
-	bool Show(CommandSource &source, const Anope::string &what) const
+	bool Show(CommandSource &source, const Warden::string &what) const
 	{
 		return source.IsOper() || std::find(show.begin(), show.end(), what) != show.end();
 	}
 
 public:
-	CSSuspend(const Anope::string &modname, const Anope::string &creator)
+	CSSuspend(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandcssuspend(this)
 		, commandcsunsuspend(this)
@@ -251,7 +252,7 @@ public:
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		auto s = conf.GetModule(this).Get<Anope::string>("show");
+		auto s = conf.GetModule(this).Get<Warden::string>("show");
 		commasepstream(s).GetTokens(show);
 		std::transform(show.begin(), show.end(), show.begin(), trim());
 	}
@@ -269,9 +270,9 @@ public:
 		if (!si->reason.empty() && (show_hidden || Show(source, "reason")))
 			info[_("Suspend reason")] = si->reason;
 		if (si->when && (show_hidden || Show(source, "on")))
-			info[_("Suspended on")] = Anope::strftime(si->when, source.GetAccount());
+			info[_("Suspended on")] = Warden::strftime(si->when, source.GetAccount());
 		if (si->expires && (show_hidden || Show(source, "expires")))
-			info[_("Suspension expires")] = Anope::strftime(si->expires, source.GetAccount());
+			info[_("Suspension expires")] = Warden::strftime(si->expires, source.GetAccount());
 	}
 
 	void OnPreChanExpire(ChannelInfo *ci, bool &expire) override
@@ -282,14 +283,14 @@ public:
 
 		expire = false;
 
-		if (!Anope::NoExpire && si->expires && si->expires < Anope::CurTime)
+		if (!Warden::NoExpire && si->expires && si->expires < Warden::CurTime)
 		{
-			ci->last_used = Anope::CurTime;
+			ci->last_used = Warden::CurTime;
 			Expire(ci);
 		}
 	}
 
-	EventReturn OnCheckKick(User *u, Channel *c, Anope::string &mask, Anope::string &reason) override
+	EventReturn OnCheckKick(User *u, Channel *c, Warden::string &mask, Warden::string &reason) override
 	{
 		if (u->HasMode("OPER") || !c->ci)
 			return EVENT_CONTINUE;
@@ -298,7 +299,7 @@ public:
 		if (!si)
 			return EVENT_CONTINUE;
 
-		if (!Anope::NoExpire && si->expires && si->expires < Anope::CurTime)
+		if (!Warden::NoExpire && si->expires && si->expires < Warden::CurTime)
 		{
 			Expire(c->ci);
 			return EVENT_CONTINUE;

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,23 +19,23 @@
 class SQLLog final
 	: public Module
 {
-	std::set<Anope::string> inited;
-	Anope::string table;
+	std::set<Warden::string> inited;
+	Warden::string table;
 
 public:
-	SQLLog(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR | EXTRA)
+	SQLLog(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR | EXTRA)
 	{
 	}
 
 	void OnReload(Configuration::Conf &conf) override
 	{
 		const auto &config = conf.GetModule(this);
-		this->table = config.Get<const Anope::string>("table", "logs");
+		this->table = config.Get<const Warden::string>("table", "logs");
 	}
 
-	void OnLogMessage(LogInfo *li, const Log *l, const Anope::string &msg) override
+	void OnLogMessage(LogInfo *li, const Log *l, const Warden::string &msg) override
 	{
-		Anope::string ref_name;
+		Warden::string ref_name;
 		ServiceReference<SQL::Provider> SQL("SQL::Provider");
 
 		for (const auto &target : li->targets)

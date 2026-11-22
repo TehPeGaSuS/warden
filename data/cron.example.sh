@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Crontab script for Anope
+# Crontab script for Warden
 #
 # To know how to install the crontab, read the INSTALL file.
 
@@ -8,17 +8,17 @@
 # CONFIGURATION
 ###############################################################
 
-# Anope binary directory
-ANOPATH=/home/ircd/anope/bin
+# Warden binary directory
+ANOPATH=/home/ircd/warden/bin
 
-# Anope data directory
-ANODATA=/home/ircd/anope/data
+# Warden data directory
+ANODATA=/home/ircd/warden/data
 
 # Name of the pid file
-ANOPIDF=anope.pid
+ANOPIDF=warden.pid
 
 # Name of the executable
-ANOPROG=anope
+ANOPROG=warden
 
 # Parameters to pass to the executable
 ANOARGS=""

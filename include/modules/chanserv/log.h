@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -29,15 +30,15 @@ protected:
 	LogSetting() = default;
 
 public:
-	Anope::string chan;
+	Warden::string chan;
 	/* Our service name of the command */
-	Anope::string service_name;
+	Warden::string service_name;
 	/* The name of the client the command is on */
-	Anope::string command_service;
+	Warden::string command_service;
 	/* Name of the command to the user, can have spaces */
-	Anope::string command_name;
-	Anope::string method, extra;
-	Anope::string creator;
+	Warden::string command_name;
+	Warden::string method, extra;
+	Warden::string creator;
 	time_t created;
 
 	virtual ~LogSetting() = default;

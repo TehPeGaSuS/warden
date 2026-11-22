@@ -1,9 +1,9 @@
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = "Anope"
+PROJECT_NAME           = "Warden"
 PROJECT_NUMBER         = 2.0
 PROJECT_BRIEF          =
 PROJECT_LOGO           =
-PROJECT_ICON           = src/win32/anope-icon.ico
+PROJECT_ICON           = src/win32/warden-icon.ico
 OUTPUT_DIRECTORY       = docs/doxygen
 CREATE_SUBDIRS         = NO
 CREATE_SUBDIRS_LEVEL   = 8

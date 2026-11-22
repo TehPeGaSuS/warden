@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -31,9 +32,9 @@ class BCryptContext final
 	: public Encryption::Context
 {
 private:
-	Anope::string buffer;
+	Warden::string buffer;
 
-	Anope::string GenerateSalt()
+	Warden::string GenerateSalt()
 	{
 		static std::random_device device;
 		static std::mt19937 engine(device());
@@ -54,7 +55,7 @@ private:
 public:
 	static unsigned long rounds;
 
-	static Anope::string Hash(const Anope::string &data, const Anope::string &salt)
+	static Warden::string Hash(const Warden::string &data, const Warden::string &salt)
 	{
 		char hash[64];
 		if (!_crypt_blowfish_rn(data.c_str(), salt.c_str(), hash, sizeof(hash)))
@@ -70,7 +71,7 @@ public:
 		buffer.append(reinterpret_cast<const char *>(data), len);
 	}
 
-	Anope::string Finalize() override
+	Warden::string Finalize() override
 	{
 		auto salt = GenerateSalt();
 		if (salt.empty())
@@ -90,7 +91,7 @@ public:
 	{
 	}
 
-	bool Compare(const Anope::string &hash, const Anope::string &plain) override
+	bool Compare(const Warden::string &hash, const Warden::string &plain) override
 	{
 		auto newhash = BCryptContext::Hash(plain, hash);
 		return !newhash.empty() && hash.equals_cs(newhash);
@@ -101,7 +102,7 @@ public:
 		return std::make_unique<BCryptContext>();
 	}
 
-	Anope::string ToPrintable(const Anope::string &hash) override
+	Warden::string ToPrintable(const Warden::string &hash) override
 	{
 		// The crypt_blowfish library does not expose a raw form.
 		return hash;
@@ -117,7 +118,7 @@ private:
 	static const size_t BCRYPT_MAX_LEN = 72;
 
 public:
-	EBCrypt(const Anope::string &modname, const Anope::string &creator)
+	EBCrypt(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, ENCRYPTION | VENDOR)
 		, bcryptprovider(this)
 	{
@@ -127,7 +128,7 @@ public:
 		});
 	}
 
-	EventReturn OnEncrypt(const Anope::string &src, Anope::string &dest) override
+	EventReturn OnEncrypt(const Warden::string &src, Warden::string &dest) override
 	{
 		if (src.length() > BCRYPT_MAX_LEN)
 			return EVENT_CONTINUE;
@@ -145,14 +146,14 @@ public:
 
 		NickCore *nc = na->nc;
 		auto pos = nc->pass.find(':');
-		if (pos == Anope::string::npos)
+		if (pos == Warden::string::npos)
 			return;
 
-		Anope::string hash_method(nc->pass.begin(), nc->pass.begin() + pos);
+		Warden::string hash_method(nc->pass.begin(), nc->pass.begin() + pos);
 		if (!hash_method.equals_cs("bcrypt"))
 			return;
 
-		Anope::string hash_value(nc->pass.begin() + pos + 1, nc->pass.end());
+		Warden::string hash_value(nc->pass.begin() + pos + 1, nc->pass.end());
 		if (bcryptprovider.Compare(hash_value, req->GetPassword()))
 		{
 			unsigned long rounds = 0;
@@ -160,8 +161,8 @@ public:
 			// Try to extract the rounds count to check if we need to
 			// re-encrypt the password.
 			pos = hash_value.find('$', 4);
-			if (pos != Anope::string::npos)
-				rounds = Anope::Convert<unsigned long>(hash_value.substr(4, pos - 4), 0);
+			if (pos != Warden::string::npos)
+				rounds = Warden::Convert<unsigned long>(hash_value.substr(4, pos - 4), 0);
 
 			if (!rounds)
 				Log(LOG_DEBUG) << "Unable to determine the rounds of a bcrypt hash: " << hash_value;
@@ -170,7 +171,7 @@ public:
 			// are different we want to re-encrypt the password with the primary
 			// encryption method.
 			if (ModuleManager::FindFirstOf(ENCRYPTION) != this || (rounds && rounds != BCryptContext::rounds))
-				Anope::Encrypt(req->GetPassword(), nc->pass);
+				Warden::Encrypt(req->GetPassword(), nc->pass);
 			req->Success(this, na);
 		}
 	}

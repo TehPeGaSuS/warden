@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,12 +17,12 @@
 
 #include "extensible.h"
 #include "serialize.h"
-#include "anope.h"
+#include "warden.h"
 #include "memo.h"
 #include "base.h"
 
-typedef Anope::unordered_map<NickAlias *> nickalias_map;
-typedef Anope::unordered_map<NickCore *> nickcore_map;
+typedef Warden::unordered_map<NickAlias *> nickalias_map;
+typedef Warden::unordered_map<NickCore *> nickcore_map;
 typedef std::unordered_map<uint64_t, NickCore *> nickcoreid_map;
 
 extern CoreExport Serialize::Checker<nickalias_map> NickAliasList;
@@ -45,18 +46,18 @@ public:
 	};
 
 private:
-	Anope::string vhost_ident, vhost_host, vhost_creator;
+	Warden::string vhost_ident, vhost_host, vhost_creator;
 	time_t vhost_created = 0;
 
 public:
-	Anope::string nick;
-	Anope::string last_quit;
+	Warden::string nick;
+	Warden::string last_quit;
 	/* Last cloaked user@host this nick was seen using. */
-	Anope::string last_userhost;
+	Warden::string last_userhost;
 	/* Last real user@host this nick was seen using. */
-	Anope::string last_userhost_real;
-	time_t registered = Anope::CurTime;
-	time_t last_seen = Anope::CurTime;
+	Warden::string last_userhost_real;
+	time_t registered = Warden::CurTime;
+	time_t last_seen = Warden::CurTime;
 
 	/* Account this nick is tied to. Multiple nicks can be tied to a single account. */
 	Serialize::Reference<NickCore> nc;
@@ -65,7 +66,7 @@ public:
 	 * @param nickname The nick
 	 * @param nickcore The nickcore for this nick
 	 */
-	NickAlias(const Anope::string &nickname, NickCore *nickcore);
+	NickAlias(const Warden::string &nickname, NickCore *nickcore);
 	~NickAlias();
 
 	/** Set a vhost for the user
@@ -74,7 +75,7 @@ public:
 	 * @param creator Who created the vhost
 	 * @param time When the vhost was created
 	 */
-	void SetVHost(const Anope::string &ident, const Anope::string &host, const Anope::string &creator, time_t created = Anope::CurTime);
+	void SetVHost(const Warden::string &ident, const Warden::string &host, const Warden::string &creator, time_t created = Warden::CurTime);
 
 	/** Remove a users vhost
 	 **/
@@ -88,22 +89,22 @@ public:
 	/** Retrieve the vhost ident
 	 * @return the ident
 	 */
-	const Anope::string &GetVHostIdent() const;
+	const Warden::string &GetVHostIdent() const;
 
 	/** Retrieve the vhost host
 	 * @return the host
 	 */
-	const Anope::string &GetVHostHost() const;
+	const Warden::string &GetVHostHost() const;
 
 	/** Retrieve the vhost mask
 	 * @param the mask
 	 */
-	Anope::string GetVHostMask() const;
+	Warden::string GetVHostMask() const;
 
 	/** Retrieve the vhost creator
 	 * @return the creator
 	 */
-	const Anope::string &GetVHostCreator() const;
+	const Warden::string &GetVHostCreator() const;
 
 	/** Retrieve when the vhost was created
 	 * @return the time it was created
@@ -119,7 +120,7 @@ public:
 	 * @param nick The nick to lookup
 	 * @return the nick, if found
 	 */
-	static NickAlias *Find(const Anope::string &nick);
+	static NickAlias *Find(const Warden::string &nick);
 	static NickAlias *FindId(uint64_t uid);
 };
 
@@ -147,18 +148,18 @@ private:
 	uint64_t uniqueid;
 public:
 	/* Name of the account. Find(display)->nc == this. */
-	Anope::string display;
+	Warden::string display;
 	/* User password in form of hashm:data */
-	Anope::string pass;
-	Anope::string email;
+	Warden::string pass;
+	Warden::string email;
 	/* Locale name of the language of the user. Empty means default language */
-	Anope::string language;
+	Warden::string language;
 	/* Last time an email was sent to this user */
 	time_t lastmail = 0;
 	/* The time this account was registered */
-	time_t registered = Anope::CurTime;
+	time_t registered = Warden::CurTime;
 	MemoInfo memos;
-	std::map<Anope::string, ModeData> last_modes;
+	std::map<Warden::string, ModeData> last_modes;
 
 	/* Nicknames registered that are grouped to this account.
 	 * for n in aliases, n->nc == this.
@@ -181,7 +182,7 @@ public:
 	 * @param display The display nick
 	 * @param id The account id
 	 */
-	NickCore(const Anope::string &nickdisplay, uint64_t nickid = 0);
+	NickCore(const Warden::string &nickdisplay, uint64_t nickid = 0);
 	~NickCore();
 
 	/** Changes the display for this account
@@ -201,7 +202,7 @@ public:
 	 * @param nick The account name to find
 	 * @return The account, if it exists
 	 */
-	static NickCore *Find(const Anope::string &nick);
+	static NickCore *Find(const Warden::string &nick);
 	static NickCore *FindId(uint64_t uid);
 
 	void AddChannelReference(ChannelInfo *ci);
@@ -217,9 +218,9 @@ class CoreExport IdentifyRequest
 	/* Owner of this request, used to cleanup requests if a module is unloaded
 	 * while a request us pending */
 	Module *owner;
-	Anope::string account;
-	Anope::string password;
-	Anope::string address;
+	Warden::string account;
+	Warden::string password;
+	Warden::string address;
 
 	std::set<Module *> holds;
 	bool dispatched = false;
@@ -228,7 +229,7 @@ class CoreExport IdentifyRequest
 	static std::set<IdentifyRequest *> Requests;
 
 protected:
-	IdentifyRequest(Module *o, const Anope::string &acc, const Anope::string &pass, const Anope::string &ip);
+	IdentifyRequest(Module *o, const Warden::string &acc, const Warden::string &pass, const Warden::string &ip);
 	virtual ~IdentifyRequest();
 
 public:
@@ -237,9 +238,9 @@ public:
 	virtual void OnFail() = 0;
 
 	Module *GetOwner() const { return owner; }
-	const Anope::string &GetAccount() const { return account; }
-	const Anope::string &GetPassword() const { return password; }
-	const Anope::string &GetAddress() const { return address; }
+	const Warden::string &GetAccount() const { return account; }
+	const Warden::string &GetPassword() const { return password; }
+	const Warden::string &GetAddress() const { return address; }
 
 	/* Holds this request. When a request is held it must be Released later
 	 * for the request to complete. Multiple modules may hold a request at any time,

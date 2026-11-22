@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,7 +20,7 @@ using namespace DNS;
 
 namespace
 {
-	Anope::string admin, nameservers;
+	Warden::string admin, nameservers;
 	int refresh;
 	time_t timeout;
 }
@@ -29,12 +30,12 @@ namespace
 class Packet final
 	: public Query
 {
-	static bool IsValidName(const Anope::string &name)
+	static bool IsValidName(const Warden::string &name)
 	{
-		return name.find_first_not_of("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-") == Anope::string::npos;
+		return name.find_first_not_of("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-") == Warden::string::npos;
 	}
 
-	static void PackName(unsigned char *output, unsigned short output_size, unsigned short &pos, const Anope::string &name)
+	static void PackName(unsigned char *output, unsigned short output_size, unsigned short &pos, const Warden::string &name)
 	{
 		if (pos + name.length() + 2 > output_size)
 			throw SocketException("Unable to pack name");
@@ -42,7 +43,7 @@ class Packet final
 		Log(LOG_DEBUG_2) << "Resolver: PackName packing " << name;
 
 		sepstream sep(name, '.');
-		Anope::string token;
+		Warden::string token;
 
 		while (sep.GetToken(token))
 		{
@@ -54,9 +55,9 @@ class Packet final
 		output[pos++] = 0;
 	}
 
-	static Anope::string UnpackName(const unsigned char *input, unsigned short input_size, unsigned short &pos)
+	static Warden::string UnpackName(const unsigned char *input, unsigned short input_size, unsigned short &pos)
 	{
-		Anope::string name;
+		Warden::string name;
 		unsigned short pos_ptr = pos, lowest_ptr = input_size;
 		bool compressed = false;
 
@@ -204,7 +205,7 @@ class Packet final
 				if (pos + txtlength > input_size)
 					throw SocketException("Unable to unpack TXT resource record");
 
-				record.rdata = Anope::string(reinterpret_cast<const char* >(input + pos), txtlength);
+				record.rdata = Warden::string(reinterpret_cast<const char* >(input + pos), txtlength);
 				pos += rdlength - 1;
 				break;
 			}
@@ -228,7 +229,7 @@ class Packet final
 				if (!IsValidName(srv->host))
 					throw SocketException("Invalid name in SRV resource record");
 
-				record.rdata = Anope::Format("%hu %hu %hu %s", srv->priority,
+				record.rdata = Warden::Format("%hu %hu %hu %s", srv->priority,
 					srv->weight, srv->port, srv->host.c_str());
 				record.rdataobj = srv;
 				break;
@@ -445,7 +446,7 @@ public:
 						unsigned short packet_pos_save = pos;
 						pos += 2;
 
-						std::vector<Anope::string> ns;
+						std::vector<Warden::string> ns;
 						spacesepstream(nameservers).GetTokens(ns);
 						this->PackName(output, output_size, pos, !ns.empty() ? ns[0] : "");
 						this->PackName(output, output_size, pos, admin.replace_all_cs('@', '.'));
@@ -594,7 +595,7 @@ public:
 		}
 	};
 
-	TCPSocket(Manager *m, const Anope::string &ip, int port) : Socket(-1, ip.find(':') == Anope::string::npos ? AF_INET : AF_INET6), ListenSocket(ip, port, ip.find(':') != Anope::string::npos), manager(m) { }
+	TCPSocket(Manager *m, const Warden::string &ip, int port) : Socket(-1, ip.find(':') == Warden::string::npos ? AF_INET : AF_INET6), ListenSocket(ip, port, ip.find(':') != Warden::string::npos), manager(m) { }
 
 	ClientSocket *OnAccept(int fd, const sockaddrs &addr) override
 	{
@@ -610,7 +611,7 @@ class UDPSocket final
 	std::deque<Packet *> packets;
 
 public:
-	UDPSocket(Manager *m, const Anope::string &ip, int port) : Socket(-1, ip.find(':') == Anope::string::npos ? AF_INET : AF_INET6, SOCK_DGRAM), manager(m) { }
+	UDPSocket(Manager *m, const Warden::string &ip, int port) : Socket(-1, ip.find(':') == Warden::string::npos ? AF_INET : AF_INET6, SOCK_DGRAM), manager(m) { }
 
 	~UDPSocket() override
 	{
@@ -713,15 +714,15 @@ class MyManager final
 	bool listen = false;
 	sockaddrs addrs;
 
-	std::vector<std::pair<Anope::string, short> > notify;
+	std::vector<std::pair<Warden::string, short> > notify;
 public:
 	std::map<unsigned short, Request *> requests;
 
 	MyManager(Module *creator)
 		: Manager(creator)
 		, Timer(300)
-		, serial(Anope::CurTime)
-		, cur_id(Anope::RandomNumber())
+		, serial(Warden::CurTime)
+		, cur_id(Warden::RandomNumber())
 	{
 	}
 
@@ -746,7 +747,7 @@ public:
 		this->cache.clear();
 	}
 
-	void SetIPPort(const Anope::string &nameserver, const Anope::string &ip, unsigned short port, std::vector<std::pair<Anope::string, short> > n)
+	void SetIPPort(const Warden::string &nameserver, const Warden::string &ip, unsigned short port, std::vector<std::pair<Warden::string, short> > n)
 	{
 		delete udpsock;
 		delete tcpsock;
@@ -756,7 +757,7 @@ public:
 
 		try
 		{
-			this->addrs.pton(nameserver.find(':') != Anope::string::npos ? AF_INET6 : AF_INET, nameserver, 53);
+			this->addrs.pton(nameserver.find(':') != Warden::string::npos ? AF_INET6 : AF_INET, nameserver, 53);
 
 			udpsock = new UDPSocket(this, ip, port);
 
@@ -867,7 +868,7 @@ public:
 
 					if (q.type == QUERY_AXFR)
 					{
-						Anope::string token;
+						Warden::string token;
 						spacesepstream sep(nameservers);
 						while (sep.GetToken(token))
 						{
@@ -976,16 +977,16 @@ public:
 
 	void UpdateSerial() override
 	{
-		serial = Anope::CurTime;
+		serial = Warden::CurTime;
 	}
 
-	void Notify(const Anope::string &zone) override
+	void Notify(const Warden::string &zone) override
 	{
 		/* notify secondaries of the update */
 		for (const auto &[ip, port] : notify)
 		{
 			sockaddrs addr;
-			addr.pton(ip.find(':') != Anope::string::npos ? AF_INET6 : AF_INET, ip, port);
+			addr.pton(ip.find(':') != Warden::string::npos ? AF_INET6 : AF_INET, ip, port);
 			if (!addr.valid())
 				return;
 
@@ -1003,7 +1004,7 @@ public:
 
 			packet->questions.emplace_back(zone, QUERY_SOA);
 
-			new NotifySocket(ip.find(':') == Anope::string::npos ? AF_INET : AF_INET6, packet);
+			new NotifySocket(ip.find(':') == Warden::string::npos ? AF_INET : AF_INET6, packet);
 		}
 	}
 
@@ -1023,7 +1024,7 @@ public:
 			it_next = it;
 			++it_next;
 
-			if (req.created + static_cast<time_t>(req.ttl) < Anope::CurTime)
+			if (req.created + static_cast<time_t>(req.ttl) < Warden::CurTime)
 				this->cache.erase(it);
 		}
 		return true;
@@ -1065,7 +1066,7 @@ class ModuleDNS final
 	MyManager manager;
 
 public:
-	ModuleDNS(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, EXTRA | VENDOR), manager(this)
+	ModuleDNS(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, EXTRA | VENDOR), manager(this)
 	{
 
 	}
@@ -1086,36 +1087,36 @@ public:
 	{
 		const auto &block = conf.GetModule(this);
 
-		auto nameserver = block.Get<const Anope::string>("nameserver", "127.0.0.1");
+		auto nameserver = block.Get<const Warden::string>("nameserver", "127.0.0.1");
 		timeout =  block.Get<time_t>("timeout", "5");
-		auto ip = block.Get<const Anope::string>("ip", "0.0.0.0");
+		auto ip = block.Get<const Warden::string>("ip", "0.0.0.0");
 		auto port = block.Get<int>("port", "53");
-		admin = block.Get<const Anope::string>("admin", "admin@example.com");
-		nameservers = block.Get<const Anope::string>("nameservers", "ns1.example.com");
+		admin = block.Get<const Warden::string>("admin", "admin@example.com");
+		nameservers = block.Get<const Warden::string>("nameservers", "ns1.example.com");
 		refresh = block.Get<int>("refresh", "3600");
 
-		std::vector<std::pair<Anope::string, short> > notify;
+		std::vector<std::pair<Warden::string, short> > notify;
 		for (const auto &[_, n] : block.GetBlocks("notify"))
 		{
-			auto nip = n.Get<Anope::string>("ip");
+			auto nip = n.Get<Warden::string>("ip");
 			auto nport = n.Get<short>("port");
 
 			notify.emplace_back(nip, nport);
 		}
 
-		if (Anope::IsFile(nameserver))
+		if (Warden::IsFile(nameserver))
 		{
 			std::ifstream f(nameserver.c_str());
 			bool success = false;
 
 			if (f.is_open())
 			{
-				for (Anope::string server; std::getline(f, server.str());)
+				for (Warden::string server; std::getline(f, server.str());)
 				{
 					if (server.find("nameserver") == 0)
 					{
 						size_t i = server.find_first_of("123456789");
-						if (i != Anope::string::npos)
+						if (i != Warden::string::npos)
 						{
 							if (server.substr(i).is_pos_number_only())
 							{

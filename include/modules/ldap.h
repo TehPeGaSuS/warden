@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -17,7 +18,7 @@
 class DllExport LDAPException : public ModuleException
 {
 public:
-	LDAPException(const Anope::string &reason) : ModuleException(reason) { }
+	LDAPException(const Warden::string &reason) : ModuleException(reason) { }
 
 	virtual ~LDAPException() noexcept = default;
 };
@@ -32,37 +33,37 @@ struct LDAPModification final
 	};
 
 	LDAPOperation op;
-	Anope::string name;
-	std::vector<Anope::string> values;
+	Warden::string name;
+	std::vector<Warden::string> values;
 };
 typedef std::vector<LDAPModification> LDAPMods;
 
 struct LDAPAttributes final
-	: public std::map<Anope::string, std::vector<Anope::string>>
+	: public std::map<Warden::string, std::vector<Warden::string>>
 {
-	size_t size(const Anope::string &attr) const
+	size_t size(const Warden::string &attr) const
 	{
-		const std::vector<Anope::string>& array = this->getArray(attr);
+		const std::vector<Warden::string>& array = this->getArray(attr);
 		return array.size();
 	}
 
-	const std::vector<Anope::string> keys() const
+	const std::vector<Warden::string> keys() const
 	{
-		std::vector<Anope::string> k;
+		std::vector<Warden::string> k;
 		for (const auto &[key, _] : *this)
 			k.push_back(key);
 		return k;
 	}
 
-	const Anope::string &get(const Anope::string &attr) const
+	const Warden::string &get(const Warden::string &attr) const
 	{
-		const std::vector<Anope::string>& array = this->getArray(attr);
+		const std::vector<Warden::string>& array = this->getArray(attr);
 		if (array.empty())
 			throw LDAPException("Empty attribute " + attr + " in LDAPResult::get");
 		return array[0];
 	}
 
-	const std::vector<Anope::string>& getArray(const Anope::string &attr) const
+	const std::vector<Warden::string>& getArray(const Warden::string &attr) const
 	{
 		const_iterator it = this->find(attr);
 		if (it == this->end())
@@ -84,7 +85,7 @@ enum QueryType
 struct LDAPResult final
 {
 	std::vector<LDAPAttributes> messages;
-	Anope::string error;
+	Warden::string error;
 
 	QueryType type;
 
@@ -110,7 +111,7 @@ struct LDAPResult final
 		return this->messages[sz];
 	}
 
-	const Anope::string &getError() const
+	const Warden::string &getError() const
 	{
 		return this->error;
 	}
@@ -133,7 +134,7 @@ class LDAPProvider
 	: public Service
 {
 public:
-	LDAPProvider(Module *c, const Anope::string &n) : Service(c, "LDAPProvider", n) { }
+	LDAPProvider(Module *c, const Warden::string &n) : Service(c, "LDAPProvider", n) { }
 
 	/** Attempt to bind to the LDAP server as an admin
 	 * @param i The LDAPInterface the result is sent to
@@ -145,42 +146,42 @@ public:
 	 * @param who The binddn
 	 * @param pass The password
 	 */
-	virtual void Bind(LDAPInterface *i, const Anope::string &who, const Anope::string &pass) = 0;
+	virtual void Bind(LDAPInterface *i, const Warden::string &who, const Warden::string &pass) = 0;
 
 	/** Search ldap for the specified filter
 	 * @param i The LDAPInterface the result is sent to
 	 * @param base The base DN to search
 	 * @param filter The filter to apply
 	 */
-	virtual void Search(LDAPInterface *i, const Anope::string &base, const Anope::string &filter) = 0;
+	virtual void Search(LDAPInterface *i, const Warden::string &base, const Warden::string &filter) = 0;
 
 	/** Add an entry to LDAP
 	 * @param i The LDAPInterface the result is sent to
 	 * @param dn The dn of the entry to add
 	 * @param attributes The attributes
 	 */
-	virtual void Add(LDAPInterface *i, const Anope::string &dn, LDAPMods &attributes) = 0;
+	virtual void Add(LDAPInterface *i, const Warden::string &dn, LDAPMods &attributes) = 0;
 
 	/** Delete an entry from LDAP
 	 * @param i The LDAPInterface the result is sent to
 	 * @param dn The dn of the entry to delete
 	 */
-	virtual void Del(LDAPInterface *i, const Anope::string &dn) = 0;
+	virtual void Del(LDAPInterface *i, const Warden::string &dn) = 0;
 
 	/** Modify an existing entry in LDAP
 	 * @param i The LDAPInterface the result is sent to
 	 * @param base The base DN to modify
 	 * @param attributes The attributes to modify
 	 */
-	virtual void Modify(LDAPInterface *i, const Anope::string &base, LDAPMods &attributes) = 0;
+	virtual void Modify(LDAPInterface *i, const Warden::string &base, LDAPMods &attributes) = 0;
 
 	/** Escapes a LDAP string for use in a DN.
 	 * @param str The string to escape.
 	 */
-	virtual Anope::string EscapeDN(const Anope::string &str) const = 0;
+	virtual Warden::string EscapeDN(const Warden::string &str) const = 0;
 
 	/** Escapes a LDAP string for use in a search filter.
 	 * @param str The string to escape.
 	 */
-	virtual Anope::string EscapeSF(const Anope::string &str) const = 0;
+	virtual Warden::string EscapeSF(const Warden::string &str) const = 0;
 };

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,21 +20,21 @@ class SASLIdentifyRequest final
 	: public IdentifyRequest
 {
 private:
-	Anope::string uid;
-	Anope::string hostname;
+	Warden::string uid;
+	Warden::string hostname;
 
-	inline Anope::string GetUserInfo()
+	inline Warden::string GetUserInfo()
 	{
 		auto *u = User::Find(uid);
 		if (u)
 			return u->GetMask();
 		if (!hostname.empty() && !GetAddress().empty())
-			return Anope::Format("%s (%s)", hostname.c_str(), GetAddress().c_str());
+			return Warden::Format("%s (%s)", hostname.c_str(), GetAddress().c_str());
 		return "A user";
 	};
 
 public:
-	SASLIdentifyRequest(Module *m, const Anope::string &id, const Anope::string &acc, const Anope::string &pass, const Anope::string &h, const Anope::string &i)
+	SASLIdentifyRequest(Module *m, const Warden::string &id, const Warden::string &acc, const Warden::string &pass, const Warden::string &h, const Warden::string &i)
 		: IdentifyRequest(m, acc, pass, i)
 		, uid(id)
 		, hostname(h)
@@ -74,7 +75,7 @@ public:
 			delete s;
 		}
 
-		Anope::string accountstatus;
+		Warden::string accountstatus;
 		auto *na = NickAlias::Find(GetAccount());
 		if (!na)
 			accountstatus = "nonexistent ";
@@ -105,14 +106,14 @@ public:
 		else if (m.type == "C")
 		{
 			// message = [authzid] UTF8NUL authcid UTF8NUL passwd
-			const auto message = Anope::B64Decode(m.data[0]);
+			const auto message = Warden::B64Decode(m.data[0]);
 
 			const auto zcsep = message.find('\0');
-			if (zcsep == Anope::string::npos)
+			if (zcsep == Warden::string::npos)
 				return false;
 
 			const auto cpsep = message.find('\0', zcsep + 1);
-			if (cpsep == Anope::string::npos)
+			if (cpsep == Warden::string::npos)
 				return false;
 
 			const auto authzid = message.substr(0, zcsep);
@@ -123,7 +124,7 @@ public:
 				return false;
 
 			const auto passwd = message.substr(cpsep + 1);
-			if (authcid.empty() || passwd.empty() || !IRCD->IsNickValid(authcid) || passwd.find_first_of("\r\n\0") != Anope::string::npos)
+			if (authcid.empty() || passwd.empty() || !IRCD->IsNickValid(authcid) || passwd.find_first_of("\r\n\0") != Warden::string::npos)
 				return false;
 
 			auto *req = new SASLIdentifyRequest(this->owner, m.source, authcid, passwd, sess->hostname, sess->ip);
@@ -141,7 +142,7 @@ private:
 	Plain plain;
 
 public:
-	ModuleSASLPlain(const Anope::string &modname, const Anope::string &creator)
+	ModuleSASLPlain(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, plain(this)
 	{

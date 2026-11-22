@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -47,7 +48,7 @@ public:
 	 * @param message Memo text
 	 * @param force true to force the memo, restrictions/delays etc are not checked
 	 */
-	virtual MemoServ::MemoResult Send(const Anope::string &source, const Anope::string &target, const Anope::string &message, bool force = false) = 0;
+	virtual MemoServ::MemoResult Send(const Warden::string &source, const Warden::string &target, const Warden::string &message, bool force = false) = 0;
 
 	/** Check for new memos and notify the user if there are any
 	 * @param u The user

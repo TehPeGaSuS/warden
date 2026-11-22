@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2011-2012, 2014 Alex Barton <alex@barton.de>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,7 +20,7 @@
 class ngIRCdProto final
 	: public IRCDProto
 {
-	void SendSVSKill(const MessageSource &source, User *user, const Anope::string &buf) override
+	void SendSVSKill(const MessageSource &source, User *user, const Warden::string &buf) override
 	{
 		IRCDProto::SendSVSKill(source, user, buf);
 		user->KillInternal(source, buf);
@@ -39,7 +40,7 @@ public:
 	void SendAkill(User *u, XLine *x) override
 	{
 		// Calculate the time left before this would expire
-		time_t timeleft = x->expires ? x->expires - Anope::CurTime : x->expires;
+		time_t timeleft = x->expires ? x->expires - Warden::CurTime : x->expires;
 		Uplink::Send("GLINE", x->mask, timeleft, x->GetReason() + " (" + x->by + ")");
 	}
 
@@ -61,7 +62,7 @@ public:
 
 	void SendConnect() override
 	{
-		Uplink::Send("PASS", Config->Uplinks[Anope::CurrentUplink].password, "0210-IRC+", "Anope|" + Anope::VersionShort() + ":CLHMSo P");
+		Uplink::Send("PASS", Config->Uplinks[Warden::CurrentUplink].password, "0210-IRC+", "Warden|" + Warden::VersionShort() + ":CLHMSo P");
 
 		/* Make myself known to myself in the serverlist */
 		SendServer(Me);
@@ -70,22 +71,22 @@ public:
 		this->SendNumeric(RPL_ENDOFMOTD, "*", "End of MOTD command");
 	}
 
-	void SendForceNickChange(User *u, const Anope::string &newnick, time_t when) override
+	void SendForceNickChange(User *u, const Warden::string &newnick, time_t when) override
 	{
 		Uplink::Send("SVSNICK", u->nick, newnick);
 	}
 
-	void SendGlobalNotice(BotInfo *bi, const Server *dest, const Anope::string &msg) override
+	void SendGlobalNotice(BotInfo *bi, const Server *dest, const Warden::string &msg) override
 	{
 		Uplink::Send(bi, "NOTICE", "$" + dest->GetName(), msg);
 	}
 
-	void SendGlobalPrivmsg(BotInfo *bi, const Server *dest, const Anope::string &msg) override
+	void SendGlobalPrivmsg(BotInfo *bi, const Server *dest, const Warden::string &msg) override
 	{
 		Uplink::Send(bi, "PRIVMSG", "$" + dest->GetName(), msg);
 	}
 
-	void SendGlobops(const MessageSource &source, const Anope::string &buf) override
+	void SendGlobops(const MessageSource &source, const Warden::string &buf) override
 	{
 		Uplink::Send(source, "WALLOPS", buf);
 	}
@@ -129,7 +130,7 @@ public:
 		Uplink::Send("SERVER", server->GetName(), server->GetHops(), server->GetDescription());
 	}
 
-	void SendVHost(User *u, const Anope::string &vident, const Anope::string &vhost) override
+	void SendVHost(User *u, const Warden::string &vident, const Warden::string &vhost) override
 	{
 		if (!vident.empty())
 			Uplink::Send("METADATA", u->nick, "user", vident);
@@ -147,7 +148,7 @@ public:
 		this->SendVHost(u, u->GetIdent(), "");
 	}
 
-	bool Format(Anope::string &message, const Anope::map<Anope::string> &tags, const MessageSource &source, const Anope::string &command, const std::vector<Anope::string> &params) override
+	bool Format(Warden::string &message, const Warden::map<Warden::string> &tags, const MessageSource &source, const Warden::string &command, const std::vector<Warden::string> &params) override
 	{
 		return IRCDProto::Format(message, tags, source.GetSource().empty() ? Me : source, command, params);
 	}
@@ -159,24 +160,24 @@ struct IRCDMessage005 final
 	IRCDMessage005(Module *creator) : IRCDMessage(creator, "005", 1) { SetFlag(FLAG_SOFT_LIMIT); }
 
 	// Please see <http://www.irc.org/tech_docs/005.html> for details.
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		size_t pos;
-		Anope::string parameter, data;
+		Warden::string parameter, data;
 		for (const auto &param : params)
 		{
 			pos = param.find('=');
-			if (pos != Anope::string::npos)
+			if (pos != Warden::string::npos)
 			{
 				parameter = param.substr(0, pos);
 				data = param.substr(pos+1, param.length());
 				if (parameter == "MODES")
 				{
-					IRCD->MaxModes = Anope::Convert<unsigned>(data, IRCD->MaxModes);
+					IRCD->MaxModes = Warden::Convert<unsigned>(data, IRCD->MaxModes);
 				}
 				else if (parameter == "NICKLEN")
 				{
-					IRCD->MaxNick = Anope::Convert<size_t>(data, IRCD->MaxNick);
+					IRCD->MaxNick = Warden::Convert<size_t>(data, IRCD->MaxNick);
 				}
 			}
 		}
@@ -196,7 +197,7 @@ struct IRCDMessage376 final
 	 *
 	 */
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 	}
 };
@@ -223,16 +224,16 @@ struct IRCDMessageChaninfo final
 	 * a channel has no user limit (the parameter <modes> doesn't list the "l"
 	 * channel mode). In this case <limit> should be "0".
 	 */
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		bool created;
 		Channel *c = Channel::FindOrCreate(params[0], created);
 
-		std::vector<Anope::string> modeparams;
+		std::vector<Warden::string> modeparams;
 
 		if (params.size() == 3)
 		{
-			c->ChangeTopicInternal(NULL, source.GetName(), params[2], Anope::CurTime);
+			c->ChangeTopicInternal(NULL, source.GetName(), params[2], Warden::CurTime);
 		}
 		else if (params.size() == 5)
 		{
@@ -248,7 +249,7 @@ struct IRCDMessageChaninfo final
 						continue;
 				}
 			}
-			c->ChangeTopicInternal(NULL, source.GetName(), params[4], Anope::CurTime);
+			c->ChangeTopicInternal(NULL, source.GetName(), params[4], Warden::CurTime);
 		}
 
 		c->SetModesInternal(source, params[1], modeparams);
@@ -266,14 +267,14 @@ struct IRCDMessageJoin final
 	 *
 	 * if a user joins a new channel, the ircd sends <channelname>\7<umode>
 	 */
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		User *user = source.GetUser();
 		size_t pos = params[0].find('\7');
-		Anope::string channel, modes;
-		std::vector<Anope::string> modeparams;
+		Warden::string channel, modes;
+		std::vector<Warden::string> modeparams;
 
-		if (pos != Anope::string::npos)
+		if (pos != Warden::string::npos)
 		{
 			channel = params[0].substr(0, pos);
 			modes = '+' + params[0].substr(pos+1, params[0].length());
@@ -284,7 +285,7 @@ struct IRCDMessageJoin final
 			channel = params[0];
 		}
 
-		std::vector<Anope::string> new_params;
+		std::vector<Warden::string> new_params;
 		new_params.push_back(channel);
 
 		Message::Join::Run(source, new_params, tags);
@@ -304,7 +305,7 @@ struct IRCDMessageMetadata final
 	IRCDMessageMetadata(Module *creator) : IRCDMessage(creator, "METADATA", 3) { SetFlag(FLAG_REQUIRE_SERVER); }
 
 	/*
-	 * Received: :ngircd.dev.anope.de METADATA DukePyrolator host :anope-e2ee5c7d
+	 * Received: :ngircd.dev.anope.de METADATA DukePyrolator host :warden-e2ee5c7d
 	 *
 	 * params[0] = nick of the user
 	 * params[1] = command
@@ -319,7 +320,7 @@ struct IRCDMessageMetadata final
 	 *  - "user": the user name (ident) of a client (can't be empty)
 	 */
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		User *u = User::Find(params[0]);
 		if (!u)
@@ -384,14 +385,14 @@ struct IRCDMessageMode final
 	IRCDMessageMode(Module *creator) : IRCDMessage(creator, "MODE", 2) { SetFlag(FLAG_SOFT_LIMIT); }
 
 	/*
-	 * Received: :DukeP MODE #anope +b *!*@*.aol.com
-	 * Received: :DukeP MODE #anope +h DukeP
+	 * Received: :DukeP MODE #warden +b *!*@*.aol.com
+	 * Received: :DukeP MODE #warden +h DukeP
 	 * params[0] = channel or nick
 	 * params[1] = modes
 	 * params[n] = parameters
 	 */
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		if (IRCD->IsChannelValid(params[0]))
 		{
@@ -434,7 +435,7 @@ struct IRCDMessageNick final
 	 * params[0] = newnick
 	 *
 	 */
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		if (params.size() == 1)
 		{
@@ -453,7 +454,7 @@ struct IRCDMessageNick final
 				Log(LOG_DEBUG) << "User " << params[0] << " introduced from nonexistent server " << params[4] << "?";
 				return;
 			}
-			User::OnIntroduce(params[0], params[2], params[3], "", "", s, params[6], Anope::CurTime, params[5], "", NULL);
+			User::OnIntroduce(params[0], params[2], params[3], "", "", s, params[6], Warden::CurTime, params[5], "", NULL);
 			Log(LOG_DEBUG) << "Registered nick \"" << params[0] << "\" on server " << s->GetName() << ".";
 		}
 		else
@@ -479,12 +480,12 @@ struct IRCDMessageNJoin final
 	 *
 	 * Received: :dev.anope.de NJOIN #test :DukeP2,@DukeP,%test,+test2
 	 */
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		std::list<Message::Join::SJoinUser> users;
 
 		commasepstream sep(params[1]);
-		Anope::string buf;
+		Warden::string buf;
 		while (sep.GetToken(buf))
 		{
 
@@ -520,7 +521,7 @@ struct IRCDMessagePong final
 	 * when receiving a new server and then finish sync once we
 	 * get a pong back from that server.
 	 */
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		if (!source.GetServer()->IsSynced())
 			source.GetServer()->Sync(false);
@@ -557,7 +558,7 @@ struct IRCDMessageServer final
 	 * params[3] = server description
 	 */
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		if (params.size() == 3)
 		{
@@ -567,7 +568,7 @@ struct IRCDMessageServer final
 		else
 		{
 			// our uplink is introducing a new server
-			auto hops = Anope::Convert<unsigned>(params[1], 0);
+			auto hops = Warden::Convert<unsigned>(params[1], 0);
 			new Server(source.GetServer(), params[0], params[3], params[2], hops);
 		}
 		/*
@@ -584,8 +585,8 @@ struct IRCDMessageTopic final
 {
 	IRCDMessageTopic(Module *creator) : IRCDMessage(creator, "TOPIC", 2) { SetFlag(FLAG_SOFT_LIMIT); }
 
-	// Received: :DukeP TOPIC #anope :test
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	// Received: :DukeP TOPIC #warden :test
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		Channel *c = Channel::Find(params[0]);
 		if (!c)
@@ -593,7 +594,7 @@ struct IRCDMessageTopic final
 			Log(LOG_DEBUG) << "TOPIC for nonexistent channel " << params[0];
 			return;
 		}
-		c->ChangeTopicInternal(source.GetUser(), source.GetName(), params[1], Anope::CurTime);
+		c->ChangeTopicInternal(source.GetUser(), source.GetName(), params[1], Warden::CurTime);
 	}
 };
 
@@ -681,7 +682,7 @@ class ProtongIRCd final
 	}
 
 public:
-	ProtongIRCd(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, PROTOCOL | VENDOR),
+	ProtongIRCd(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, PROTOCOL | VENDOR),
 		ircd_proto(this),
 		message_capab(this), message_error(this), message_invite(this), message_kick(this), message_kill(this),
 		message_motd(this), message_notice(this), message_part(this), message_ping(this), message_privmsg(this),
@@ -699,7 +700,7 @@ public:
 
 	}
 
-	void OnUserNickChange(User *u, const Anope::string &) override
+	void OnUserNickChange(User *u, const Warden::string &) override
 	{
 		u->RemoveMode(Config->GetClient("NickServ"), "REGISTERED");
 	}

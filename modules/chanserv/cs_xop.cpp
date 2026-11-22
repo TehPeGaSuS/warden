@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,51 +17,51 @@
 
 namespace
 {
-	std::vector<Anope::string> order;
-	std::map<Anope::string, std::vector<Anope::string> > permissions;
+	std::vector<Warden::string> order;
+	std::map<Warden::string, std::vector<Warden::string> > permissions;
 }
 
 class XOPChanAccess final
 	: public ChanAccess
 {
 public:
-	Anope::string type;
+	Warden::string type;
 
 	XOPChanAccess(AccessProvider *p) : ChanAccess(p)
 	{
 	}
 
-	bool HasPriv(const Anope::string &priv) const override
+	bool HasPriv(const Warden::string &priv) const override
 	{
 		for (auto it = std::find(order.begin(), order.end(), this->type); it != order.end(); ++it)
 		{
-			const std::vector<Anope::string> &privs = permissions[*it];
+			const std::vector<Warden::string> &privs = permissions[*it];
 			if (std::find(privs.begin(), privs.end(), priv) != privs.end())
 				return true;
 		}
 		return false;
 	}
 
-	Anope::string AccessSerialize() const override
+	Warden::string AccessSerialize() const override
 	{
 		return this->type;
 	}
 
-	void AccessUnserialize(const Anope::string &data) override
+	void AccessUnserialize(const Warden::string &data) override
 	{
 		this->type = data;
 	}
 
-	static Anope::string DetermineLevel(const ChanAccess *access)
+	static Warden::string DetermineLevel(const ChanAccess *access)
 	{
 		if (access->provider->name == "access/xop")
 		{
-			const auto *xaccess = anope_dynamic_static_cast<const XOPChanAccess *>(access);
+			const auto *xaccess = warden_dynamic_static_cast<const XOPChanAccess *>(access);
 			return xaccess->type;
 		}
 		else
 		{
-			std::map<Anope::string, int> count;
+			std::map<Warden::string, int> count;
 
 			for (const auto &[name, perms] : permissions)
 			{
@@ -72,7 +73,7 @@ public:
 				}
 			}
 
-			Anope::string maxname;
+			Warden::string maxname;
 			int maxpriv = 0;
 			for (const auto &[name, priv] : count)
 			{
@@ -101,7 +102,7 @@ public:
 		return new XOPChanAccess(this);
 	}
 
-	void GetAccess(CommandSource& source, const Privilege *p, Anope::map<Anope::string> &access) override
+	void GetAccess(CommandSource& source, const Privilege *p, Warden::map<Warden::string> &access) override
 	{
 		for (const auto& xop : order)
 		{
@@ -119,10 +120,10 @@ class CommandCSXOP final
 	: public Command
 {
 private:
-	void DoAdd(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoAdd(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		Anope::string mask = params.size() > 2 ? params[2] : "";
-		Anope::string description = params.size() > 3 ? params[3] : "";
+		Warden::string mask = params.size() > 2 ? params[2] : "";
+		Warden::string description = params.size() > 3 ? params[3] : "";
 
 		if (mask.empty())
 		{
@@ -130,7 +131,7 @@ private:
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -199,7 +200,7 @@ private:
 					return;
 				}
 
-				if (mask.find_first_of("!*@") == Anope::string::npos)
+				if (mask.find_first_of("!*@") == Warden::string::npos)
 				{
 					auto *targ = User::Find(mask, true);
 					if (!targ)
@@ -265,13 +266,13 @@ private:
 		ServiceReference<AccessProvider> provider("AccessProvider", "access/xop");
 		if (!provider)
 			return;
-		auto *acc = anope_dynamic_static_cast<XOPChanAccess *>(provider->Create());
+		auto *acc = warden_dynamic_static_cast<XOPChanAccess *>(provider->Create());
 		acc->SetMask(mask, ci);
 		acc->creator = source.GetNick();
 		acc->description = description;
 		acc->type = source.command.upper();
 		acc->last_seen = 0;
-		acc->created = Anope::CurTime;
+		acc->created = Warden::CurTime;
 		ci->AddAccess(acc);
 
 		Log(override ? LOG_OVERRIDE : LOG_COMMAND, source, this, ci) << "to add " << mask;
@@ -280,10 +281,10 @@ private:
 		source.Reply(_("\002%s\002 added to %s %s list."), acc->Mask().c_str(), ci->name.c_str(), source.command.nobreak().c_str());
 	}
 
-	void DoDel(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoDel(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
 		NickCore *nc = source.nc;
-		Anope::string mask = params.size() > 2 ? params[2] : "";
+		Warden::string mask = params.size() > 2 ? params[2] : "";
 
 		if (mask.empty())
 		{
@@ -291,7 +292,7 @@ private:
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -312,7 +313,7 @@ private:
 		{
 			mask = na->nc->display;
 		}
-		else if (!isdigit(mask[0]) && mask.find_first_of("#!*@") == Anope::string::npos)
+		else if (!isdigit(mask[0]) && mask.find_first_of("#!*@") == Warden::string::npos)
 		{
 			User *targ = User::Find(mask, true);
 			if (targ != NULL)
@@ -339,7 +340,7 @@ private:
 		}
 
 		/* Special case: is it a number/list?  Only do search if it isn't. */
-		if (isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			class XOPDelCallback final
 				: public NumberList
@@ -348,10 +349,10 @@ private:
 				ChannelInfo *ci;
 				Command *c;
 				unsigned deleted = 0;
-				Anope::string nicks;
+				Warden::string nicks;
 				bool override;
 			public:
-				XOPDelCallback(CommandSource &_source, ChannelInfo *_ci, Command *_c, bool _override, const Anope::string &numlist) : NumberList(numlist, true), source(_source), ci(_ci), c(_c), override(_override)
+				XOPDelCallback(CommandSource &_source, ChannelInfo *_ci, Command *_c, bool _override, const Warden::string &numlist) : NumberList(numlist, true), source(_source), ci(_ci), c(_c), override(_override)
 				{
 				}
 
@@ -419,10 +420,10 @@ private:
 		}
 	}
 
-	void DoList(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoList(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
 
-		const Anope::string &nick = params.size() > 2 ? params[2] : "";
+		const Warden::string &nick = params.size() > 2 ? params[2] : "";
 
 		AccessGroup access = source.AccessFor(ci);
 
@@ -447,7 +448,7 @@ private:
 				: _("{number}: \002{mask}\002 ({description})");
 		});
 
-		if (!nick.empty() && nick.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (!nick.empty() && nick.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			class XOPListCallback final
 				: public NumberList
@@ -456,7 +457,7 @@ private:
 				ChannelInfo *ci;
 				CommandSource &source;
 			public:
-				XOPListCallback(ListFormatter &_list, ChannelInfo *_ci, const Anope::string &numlist, CommandSource &src) : NumberList(numlist, false), list(_list), ci(_ci), source(src)
+				XOPListCallback(ListFormatter &_list, ChannelInfo *_ci, const Warden::string &numlist, CommandSource &src) : NumberList(numlist, false), list(_list), ci(_ci), source(src)
 				{
 				}
 
@@ -471,7 +472,7 @@ private:
 						return;
 
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(Number);
+					entry["Number"] = Warden::ToString(Number);
 					entry["Mask"] = a->Mask();
 					entry["Description"] = a->description;
 					this->list.AddEntry(entry);
@@ -487,11 +488,11 @@ private:
 
 				if (a->provider->name != "access/xop" || source.command.upper() != a->AccessSerialize())
 					continue;
-				else if (!nick.empty() && !Anope::Match(a->Mask(), nick))
+				else if (!nick.empty() && !Warden::Match(a->Mask(), nick))
 					continue;
 
 				ListFormatter::ListEntry entry;
-				entry["Number"] = Anope::ToString(i + 1);
+				entry["Number"] = Warden::ToString(i + 1);
 				entry["Mask"] = a->Mask();
 				entry["Description"] = a->description;
 				list.AddEntry(entry);
@@ -509,7 +510,7 @@ private:
 
 	void DoClear(CommandSource &source, ChannelInfo *ci)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -554,12 +555,12 @@ public:
 		this->SetSyntax(_("\037channel\037 CLEAR"));
 	}
 
-	Anope::string GetDesc(CommandSource &source) const override
+	Warden::string GetDesc(CommandSource &source) const override
 	{
-		return Anope::Format(source.Translate(_("Modify the list of %s users")), source.command.nobreak().c_str());
+		return Warden::Format(source.Translate(_("Modify the list of %s users")), source.command.nobreak().c_str());
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
 		if (ci == NULL)
@@ -568,7 +569,7 @@ public:
 			return;
 		}
 
-		const Anope::string &cmd = params[1];
+		const Warden::string &cmd = params[1];
 
 		if (cmd.equals_ci("ADD"))
 			return this->DoAdd(source, ci, params);
@@ -583,9 +584,9 @@ public:
 	}
 
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
-		const Anope::string &cmd = source.command.upper();
+		const Warden::string &cmd = source.command.upper();
 
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -597,7 +598,7 @@ public:
 			cmd.c_str());
 
 		source.Reply(" ");
-		Anope::string buf;
+		Warden::string buf;
 		for (const auto &permission : permissions[cmd])
 		{
 			if (!buf.empty())
@@ -648,7 +649,7 @@ public:
 		examples.SendTo(source);
 
 		BotInfo *access_bi, *flags_bi;
-		Anope::string access_cmd, flags_cmd;
+		Warden::string access_cmd, flags_cmd;
 		Command::FindFromService("chanserv/access", access_bi, access_cmd);
 		Command::FindFromService("chanserv/flags", flags_bi, flags_cmd);
 		if (!access_cmd.empty() || !flags_cmd.empty())
@@ -676,7 +677,7 @@ class CSXOP final
 	CommandCSXOP commandcsxop;
 
 public:
-	CSXOP(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	CSXOP(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		accessprovider(this), commandcsxop(this)
 	{
 		this->SetPermanent(true);
@@ -690,13 +691,13 @@ public:
 
 		for (const auto &[_,  block] : conf.GetBlocks("privilege"))
 		{
-			const Anope::string &pname = block.Get<const Anope::string>("name");
+			const Warden::string &pname = block.Get<const Warden::string>("name");
 
 			Privilege *p = PrivilegeManager::FindPrivilege(pname);
 			if (p == NULL)
 				continue;
 
-			const Anope::string &xop = block.Get<const Anope::string>("xop");
+			const Warden::string &xop = block.Get<const Warden::string>("xop");
 			if (pname.empty() || xop.empty())
 				continue;
 
@@ -705,8 +706,8 @@ public:
 
 		for (const auto &[_,  block] : conf.GetBlocks("command"))
 		{
-			const Anope::string &cname = block.Get<const Anope::string>("name"),
-				&cserv = block.Get<const Anope::string>("command");
+			const Warden::string &cname = block.Get<const Warden::string>("name"),
+				&cserv = block.Get<const Warden::string>("command");
 			if (cname.empty() || cserv != "chanserv/xop")
 				continue;
 

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,7 +25,7 @@ public:
 		this->SetSyntax("[OPERONLY] [UNUSED] [VANITY]");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		const bool is_admin = source.HasCommand("botserv/administration");
 		auto operonly = false;
@@ -33,7 +34,7 @@ public:
 		if (is_admin && !params.empty())
 		{
 			spacesepstream keywords(params[0]);
-			for (Anope::string keyword; keywords.GetToken(keyword); )
+			for (Warden::string keyword; keywords.GetToken(keyword); )
 			{
 				if (keyword.equals_ci("OPERONLY"))
 					operonly = true;
@@ -84,7 +85,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -109,7 +110,7 @@ class BSBotList final
 	CommandBSBotList commandbsbotlist;
 
 public:
-	BSBotList(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	BSBotList(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandbsbotlist(this)
 	{
 

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,11 +25,11 @@ public:
 		this->SetSyntax(_("\037channel\037 \037user\037 \037reason\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &chan = params[0];
-		const Anope::string &nick = params[1];
-		const Anope::string &s = params[2];
+		const Warden::string &chan = params[0];
+		const Warden::string &nick = params[1];
+		const Warden::string &s = params[2];
 		Channel *c;
 		User *u2;
 
@@ -59,7 +60,7 @@ public:
 		Log(LOG_ADMIN, source, this) << "on " << u2->nick << " in " << c->name << " (" << s << ")";
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -82,7 +83,7 @@ class OSKick final
 	CommandOSKick commandoskick;
 
 public:
-	OSKick(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSKick(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandoskick(this)
 	{
 

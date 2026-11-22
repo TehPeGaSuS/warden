@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -20,19 +21,19 @@
 #include "regchannel.h"
 #include "uplink.h"
 
-void Anope::Process(const Anope::string &buffer)
+void Warden::Process(const Warden::string &buffer)
 {
 	if (buffer.empty())
 		return;
 
-	Anope::map<Anope::string> tags;
-	Anope::string source, command;
-	std::vector<Anope::string> params;
+	Warden::map<Warden::string> tags;
+	Warden::string source, command;
+	std::vector<Warden::string> params;
 	if (!IRCD->Parse(buffer, tags, source, command, params))
 		return;
 
 	Log(LOG_RAWIO) << "Received " << buffer;
-	if (Anope::ProtocolDebug)
+	if (Warden::ProtocolDebug)
 	{
 		if (tags.empty())
 			Log() << "\tNo tags";
@@ -67,9 +68,9 @@ void Anope::Process(const Anope::string &buffer)
 	ProcessInternal(src, command, params, tags);
 }
 
-void Anope::ProcessInternal(MessageSource &src, const Anope::string &command, const std::vector<Anope::string> &params, const Anope::map<Anope::string> & tags)
+void Warden::ProcessInternal(MessageSource &src, const Warden::string &command, const std::vector<Warden::string> &params, const Warden::map<Warden::string> & tags)
 {
-	static const Anope::string proto_name = ModuleManager::FindFirstOf(PROTOCOL) ? ModuleManager::FindFirstOf(PROTOCOL)->name : "";
+	static const Warden::string proto_name = ModuleManager::FindFirstOf(PROTOCOL) ? ModuleManager::FindFirstOf(PROTOCOL)->name : "";
 	ServiceReference<IRCDMessage> m("IRCDMessage", proto_name + "/" + command.lower());
 	if (!m)
 	{
@@ -93,26 +94,26 @@ void Anope::ProcessInternal(MessageSource &src, const Anope::string &command, co
 		catch (const ProtocolException &err)
 		{
 			IRCD->SendError(err.GetReason());
-			Anope::QuitReason = "Protocol error: " + err.GetReason();
-			Anope::Quitting = true;
-			Anope::ReturnValue = EXIT_FAILURE;
+			Warden::QuitReason = "Protocol error: " + err.GetReason();
+			Warden::Quitting = true;
+			Warden::ReturnValue = EXIT_FAILURE;
 		}
 	}
 }
 
-void IRCDProto::PopulateTags(Anope::map<Anope::string> &tags, const MessageSource &source, const Anope::string &command, const std::vector<Anope::string> &params)
+void IRCDProto::PopulateTags(Warden::map<Warden::string> &tags, const MessageSource &source, const Warden::string &command, const std::vector<Warden::string> &params)
 {
 	auto it = tags.find("time"); // https://ircv3.net/specs/extensions/server-time
 	if (it == tags.end())
-		tags["time"] = Anope::FormatISO8601(Anope::CurTime, Anope::CurTimeNs / 1'000'000);
+		tags["time"] = Warden::FormatISO8601(Warden::CurTime, Warden::CurTimeNs / 1'000'000);
 }
 
-bool IRCDProto::Parse(const Anope::string &buffer, Anope::map<Anope::string> &tags, Anope::string &source, Anope::string &command, std::vector<Anope::string> &params)
+bool IRCDProto::Parse(const Warden::string &buffer, Warden::map<Warden::string> &tags, Warden::string &source, Warden::string &command, std::vector<Warden::string> &params)
 {
 	MessageTokenizer tokens(buffer);
 
-	// This will always exist because of the check in Anope::Process.
-	Anope::string token;
+	// This will always exist because of the check in Warden::Process.
+	Warden::string token;
 	tokens.GetMiddle(token);
 
 	if (token[0] == '@')
@@ -121,8 +122,8 @@ bool IRCDProto::Parse(const Anope::string &buffer, Anope::map<Anope::string> &ta
 		sepstream tagstream(token.substr(1), ';');
 		while (tagstream.GetToken(token))
 		{
-			const Anope::string::size_type valsep = token.find('=');
-			if (valsep == Anope::string::npos)
+			const Warden::string::size_type valsep = token.find('=');
+			if (valsep == Warden::string::npos)
 			{
 				// Tag has no value.
 				tags[token];
@@ -155,7 +156,7 @@ bool IRCDProto::Parse(const Anope::string &buffer, Anope::map<Anope::string> &ta
 	return true;
 }
 
-bool IRCDProto::Format(Anope::string &message, const Anope::map<Anope::string> &tags, const MessageSource &source, const Anope::string &command, const std::vector<Anope::string> &params)
+bool IRCDProto::Format(Warden::string &message, const Warden::map<Warden::string> &tags, const MessageSource &source, const Warden::string &command, const std::vector<Warden::string> &params)
 {
 	std::stringstream buffer;
 	if (!tags.empty())
@@ -214,7 +215,7 @@ bool IRCDProto::Format(Anope::string &message, const Anope::map<Anope::string> &
 
 
 		const auto &last = params.back();
-		if (last.empty() || last[0] == ':' || last.find(' ') != Anope::string::npos)
+		if (last.empty() || last[0] == ':' || last.find(' ') != Warden::string::npos)
 			buffer << ':';
 		buffer << last;
 	}
@@ -223,12 +224,12 @@ bool IRCDProto::Format(Anope::string &message, const Anope::map<Anope::string> &
 	return true;
 }
 
-MessageTokenizer::MessageTokenizer(const Anope::string &msg)
+MessageTokenizer::MessageTokenizer(const Warden::string &msg)
 	: message(msg)
 {
 }
 
-bool MessageTokenizer::GetMiddle(Anope::string &token)
+bool MessageTokenizer::GetMiddle(Warden::string &token)
 {
 	// If we are past the end of the string we can't do anything.
 	if (position >= message.length())
@@ -238,8 +239,8 @@ bool MessageTokenizer::GetMiddle(Anope::string &token)
 	}
 
 	// If we can't find another separator this is the last token in the message.
-	Anope::string::size_type separator = message.find(' ', position);
-	if (separator == Anope::string::npos)
+	Warden::string::size_type separator = message.find(' ', position);
+	if (separator == Warden::string::npos)
 	{
 		token = message.substr(position);
 		position = message.length();
@@ -251,7 +252,7 @@ bool MessageTokenizer::GetMiddle(Anope::string &token)
 	return true;
 }
 
-bool MessageTokenizer::GetTrailing(Anope::string &token)
+bool MessageTokenizer::GetTrailing(Warden::string &token)
 {
 	// If we are past the end of the string we can't do anything.
 	if (position >= message.length())

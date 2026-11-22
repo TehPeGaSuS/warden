@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,7 +26,7 @@ public:
 		this->SetSyntax(_("{\037nick\037 | \037channel\037} \037memo-text\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!MemoServ::service)
 		{
@@ -33,14 +34,14 @@ public:
 			return;
 		}
 
-		if (Anope::ReadOnly && !source.IsOper())
+		if (Warden::ReadOnly && !source.IsOper())
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
 		}
 
-		const Anope::string &nick = params[0];
-		const Anope::string &text = params[1];
+		const Warden::string &nick = params[0];
+		const Warden::string &text = params[1];
 		const NickAlias *na = NULL;
 
 		/* prevent user from rsend to themselves */
@@ -60,8 +61,8 @@ public:
 			else if (result == MemoServ::MEMO_TOO_FAST)
 			{
 				auto lastmemosend = source.GetUser() ? source.GetUser()->lastmemosend : 0;
-				auto waitperiod = (lastmemosend + Config->GetModule("memoserv").Get<unsigned long>("senddelay")) -  Anope::CurTime;
-				source.Reply(_("Please wait %s before using the %s command again."), Anope::Duration(waitperiod, source.GetAccount()).c_str(), source.command.nobreak().c_str());
+				auto waitperiod = (lastmemosend + Config->GetModule("memoserv").Get<unsigned long>("senddelay")) -  Warden::CurTime;
+				source.Reply(_("Please wait %s before using the %s command again."), Warden::Duration(waitperiod, source.GetAccount()).c_str(), source.command.nobreak().c_str());
 			}
 			else if (result == MemoServ::MEMO_TARGET_FULL)
 				source.Reply(_("%s currently has too many memos and cannot receive more."), nick.c_str());
@@ -80,7 +81,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -103,7 +104,7 @@ class MSRSend final
 	CommandMSRSend commandmsrsend;
 
 public:
-	MSRSend(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	MSRSend(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandmsrsend(this)
 	{
 		if (!MemoServ::service)

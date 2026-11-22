@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -44,10 +45,10 @@ struct OperServ::Session final
 struct OperServ::Exception final
 	: Serializable
 {
-	Anope::string mask;		/* Hosts to which this exception applies */
+	Warden::string mask;		/* Hosts to which this exception applies */
 	unsigned limit;			/* Session limit for exception */
-	Anope::string who;		/* Nick of person who added the exception */
-	Anope::string reason;		/* Reason for exception's addition */
+	Warden::string who;		/* Nick of person who added the exception */
+	Warden::string reason;		/* Reason for exception's addition */
 	time_t time;			/* When this exception was added */
 	time_t expires;			/* Time when it expires. 0 == no expiry */
 
@@ -74,11 +75,11 @@ public:
 
 	virtual OperServ::Exception *FindException(User *u) = 0;
 
-	virtual OperServ::Exception *FindException(const Anope::string &host) = 0;
+	virtual OperServ::Exception *FindException(const Warden::string &host) = 0;
 
 	virtual OperServ::ExceptionVector &GetExceptions() = 0;
 
-	virtual OperServ::Session *FindSession(const Anope::string &ip) = 0;
+	virtual OperServ::Session *FindSession(const Warden::string &ip) = 0;
 
 	virtual OperServ::SessionMap &GetSessions() = 0;
 };

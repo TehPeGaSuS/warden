@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -13,7 +14,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "sockets.h"
 #include "socketengine.h"
 #include "logger.h"
@@ -103,11 +104,11 @@ void SocketEngine::Process()
 #endif
 
 	int sresult = select(MaxFD + 1, &rfdset, &wfdset, &efdset, &tval);
-	Anope::UpdateTime();
+	Warden::UpdateTime();
 
 	if (sresult == -1)
 	{
-		Log() << "SockEngine::Process(): error: " << Anope::LastError();
+		Log() << "SockEngine::Process(): error: " << Warden::LastError();
 	}
 	else if (sresult)
 	{

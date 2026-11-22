@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,11 +15,11 @@
 
 #include "../../webcpanel.h"
 
-WebCPanel::MemoServ::Memos::Memos(const Anope::string &cat, const Anope::string &u) : WebPanelProtectedPage(cat, u)
+WebCPanel::MemoServ::Memos::Memos(const Warden::string &cat, const Warden::string &u) : WebPanelProtectedPage(cat, u)
 {
 }
 
-bool WebCPanel::MemoServ::Memos::OnRequest(HTTP::Provider *server, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
+bool WebCPanel::MemoServ::Memos::OnRequest(HTTP::Provider *server, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
 {
 	ChannelInfo *ci;
 	const MemoInfo *mi;
@@ -35,7 +36,7 @@ bool WebCPanel::MemoServ::Memos::OnRequest(HTTP::Provider *server, const Anope::
 		}
 	}
 
-	const Anope::string chname = WebPanel::GetRequestData(message.get_data, "channel");
+	const Warden::string chname = WebPanel::GetRequestData(message.get_data, "channel");
 	if (chname.empty())
 	{
 		replacements["MESSAGES"] = "No Channel specified, displaying the memos for your Nick";
@@ -59,21 +60,21 @@ bool WebCPanel::MemoServ::Memos::OnRequest(HTTP::Provider *server, const Anope::
 		}
 	}
 
-	const Anope::string receiver = WebPanel::GetRequestData(message.post_data, "receiver");
-	const Anope::string msg = WebPanel::GetRequestData(message.post_data, "message");
+	const Warden::string receiver = WebPanel::GetRequestData(message.post_data, "receiver");
+	const Warden::string msg = WebPanel::GetRequestData(message.post_data, "message");
 	if (!receiver.empty() && !msg.empty())
 	{
-		std::vector<Anope::string> params;
+		std::vector<Warden::string> params;
 		params.push_back(receiver);
 		params.push_back(msg);
 
 		WebPanel::RunCommand(client, na->nc->display, na->nc, "MemoServ", "memoserv/send", params, replacements, "CMDR");
 	}
 
-	const Anope::string num = WebPanel::GetRequestData(message.get_data, "number");
+	const Warden::string num = WebPanel::GetRequestData(message.get_data, "number");
 	if (message.get_data.count("del") > 0 && !num.empty())
 	{
-		std::vector<Anope::string> params;
+		std::vector<Warden::string> params;
 		if (!chname.empty())
 			params.push_back(chname);
 		params.push_back(num);
@@ -83,10 +84,10 @@ bool WebCPanel::MemoServ::Memos::OnRequest(HTTP::Provider *server, const Anope::
 
 	if (message.get_data.count("read") > 0 && !num.empty())
 	{
-		std::vector<Anope::string> params;
+		std::vector<Warden::string> params;
 		int number = -1;
 
-		if (auto n = Anope::TryConvert<int>(num))
+		if (auto n = Warden::TryConvert<int>(num))
 			number = n.value();
 		else
 			replacements["MESSAGES"] = "ERROR - invalid parameter for NUMBER";
@@ -107,9 +108,9 @@ bool WebCPanel::MemoServ::Memos::OnRequest(HTTP::Provider *server, const Anope::
 	for (unsigned i = 0; i < mi->memos->size(); ++i)
 	{
 		m = mi->GetMemo(i);
-		replacements["NUMBER"] = Anope::ToString(i+1);
+		replacements["NUMBER"] = Warden::ToString(i+1);
 		replacements["SENDER"] = m->sender;
-		replacements["TIME"] = Anope::strftime(m->time);
+		replacements["TIME"] = Warden::strftime(m->time);
 		replacements["TEXT"] = m->text;
 		if (m->unread)
 			replacements["UNREAD"] = "YES";

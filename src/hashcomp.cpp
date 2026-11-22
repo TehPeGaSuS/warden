@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2008-2011 InspIRCd Development Team
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,17 +17,17 @@
 
 #include "services.h"
 #include "hashcomp.h"
-#include "anope.h"
+#include "warden.h"
 
-/* Case map in use by Anope */
-std::locale Anope::casemap = std::locale(std::locale(), new Anope::ascii_ctype<char>());
+/* Case map in use by Warden */
+std::locale Warden::casemap = std::locale(std::locale(), new Warden::ascii_ctype<char>());
 /* Cache of the above case map, forced upper */
 static unsigned char case_map_upper[256], case_map_lower[256];
 
-/* called whenever Anope::casemap is modified to rebuild the casemap cache */
-void Anope::CaseMapRebuild()
+/* called whenever Warden::casemap is modified to rebuild the casemap cache */
+void Warden::CaseMapRebuild()
 {
-	const auto &ct = std::use_facet<std::ctype<char> >(Anope::casemap);
+	const auto &ct = std::use_facet<std::ctype<char> >(Warden::casemap);
 
 	for (unsigned i = 0; i < sizeof(case_map_upper); ++i)
 	{
@@ -35,12 +36,12 @@ void Anope::CaseMapRebuild()
 	}
 }
 
-unsigned char Anope::tolower(unsigned char c)
+unsigned char Warden::tolower(unsigned char c)
 {
 	return case_map_lower[c];
 }
 
-unsigned char Anope::toupper(unsigned char c)
+unsigned char Warden::toupper(unsigned char c)
 {
 	return case_map_upper[c];
 }
@@ -94,16 +95,16 @@ const char *ci::ci_char_traits::find(const char *s1, int n, char c)
 	return n >= 0 ? s1 : NULL;
 }
 
-bool ci::less::operator()(const Anope::string &s1, const Anope::string &s2) const
+bool ci::less::operator()(const Warden::string &s1, const Warden::string &s2) const
 {
 	return s1.ci_str().compare(s2.ci_str()) < 0;
 }
 
-sepstream::sepstream(const Anope::string &source, char separator, bool ae) : tokens(source), sep(separator), allow_empty(ae)
+sepstream::sepstream(const Warden::string &source, char separator, bool ae) : tokens(source), sep(separator), allow_empty(ae)
 {
 }
 
-bool sepstream::GetToken(Anope::string &token)
+bool sepstream::GetToken(Warden::string &token)
 {
 	if (this->StreamEnd())
 	{
@@ -114,7 +115,7 @@ bool sepstream::GetToken(Anope::string &token)
 	if (!this->allow_empty)
 	{
 		this->pos = this->tokens.find_first_not_of(this->sep, this->pos);
-		if (this->pos == Anope::string::npos)
+		if (this->pos == Warden::string::npos)
 		{
 			this->pos = this->tokens.length() + 1;
 			token.clear();
@@ -123,7 +124,7 @@ bool sepstream::GetToken(Anope::string &token)
 	}
 
 	size_t p = this->tokens.find(this->sep, this->pos);
-	if (p == Anope::string::npos)
+	if (p == Warden::string::npos)
 		p = this->tokens.length();
 
 	token = this->tokens.substr(this->pos, p - this->pos);
@@ -132,7 +133,7 @@ bool sepstream::GetToken(Anope::string &token)
 	return true;
 }
 
-bool sepstream::GetToken(Anope::string &token, int num)
+bool sepstream::GetToken(Warden::string &token, int num)
 {
 	int i;
 	for (i = 0; i < num + 1 && this->GetToken(token); ++i);
@@ -142,12 +143,12 @@ bool sepstream::GetToken(Anope::string &token, int num)
 int sepstream::NumTokens()
 {
 	int i;
-	Anope::string token;
+	Warden::string token;
 	for (i = 0; this->GetToken(token); ++i);
 	return i;
 }
 
-bool sepstream::GetTokenRemainder(Anope::string &token, int num)
+bool sepstream::GetTokenRemainder(Warden::string &token, int num)
 {
 	if (this->GetToken(token, num))
 	{
@@ -160,7 +161,7 @@ bool sepstream::GetTokenRemainder(Anope::string &token, int num)
 	return false;
 }
 
-Anope::string sepstream::GetRemaining()
+Warden::string sepstream::GetRemaining()
 {
 	return !this->StreamEnd() ? this->tokens.substr(this->pos) : "";
 }

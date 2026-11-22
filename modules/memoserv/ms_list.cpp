@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,10 +25,10 @@ public:
 		this->SetSyntax(_("[\037channel\037] [\037list\037 | NEW]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 
-		Anope::string param = !params.empty() ? params[0] : "", chan;
+		Warden::string param = !params.empty() ? params[0] : "", chan;
 		ChannelInfo *ci = NULL;
 		const MemoInfo *mi;
 
@@ -76,7 +77,7 @@ public:
 					CommandSource &source;
 					const MemoInfo *mi;
 				public:
-					MemoListCallback(ListFormatter &_list, CommandSource &_source, const MemoInfo *_mi, const Anope::string &numlist) : NumberList(numlist, false), list(_list), source(_source), mi(_mi)
+					MemoListCallback(ListFormatter &_list, CommandSource &_source, const MemoInfo *_mi, const Warden::string &numlist) : NumberList(numlist, false), list(_list), source(_source), mi(_mi)
 					{
 					}
 
@@ -88,9 +89,9 @@ public:
 						const Memo *m = mi->GetMemo(number - 1);
 
 						ListFormatter::ListEntry entry;
-						entry["Number"] = (m->unread ? "* " : "  ") + Anope::ToString(number);
+						entry["Number"] = (m->unread ? "* " : "  ") + Warden::ToString(number);
 						entry["Sender"] = m->sender;
-						entry["Date/Time"] = Anope::strftime(m->time, source.GetAccount());
+						entry["Date/Time"] = Warden::strftime(m->time, source.GetAccount());
 						this->list.AddEntry(entry);
 					}
 				}
@@ -123,9 +124,9 @@ public:
 					const Memo *m = mi->GetMemo(i);
 
 					ListFormatter::ListEntry entry;
-					entry["Number"] = (m->unread ? "* " : "  ") + Anope::ToString(i + 1);
+					entry["Number"] = (m->unread ? "* " : "  ") + Warden::ToString(i + 1);
 					entry["Sender"] = m->sender;
-					entry["Date/Time"] = Anope::strftime(m->time, source.GetAccount());
+					entry["Date/Time"] = Warden::strftime(m->time, source.GetAccount());
 					list.AddEntry(entry);
 				}
 			}
@@ -135,7 +136,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -165,7 +166,7 @@ class MSList final
 	CommandMSList commandmslist;
 
 public:
-	MSList(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	MSList(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandmslist(this)
 	{
 

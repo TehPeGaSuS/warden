@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,9 +19,9 @@ class CommandBSInfo final
 	: public Command
 {
 private:
-	static void send_bot_channels(std::vector<Anope::string> &buffers, const BotInfo *bi)
+	static void send_bot_channels(std::vector<Warden::string> &buffers, const BotInfo *bi)
 	{
-		Anope::string buf;
+		Warden::string buf;
 		for (const auto &[_, ci] : *RegisteredChannelList)
 		{
 			if (ci->bi == bi)
@@ -43,9 +44,9 @@ public:
 		this->SetSyntax(_("{\037channel\037 | \037nickname\037}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &query = params[0];
+		const Warden::string &query = params[0];
 
 		BotInfo *bi = BotInfo::Find(query, true);
 		ChannelInfo *ci = ChannelInfo::Find(query);
@@ -56,16 +57,16 @@ public:
 			source.Reply(_("Information about bot \002%s\002:"), bi->nick.c_str());
 			info[_("Mask")] = bi->GetIdent() + "@" + bi->host;
 			info[_("Real name")] = bi->realname;
-			info[_("Created")] = Anope::strftime(bi->created, source.GetAccount());
+			info[_("Created")] = Warden::strftime(bi->created, source.GetAccount());
 			info[_("Options")] = bi->oper_only ? _("Private") : _("None");
-			info[_("Used on")] = Anope::Format(source.Translate(bi->GetChannelCount(), N_("%u channel", "%u channels")), bi->GetChannelCount());
+			info[_("Used on")] = Warden::Format(source.Translate(bi->GetChannelCount(), N_("%u channel", "%u channels")), bi->GetChannelCount());
 
 			FOREACH_MOD(OnBotInfo, (source, bi, ci, info));
 			info.SendTo(source);
 
 			if (source.HasPriv("botserv/administration"))
 			{
-				std::vector<Anope::string> buf;
+				std::vector<Warden::string> buf;
 				this->send_bot_channels(buf, bi);
 				for (const auto &line : buf)
 					source.Reply(line);
@@ -83,8 +84,8 @@ public:
 			source.Reply(CHAN_INFO_HEADER, ci->name.c_str());
 			info[_("Bot nick")] = ci->bi ? ci->bi->nick : _("not assigned yet");
 
-			Anope::string enabled = source.Translate(_("Enabled"));
-			Anope::string disabled = source.Translate(_("Disabled"));
+			Warden::string enabled = source.Translate(_("Enabled"));
+			Warden::string disabled = source.Translate(_("Disabled"));
 
 			FOREACH_MOD(OnBotInfo, (source, bi, ci, info));
 			info.SendTo(source);
@@ -93,7 +94,7 @@ public:
 			source.Reply(_("\002%s\002 is not a valid bot or registered channel."), query.c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -118,9 +119,9 @@ public:
 		return true;
 	}
 
-	Anope::string GetDesc(CommandSource &source) const override
+	Warden::string GetDesc(CommandSource &source) const override
 	{
-		return Anope::Format(source.Translate(_("Allows you to see %s information about a channel or a bot")), source.service->nick.c_str());
+		return Warden::Format(source.Translate(_("Allows you to see %s information about a channel or a bot")), source.service->nick.c_str());
 	}
 };
 
@@ -130,7 +131,7 @@ class BSInfo final
 	CommandBSInfo commandbsinfo;
 
 public:
-	BSInfo(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	BSInfo(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandbsinfo(this)
 	{
 

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -20,7 +21,7 @@ class CommandNSSetLanguage
 	: public Command
 {
 protected:
-	Anope::map<Anope::string> &languages;
+	Warden::map<Warden::string> &languages;
 
 	const char *GetDefaultLanguage() const
 	{
@@ -31,7 +32,7 @@ protected:
 	}
 
 public:
-	CommandNSSetLanguage(Module *creator, Anope::map<Anope::string> &langs, const Anope::string &sname = "nickserv/set/language", size_t min = 0)
+	CommandNSSetLanguage(Module *creator, Warden::map<Warden::string> &langs, const Warden::string &sname = "nickserv/set/language", size_t min = 0)
 		: Command(creator, sname, min, min + 1)
 		, languages(langs)
 	{
@@ -39,9 +40,9 @@ public:
 		this->SetSyntax(_("[\037language\037]"));
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -60,7 +61,7 @@ public:
 		if (MOD_RESULT == EVENT_STOP)
 			return;
 
-		Anope::string langname;
+		Warden::string langname;
 		if (param.empty())
 		{
 			langname = Language::Translate(ENGLISH);
@@ -101,12 +102,12 @@ public:
 			source.Reply(_("Language for \002%s\002 changed to \002%s\002."), nc->display.c_str(), langname.c_str());
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params.empty() ? "" : params[0]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -130,19 +131,19 @@ class CommandNSSASetLanguage final
 	: public CommandNSSetLanguage
 {
 public:
-	CommandNSSASetLanguage(Module *creator, Anope::map<Anope::string> &langs)
+	CommandNSSASetLanguage(Module *creator, Warden::map<Warden::string> &langs)
 		: CommandNSSetLanguage(creator, langs, "nickserv/saset/language", 1)
 	{
 		this->ClearSyntax();
 		this->SetSyntax(_("\037nickname\037 [\037language\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params.size() > 1 ? params[1] : "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -168,16 +169,16 @@ class NSSetLanguage final
 private:
 	CommandNSSetLanguage commandnssetlanguage;
 	CommandNSSASetLanguage commandnssasetlanguage;
-	Anope::map<Anope::string> languages;
+	Warden::map<Warden::string> languages;
 
 public:
-	NSSetLanguage(const Anope::string &modname, const Anope::string &creator)
+	NSSetLanguage(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnssetlanguage(this, languages)
 		, commandnssasetlanguage(this, languages)
 	{
 #if !HAVE_LOCALIZATION
-		throw ModuleException("Anope was not built with localization support");
+		throw ModuleException("Warden was not built with localization support");
 #endif
 
 		// Build a list of languages. This only needs to happen once as we

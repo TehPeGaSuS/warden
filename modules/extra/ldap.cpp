@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -49,7 +50,7 @@
 #endif
 
 #if defined LDAP_API_FEATURE_X_OPENLDAP_REENTRANT && !LDAP_API_FEATURE_X_OPENLDAP_REENTRANT
-# error Anope requires OpenLDAP to be built as reentrant.
+# error Warden requires OpenLDAP to be built as reentrant.
 #endif
 
 
@@ -89,10 +90,10 @@ public:
 class LDAPBind final
 	: public LDAPRequest
 {
-	Anope::string who, pass;
+	Warden::string who, pass;
 
 public:
-	LDAPBind(LDAPService *s, LDAPInterface *i, const Anope::string &w, const Anope::string &p)
+	LDAPBind(LDAPService *s, LDAPInterface *i, const Warden::string &w, const Warden::string &p)
 		: LDAPRequest(s, i)
 		, who(w)
 		, pass(p)
@@ -106,11 +107,11 @@ public:
 class LDAPSearchRequest final
 	: public LDAPRequest
 {
-	Anope::string base;
-	Anope::string filter;
+	Warden::string base;
+	Warden::string filter;
 
 public:
-	LDAPSearchRequest(LDAPService *s, LDAPInterface *i, const Anope::string &b, const Anope::string &f)
+	LDAPSearchRequest(LDAPService *s, LDAPInterface *i, const Warden::string &b, const Warden::string &f)
 		: LDAPRequest(s, i)
 		, base(b)
 		, filter(f)
@@ -124,11 +125,11 @@ public:
 class LDAPAdd final
 	: public LDAPRequest
 {
-	Anope::string dn;
+	Warden::string dn;
 	LDAPMods attributes;
 
 public:
-	LDAPAdd(LDAPService *s, LDAPInterface *i, const Anope::string &d, const LDAPMods &attr)
+	LDAPAdd(LDAPService *s, LDAPInterface *i, const Warden::string &d, const LDAPMods &attr)
 		: LDAPRequest(s, i)
 		, dn(d)
 		, attributes(attr)
@@ -142,10 +143,10 @@ public:
 class LDAPDel final
 	: public LDAPRequest
 {
-	Anope::string dn;
+	Warden::string dn;
 
 public:
-	LDAPDel(LDAPService *s, LDAPInterface *i, const Anope::string &d)
+	LDAPDel(LDAPService *s, LDAPInterface *i, const Warden::string &d)
 		: LDAPRequest(s, i)
 		, dn(d)
 	{
@@ -158,11 +159,11 @@ public:
 class LDAPModify final
 	: public LDAPRequest
 {
-	Anope::string base;
+	Warden::string base;
 	LDAPMods attributes;
 
 public:
-	LDAPModify(LDAPService *s, LDAPInterface *i, const Anope::string &b, const LDAPMods &attr)
+	LDAPModify(LDAPService *s, LDAPInterface *i, const Warden::string &b, const LDAPMods &attr)
 		: LDAPRequest(s, i)
 		, base(b)
 		, attributes(attr)
@@ -177,9 +178,9 @@ class LDAPService final
 	: public LDAPProvider
 	, public Thread
 {
-	Anope::string server;
-	Anope::string admin_binddn;
-	Anope::string admin_pass;
+	Warden::string server;
+	Warden::string admin_binddn;
+	Warden::string admin_pass;
 
 	LDAP *con;
 
@@ -254,7 +255,7 @@ private:
 		bool secure = false; // LDAP defaults to plaintext.
 		if (urlComponents.dwSchemeLength > 0)
 		{
-			const Anope::string scheme(urlComponents.lpszScheme);
+			const Warden::string scheme(urlComponents.lpszScheme);
 			if (scheme.equals_ci("ldaps"))
 			{
 				port = 636; // Default encrypted port.
@@ -306,9 +307,9 @@ private:
 	void Reconnect()
 	{
 		/* Only try one connect a minute. It is an expensive blocking operation */
-		if (last_connect > Anope::CurTime - 60)
+		if (last_connect > Warden::CurTime - 60)
 			throw LDAPException("Unable to connect to LDAP service " + this->name + ": reconnecting too fast");
-		last_connect = Anope::CurTime;
+		last_connect = Warden::CurTime;
 
 		ldap_unbind_ext(this->con, NULL, NULL);
 
@@ -328,7 +329,7 @@ public:
 	query_queue queries, results;
 	std::mutex process_mutex; /* held when processing requests not in either queue */
 
-	LDAPService(Module *o, const Anope::string &n, const Anope::string &s, const Anope::string &b, const Anope::string &p) : LDAPProvider(o, n), server(s), admin_binddn(b), admin_pass(p)
+	LDAPService(Module *o, const Warden::string &n, const Warden::string &s, const Warden::string &b, const Warden::string &p) : LDAPProvider(o, n), server(s), admin_binddn(b), admin_pass(p)
 	{
 		Connect();
 	}
@@ -372,13 +373,13 @@ public:
 		this->Bind(i, this->admin_binddn, this->admin_pass);
 	}
 
-	void Bind(LDAPInterface *i, const Anope::string &who, const Anope::string &pass) override
+	void Bind(LDAPInterface *i, const Warden::string &who, const Warden::string &pass) override
 	{
 		auto *b = new LDAPBind(this, i, who, pass);
 		QueueRequest(b);
 	}
 
-	void Search(LDAPInterface *i, const Anope::string &base, const Anope::string &filter) override
+	void Search(LDAPInterface *i, const Warden::string &base, const Warden::string &filter) override
 	{
 		if (i == NULL)
 			throw LDAPException("No interface");
@@ -387,30 +388,30 @@ public:
 		QueueRequest(s);
 	}
 
-	void Add(LDAPInterface *i, const Anope::string &dn, LDAPMods &attributes) override
+	void Add(LDAPInterface *i, const Warden::string &dn, LDAPMods &attributes) override
 	{
 		auto *add = new LDAPAdd(this, i, dn, attributes);
 		QueueRequest(add);
 	}
 
-	void Del(LDAPInterface *i, const Anope::string &dn) override
+	void Del(LDAPInterface *i, const Warden::string &dn) override
 	{
 		auto *del = new LDAPDel(this, i, dn);
 		QueueRequest(del);
 	}
 
-	void Modify(LDAPInterface *i, const Anope::string &base, LDAPMods &attributes) override
+	void Modify(LDAPInterface *i, const Warden::string &base, LDAPMods &attributes) override
 	{
 		auto *mod = new LDAPModify(this, i, base, attributes);
 		QueueRequest(mod);
 	}
 
-	Anope::string EscapeDN(const Anope::string &str) const override
+	Warden::string EscapeDN(const Warden::string &str) const override
 	{
 		if (str.empty())
 			return str;
 
-		Anope::string newstr;
+		Warden::string newstr;
 		newstr.str().reserve(str.length());
 		for (size_t idx = 0; idx < str.length(); ++idx)
 		{
@@ -444,12 +445,12 @@ public:
 		return newstr;
 	}
 
-	Anope::string EscapeSF(const Anope::string &str) const override
+	Warden::string EscapeSF(const Warden::string &str) const override
 	{
 		if (str.empty())
 			return str;
 
-		Anope::string newstr;
+		Warden::string newstr;
 		newstr.str().reserve(str.length());
 		for (size_t idx = 0; idx < str.length(); ++idx)
 		{
@@ -517,7 +518,7 @@ private:
 				berval **vals = ldap_get_values_len(this->con, cur, attr);
 				int count = ldap_count_values_len(vals);
 
-				std::vector<Anope::string> attrs;
+				std::vector<Warden::string> attrs;
 				for (int j = 0; j < count; ++j)
 					attrs.push_back(vals[j]->bv_val);
 				attributes[attr] = attrs;
@@ -603,11 +604,11 @@ class ModuleLDAP final
 	: public Module
 	, public Pipe
 {
-	std::map<Anope::string, LDAPService *> LDAPServices;
+	std::map<Warden::string, LDAPService *> LDAPServices;
 
 public:
 
-	ModuleLDAP(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, EXTRA | VENDOR)
+	ModuleLDAP(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, EXTRA | VENDOR)
 	{
 		me = this;
 
@@ -616,7 +617,7 @@ public:
 
 	~ModuleLDAP()
 	{
-		for (std::map<Anope::string, LDAPService *>::iterator it = this->LDAPServices.begin(); it != this->LDAPServices.end(); ++it)
+		for (std::map<Warden::string, LDAPService *>::iterator it = this->LDAPServices.begin(); it != this->LDAPServices.end(); ++it)
 		{
 			it->second->SetExitState();
 			it->second->condvar.notify_all();
@@ -630,16 +631,16 @@ public:
 	{
 		const auto &conf = config.GetModule(this);
 
-		for (std::map<Anope::string, LDAPService *>::iterator it = this->LDAPServices.begin(); it != this->LDAPServices.end();)
+		for (std::map<Warden::string, LDAPService *>::iterator it = this->LDAPServices.begin(); it != this->LDAPServices.end();)
 		{
-			const Anope::string &cname = it->first;
+			const Warden::string &cname = it->first;
 			LDAPService *s = it->second;
 			size_t i;
 
 			++it;
 
 			for (i = 0; i < conf.CountBlock("ldap"); ++i)
-				if (conf.GetBlock("ldap", i).Get<const Anope::string>("name", "ldap/main") == cname)
+				if (conf.GetBlock("ldap", i).Get<const Warden::string>("name", "ldap/main") == cname)
 					break;
 
 			if (i == conf.CountBlock("ldap"))
@@ -656,13 +657,13 @@ public:
 
 		for (const auto &[_,  ldap] : conf.GetBlocks("ldap"))
 		{
-			const Anope::string &connname = ldap.Get<const Anope::string>("name", "ldap/main");
+			const Warden::string &connname = ldap.Get<const Warden::string>("name", "ldap/main");
 
 			if (this->LDAPServices.find(connname) == this->LDAPServices.end())
 			{
-				const Anope::string &server = ldap.Get<const Anope::string>("server", "127.0.0.1");
-				const Anope::string &admin_binddn = ldap.Get<const Anope::string>("admin_binddn");
-				const Anope::string &admin_password = ldap.Get<const Anope::string>("admin_password");
+				const Warden::string &server = ldap.Get<const Warden::string>("server", "127.0.0.1");
+				const Warden::string &admin_binddn = ldap.Get<const Warden::string>("admin_binddn");
+				const Warden::string &admin_password = ldap.Get<const Warden::string>("admin_password");
 
 				try
 				{
@@ -682,7 +683,7 @@ public:
 
 	void OnModuleUnload(User *, Module *m) override
 	{
-		for (std::map<Anope::string, LDAPService *>::iterator it = this->LDAPServices.begin(); it != this->LDAPServices.end(); ++it)
+		for (std::map<Warden::string, LDAPService *>::iterator it = this->LDAPServices.begin(); it != this->LDAPServices.end(); ++it)
 		{
 			LDAPService *s = it->second;
 
@@ -719,7 +720,7 @@ public:
 
 	void OnNotify() override
 	{
-		for (std::map<Anope::string, LDAPService *>::iterator it = this->LDAPServices.begin(); it != this->LDAPServices.end(); ++it)
+		for (std::map<Warden::string, LDAPService *>::iterator it = this->LDAPServices.begin(); it != this->LDAPServices.end(); ++it)
 		{
 			LDAPService *s = it->second;
 

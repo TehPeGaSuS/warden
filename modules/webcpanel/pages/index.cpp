@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -20,12 +21,12 @@ class WebpanelRequest final
 	HTTP::Reply reply;
 	HTTP::Message message;
 	Reference<HTTP::Provider> server;
-	Anope::string page_name;
+	Warden::string page_name;
 	Reference<HTTP::Client> client;
 	TemplateFileServer::Replacements replacements;
 
 public:
-	WebpanelRequest(Module *o, HTTP::Reply &r, HTTP::Message &m, HTTP::Provider *s, const Anope::string &p_n, HTTP::Client *c, TemplateFileServer::Replacements &re, const Anope::string &user, const Anope::string &pass)
+	WebpanelRequest(Module *o, HTTP::Reply &r, HTTP::Message &m, HTTP::Provider *s, const Warden::string &p_n, HTTP::Client *c, TemplateFileServer::Replacements &re, const Warden::string &user, const Warden::string &pass)
 		: IdentifyRequest(o, user, pass, c->GetIP())
 		, reply(r)
 		, message(m)
@@ -49,25 +50,25 @@ public:
 
 		// Rate limit logins to 1/sec
 		auto *last_login = na->nc->GetExt<time_t>("webcpanel_last_login");
-		if (last_login != NULL && Anope::CurTime == *last_login)
+		if (last_login != NULL && Warden::CurTime == *last_login)
 		{
 			this->OnFail();
 			return;
 		}
 
-		Anope::string id;
+		Warden::string id;
 		for (int i = 0; i < 64; ++i)
 		{
 			char c;
 			do
-				c = 48 + (Anope::RandomNumber() % 75);
+				c = 48 + (Warden::RandomNumber() % 75);
 			while (!isalnum(c));
 			id += c;
 		}
 
-		na->Extend<Anope::string>("webcpanel_id", id);
-		na->Extend<Anope::string>("webcpanel_ip", client->GetIP());
-		na->nc->Extend<time_t>("webcpanel_last_login", Anope::CurTime);
+		na->Extend<Warden::string>("webcpanel_id", id);
+		na->Extend<Warden::string>("webcpanel_ip", client->GetIP());
+		na->nc->Extend<time_t>("webcpanel_last_login", Warden::CurTime);
 
 		{
 			HTTP::Reply::cookie c;
@@ -84,7 +85,7 @@ public:
 		}
 
 		reply.error = HTTP::FOUND;
-		reply.headers["Location"] = Anope::string("http") + (server->IsSSL() ? "s" : "") + "://" + message.headers["Host"] + "/nickserv/info";
+		reply.headers["Location"] = Warden::string("http") + (server->IsSSL() ? "s" : "") + "://" + message.headers["Host"] + "/nickserv/info";
 
 		client->SendReply(&reply);
 	}
@@ -101,7 +102,7 @@ public:
 	}
 };
 
-bool WebCPanel::Index::OnRequest(HTTP::Provider *server, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply)
+bool WebCPanel::Index::OnRequest(HTTP::Provider *server, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply)
 {
 	if (!WebPanel::IsAllowedOrigin(message))
 	{
@@ -112,8 +113,8 @@ bool WebCPanel::Index::OnRequest(HTTP::Provider *server, const Anope::string &pa
 	TemplateFileServer::Replacements replacements;
 	replacements["TITLE"] = page_title;
 
-	const Anope::string user = WebPanel::GetRequestData(message.post_data, "username");
-	const Anope::string pass = WebPanel::GetRequestData(message.post_data, "password");
+	const Warden::string user = WebPanel::GetRequestData(message.post_data, "username");
+	const Warden::string pass = WebPanel::GetRequestData(message.post_data, "password");
 
 	// Redirect if already logged in
 	ServiceReference<Panel> panel("Panel", "webcpanel");
@@ -121,7 +122,7 @@ bool WebCPanel::Index::OnRequest(HTTP::Provider *server, const Anope::string &pa
 	if (na)
 	{
 		reply.error = HTTP::FOUND;
-		reply.headers["Location"] = Anope::string("http") + (server->IsSSL() ? "s" : "") + "://" + message.headers["Host"] + "/nickserv/info";
+		reply.headers["Location"] = Warden::string("http") + (server->IsSSL() ? "s" : "") + "://" + message.headers["Host"] + "/nickserv/info";
 
 		client->SendReply(&reply);
 		return false;
@@ -129,14 +130,14 @@ bool WebCPanel::Index::OnRequest(HTTP::Provider *server, const Anope::string &pa
 	else if (!user.empty() && !pass.empty())
 	{
 		// Rate limit check.
-		Anope::string ip = client->clientaddr.addr();
+		Warden::string ip = client->clientaddr.addr();
 
 		auto it = last_login_attempt.find(ip);
 		if (it != last_login_attempt.end())
 		{
 			time_t last_time = it->second;
 
-			if (last_time == Anope::CurTime)
+			if (last_time == Warden::CurTime)
 			{
 				replacements["INVALID_LOGIN"] = "Rate limited";
 				TemplateFileServer page("login.html");
@@ -146,13 +147,13 @@ bool WebCPanel::Index::OnRequest(HTTP::Provider *server, const Anope::string &pa
 		}
 
 		// don't let ip hash grow too long
-		if (Anope::CurTime > last_clear + FLUSH_TIME)
+		if (Warden::CurTime > last_clear + FLUSH_TIME)
 		{
 			last_login_attempt.clear();
-			last_clear = Anope::CurTime;
+			last_clear = Warden::CurTime;
 		}
 
-		last_login_attempt[ip] = Anope::CurTime;
+		last_login_attempt[ip] = Warden::CurTime;
 
 		auto *req = new WebpanelRequest(me, reply, message, server, page_name, client, replacements, user, pass);
 		FOREACH_MOD(OnCheckAuthentication, (NULL, req));

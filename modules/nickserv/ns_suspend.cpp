@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -45,7 +46,7 @@ struct NSSuspendInfoType final
 	{
 		NSSuspendInfo *si;
 		if (obj)
-			si = anope_dynamic_static_cast<NSSuspendInfo *>(obj);
+			si = warden_dynamic_static_cast<NSSuspendInfo *>(obj);
 		else
 		{
 			auto *na = NickAlias::Find(data.Load("nick"));
@@ -75,9 +76,9 @@ public:
 		this->SetSyntax(_("\037nickname\037 [+\037expiry\037] [\037reason\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -110,7 +111,7 @@ public:
 		time_t expiry_secs = Config->GetModule(this->owner).Get<time_t>("suspendexpire");
 		if (expiry_idx != 0)
 		{
-			expiry_secs = Anope::DoTime(params[expiry_idx].substr(1));
+			expiry_secs = Warden::DoTime(params[expiry_idx].substr(1));
 			if (expiry_secs < 0)
 			{
 				source.Reply(BAD_EXPIRY_TIME);
@@ -118,7 +119,7 @@ public:
 			}
 		}
 
-		Anope::string reason;
+		Warden::string reason;
 		for (auto idx = reason_idx; idx < params.size(); ++idx)
 			reason.append(reason.empty() ? "" : " ").append(params[idx]);
 
@@ -126,8 +127,8 @@ public:
 		si->what = nc->display;
 		si->by = source.GetNick();
 		si->reason = reason;
-		si->when = Anope::CurTime;
-		si->expires = expiry_secs ? expiry_secs + Anope::CurTime : 0;
+		si->when = Warden::CurTime;
+		si->expires = expiry_secs ? expiry_secs + Warden::CurTime : 0;
 
 		for (auto *na2 : *nc->aliases)
 		{
@@ -147,13 +148,13 @@ public:
 			}
 		}
 
-		Log(LOG_ADMIN, source, this) << "for " << nick << " (" << (!reason.empty() ? reason : "No reason") << "), expires on " << (expiry_secs ? Anope::strftime(Anope::CurTime + expiry_secs) : "never");
+		Log(LOG_ADMIN, source, this) << "for " << nick << " (" << (!reason.empty() ? reason : "No reason") << "), expires on " << (expiry_secs ? Warden::strftime(Warden::CurTime + expiry_secs) : "never");
 		source.Reply(_("Nick %s is now suspended."), nick.c_str());
 
 		FOREACH_MOD(OnNickSuspend, (na));
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -177,11 +178,11 @@ public:
 		this->SetSyntax(_("\037nickname\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &nick = params[0];
+		const Warden::string &nick = params[0];
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 
 		NickAlias *na = NickAlias::Find(nick);
@@ -208,7 +209,7 @@ public:
 		FOREACH_MOD(OnNickUnsuspended, (na));
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -224,17 +225,17 @@ class NSSuspend final
 	CommandNSUnSuspend commandnsunsuspend;
 	ExtensibleItem<NSSuspendInfo> suspend;
 	NSSuspendInfoType suspend_type;
-	std::vector<Anope::string> show;
+	std::vector<Warden::string> show;
 
 	struct trim final
 	{
-		Anope::string operator()(Anope::string s) const
+		Warden::string operator()(Warden::string s) const
 		{
 			return s.trim();
 		}
 	};
 
-	bool Show(CommandSource &source, const Anope::string &what) const
+	bool Show(CommandSource &source, const Warden::string &what) const
 	{
 		return source.IsOper() || std::find(show.begin(), show.end(), what) != show.end();
 	}
@@ -246,7 +247,7 @@ class NSSuspend final
 	}
 
 public:
-	NSSuspend(const Anope::string &modname, const Anope::string &creator)
+	NSSuspend(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnssuspend(this)
 		, commandnsunsuspend(this)
@@ -256,7 +257,7 @@ public:
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		auto s = conf.GetModule(this).Get<Anope::string>("show");
+		auto s = conf.GetModule(this).Get<Warden::string>("show");
 		commasepstream(s).GetTokens(show);
 		std::transform(show.begin(), show.end(), show.begin(), trim());
 	}
@@ -274,9 +275,9 @@ public:
 		if (!s->reason.empty() && (show_hidden || Show(source, "reason")))
 			info[_("Suspend reason")] = s->reason;
 		if (s->when && (show_hidden || Show(source, "on")))
-			info[_("Suspended on")] = Anope::strftime(s->when, source.GetAccount());
+			info[_("Suspended on")] = Warden::strftime(s->when, source.GetAccount());
 		if (s->expires && (show_hidden || Show(source, "expires")))
-			info[_("Suspension expires")] = Anope::strftime(s->expires, source.GetAccount());
+			info[_("Suspension expires")] = Warden::strftime(s->expires, source.GetAccount());
 	}
 
 	void OnPreNickExpire(NickAlias *na, bool &expire) override
@@ -287,9 +288,9 @@ public:
 
 		expire = false;
 
-		if (!Anope::NoExpire && s->expires && s->expires < Anope::CurTime)
+		if (!Warden::NoExpire && s->expires && s->expires < Warden::CurTime)
 		{
-			na->last_seen = Anope::CurTime;
+			na->last_seen = Warden::CurTime;
 			Expire(na);
 		}
 	}
@@ -300,7 +301,7 @@ public:
 		if (!s)
 			return EVENT_CONTINUE;
 
-		if (!Anope::NoExpire && s->expires && s->expires < Anope::CurTime)
+		if (!Warden::NoExpire && s->expires && s->expires < Warden::CurTime)
 		{
 			Expire(na);
 			return EVENT_CONTINUE;

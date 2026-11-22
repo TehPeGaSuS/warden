@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,9 +26,9 @@ public:
 		this->AllowUnregistered(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		Anope::string nick;
+		Warden::string nick;
 		if (params.empty())
 		{
 			// Use the display of the source if logged in; otherwise, use their nick.
@@ -75,7 +76,7 @@ public:
 			if (u2 && u2->Account() == na->nc)
 			{
 				nick_online = true;
-				na->last_seen = Anope::CurTime;
+				na->last_seen = Warden::CurTime;
 			}
 
 			if (has_auspex || na->nc == source.GetAccount())
@@ -91,9 +92,9 @@ public:
 
 			InfoFormatter info(source.nc);
 
-			info[_("Account")] = Anope::Format(source.Translate(_("%s (ID: %zu)")), na->nc->display.c_str(), na->nc->GetId());
-			info[_("Account registered")] = Anope::strftime(na->nc->registered, source.GetAccount());
-			info[_("Nick registered")] = Anope::strftime(na->registered, source.GetAccount());
+			info[_("Account")] = Warden::Format(source.Translate(_("%s (ID: %zu)")), na->nc->display.c_str(), na->nc->GetId());
+			info[_("Account registered")] = Warden::strftime(na->nc->registered, source.GetAccount());
+			info[_("Nick registered")] = Warden::strftime(na->registered, source.GetAccount());
 
 			if (nick_online)
 			{
@@ -110,9 +111,9 @@ public:
 			}
 			else
 			{
-				info[_("Last seen")] = Anope::strftime(na->last_seen, source.GetAccount());
+				info[_("Last seen")] = Warden::strftime(na->last_seen, source.GetAccount());
 
-				Anope::string shown;
+				Warden::string shown;
 				if (show_hidden || !na->nc->HasExt("HIDE_MASK"))
 				{
 					info[_("Last seen mask")] = na->last_userhost;
@@ -137,7 +138,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -157,15 +158,15 @@ class CommandNSSetHide
 	: public Command
 {
 public:
-	CommandNSSetHide(Module *creator, const Anope::string &sname = "nickserv/set/hide", size_t min = 2) : Command(creator, sname, min, min + 1)
+	CommandNSSetHide(Module *creator, const Warden::string &sname = "nickserv/set/hide", size_t min = 2) : Command(creator, sname, min, min + 1)
 	{
 		this->SetDesc(_("Hide certain pieces of nickname information"));
 		this->SetSyntax("{EMAIL | STATUS | MASK | QUIT} {ON | OFF}");
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param, const Anope::string &arg)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param, const Warden::string &arg)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -184,7 +185,7 @@ public:
 		if (MOD_RESULT == EVENT_STOP)
 			return;
 
-		Anope::string onmsg, offmsg, flag;
+		Warden::string onmsg, offmsg, flag;
 
 		if (param.equals_ci("EMAIL"))
 		{
@@ -232,12 +233,12 @@ public:
 			this->OnSyntaxError(source, "HIDE");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params[0], params[1]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -264,13 +265,13 @@ public:
 		this->SetSyntax(_("\037nickname\037 {EMAIL | STATUS | MASK | QUIT} {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->ClearSyntax();
 		this->Run(source, params[0], params[1], params[2]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -299,7 +300,7 @@ class NSInfo final
 	SerializableExtensibleItem<bool> hide_email, hide_mask, hide_status, hide_quit;
 
 public:
-	NSInfo(const Anope::string &modname, const Anope::string &creator)
+	NSInfo(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnsinfo(this)
 		, commandnssethide(this)

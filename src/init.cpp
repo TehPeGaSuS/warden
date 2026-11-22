@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -35,14 +36,14 @@
 #include <iostream>
 #include <thread>
 
-Anope::string Anope::ConfigDir = DEFAULT_CONF_DIR;
-Anope::string Anope::DataDir = DEFAULT_DATA_DIR;
-Anope::string Anope::LocaleDir = DEFAULT_LOCALE_DIR;
-Anope::string Anope::LogDir = DEFAULT_LOG_DIR;
-Anope::string Anope::ModuleDir = DEFAULT_MODULE_DIR;
+Warden::string Warden::ConfigDir = DEFAULT_CONF_DIR;
+Warden::string Warden::DataDir = DEFAULT_DATA_DIR;
+Warden::string Warden::LocaleDir = DEFAULT_LOCALE_DIR;
+Warden::string Warden::LogDir = DEFAULT_LOG_DIR;
+Warden::string Warden::ModuleDir = DEFAULT_MODULE_DIR;
 
 /* Vector of pairs of command line arguments and their params */
-static std::vector<std::pair<Anope::string, Anope::string> > CommandLineArguments;
+static std::vector<std::pair<Warden::string, Warden::string> > CommandLineArguments;
 
 /** Called on startup to organize our starting arguments in a better way
  * and check for errors
@@ -53,12 +54,12 @@ static void ParseCommandLineArguments(int ac, char **av)
 {
 	for (int i = 1; i < ac; ++i)
 	{
-		Anope::string option = av[i];
-		Anope::string param;
+		Warden::string option = av[i];
+		Warden::string param;
 		while (!option.empty() && option[0] == '-')
 			option.erase(option.begin());
 		size_t t = option.find('=');
-		if (t != Anope::string::npos)
+		if (t != Warden::string::npos)
 		{
 			param = option.substr(t + 1);
 			option.erase(t);
@@ -77,7 +78,7 @@ static void ParseCommandLineArguments(int ac, char **av)
  * @param param A string to put the param, if any, of the argument
  * @return true if name/shortname was found, false if not
  */
-static bool GetCommandLineArgument(const Anope::string &name, char shortname, Anope::string &param)
+static bool GetCommandLineArgument(const Warden::string &name, char shortname, Warden::string &param)
 {
 	param.clear();
 
@@ -98,30 +99,30 @@ static bool GetCommandLineArgument(const Anope::string &name, char shortname, An
  * @param shortname A shorter name, eg --debug and -d
  * @return true if name/shortname was found, false if not
  */
-static bool GetCommandLineArgument(const Anope::string &name, char shortname = 0)
+static bool GetCommandLineArgument(const Warden::string &name, char shortname = 0)
 {
-	Anope::string Unused;
+	Warden::string Unused;
 	return GetCommandLineArgument(name, shortname, Unused);
 }
 
-bool Anope::AtTerm()
+bool Warden::AtTerm()
 {
 	return isatty(fileno(stdout)) && isatty(fileno(stdin)) && isatty(fileno(stderr));
 }
 
 static void setuidgid();
 
-void Anope::Fork()
+void Warden::Fork()
 {
 #ifndef _WIN32
 	kill(getppid(), SIGUSR2);
 
 	if (!freopen("/dev/null", "r", stdin))
-		Log() << "Unable to redirect stdin to /dev/null: " << Anope::LastError();
+		Log() << "Unable to redirect stdin to /dev/null: " << Warden::LastError();
 	if (!freopen("/dev/null", "w", stdout))
-		Log() << "Unable to redirect stdout to /dev/null: " << Anope::LastError();
+		Log() << "Unable to redirect stdout to /dev/null: " << Warden::LastError();
 	if (!freopen("/dev/null", "w", stderr))
-		Log() << "Unable to redirect stderr to /dev/null: " << Anope::LastError();
+		Log() << "Unable to redirect stderr to /dev/null: " << Warden::LastError();
 
 	setpgid(0, 0);
 
@@ -131,13 +132,13 @@ void Anope::Fork()
 #endif
 }
 
-void Anope::HandleSignal()
+void Warden::HandleSignal()
 {
 	switch (Signal)
 	{
 		case SIGHUP:
 		{
-			Anope::SaveDatabases();
+			Warden::SaveDatabases();
 
 			try
 			{
@@ -157,17 +158,17 @@ void Anope::HandleSignal()
 		case SIGINT:
 #ifndef _WIN32
 			Log() << "Received " << strsignal(Signal) << " signal (" << Signal << "), exiting.";
-			Anope::QuitReason = Anope::string("Services terminating via signal ") + strsignal(Signal) + " (" + Anope::ToString(Signal) + ")";
+			Warden::QuitReason = Warden::string("Services terminating via signal ") + strsignal(Signal) + " (" + Warden::ToString(Signal) + ")";
 #else
 			Log() << "Received signal " << Signal << ", exiting.";
-			Anope::QuitReason = Anope::string("Services terminating via signal ") + Anope::ToString(Signal);
+			Warden::QuitReason = Warden::string("Services terminating via signal ") + Warden::ToString(Signal);
 #endif
-			Anope::Quitting = true;
-			Anope::SaveDatabases();
+			Warden::Quitting = true;
+			Warden::SaveDatabases();
 			break;
 #ifndef _WIN32
 		case SIGUSR1:
-			Anope::SaveDatabases();
+			Warden::SaveDatabases();
 			break;
 #endif
 	}
@@ -180,23 +181,23 @@ static void parent_signal_handler(int signal)
 {
 	if (signal == SIGUSR2)
 	{
-		Anope::Quitting = true;
+		Warden::Quitting = true;
 	}
 	else if (signal == SIGCHLD)
 	{
-		Anope::ReturnValue = -1;
-		Anope::Quitting = true;
+		Warden::ReturnValue = -1;
+		Warden::Quitting = true;
 		int status = 0;
 		wait(&status);
 		if (WIFEXITED(status))
-			Anope::ReturnValue = WEXITSTATUS(status);
+			Warden::ReturnValue = WEXITSTATUS(status);
 	}
 }
 #endif
 
 static void SignalHandler(int sig)
 {
-	Anope::Signal = sig;
+	Warden::Signal = sig;
 }
 
 static void InitSignals()
@@ -227,7 +228,7 @@ static void InitSignals()
 
 static void remove_pidfile()
 {
-	auto pidfile = Anope::ExpandData(Config->GetBlock("serverinfo").Get<const Anope::string>("pid"));
+	auto pidfile = Warden::ExpandData(Config->GetBlock("serverinfo").Get<const Warden::string>("pid"));
 	if (!pidfile.empty())
 		remove(pidfile.c_str());
 }
@@ -236,8 +237,8 @@ static void remove_pidfile()
 
 static void write_pidfile()
 {
-	auto pidfile = Anope::ExpandData(Config->GetBlock("serverinfo").Get<const Anope::string>("pid"));
-	if (Anope::NoPID || pidfile.empty())
+	auto pidfile = Warden::ExpandData(Config->GetBlock("serverinfo").Get<const Warden::string>("pid"));
+	if (Warden::NoPID || pidfile.empty())
 		return;
 
 #ifndef _WIN32
@@ -247,7 +248,7 @@ static void write_pidfile()
 		pid_t oldpid = 0;
 		oldstream >> oldpid;
 		if (oldpid && oldpid != getpid() && kill(oldpid, 0) == 0)
-			throw CoreException("Anope is already running with process id " + Anope::ToString(oldpid));
+			throw CoreException("Warden is already running with process id " + Warden::ToString(oldpid));
 	}
 	oldstream.close();
 #endif
@@ -270,21 +271,21 @@ static void setuidgid()
 	uid_t uid = -1;
 	gid_t gid = -1;
 
-	if (!options.Get<const Anope::string>("user").empty())
+	if (!options.Get<const Warden::string>("user").empty())
 	{
 		errno = 0;
-		struct passwd *u = getpwnam(options.Get<const Anope::string>("user").c_str());
+		struct passwd *u = getpwnam(options.Get<const Warden::string>("user").c_str());
 		if (u == NULL)
-			Log() << "Unable to setuid to " << options.Get<const Anope::string>("user") << ": " << Anope::LastError();
+			Log() << "Unable to setuid to " << options.Get<const Warden::string>("user") << ": " << Warden::LastError();
 		else
 			uid = u->pw_uid;
 	}
-	if (!options.Get<const Anope::string>("group").empty())
+	if (!options.Get<const Warden::string>("group").empty())
 	{
 		errno = 0;
-		struct group *g = getgrnam(options.Get<const Anope::string>("group").c_str());
+		struct group *g = getgrnam(options.Get<const Warden::string>("group").c_str());
 		if (g == NULL)
-			Log() << "Unable to setgid to " << options.Get<const Anope::string>("group") << ": " << Anope::LastError();
+			Log() << "Unable to setgid to " << options.Get<const Warden::string>("group") << ": " << Warden::LastError();
 		else
 			gid = g->gr_gid;
 	}
@@ -295,36 +296,36 @@ static void setuidgid()
 		{
 			errno = 0;
 			if (chown(lf->filename.c_str(), uid, gid) != 0)
-				Log() << "Unable to change the ownership of " << lf->filename << " to " << uid << "/" << gid << ": " << Anope::LastError();
+				Log() << "Unable to change the ownership of " << lf->filename << " to " << uid << "/" << gid << ": " << Warden::LastError();
 		}
 	}
 
 	if (static_cast<int>(gid) != -1)
 	{
 		if (setgid(gid) == -1)
-			Log() << "Unable to setgid to " << options.Get<const Anope::string>("group") << ": " << Anope::LastError();
+			Log() << "Unable to setgid to " << options.Get<const Warden::string>("group") << ": " << Warden::LastError();
 		else
-			Log() << "Successfully set group to " << options.Get<const Anope::string>("group");
+			Log() << "Successfully set group to " << options.Get<const Warden::string>("group");
 	}
 	if (static_cast<int>(uid) != -1)
 	{
 		if (setuid(uid) == -1)
-			Log() << "Unable to setuid to " << options.Get<const Anope::string>("user") << ": " << Anope::LastError();
+			Log() << "Unable to setuid to " << options.Get<const Warden::string>("user") << ": " << Warden::LastError();
 		else
-			Log() << "Successfully set user to " << options.Get<const Anope::string>("user");
+			Log() << "Successfully set user to " << options.Get<const Warden::string>("user");
 	}
 #endif
 }
 
-bool Anope::Init(int ac, char **av)
+bool Warden::Init(int ac, char **av)
 {
 	/* Set file creation mask and group ID. */
 #if defined(DEFUMASK) && HAVE_UMASK
 	umask(DEFUMASK);
 #endif
 
-	Anope::UpdateTime();
-	Anope::StartTime = Anope::CurTime;
+	Warden::UpdateTime();
+	Warden::StartTime = Warden::CurTime;
 
 	Serialize::RegisterTypes();
 
@@ -333,16 +334,16 @@ bool Anope::Init(int ac, char **av)
 
 	if (GetCommandLineArgument("version", 'v'))
 	{
-		Log(LOG_TERMINAL) << "Anope-" << Anope::Version() << " -- " << Anope::VersionBuildString();
-		Anope::ReturnValue = EXIT_SUCCESS;
+		Log(LOG_TERMINAL) << "Warden-" << Warden::Version() << " -- " << Warden::VersionBuildString();
+		Warden::ReturnValue = EXIT_SUCCESS;
 		return false;
 	}
 
 	if (GetCommandLineArgument("help", 'h'))
 	{
-		Log(LOG_TERMINAL) << "Anope-" << Anope::Version() << " -- " << Anope::VersionBuildString();
-		Log(LOG_TERMINAL) << "Anope IRC Services (https://www.anope.org/)";
-		Log(LOG_TERMINAL) << "Usage ./" << Anope::ServicesBin << " [options] ...";
+		Log(LOG_TERMINAL) << "Warden-" << Warden::Version() << " -- " << Warden::VersionBuildString();
+		Log(LOG_TERMINAL) << "Warden IRC Services (https://github.com/TehPeGaSuS/warden)";
+		Log(LOG_TERMINAL) << "Usage ./" << Warden::ServicesBin << " [options] ...";
 		Log(LOG_TERMINAL) << "-c, --config=filename.conf";
 		Log(LOG_TERMINAL) << "    --confdir=conf file directory";
 		Log(LOG_TERMINAL) << "    --dbdir=database directory";
@@ -360,51 +361,50 @@ bool Anope::Init(int ac, char **av)
 		Log(LOG_TERMINAL) << "-s, --support";
 		Log(LOG_TERMINAL) << "-v, --version";
 		Log(LOG_TERMINAL) << "";
-		Log(LOG_TERMINAL) << "Further support is available from https://www.anope.org/";
-		Log(LOG_TERMINAL) << "Or visit us on IRC at irc.teranova.net #anope";
-		Anope::ReturnValue = EXIT_SUCCESS;
+		Log(LOG_TERMINAL) << "Further support is available from https://github.com/TehPeGaSuS/warden/discussions";
+		Warden::ReturnValue = EXIT_SUCCESS;
 		return false;
 	}
 
 	if (GetCommandLineArgument("nofork", 'n'))
-		Anope::NoFork = true;
+		Warden::NoFork = true;
 
 	if (GetCommandLineArgument("support", 's'))
 	{
-		Anope::NoFork = Anope::NoThird = true;
-		++Anope::Debug;
+		Warden::NoFork = Warden::NoThird = true;
+		++Warden::Debug;
 	}
 
 	if (GetCommandLineArgument("readonly", 'r'))
-		Anope::ReadOnly = true;
+		Warden::ReadOnly = true;
 
 	if (GetCommandLineArgument("nothird"))
-		Anope::NoThird = true;
+		Warden::NoThird = true;
 
 	if (GetCommandLineArgument("nopid", 'p'))
-		Anope::NoPID = true;
+		Warden::NoPID = true;
 
 	if (GetCommandLineArgument("noexpire", 'e'))
-		Anope::NoExpire = true;
+		Warden::NoExpire = true;
 
 	if (GetCommandLineArgument("nodb", 'b'))
-		Anope::NoDB = true;
+		Warden::NoDB = true;
 
 	if (GetCommandLineArgument("protocoldebug"))
-		Anope::ProtocolDebug = true;
+		Warden::ProtocolDebug = true;
 
-	Anope::string arg;
+	Warden::string arg;
 	if (GetCommandLineArgument("debug", 'd', arg))
 	{
 		if (!arg.empty())
 		{
-			auto level = Anope::TryConvert<unsigned>(arg);
+			auto level = Warden::TryConvert<unsigned>(arg);
 			if (!level.has_value())
 				throw CoreException("Invalid option given to --debug");
-			Anope::Debug = level.value();
+			Warden::Debug = level.value();
 		}
 		else
-			++Anope::Debug;
+			++Warden::Debug;
 	}
 
 	if (GetCommandLineArgument("config", 'c', arg))
@@ -418,51 +418,51 @@ bool Anope::Init(int ac, char **av)
 	{
 		if (arg.empty())
 			throw CoreException("The --confdir option requires a path");
-		Anope::ConfigDir = arg;
+		Warden::ConfigDir = arg;
 	}
 
 	if (GetCommandLineArgument("dbdir", 0, arg))
 	{
 		if (arg.empty())
 			throw CoreException("The --dbdir option requires a path");
-		Anope::DataDir = arg;
+		Warden::DataDir = arg;
 	}
 
 	if (GetCommandLineArgument("localedir", 0, arg))
 	{
 		if (arg.empty())
 			throw CoreException("The --localedir option requires a path");
-		Anope::LocaleDir = arg;
+		Warden::LocaleDir = arg;
 	}
 
 	if (GetCommandLineArgument("moduledir", 0, arg))
 	{
 		if (arg.empty())
 			throw CoreException("The --moduledir option requires a path");
-		Anope::ModuleDir = arg;
+		Warden::ModuleDir = arg;
 	}
 
 	if (GetCommandLineArgument("logdir", 0, arg))
 	{
 		if (arg.empty())
 			throw CoreException("The --logdir option requires a path");
-		Anope::LogDir = arg;
+		Warden::LogDir = arg;
 	}
 
-	Log(LOG_TERMINAL) << "Anope " << Anope::Version() << ", " << Anope::VersionBuildString();
+	Log(LOG_TERMINAL) << "Warden " << Warden::Version() << ", " << Warden::VersionBuildString();
 
-	/* Chdir to Anope data directory. */
-	Log() << "Moving to " << Anope::ServicesDir;
-	if (chdir(Anope::ServicesDir.c_str()) != 0)
+	/* Chdir to Warden data directory. */
+	Log() << "Moving to " << Warden::ServicesDir;
+	if (chdir(Warden::ServicesDir.c_str()) != 0)
 	{
-		throw CoreException("Unable to chdir to " + Anope::ServicesDir + ": " + Anope::LastError());
+		throw CoreException("Unable to chdir to " + Warden::ServicesDir + ": " + Warden::LastError());
 	}
 
-	Log(LOG_TERMINAL) << "Using configuration file " << Anope::ExpandConfig(ServicesConf.GetName());
+	Log(LOG_TERMINAL) << "Using configuration file " << Warden::ExpandConfig(ServicesConf.GetName());
 
 #ifndef _WIN32
 	/* Fork to background */
-	if (!Anope::NoFork)
+	if (!Warden::NoFork)
 	{
 		/* Install these before fork() - it is possible for the child to
 		 * connect and kill() the parent before it is able to install the
@@ -489,8 +489,8 @@ bool Anope::Init(int ac, char **av)
 		}
 		else if (i == -1)
 		{
-			Log() << "Error, unable to fork: " << Anope::LastError();
-			Anope::NoFork = true;
+			Log() << "Error, unable to fork: " << Warden::LastError();
+			Warden::NoFork = true;
 		}
 
 		/* Child doesn't need these */
@@ -511,16 +511,15 @@ bool Anope::Init(int ac, char **av)
 	catch (const ConfigException &ex)
 	{
 		Log(LOG_TERMINAL) << ex.GetReason();
-		Log(LOG_TERMINAL) << "*** Support resources: Read through the anope.conf self-contained";
+		Log(LOG_TERMINAL) << "*** Support resources: Read through the warden.conf self-contained";
 		Log(LOG_TERMINAL) << "*** documentation. Read the documentation files found in the 'docs'";
-		Log(LOG_TERMINAL) << "*** folder. Visit our portal located at https://www.anope.org/. Join";
-		Log(LOG_TERMINAL) << "*** our support channel on /server irc.teranova.net channel #anope.";
+		Log(LOG_TERMINAL) << "*** folder. Ask for help at https://github.com/TehPeGaSuS/warden/discussions";
 		throw CoreException("Configuration file failed to validate");
 	}
 
 	/* Create me */
 	const auto &block = Config->GetBlock("serverinfo");
-	Me = new Server(NULL, block.Get<const Anope::string>("name"), block.Get<const Anope::string>("description"), block.Get<const Anope::string>("id"));
+	Me = new Server(NULL, block.Get<const Warden::string>("name"), block.Get<const Warden::string>("description"), block.Get<const Warden::string>("id"));
 	for (const auto &[_, bi] : *BotListByNick)
 	{
 		bi->server = Me;
@@ -528,7 +527,7 @@ bool Anope::Init(int ac, char **av)
 	}
 
 	/* Announce ourselves to the logfile. */
-	Log() << "Anope " << Anope::Version() << " starting up" << (Anope::Debug || Anope::ReadOnly ? " (options:" : "") << (Anope::Debug ? " debug" : "") << (Anope::ReadOnly ? " readonly" : "") << (Anope::Debug || Anope::ReadOnly ? ")" : "");
+	Log() << "Warden " << Warden::Version() << " starting up" << (Warden::Debug || Warden::ReadOnly ? " (options:" : "") << (Warden::Debug ? " debug" : "") << (Warden::ReadOnly ? " readonly" : "") << (Warden::Debug || Warden::ReadOnly ? ")" : "");
 
 	InitSignals();
 
@@ -539,11 +538,11 @@ bool Anope::Init(int ac, char **av)
 	Log() << "Loading modules...";
 	for (const auto &[_,  block] : Config->GetBlocks("module"))
 	{
-		const auto res = ModuleManager::LoadModule(block.Get<const Anope::string>("name"), NULL);
+		const auto res = ModuleManager::LoadModule(block.Get<const Warden::string>("name"), NULL);
 		if (res == MOD_ERR_CONFIG)
 		{
-			Log(LOG_TERMINAL) << "You must fix this issue before Anope will start.";
-			Anope::ReturnValue = EXIT_FAILURE;
+			Log(LOG_TERMINAL) << "You must fix this issue before Warden will start.";
+			Warden::ReturnValue = EXIT_FAILURE;
 			return false;
 		}
 	}
@@ -554,21 +553,21 @@ bool Anope::Init(int ac, char **av)
 	{
 		/* If we are configured to setuid later, don't issue a warning */
 		const auto &options = Config->GetBlock("options");
-		if (options.Get<const Anope::string>("user").empty())
+		if (options.Get<const Warden::string>("user").empty())
 		{
-			std::cerr << "WARNING: You are currently running Anope as the root superuser. Anope does not" << std::endl;
-			std::cerr << "         require root privileges to run, and it is discouraged that you run Anope" << std::endl;
+			std::cerr << "WARNING: You are currently running Warden as the root superuser. Warden does not" << std::endl;
+			std::cerr << "         require root privileges to run, and it is discouraged that you run Warden" << std::endl;
 			std::cerr << "         as the root superuser." << std::endl;
 			std::this_thread::sleep_for(std::chrono::seconds(3));
 		}
 	}
 
 	/* We won't background later, so we should setuid now */
-	if (Anope::NoFork)
+	if (Warden::NoFork)
 		setuidgid();
 #endif
 
-	if (!Anope::NoDB)
+	if (!Warden::NoDB)
 	{
 		if (!ModuleManager::FindFirstOf(DATABASE, true))
 			throw CoreException("You must load a non-deprecated database module!");
@@ -588,7 +587,7 @@ bool Anope::Init(int ac, char **av)
 	/* Auto assign sid if applicable */
 	if (IRCD->RequiresID)
 	{
-		Anope::string sid = IRCD->SID_Retrieve();
+		Warden::string sid = IRCD->SID_Retrieve();
 		if (Me->GetSID() == Me->GetName())
 			Me->SetSID(sid);
 		for (const auto &[_, bi] : *BotListByNick)

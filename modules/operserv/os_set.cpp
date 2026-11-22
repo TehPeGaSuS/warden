@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -22,19 +23,19 @@ private:
 	{
 		Log(LOG_ADMIN, source, this) << "LIST";
 
-		Anope::string index;
+		Warden::string index;
 
-		index = Anope::ReadOnly ? _("%s is enabled") : _("%s is disabled");
+		index = Warden::ReadOnly ? _("%s is enabled") : _("%s is disabled");
 		source.Reply(index.c_str(), "READONLY");
-		index = Anope::Debug ? _("%s is enabled") : _("%s is disabled");
+		index = Warden::Debug ? _("%s is enabled") : _("%s is disabled");
 		source.Reply(index.c_str(), "DEBUG");
-		index = Anope::NoExpire ? _("%s is enabled") : _("%s is disabled");
+		index = Warden::NoExpire ? _("%s is enabled") : _("%s is disabled");
 		source.Reply(index.c_str(), "NOEXPIRE");
 	}
 
-	void DoSetReadOnly(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoSetReadOnly(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &setting = params.size() > 1 ? params[1] : "";
+		const Warden::string &setting = params.size() > 1 ? params[1] : "";
 
 		if (setting.empty())
 		{
@@ -44,13 +45,13 @@ private:
 
 		if (setting.equals_ci("ON"))
 		{
-			Anope::ReadOnly = true;
+			Warden::ReadOnly = true;
 			Log(LOG_ADMIN, source, this) << "READONLY ON";
 			source.Reply(_("Services are now in \002read-only\002 mode."));
 		}
 		else if (setting.equals_ci("OFF"))
 		{
-			Anope::ReadOnly = false;
+			Warden::ReadOnly = false;
 			Log(LOG_ADMIN, source, this) << "READONLY OFF";
 			source.Reply(_("Services are now in \002read-write\002 mode."));
 		}
@@ -58,9 +59,9 @@ private:
 			source.Reply(_("Setting for READONLY must be \002ON\002 or \002OFF\002."));
 	}
 
-	void DoSetSuperAdmin(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoSetSuperAdmin(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &setting = params.size() > 1 ? params[1] : "";
+		const Warden::string &setting = params.size() > 1 ? params[1] : "";
 
 		if (!source.GetUser())
 			return;
@@ -95,9 +96,9 @@ private:
 			source.Reply(_("Setting for super admin must be \002ON\002 or \002OFF\002."));
 	}
 
-	void DoSetDebug(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoSetDebug(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &setting = params.size() > 1 ? params[1] : "";
+		const Warden::string &setting = params.size() > 1 ? params[1] : "";
 
 		if (setting.empty())
 		{
@@ -107,24 +108,24 @@ private:
 
 		if (setting.equals_ci("ON"))
 		{
-			Anope::Debug = 1;
+			Warden::Debug = 1;
 			Log(LOG_ADMIN, source, this) << "DEBUG ON";
 			source.Reply(_("Services are now in \002debug\002 mode."));
 		}
 		else if (setting.equals_ci("OFF") || setting == "0")
 		{
 			Log(LOG_ADMIN, source, this) << "DEBUG OFF";
-			Anope::Debug = 0;
+			Warden::Debug = 0;
 			source.Reply(_("Services are now in \002non-debug\002 mode."));
 		}
 		else
 		{
-			auto debug = Anope::TryConvert<unsigned>(setting);
+			auto debug = Warden::TryConvert<unsigned>(setting);
 			if (debug.has_value())
 			{
-				Anope::Debug = debug.value();
-				Log(LOG_ADMIN, source, this) << "DEBUG " << Anope::Debug;
-				source.Reply(_("Services are now in \002debug\002 mode (level %u)."), Anope::Debug);
+				Warden::Debug = debug.value();
+				Log(LOG_ADMIN, source, this) << "DEBUG " << Warden::Debug;
+				source.Reply(_("Services are now in \002debug\002 mode (level %u)."), Warden::Debug);
 				return;
 			}
 
@@ -132,9 +133,9 @@ private:
 		}
 	}
 
-	void DoSetNoExpire(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoSetNoExpire(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &setting = params.size() > 1 ? params[1] : "";
+		const Warden::string &setting = params.size() > 1 ? params[1] : "";
 
 		if (setting.empty())
 		{
@@ -144,13 +145,13 @@ private:
 
 		if (setting.equals_ci("ON"))
 		{
-			Anope::NoExpire = true;
+			Warden::NoExpire = true;
 			Log(LOG_ADMIN, source, this) << "NOEXPIRE ON";
 			source.Reply(_("Services are now in \002no expire\002 mode."));
 		}
 		else if (setting.equals_ci("OFF"))
 		{
-			Anope::NoExpire = false;
+			Warden::NoExpire = false;
 			Log(LOG_ADMIN, source, this) << "NOEXPIRE OFF";
 			source.Reply(_("Services are now in \002expire\002 mode."));
 		}
@@ -164,9 +165,9 @@ public:
 		this->SetSyntax(_("\037option\037 \037setting\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &option = params[0];
+		const Warden::string &option = params[0];
 
 		if (option.equals_ci("LIST"))
 			return this->DoList(source);
@@ -182,7 +183,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		if (subcommand.empty())
 		{
@@ -277,7 +278,7 @@ class OSSet final
 	CommandOSSet commandosset;
 
 public:
-	OSSet(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSSet(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandosset(this)
 	{
 	}

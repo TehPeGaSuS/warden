@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,18 +15,18 @@
 
 #include "../../webcpanel.h"
 
-WebCPanel::ChanServ::Set::Set(const Anope::string &cat, const Anope::string &u) : WebPanelProtectedPage(cat, u)
+WebCPanel::ChanServ::Set::Set(const Warden::string &cat, const Warden::string &u) : WebPanelProtectedPage(cat, u)
 {
 }
 
-bool WebCPanel::ChanServ::Set::OnRequest(HTTP::Provider *server, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
+bool WebCPanel::ChanServ::Set::OnRequest(HTTP::Provider *server, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
 {
 	bool can_set = false;
 	TemplateFileServer page("chanserv/set.html");
 
 	BuildChanList(na, replacements);
 
-	const Anope::string chname = WebPanel::GetRequestData(message.get_data, "channel");
+	const Warden::string chname = WebPanel::GetRequestData(message.get_data, "channel");
 	if (chname.empty())
 	{
 		page.Serve(server, page_name, client, message, reply, replacements);
@@ -106,8 +107,8 @@ bool WebCPanel::ChanServ::Set::OnRequest(HTTP::Provider *server, const Anope::st
 		replacements["FOUNDER"] = ci->GetFounder()->display;
 	if (ci->GetSuccessor())
 		replacements["SUCCESSOR"] = ci->GetSuccessor()->display;
-	replacements["REGISTERED"] = Anope::strftime(ci->registered, na->nc);
-	replacements["LAST_USED"] = Anope::strftime(ci->last_used, na->nc);
+	replacements["REGISTERED"] = Warden::strftime(ci->registered, na->nc);
+	replacements["LAST_USED"] = Warden::strftime(ci->last_used, na->nc);
 	replacements["ESCAPED_CHANNEL"] = HTTP::URLEncode(chname);
 
 	if (!ci->last_topic.empty())
@@ -141,9 +142,9 @@ bool WebCPanel::ChanServ::Set::OnRequest(HTTP::Provider *server, const Anope::st
 	return true;
 }
 
-std::set<Anope::string> WebCPanel::ChanServ::Set::GetData()
+std::set<Warden::string> WebCPanel::ChanServ::Set::GetData()
 {
-	std::set<Anope::string> v;
+	std::set<Warden::string> v;
 	v.insert("channel");
 	return v;
 }

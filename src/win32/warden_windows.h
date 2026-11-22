@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2008-2011 Robin Burchell <w00t@inspircd.org>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -40,7 +41,7 @@
 # undef printf
 #endif
 
-#define anope_close windows_close
+#define warden_close windows_close
 
 #define stat _stat
 #define S_ISREG(x) ((x) & _S_IFREG)
@@ -57,14 +58,14 @@
 
 typedef SSIZE_T ssize_t;
 
-namespace Anope
+namespace Warden
 {
 	class string;
 }
 
 extern CoreExport void OnStartup();
 extern CoreExport void OnShutdown();
-extern CoreExport USHORT WindowsGetLanguage(const Anope::string &lang);
+extern CoreExport USHORT WindowsGetLanguage(const Warden::string &lang);
 extern int setenv(const char *name, const char *value, int overwrite);
 extern int unsetenv(const char *name);
 

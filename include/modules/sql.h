@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -23,7 +24,7 @@ namespace SQL
 		: public Serialize::Data
 	{
 	public:
-		Anope::unordered_map<Anope::string> data;
+		Warden::unordered_map<Warden::string> data;
 
 		size_t Hash() const override
 		{
@@ -31,12 +32,12 @@ namespace SQL
 			for (const auto &[_, value] : this->data)
 			{
 				if (!value.empty())
-					hash ^= Anope::hash_cs()(value);
+					hash ^= Warden::hash_cs()(value);
 			}
 			return hash;
 		}
 
-		bool LoadInternal(const Anope::string &key, Anope::string &value) override
+		bool LoadInternal(const Warden::string &key, Warden::string &value) override
 		{
 			auto it = this->data.find(key);
 			if (it == this->data.end())
@@ -46,7 +47,7 @@ namespace SQL
 			return true;
 		}
 
-		bool StoreInternal(const Anope::string &key, const Anope::string &value) override
+		bool StoreInternal(const Warden::string &key, const Warden::string &value) override
 		{
 			this->data[key] = value;
 			return true;
@@ -58,7 +59,7 @@ namespace SQL
 	class DllExport Exception : public ModuleException
 	{
 	public:
-		Exception(const Anope::string &reason) : ModuleException(reason) { }
+		Exception(const Warden::string &reason) : ModuleException(reason) { }
 
 		virtual ~Exception() noexcept = default;
 	};
@@ -68,19 +69,19 @@ namespace SQL
 
 	struct QueryData final
 	{
-		Anope::string data;
+		Warden::string data;
 		bool escape;
 	};
 
 	struct Query final
 	{
-		Anope::string query;
-		std::map<Anope::string, QueryData> parameters;
+		Warden::string query;
+		std::map<Warden::string, QueryData> parameters;
 
 		Query() { }
-		Query(const Anope::string &q) : query(q) { }
+		Query(const Warden::string &q) : query(q) { }
 
-		Query &operator=(const Anope::string &q)
+		Query &operator=(const Warden::string &q)
 		{
 			this->query = q;
 			this->parameters.clear();
@@ -97,9 +98,9 @@ namespace SQL
 			return !(*this == other);
 		}
 
-		template<typename T> void SetValue(const Anope::string &key, const T &value, bool escape = true)
+		template<typename T> void SetValue(const Warden::string &key, const T &value, bool escape = true)
 		{
-			auto str = Anope::TryString(value);
+			auto str = Warden::TryString(value);
 			if (!str.has_value())
 				return;
 
@@ -114,25 +115,25 @@ namespace SQL
 	{
 	protected:
 		/* Rows, column, item */
-		std::vector<std::map<Anope::string, Anope::string> > entries;
+		std::vector<std::map<Warden::string, Warden::string> > entries;
 		Query query;
-		Anope::string error;
+		Warden::string error;
 	public:
 		unsigned int id = 0;
-		Anope::string finished_query;
+		Warden::string finished_query;
 
 		Result() = default;
-		Result(unsigned int i, const Query &q, const Anope::string &fq, const Anope::string &err = "") : query(q), error(err), id(i), finished_query(fq) { }
+		Result(unsigned int i, const Query &q, const Warden::string &fq, const Warden::string &err = "") : query(q), error(err), id(i), finished_query(fq) { }
 
 		inline operator bool() const { return this->error.empty(); }
 
 		inline unsigned int GetID() const { return this->id; }
 		inline const Query &GetQuery() const { return this->query; }
-		inline const Anope::string &GetError() const { return this->error; }
+		inline const Warden::string &GetError() const { return this->error; }
 
 		int Rows() const { return this->entries.size(); }
 
-		const std::map<Anope::string, Anope::string> &Row(size_t index) const
+		const std::map<Warden::string, Warden::string> &Row(size_t index) const
 		{
 			try
 			{
@@ -144,11 +145,11 @@ namespace SQL
 			}
 		}
 
-		Anope::string Get(size_t index, const Anope::string &col) const
+		Warden::string Get(size_t index, const Warden::string &col) const
 		{
-			const std::map<Anope::string, Anope::string> rows = this->Row(index);
+			const std::map<Warden::string, Warden::string> rows = this->Row(index);
 
-			std::map<Anope::string, Anope::string>::const_iterator it = rows.find(col);
+			std::map<Warden::string, Warden::string>::const_iterator it = rows.find(col);
 			if (it == rows.end())
 				throw Exception("Unknown column name in SQLResult: " + col);
 
@@ -176,19 +177,19 @@ namespace SQL
 		: public Service
 	{
 	public:
-		Provider(Module *c, const Anope::string &n) : Service(c, "SQL::Provider", n) { }
+		Provider(Module *c, const Warden::string &n) : Service(c, "SQL::Provider", n) { }
 
 		virtual void Run(Interface *i, const Query &query) = 0;
 
 		virtual Result RunQuery(const Query &query) = 0;
 
-		virtual std::vector<Query> CreateTable(const Anope::string &table, const Data &data) = 0;
+		virtual std::vector<Query> CreateTable(const Warden::string &table, const Data &data) = 0;
 
-		virtual Query BuildInsert(const Anope::string &table, Serializable::Id id, Data &data) = 0;
+		virtual Query BuildInsert(const Warden::string &table, Serializable::Id id, Data &data) = 0;
 
-		virtual Query GetTables(const Anope::string &prefix) = 0;
+		virtual Query GetTables(const Warden::string &prefix) = 0;
 
-		virtual Anope::string FromUnixtime(time_t) = 0;
+		virtual Warden::string FromUnixtime(time_t) = 0;
 	};
 
 }

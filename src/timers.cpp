@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,7 +25,7 @@ Timer::Timer(time_t time_from_now)
 
 Timer::Timer(Module *creator, time_t time_from_now)
 	: owner(creator)
-	, trigger(Anope::CurTime + std::abs(time_from_now))
+	, trigger(Warden::CurTime + std::abs(time_from_now))
 	, secs(time_from_now)
 {
 	if (time_from_now)
@@ -52,7 +53,7 @@ void Timer::SetSecs(time_t t)
 {
 	TimerManager::DelTimer(this);
 	secs = t;
-	trigger = Anope::CurTime + t;
+	trigger = Warden::CurTime + t;
 	TimerManager::AddTimer(this);
 }
 
@@ -91,11 +92,11 @@ void TimerManager::TickTimers()
 		auto it = Timers.begin();
 		Timer *t = it->second;
 
-		if (t->GetTimer() > Anope::CurTime)
+		if (t->GetTimer() > Warden::CurTime)
 			break;
 
 		if (t->Tick())
-			t->SetTimer(Anope::CurTime + t->GetSecs());
+			t->SetTimer(Warden::CurTime + t->GetSecs());
 		else
 			delete t;
 	}

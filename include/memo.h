@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,7 +15,7 @@
 
 #pragma once
 
-#include "anope.h"
+#include "warden.h"
 #include "serialize.h"
 
 class CoreExport Memo final
@@ -35,11 +36,11 @@ public:
 	Memo();
 	~Memo();
 
-	Anope::string owner;
+	Warden::string owner;
 	/* When it was sent */
 	time_t time;
-	Anope::string sender;
-	Anope::string text;
+	Warden::string sender;
+	Warden::string text;
 };
 
 /* Memo info structures.  Since both nicknames and channels can have memos,
@@ -49,7 +50,7 @@ struct CoreExport MemoInfo final
 {
 	int16_t memomax = 0;
 	Serialize::Checker<std::vector<Memo *> > memos;
-	std::set<Anope::string, ci::less> ignores;
+	std::set<Warden::string, ci::less> ignores;
 
 	MemoInfo();
 	Memo *GetMemo(unsigned index) const;
@@ -57,5 +58,5 @@ struct CoreExport MemoInfo final
 	void Del(unsigned index);
 	bool HasIgnore(User *u);
 
-	static MemoInfo *GetMemoInfo(const Anope::string &targ, bool &is_chan);
+	static MemoInfo *GetMemoInfo(const Warden::string &targ, bool &is_chan);
 };

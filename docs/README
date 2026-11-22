@@ -1,14 +1,15 @@
-Anope -- a set of IRC services for IRC networks
+Warden -- a set of IRC services for IRC networks
 -----------------------------------------------
 
-Anope is          2003-2026 Anope Team    <team@anope.org>.
+Warden is          2026      Warden Contributors <https://github.com/TehPeGaSuS/warden>.
+Based on Anope     2003-2026 Anope Team    <team@anope.org>.
 Based on Epona    2000-2002 PegSoft       <epona@pegsoft.net>.
 Based on Services 1996-1999 Andrew Church <achurch@achurch.org>.
 
 This program is free but copyrighted software; see the file COPYING for
 details.
 
-Information about Anope may be found at https://www.anope.org/
+Information about Warden may be found at https://www.anope.org/
 
 Table of Contents
 -----------------
@@ -21,7 +22,7 @@ Table of Contents
 
 1) Credits
 
-    Anope is based on Lara's Epona version 1.4.14.
+    Warden is based on Lara's Epona version 1.4.14.
     Epona is based on Andy Church's IRC Services version 4.3.3.
 
     The original credits:
@@ -68,7 +69,7 @@ Table of Contents
         * Thomas J. Stensas aka ShadowMaster <shadowmaster@shadow-realm.org>
             Ultimate 3.x support
 
-    Anope credits:
+    Warden credits:
 
         * Adam Kramer <ribosome@anope.org>
         * Adam <adam@anope.org>
@@ -103,7 +104,7 @@ Table of Contents
         * Trystan .S Lee <trystan@nomadirc.net>
         * openglx <openglx@brasnerd.com.br>
 
-    Anope Translations:
+    Warden Translations:
 
         * Robby <robby@chatbelgie.be> (nl_NL)
         * Kein <kein-of@yandex.ru> (ru_RU)
@@ -114,13 +115,13 @@ Table of Contents
         * Christopher N. <saka@epiknet.org> (fr_FR)
         * Yusuf Kurekci <ysfm.20@gmail.com> (tr_TR)
 
-    Anope Web panel:
+    Warden Web panel:
 
        * Denis M. (Phr33d0m) <god@politeia.in>
 
 2) Presentation
 
-    Anope is a set of services for IRC networks that allows users to manage
+    Warden is a set of services for IRC networks that allows users to manage
     their nicks and channels in a secure and efficient way, and administrators
     to manage their network with powerful tools.
 
@@ -164,7 +165,7 @@ Table of Contents
           (virtual hosts) instead of their real IP address; this only works
           on daemons supporting ip cloaking, such as UnrealIRCd.
 
-    Anope currently works with:
+    Warden currently works with:
 
         * InspIRCd 4 or later
         * ircd-hybrid 8.2.34 or later
@@ -174,20 +175,20 @@ Table of Contents
         * Solanum (all versions)
         * UnrealIRCd 6 or later
 
-    Anope could also work with some of the daemons derived by the ones listed
+    Warden could also work with some of the daemons derived by the ones listed
     above, but there's no support for them if they work or don't work.
 
 
 3) Installation
 
-    See the INSTALL file for instruction on installing Anope.
+    See the INSTALL file for instruction on installing Warden.
 
 
 4) Command Line Options
 
-    Normally, Anope can be run simply by invoking the "services" executable.
+    Normally, Warden can be run simply by invoking the "services" executable.
     Any of the following command-line options can be specified to change
-    the behavior of Anope:
+    the behavior of Warden:
 
         --debug         Enable debugging mode; more info sent to log (give
                             option more times for more info)
@@ -196,14 +197,14 @@ Table of Contents
         --nofork        Do not fork after startup; log messages will be
                             written to terminal
         --noexpire      Expiration routines won't be run at all
-        --version       Display the version of Anope
+        --version       Display the version of Warden
         --nothird       Do not load the non-core modules specified
         --protocoldebug Debug each incoming message after protocol parsing
         --support       Used for support, same as --debug --nofork --nothird
 
-    Upon starting, Anope will parse its command-line parameters then
+    Upon starting, Warden will parse its command-line parameters then
     (assuming the --nofork option is not given) detach itself and run in the
-    background. If Anope encounters a problem reading the database files or
+    background. If Warden encounters a problem reading the database files or
     cannot connect to its uplink server, it will terminate immediately;
     otherwise, it will run until the connection is terminated (or a QUIT,
     SHUTDOWN, or RESTART command is sent; see OperServ's help).
@@ -211,22 +212,22 @@ Table of Contents
     In the case of an error, an appropriate error message will be written to
     the log file.
 
-    If Anope is run with the "--readonly" command-line option, it can serve as
+    If Warden is run with the "--readonly" command-line option, it can serve as
     a "backup" to the full version of services.  A "full" version of services
     (run without --readonly) will automatically reintroduce its pseudo-clients
     (NickServ, ChanServ, etc.), while a "backup" services will not, thus
     allowing full services to be brought up at any time without disrupting
     the network (and without having to take backup services down beforehand).
 
-    The "--debug" option is useful if you find or suspect a problem in Anope.
+    The "--debug" option is useful if you find or suspect a problem in Warden.
     Giving it once on the command line will cause all traffic to and from
     services as well as some other debugging information to be recorded in
     the log file; if you send a bug report, PLEASE include an excerpt from
     the log file WITH DEBUGGING ACTIVE; we cannot emphasize enough how
     important this is to tracking down problems. (You can also enable
-    debugging while Anope is running using OperServ's SET DEBUG command.)
+    debugging while Warden is running using OperServ's SET DEBUG command.)
     If you repeat use --debug=<level>, the debugging level will be increased,
-    which provides more detailed information but may also slow Anope down
+    which provides more detailed information but may also slow Warden down
     considerably and make the log file grow dramatically faster. In general,
     a debug level of 1 is sufficient for the coding team to be able to trace
     a problem, because all network traffic is included and we can usually
@@ -238,13 +239,12 @@ Table of Contents
 
 6) Contact
 
-    For announcements and discussions about Anope, please visit our
-    Portal and Forums at https://www.anope.org/ -- make sure you register
-    yourself to get full benefits.
+    For announcements and discussions about Warden, please visit
+    https://github.com/TehPeGaSuS/warden/discussions.
 
     If you read the documentation carefully, and didn't find the answer to
-    your question, feel free to post on the website forums or join our irc
-    channel (irc.teranova.net #anope). Once you join our Support channel be as
+    your question, feel free to ask in GitHub Discussions
+    (https://github.com/TehPeGaSuS/warden/discussions). Be as
     precise as possible when asking a question, because we have no extraordinary
     powers and can't guess things if they aren't provided.
 

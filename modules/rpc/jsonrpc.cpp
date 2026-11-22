@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -27,7 +28,7 @@
 template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
 template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
-inline Anope::string yyjson_get_astr(yyjson_val *val, const char *key)
+inline Warden::string yyjson_get_astr(yyjson_val *val, const char *key)
 {
 	const auto *str = yyjson_get_str(yyjson_obj_get(val, key));
 	return str ? str : "";
@@ -38,7 +39,7 @@ class JSONRPCServiceInterface final
 	, public HTTP::Page
 {
 private:
-	static std::pair<yyjson_mut_doc *, yyjson_mut_val *> CreateReply(const Anope::string &id)
+	static std::pair<yyjson_mut_doc *, yyjson_mut_val *> CreateReply(const Warden::string &id)
 	{
 		auto* doc = yyjson_mut_doc_new(nullptr);
 
@@ -55,7 +56,7 @@ private:
 		return { doc, root };
 	}
 
-	static void SendError(HTTP::Reply &reply, int64_t code, const Anope::string &message, const Anope::string &id = "")
+	static void SendError(HTTP::Reply &reply, int64_t code, const Warden::string &message, const Warden::string &id = "")
 	{
 		Log(LOG_DEBUG) << "JSON-RPC error " << code << ": " << message;
 
@@ -107,14 +108,14 @@ public:
 	{
 	}
 
-	bool OnRequest(HTTP::Provider *provider, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply) override
+	bool OnRequest(HTTP::Provider *provider, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply) override
 	{
 		yyjson_read_err error;
 		const auto flags = YYJSON_READ_ALLOW_TRAILING_COMMAS | YYJSON_READ_ALLOW_INVALID_UNICODE;
 		auto *doc = yyjson_read_opts(const_cast<char *>(message.content.c_str()), message.content.length(), flags, nullptr, &error);
 		if (!doc)
 		{
-			SendError(reply, RPC::ERR_PARSE_ERROR, Anope::Format("JSON parse error #%u: %s", error.code, error.msg));
+			SendError(reply, RPC::ERR_PARSE_ERROR, Warden::Format("JSON parse error #%u: %s", error.code, error.msg));
 			return true;
 		}
 
@@ -176,7 +177,7 @@ public:
 
 		if (request.data.size() < event->GetMinParams())
 		{
-			auto error = Anope::Format("Not enough parameters for %s (given %zu, expected %zu)",
+			auto error = Warden::Format("Not enough parameters for %s (given %zu, expected %zu)",
 				request.name.c_str(), request.data.size(), event->GetMinParams());
 			SendError(reply, RPC::ERR_INVALID_PARAMS, error, id);
 			return true;
@@ -233,7 +234,7 @@ yyjson_mut_val *JSONRPCServiceInterface::SerializeElement(yyjson_mut_doc *doc, c
 			elem = yyjson_mut_obj(doc);
 			SerializeMap(doc, elem, m);
 		},
-		[&doc, &elem](const Anope::string &s)
+		[&doc, &elem](const Warden::string &s)
 		{
 			elem = yyjson_mut_strn(doc, s.c_str(), s.length());
 		},
@@ -260,7 +261,7 @@ yyjson_mut_val *JSONRPCServiceInterface::SerializeElement(yyjson_mut_doc *doc, c
 			else
 			{
 				// We need to convert this to a string.
-				auto s = Anope::ToString(i);
+				auto s = Warden::ToString(i);
 				elem = yyjson_mut_strncpy(doc, s.c_str(), s.length());
 			}
 		},
@@ -275,7 +276,7 @@ yyjson_mut_val *JSONRPCServiceInterface::SerializeElement(yyjson_mut_doc *doc, c
 			else
 			{
 				// We need to convert this to a string.
-				auto s = Anope::ToString(u);
+				auto s = Warden::ToString(u);
 				elem = yyjson_mut_strncpy(doc, s.c_str(), s.length());
 			}
 		},
@@ -293,7 +294,7 @@ private:
 	JSONRPCServiceInterface jsonrpcinterface;
 
 public:
-	ModuleJSONRPC(const Anope::string &modname, const Anope::string &creator)
+	ModuleJSONRPC(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, EXTRA | VENDOR)
 		, httpref(HTTP_PROVIDER)
 		, jsonrpcinterface(this)
@@ -314,7 +315,7 @@ public:
 		const auto &modconf = conf.GetModule(this);
 		JSONRPCServiceInterface::integer_bits = modconf.Get<unsigned>("integer_bits", "64");
 
-		this->httpref.SetServiceName(modconf.Get<const Anope::string>("server", "httpd/main"));
+		this->httpref.SetServiceName(modconf.Get<const Warden::string>("server", "httpd/main"));
 		if (!httpref)
 			throw ConfigException("Unable to find http reference, is httpd loaded?");
 
@@ -323,11 +324,11 @@ public:
 		for (const auto &[_,  block] : modconf.GetBlocks("token"))
 		{
 			RPC::Token token;
-			token.token = block.Get<const Anope::string>("token");
+			token.token = block.Get<const Warden::string>("token");
 			if (!token.token.empty())
 			{
-				token.token_hash = block.Get<const Anope::string>("token_hash");
-				spacesepstream(block.Get<const Anope::string>("methods")).GetTokens(token.methods);
+				token.token_hash = block.Get<const Warden::string>("token_hash");
+				spacesepstream(block.Get<const Warden::string>("methods")).GetTokens(token.methods);
 				jsonrpcinterface.tokens.emplace_back(token);
 			}
 		}

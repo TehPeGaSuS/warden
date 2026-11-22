@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -13,7 +14,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "sockets.h"
 #include "socketengine.h"
 #include "config.h"
@@ -30,7 +31,7 @@ void SocketEngine::Init()
 	EngineHandle = epoll_create(4);
 
 	if (EngineHandle == -1)
-		throw SocketException("Could not initialize epoll socket engine: " + Anope::LastError());
+		throw SocketException("Could not initialize epoll socket engine: " + Warden::LastError());
 
 	events.resize(DefaultSize);
 }
@@ -70,7 +71,7 @@ void SocketEngine::Change(Socket *s, bool set, SocketFlag flag)
 		return;
 
 	if (epoll_ctl(EngineHandle, mod, ev.data.fd, &ev) == -1)
-		 throw SocketException("Unable to epoll_ctl() fd " + Anope::ToString(ev.data.fd) + " to epoll: " + Anope::LastError());
+		 throw SocketException("Unable to epoll_ctl() fd " + Warden::ToString(ev.data.fd) + " to epoll: " + Warden::LastError());
 }
 
 void SocketEngine::Process()
@@ -79,13 +80,13 @@ void SocketEngine::Process()
 		events.resize(events.size() * 2);
 
 	int total = epoll_wait(EngineHandle, &events.front(), events.size(), Config->ReadTimeout * 1000);
-	Anope::UpdateTime();
+	Warden::UpdateTime();
 
 	/* EINTR can be given if the read timeout expires */
 	if (total == -1)
 	{
 		if (errno != EINTR)
-			Log() << "SockEngine::Process(): error: " << Anope::LastError();
+			Log() << "SockEngine::Process(): error: " << Warden::LastError();
 		return;
 	}
 

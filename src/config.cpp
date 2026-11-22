@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -23,34 +24,34 @@
 #include <stack>
 #include <stdexcept>
 
-Configuration::File ServicesConf("anope.conf", false); // Configuration file name
+Configuration::File ServicesConf("warden.conf", false); // Configuration file name
 
 Configuration::Conf *Config = NULL;
 
 Configuration::Block Configuration::Block::EmptyBlock("");
 
-Configuration::Block::Block(const Anope::string &n)
+Configuration::Block::Block(const Warden::string &n)
 	: name(n)
 	, position("<unknown>")
 {
 }
 
-const Anope::string &Configuration::Block::GetName() const
+const Warden::string &Configuration::Block::GetName() const
 {
 	return name;
 }
 
-size_t Configuration::Block::CountBlock(const Anope::string &bname) const
+size_t Configuration::Block::CountBlock(const Warden::string &bname) const
 {
 	return blocks.count(bname);
 }
 
-Configuration::Block::BlockList Configuration::Block::GetBlocks(const Anope::string &bname) const
+Configuration::Block::BlockList Configuration::Block::GetBlocks(const Warden::string &bname) const
 {
-	return Anope::equal_range(blocks, bname);
+	return Warden::equal_range(blocks, bname);
 }
 
-const Configuration::Block &Configuration::Block::GetBlock(const Anope::string &bname, size_t num) const
+const Configuration::Block &Configuration::Block::GetBlock(const Warden::string &bname, size_t num) const
 {
 	auto it = blocks.equal_range(bname);
 
@@ -62,7 +63,7 @@ const Configuration::Block &Configuration::Block::GetBlock(const Anope::string &
 	return EmptyBlock;
 }
 
-Configuration::Block *Configuration::Block::GetMutableBlock(const Anope::string &bname, size_t num)
+Configuration::Block *Configuration::Block::GetMutableBlock(const Warden::string &bname, size_t num)
 {
 	auto it = blocks.equal_range(bname);
 
@@ -74,7 +75,7 @@ Configuration::Block *Configuration::Block::GetMutableBlock(const Anope::string 
 	return NULL;
 }
 
-bool Configuration::Block::Set(const Anope::string &tag, const Anope::string &value)
+bool Configuration::Block::Set(const Warden::string &tag, const Warden::string &value)
 {
 	items[tag] = value;
 	return true;
@@ -85,7 +86,7 @@ const Configuration::Block::ItemMap &Configuration::Block::GetItems() const
 	return items;
 }
 
-template<> const Anope::string Configuration::Block::Get(const Anope::string &tag, const Anope::string &def) const
+template<> const Warden::string Configuration::Block::Get(const Warden::string &tag, const Warden::string &def) const
 {
 	auto it = items.find(tag);
 	if (it != items.end())
@@ -94,36 +95,36 @@ template<> const Anope::string Configuration::Block::Get(const Anope::string &ta
 	return def;
 }
 
-template<> time_t Configuration::Block::Get(const Anope::string &tag, const Anope::string &def) const
+template<> time_t Configuration::Block::Get(const Warden::string &tag, const Warden::string &def) const
 {
-	return Anope::DoTime(Get<const Anope::string>(tag, def));
+	return Warden::DoTime(Get<const Warden::string>(tag, def));
 }
 
-template<> bool Configuration::Block::Get(const Anope::string &tag, const Anope::string &def) const
+template<> bool Configuration::Block::Get(const Warden::string &tag, const Warden::string &def) const
 {
-	const Anope::string &str = Get<const Anope::string>(tag, def);
+	const Warden::string &str = Get<const Warden::string>(tag, def);
 	return !str.empty() && !str.equals_ci("no") && !str.equals_ci("off") && !str.equals_ci("false") && !str.equals_ci("0");
 }
 
-static void ValidateNotEmpty(const Anope::string &block, const Anope::string &name, const Anope::string &value)
+static void ValidateNotEmpty(const Warden::string &block, const Warden::string &name, const Warden::string &value)
 {
 	if (value.empty())
 		throw ConfigException("The value for <" + block + ":" + name + "> (" + value + ") cannot be empty!");
 }
 
-static void ValidateNoSpaces(const Anope::string &block, const Anope::string &name, const Anope::string &value)
+static void ValidateNoSpaces(const Warden::string &block, const Warden::string &name, const Warden::string &value)
 {
-	if (value.find(' ') != Anope::string::npos)
+	if (value.find(' ') != Warden::string::npos)
 		throw ConfigException("The value for <" + block + ":" + name + "> (" + value + ") may not contain spaces!");
 }
 
-static void ValidateNotEmptyOrSpaces(const Anope::string &block, const Anope::string &name, const Anope::string &value)
+static void ValidateNotEmptyOrSpaces(const Warden::string &block, const Warden::string &name, const Warden::string &value)
 {
 	ValidateNotEmpty(block, name, value);
 	ValidateNoSpaces(block, name, value);
 }
 
-template<typename T> static void ValidateNotZero(const Anope::string &block, const Anope::string &name, T value)
+template<typename T> static void ValidateNotZero(const Warden::string &block, const Warden::string &name, T value)
 {
 	if (!value)
 		throw ConfigException("The value for <" + block + ":" + name + "> cannot be zero!");
@@ -138,8 +139,8 @@ Configuration::Conf::Conf() : Configuration::Block("")
 
 	for (const auto &[_,  include] : this->GetBlocks("include"))
 	{
-		const Anope::string &type = include.Get<const Anope::string>("type"),
-					&file = include.Get<const Anope::string>("name");
+		const Warden::string &type = include.Get<const Warden::string>("type"),
+					&file = include.Get<const Warden::string>("name");
 
 		Configuration::File f(file, type == "executable");
 		this->LoadConf(f);
@@ -152,8 +153,8 @@ Configuration::Conf::Conf() : Configuration::Block("")
 	{
 		struct
 		{
-			Anope::string block;
-			Anope::string name;
+			Warden::string block;
+			Warden::string name;
 		} noreload[] = {
 			{"serverinfo", "name"},
 			{"serverinfo", "description"},
@@ -168,7 +169,7 @@ Configuration::Conf::Conf() : Configuration::Block("")
 
 		for (const auto &tag : noreload)
 		{
-			if (this->GetBlock(tag.block).Get<const Anope::string>(tag.name) != Config->GetBlock(tag.block).Get<const Anope::string>(tag.name))
+			if (this->GetBlock(tag.block).Get<const Warden::string>(tag.name) != Config->GetBlock(tag.block).Get<const Warden::string>(tag.name))
 				throw ConfigException("<" + tag.block + ":" + tag.name + "> can not be modified once set");
 		}
 	}
@@ -176,16 +177,16 @@ Configuration::Conf::Conf() : Configuration::Block("")
 	const auto &serverinfo = this->GetBlock("serverinfo"), &options = this->GetBlock("options"),
 		&mail = this->GetBlock("mail"), &networkinfo = this->GetBlock("networkinfo");
 
-	const Anope::string &servername = serverinfo.Get<Anope::string>("name");
+	const Warden::string &servername = serverinfo.Get<Warden::string>("name");
 
 	ValidateNotEmptyOrSpaces("serverinfo", "name", servername);
 
-	if (servername.find(' ') != Anope::string::npos || servername.find('.') == Anope::string::npos)
+	if (servername.find(' ') != Warden::string::npos || servername.find('.') == Warden::string::npos)
 		throw ConfigException("serverinfo:name is not a valid server name");
 
-	ValidateNotEmpty("serverinfo", "description", serverinfo.Get<const Anope::string>("description"));
-	ValidateNotEmpty("serverinfo", "pid", serverinfo.Get<const Anope::string>("pid"));
-	ValidateNotEmpty("serverinfo", "motd", serverinfo.Get<const Anope::string>("motd"));
+	ValidateNotEmpty("serverinfo", "description", serverinfo.Get<const Warden::string>("description"));
+	ValidateNotEmpty("serverinfo", "pid", serverinfo.Get<const Warden::string>("pid"));
+	ValidateNotEmpty("serverinfo", "motd", serverinfo.Get<const Warden::string>("motd"));
 
 	ValidateNotZero("options", "readtimeout", options.Get<time_t>("readtimeout"));
 
@@ -194,26 +195,26 @@ Configuration::Conf::Conf() : Configuration::Block("")
 	ValidateNotZero("networkinfo", "hostlen", networkinfo.Get<unsigned>("hostlen", "1"));
 	ValidateNotZero("networkinfo", "chanlen", networkinfo.Get<unsigned>("chanlen", "1"));
 
-	spacesepstream(options.Get<const Anope::string>("ulineservers")).GetTokens(this->Ulines);
+	spacesepstream(options.Get<const Warden::string>("ulineservers")).GetTokens(this->Ulines);
 
 	if (mail.Get<bool>("usemail"))
-		ValidateNotEmpty("mail", "sendfrom", mail.Get<const Anope::string>("sendfrom"));
+		ValidateNotEmpty("mail", "sendfrom", mail.Get<const Warden::string>("sendfrom"));
 
 	this->ReadTimeout = options.Get<time_t>("readtimeout");
 	this->ServiceAlias = options.Get<bool>("servicealias");
 	{
-		std::vector<Anope::string> defaults;
-		spacesepstream(this->GetModule("nickserv").Get<const Anope::string>("defaults")).GetTokens(defaults);
+		std::vector<Warden::string> defaults;
+		spacesepstream(this->GetModule("nickserv").Get<const Warden::string>("defaults")).GetTokens(defaults);
 		this->DefPrivmsg = std::find(defaults.begin(), defaults.end(), "msg") != defaults.end();
 	}
-	this->DefLanguage = options.Get<const Anope::string>("defaultlanguage");
+	this->DefLanguage = options.Get<const Warden::string>("defaultlanguage");
 	this->TimeoutCheck = options.Get<time_t>("timeoutcheck");
-	this->NickChars = networkinfo.Get<Anope::string>("nick_chars");
+	this->NickChars = networkinfo.Get<Warden::string>("nick_chars");
 
 	for (const auto &[_,  uplink] : this->GetBlocks("uplink"))
 	{
 		int protocol;
-		const Anope::string &protocolstr = uplink.Get<const Anope::string>("protocol", "ipv4");
+		const Warden::string &protocolstr = uplink.Get<const Warden::string>("protocol", "ipv4");
 		if (protocolstr == "ipv4")
 			protocol = AF_INET;
 		else if (protocolstr == "ipv6")
@@ -223,7 +224,7 @@ Configuration::Conf::Conf() : Configuration::Block("")
 		else
 			throw ConfigException("uplink:protocol must be set to ipv4, ipv6, or unix");
 
-		const Anope::string &host = uplink.Get<const Anope::string>("host");
+		const Warden::string &host = uplink.Get<const Warden::string>("host");
 		ValidateNotEmptyOrSpaces("uplink", "host", host);
 
 		int port = 0;
@@ -233,7 +234,7 @@ Configuration::Conf::Conf() : Configuration::Block("")
 			ValidateNotZero("uplink", "port", port);
 		}
 
-		const Anope::string &password = uplink.Get<const Anope::string>("password");
+		const Warden::string &password = uplink.Get<const Warden::string>("password");
 		ValidateNotEmptyOrSpaces("uplink", "password", password);
 		if (password[0] == ':')
 			throw ConfigException("uplink:password is not valid");
@@ -243,7 +244,7 @@ Configuration::Conf::Conf() : Configuration::Block("")
 
 	for (const auto &[_,  module] : this->GetBlocks("module"))
 	{
-		const Anope::string &modname = module.Get<const Anope::string>("name");
+		const Warden::string &modname = module.Get<const Warden::string>("name");
 
 		ValidateNotEmptyOrSpaces("module", "name", modname);
 
@@ -252,11 +253,11 @@ Configuration::Conf::Conf() : Configuration::Block("")
 
 	for (const auto &[_,  opertype] : this->GetBlocks("opertype"))
 	{
-		const Anope::string &oname = opertype.Get<const Anope::string>("name"),
-				&modes = opertype.Get<const Anope::string>("modes"),
-				&inherits = opertype.Get<const Anope::string>("inherits"),
-				&commands = opertype.Get<const Anope::string>("commands"),
-				&privs = opertype.Get<const Anope::string>("privs");
+		const Warden::string &oname = opertype.Get<const Warden::string>("name"),
+				&modes = opertype.Get<const Warden::string>("modes"),
+				&inherits = opertype.Get<const Warden::string>("inherits"),
+				&commands = opertype.Get<const Warden::string>("commands"),
+				&privs = opertype.Get<const Warden::string>("privs");
 
 		ValidateNotEmpty("opertype", "name", oname);
 
@@ -264,15 +265,15 @@ Configuration::Conf::Conf() : Configuration::Block("")
 		ot->modes = modes;
 
 		spacesepstream cmdstr(commands);
-		for (Anope::string str; cmdstr.GetToken(str);)
+		for (Warden::string str; cmdstr.GetToken(str);)
 			ot->AddCommand(str);
 
 		spacesepstream privstr(privs);
-		for (Anope::string str; privstr.GetToken(str);)
+		for (Warden::string str; privstr.GetToken(str);)
 			ot->AddPriv(str);
 
 		commasepstream inheritstr(inherits);
-		for (Anope::string str; inheritstr.GetToken(str);)
+		for (Warden::string str; inheritstr.GetToken(str);)
 		{
 			/* Strip leading ' ' after , */
 			if (str.length() > 1 && str[0] == ' ')
@@ -293,13 +294,13 @@ Configuration::Conf::Conf() : Configuration::Block("")
 
 	for (const auto &[_,  oper] : this->GetBlocks("oper"))
 	{
-		const Anope::string &nname = oper.Get<const Anope::string>("name"),
-					&type = oper.Get<const Anope::string>("type"),
-					&password = oper.Get<const Anope::string>("password"),
-					&password_hash = oper.Get<const Anope::string>("password_hash"),
-					&certfp = oper.Get<const Anope::string>("certfp"),
-					&host = oper.Get<const Anope::string>("host"),
-					&vhost = oper.Get<const Anope::string>("vhost");
+		const Warden::string &nname = oper.Get<const Warden::string>("name"),
+					&type = oper.Get<const Warden::string>("type"),
+					&password = oper.Get<const Warden::string>("password"),
+					&password_hash = oper.Get<const Warden::string>("password_hash"),
+					&certfp = oper.Get<const Warden::string>("certfp"),
+					&host = oper.Get<const Warden::string>("host"),
+					&vhost = oper.Get<const Warden::string>("vhost");
 
 		ValidateNotEmptyOrSpaces("oper", "name", nname);
 		ValidateNotEmpty("oper", "type", type);
@@ -330,13 +331,13 @@ Configuration::Conf::Conf() : Configuration::Block("")
 
 	for (const auto &[_,  service] : this->GetBlocks("service"))
 	{
-		const Anope::string &nick = service.Get<const Anope::string>("nick"),
-					&user = service.Get<const Anope::string>("user", nick.lower()),
-					&host = service.Get<const Anope::string>("host", servername),
-					&real = service.Get<const Anope::string>("real", nick),
-					&modes = service.Get<const Anope::string>("modes"),
-					&channels = service.Get<const Anope::string>("channels"),
-					&alias = service.Get<const Anope::string>("alias", nick.upper());
+		const Warden::string &nick = service.Get<const Warden::string>("nick"),
+					&user = service.Get<const Warden::string>("user", nick.lower()),
+					&host = service.Get<const Warden::string>("host", servername),
+					&real = service.Get<const Warden::string>("real", nick),
+					&modes = service.Get<const Warden::string>("modes"),
+					&channels = service.Get<const Warden::string>("channels"),
+					&alias = service.Get<const Warden::string>("alias", nick.upper());
 
 		ValidateNotEmptyOrSpaces("service", "nick", nick);
 		ValidateNotEmptyOrSpaces("service", "user", user);
@@ -351,15 +352,15 @@ Configuration::Conf::Conf() : Configuration::Block("")
 		bi->alias = alias;
 		bi->conf = true;
 
-		std::vector<Anope::string> oldchannels = bi->botchannels;
+		std::vector<Warden::string> oldchannels = bi->botchannels;
 		bi->botchannels.clear();
 		commasepstream sep(channels);
-		for (Anope::string token; sep.GetToken(token);)
+		for (Warden::string token; sep.GetToken(token);)
 		{
 			bi->botchannels.push_back(token);
 			size_t ch = token.find('#');
-			Anope::string chname, want_modes;
-			if (ch == Anope::string::npos)
+			Warden::string chname, want_modes;
+			if (ch == Warden::string::npos)
 				chname = token;
 			else
 			{
@@ -394,12 +395,12 @@ Configuration::Conf::Conf() : Configuration::Block("")
 		for (const auto &oldchannel : oldchannels)
 		{
 			size_t ch = oldchannel.find('#');
-			Anope::string chname = oldchannel.substr(ch != Anope::string::npos ? ch : 0);
+			Warden::string chname = oldchannel.substr(ch != Warden::string::npos ? ch : 0);
 			bool found = false;
 			for (const auto &botchannel : bi->botchannels)
 			{
 				ch = botchannel.find('#');
-				Anope::string ochname = botchannel.substr(ch != Anope::string::npos ? ch : 0);
+				Warden::string ochname = botchannel.substr(ch != Warden::string::npos ? ch : 0);
 
 				if (chname.equals_ci(ochname))
 					found = true;
@@ -425,16 +426,16 @@ Configuration::Conf::Conf() : Configuration::Block("")
 
 		LogInfo l(logage, rawio, debug);
 
-		l.bot = BotInfo::Find(log.Get<const Anope::string>("bot", "Global"), true);
-		spacesepstream(log.Get<const Anope::string>("target")).GetTokens(l.targets);
-		spacesepstream(log.Get<const Anope::string>("source")).GetTokens(l.sources);
-		spacesepstream(log.Get<const Anope::string>("admin")).GetTokens(l.admin);
-		spacesepstream(log.Get<const Anope::string>("override")).GetTokens(l.override);
-		spacesepstream(log.Get<const Anope::string>("commands")).GetTokens(l.commands);
-		spacesepstream(log.Get<const Anope::string>("servers")).GetTokens(l.servers);
-		spacesepstream(log.Get<const Anope::string>("channels")).GetTokens(l.channels);
-		spacesepstream(log.Get<const Anope::string>("users")).GetTokens(l.users);
-		spacesepstream(log.Get<const Anope::string>("other")).GetTokens(l.normal);
+		l.bot = BotInfo::Find(log.Get<const Warden::string>("bot", "Global"), true);
+		spacesepstream(log.Get<const Warden::string>("target")).GetTokens(l.targets);
+		spacesepstream(log.Get<const Warden::string>("source")).GetTokens(l.sources);
+		spacesepstream(log.Get<const Warden::string>("admin")).GetTokens(l.admin);
+		spacesepstream(log.Get<const Warden::string>("override")).GetTokens(l.override);
+		spacesepstream(log.Get<const Warden::string>("commands")).GetTokens(l.commands);
+		spacesepstream(log.Get<const Warden::string>("servers")).GetTokens(l.servers);
+		spacesepstream(log.Get<const Warden::string>("channels")).GetTokens(l.channels);
+		spacesepstream(log.Get<const Warden::string>("users")).GetTokens(l.users);
+		spacesepstream(log.Get<const Warden::string>("other")).GetTokens(l.normal);
 
 		this->LogInfos.push_back(l);
 	}
@@ -443,11 +444,11 @@ Configuration::Conf::Conf() : Configuration::Block("")
 		bi->commands.clear();
 	for (const auto &[_,  command] : this->GetBlocks("command"))
 	{
-		const Anope::string &service = command.Get<const Anope::string>("service"),
-					&nname = command.Get<const Anope::string>("name"),
-					&cmd = command.Get<const Anope::string>("command"),
-					&permission = command.Get<const Anope::string>("permission"),
-					&group = command.Get<const Anope::string>("group");
+		const Warden::string &service = command.Get<const Warden::string>("service"),
+					&nname = command.Get<const Warden::string>("name"),
+					&cmd = command.Get<const Warden::string>("command"),
+					&permission = command.Get<const Warden::string>("permission"),
+					&group = command.Get<const Warden::string>("group");
 		bool hide = command.Get<bool>("hide");
 
 		ValidateNotEmptyOrSpaces("command", "service", service);
@@ -466,8 +467,8 @@ Configuration::Conf::Conf() : Configuration::Block("")
 	PrivilegeManager::ClearPrivileges();
 	for (const auto &[_,  privilege] : this->GetBlocks("privilege"))
 	{
-		const Anope::string &nname = privilege.Get<const Anope::string>("name"),
-					&desc = privilege.Get<const Anope::string>("desc");
+		const Warden::string &nname = privilege.Get<const Warden::string>("name"),
+					&desc = privilege.Get<const Warden::string>("desc");
 		int rank = privilege.Get<int>("rank");
 
 		PrivilegeManager::AddPrivilege(Privilege(nname, desc, rank));
@@ -475,10 +476,10 @@ Configuration::Conf::Conf() : Configuration::Block("")
 
 	for (const auto &[_,  fantasy] : this->GetBlocks("fantasy"))
 	{
-		const Anope::string &nname = fantasy.Get<const Anope::string>("name"),
-					&service = fantasy.Get<const Anope::string>("command"),
-					&permission = fantasy.Get<const Anope::string>("permission"),
-					&group = fantasy.Get<const Anope::string>("group");
+		const Warden::string &nname = fantasy.Get<const Warden::string>("name"),
+					&service = fantasy.Get<const Warden::string>("command"),
+					&permission = fantasy.Get<const Warden::string>("permission"),
+					&group = fantasy.Get<const Warden::string>("group");
 
 		ValidateNotEmpty("fantasy", "name", nname);
 		ValidateNotEmptyOrSpaces("fantasy", "command", service);
@@ -494,8 +495,8 @@ Configuration::Conf::Conf() : Configuration::Block("")
 
 	for (const auto &[_,  command_group] : this->GetBlocks("command_group"))
 	{
-		const Anope::string &nname = command_group.Get<const Anope::string>("name"),
-					&description = command_group.Get<const Anope::string>("description");
+		const Warden::string &nname = command_group.Get<const Warden::string>("name"),
+					&description = command_group.Get<const Warden::string>("description");
 
 		CommandGroup gr;
 		gr.name = nname;
@@ -531,22 +532,22 @@ Configuration::Conf::Conf() : Configuration::Block("")
 		Log() << "Tied oper " << na->nc->display << " to type " << o->ot->GetName();
 	}
 
-	if (options.Get<const Anope::string>("casemap", "ascii") == "ascii")
-		Anope::casemap = std::locale(std::locale(), new Anope::ascii_ctype<char>());
-	else if (options.Get<const Anope::string>("casemap") == "rfc1459")
-		Anope::casemap = std::locale(std::locale(), new Anope::rfc1459_ctype<char>());
+	if (options.Get<const Warden::string>("casemap", "ascii") == "ascii")
+		Warden::casemap = std::locale(std::locale(), new Warden::ascii_ctype<char>());
+	else if (options.Get<const Warden::string>("casemap") == "rfc1459")
+		Warden::casemap = std::locale(std::locale(), new Warden::rfc1459_ctype<char>());
 	else
 	{
 		try
 		{
-			Anope::casemap = std::locale(options.Get<const Anope::string>("casemap").c_str());
+			Warden::casemap = std::locale(options.Get<const Warden::string>("casemap").c_str());
 		}
 		catch (const std::runtime_error &)
 		{
-			Log() << "Unknown casemap " << options.Get<const Anope::string>("casemap") << " - casemap not changed";
+			Log() << "Unknown casemap " << options.Get<const Warden::string>("casemap") << " - casemap not changed";
 		}
 	}
-	Anope::CaseMapRebuild();
+	Warden::CaseMapRebuild();
 }
 
 Configuration::Conf::~Conf()
@@ -607,14 +608,14 @@ void Configuration::Conf::Post(Configuration::Conf *old)
 	}
 }
 
-Anope::string Configuration::Uplink::str() const
+Warden::string Configuration::Uplink::str() const
 {
 	switch (protocol)
 	{
 	case AF_INET:
-		return Anope::Format("%s:%u", this->host.c_str(), this->port);
+		return Warden::Format("%s:%u", this->host.c_str(), this->port);
 	case AF_INET6:
-		return Anope::Format("[%s]:%u", this->host.c_str(), this->port);
+		return Warden::Format("[%s]:%u", this->host.c_str(), this->port);
 	case AF_UNIX:
 		return this->host;
 	}
@@ -632,7 +633,7 @@ Configuration::Block &Configuration::Conf::GetModule(const Module *m)
 	return GetModule(m->name);
 }
 
-Configuration::Block &Configuration::Conf::GetModule(const Anope::string &mname)
+Configuration::Block &Configuration::Conf::GetModule(const Warden::string &mname)
 {
 	auto it = modules.find(mname);
 	if (it != modules.end())
@@ -645,7 +646,7 @@ Configuration::Block &Configuration::Conf::GetModule(const Anope::string &mname)
 	{
 		auto &b = iters.first->second;
 
-		if (b.Get<const Anope::string>("name") == mname)
+		if (b.Get<const Warden::string>("name") == mname)
 		{
 			block = &b;
 			break;
@@ -658,34 +659,34 @@ Configuration::Block &Configuration::Conf::GetModule(const Anope::string &mname)
 	return GetModule(mname);
 }
 
-BotInfo *Configuration::Conf::GetClient(const Anope::string &cname)
+BotInfo *Configuration::Conf::GetClient(const Warden::string &cname)
 {
 	auto it = bots.find(cname);
 	if (it != bots.end())
 		return BotInfo::Find(!it->second.empty() ? it->second : cname, true);
 
 	auto &block = GetModule(cname.lower());
-	const Anope::string &client = block.Get<const Anope::string>("client");
+	const Warden::string &client = block.Get<const Warden::string>("client");
 	bots[cname] = client;
 	return GetClient(cname);
 }
 
 const Configuration::Block &Configuration::Conf::GetCommand(CommandSource &source)
 {
-	const Anope::string &block_name = source.c ? "fantasy" : "command";
+	const Warden::string &block_name = source.c ? "fantasy" : "command";
 
 	for (auto iters = blocks.equal_range(block_name); iters.first != iters.second; ++iters.first)
 	{
 		auto &b = iters.first->second;
 
-		if (b.Get<Anope::string>("name") == source.command)
+		if (b.Get<Warden::string>("name") == source.command)
 			return b;
 	}
 
 	return Configuration::Block::EmptyBlock;
 }
 
-Configuration::File::File(const Anope::string &n, bool e) : name(n), executable(e)
+Configuration::File::File(const Warden::string &n, bool e) : name(n), executable(e)
 {
 }
 
@@ -694,14 +695,14 @@ Configuration::File::~File()
 	this->Close();
 }
 
-const Anope::string &Configuration::File::GetName() const
+const Warden::string &Configuration::File::GetName() const
 {
 	return this->name;
 }
 
-Anope::string Configuration::File::GetPath() const
+Warden::string Configuration::File::GetPath() const
 {
-	return this->executable ? this->name : Anope::ExpandConfig(this->name);
+	return this->executable ? this->name : Warden::ExpandConfig(this->name);
 }
 
 bool Configuration::File::IsOpen() const
@@ -733,9 +734,9 @@ bool Configuration::File::End() const
 	return !this->IsOpen() || feof(this->fp);
 }
 
-Anope::string Configuration::File::Read()
+Warden::string Configuration::File::Read()
 {
-	Anope::string ret;
+	Warden::string ret;
 	char buf[1024];
 	while (fgets(buf, sizeof(buf), this->fp) != NULL)
 	{
@@ -755,14 +756,14 @@ Anope::string Configuration::File::Read()
 	return ret;
 }
 
-Configuration::FilePosition::FilePosition(const Anope::string& n)
+Configuration::FilePosition::FilePosition(const Warden::string& n)
 	: name(n)
 {
 }
 
-Anope::string Configuration::FilePosition::str() const
+Warden::string Configuration::FilePosition::str() const
 {
-	return Anope::Format("%s:%zu:%zu", this->name.c_str(),
+	return Warden::Format("%s:%zu:%zu", this->name.c_str(),
 		this->line, this->column);
 }
 
@@ -773,11 +774,11 @@ void Configuration::Conf::LoadConf(Configuration::File &file)
 
 	if (!file.Open())
 	{
-		throw ConfigException(Anope::Format("Configuration::File %s could not be opened: %s.",
+		throw ConfigException(Warden::Format("Configuration::File %s could not be opened: %s.",
 			file.GetPath().c_str(), strerror(errno)));
 	}
 
-	Anope::string itemname, wordbuffer;
+	Warden::string itemname, wordbuffer;
 	std::stack<Configuration::Block *> block_stack;
 	Configuration::FilePosition position(file.GetName());
 	bool in_word = false, in_quote = false, in_comment = false;
@@ -786,7 +787,7 @@ void Configuration::Conf::LoadConf(Configuration::File &file)
 	// Start reading characters...
 	while (!file.End())
 	{
-		Anope::string line = file.Read();
+		Warden::string line = file.Read();
 
 		position.column = 0;
 		position.line++;
@@ -984,9 +985,9 @@ void Configuration::Conf::LoadConf(Configuration::File &file)
 	}
 }
 
-Anope::string Configuration::Conf::ReplaceVars(const Anope::string &str, const Configuration::File &file, const Configuration::FilePosition &position)
+Warden::string Configuration::Conf::ReplaceVars(const Warden::string &str, const Configuration::File &file, const Configuration::FilePosition &position)
 {
-	Anope::string ret;
+	Warden::string ret;
 	for (auto it = str.begin(); it != str.end(); )
 	{
 		if (*it != '$')
@@ -1002,7 +1003,7 @@ Anope::string Configuration::Conf::ReplaceVars(const Anope::string &str, const C
 		}
 
 		it++;
-		Anope::string var;
+		Warden::string var;
 		while (it != str.end() && *it != '}')
 			var.push_back(*it++);
 
@@ -1022,10 +1023,10 @@ Anope::string Configuration::Conf::ReplaceVars(const Anope::string &str, const C
 		auto found = false;
 		for (const auto &[_,  define] : this->GetBlocks("define"))
 		{
-			const auto defname = define.Get<const Anope::string>("name");
+			const auto defname = define.Get<const Warden::string>("name");
 			if (defname == var)
 			{
-				ret.append(define.Get<const Anope::string>("value"));
+				ret.append(define.Get<const Warden::string>("value"));
 				found = true;
 				break;
 			}

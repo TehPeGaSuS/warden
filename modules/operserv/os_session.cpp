@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,9 +25,9 @@ namespace
 	/* How long session akills should last */
 	time_t session_autokill_expiry;
 	/* Reason to use for session kills */
-	Anope::string sle_reason;
+	Warden::string sle_reason;
 	/* Optional second reason */
-	Anope::string sle_detailsloc;
+	Warden::string sle_detailsloc;
 
 	/* Max limit that can be used for exceptions */
 	unsigned max_exception_limit;
@@ -63,7 +64,7 @@ struct ExceptionType final
 
 		OperServ::Exception *ex;
 		if (obj)
-			ex = anope_dynamic_static_cast<OperServ::Exception *>(obj);
+			ex = warden_dynamic_static_cast<OperServ::Exception *>(obj);
 		else
 			ex = new OperServ::Exception();
 
@@ -115,7 +116,7 @@ public:
 	{
 		for (auto *e : *this->Exceptions)
 		{
-			if (Anope::Match(u->host, e->mask) || Anope::Match(u->ip.addr(), e->mask))
+			if (Warden::Match(u->host, e->mask) || Warden::Match(u->ip.addr(), e->mask))
 				return e;
 
 			if (cidr(e->mask).match(u->ip))
@@ -124,11 +125,11 @@ public:
 		return NULL;
 	}
 
-	OperServ::Exception *FindException(const Anope::string &host) override
+	OperServ::Exception *FindException(const Warden::string &host) override
 	{
 		for (auto *e : *this->Exceptions)
 		{
-			if (Anope::Match(host, e->mask))
+			if (Warden::Match(host, e->mask))
 				return e;
 
 			if (cidr(e->mask).match(sockaddrs(host)))
@@ -148,9 +149,9 @@ public:
 		this->Sessions.erase(s->addr);
 	}
 
-	OperServ::Session *FindSession(const Anope::string &ip) override
+	OperServ::Session *FindSession(const Warden::string &ip) override
 	{
-		cidr c(ip, ip.find(':') != Anope::string::npos ? ipv6_cidr : ipv4_cidr);
+		cidr c(ip, ip.find(':') != Warden::string::npos ? ipv6_cidr : ipv4_cidr);
 		if (!c.valid())
 			return NULL;
 		auto it = this->Sessions.find(c);
@@ -184,10 +185,10 @@ class ExceptionDelCallback final
 protected:
 	CommandSource &source;
 	unsigned deleted = 0;
-	Anope::string lastdeleted;
+	Warden::string lastdeleted;
 	Command *cmd;
 public:
-	ExceptionDelCallback(CommandSource &_source, const Anope::string &numlist, Command *c) : NumberList(numlist, true), source(_source), cmd(c)
+	ExceptionDelCallback(CommandSource &_source, const Warden::string &numlist, Command *c) : NumberList(numlist, true), source(_source), cmd(c)
 	{
 	}
 
@@ -235,11 +236,11 @@ class CommandOSSession final
 	: public Command
 {
 private:
-	static void DoList(CommandSource &source, const std::vector<Anope::string> &params)
+	static void DoList(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		Anope::string param = params[1];
+		Warden::string param = params[1];
 
-		auto mincount = Anope::Convert<unsigned>(param, 0);
+		auto mincount = Warden::Convert<unsigned>(param, 0);
 		if (mincount <= 1)
 			source.Reply(_("Invalid threshold value. It must be a valid integer greater than 1."));
 		else
@@ -253,7 +254,7 @@ private:
 				if (session->count >= mincount)
 				{
 					ListFormatter::ListEntry entry;
-					entry["Session"] = Anope::ToString(session->count);
+					entry["Session"] = Warden::ToString(session->count);
 					entry["Host"] = session->addr.mask();
 					list.AddEntry(entry);
 				}
@@ -264,13 +265,13 @@ private:
 		}
 	}
 
-	static void DoView(CommandSource &source, const std::vector<Anope::string> &params)
+	static void DoView(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		Anope::string param = params[1];
+		Warden::string param = params[1];
 		auto *session = OperServ::session_service->FindSession(param);
 
 		auto *exception = OperServ::session_service->FindException(param);
-		Anope::string entry = "no entry";
+		Warden::string entry = "no entry";
 		unsigned limit = session_limit;
 		if (exception)
 		{
@@ -294,9 +295,9 @@ public:
 		this->SetSyntax(_("VIEW \037host\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[0];
+		const Warden::string &cmd = params[0];
 
 		Log(LOG_ADMIN, source, this) << cmd << " " << params[1];
 
@@ -310,7 +311,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -340,9 +341,9 @@ class CommandOSException final
 	: public Command
 {
 private:
-	void DoAdd(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoAdd(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		Anope::string mask, expiry, limitstr;
+		Warden::string mask, expiry, limitstr;
 		unsigned last_param = 3;
 
 		mask = params.size() > 1 ? params[1] : "";
@@ -361,7 +362,7 @@ private:
 			return;
 		}
 
-		Anope::string reason = params[last_param];
+		Warden::string reason = params[last_param];
 		if (last_param == 3 && params.size() > 4)
 			reason += " " + params[4];
 		if (reason.empty())
@@ -370,16 +371,16 @@ private:
 			return;
 		}
 
-		time_t expires = !expiry.empty() ? Anope::DoTime(expiry) : exception_expiry;
+		time_t expires = !expiry.empty() ? Warden::DoTime(expiry) : exception_expiry;
 		if (expires < 0)
 		{
 			source.Reply(BAD_EXPIRY_TIME);
 			return;
 		}
 		else if (expires > 0)
-			expires += Anope::CurTime;
+			expires += Warden::CurTime;
 
-		auto limit = Anope::Convert<unsigned>(limitstr, -1);
+		auto limit = Warden::Convert<unsigned>(limitstr, -1);
 		if (limit > max_exception_limit)
 		{
 			source.Reply(_("Invalid session limit. It must be a valid integer greater than or equal to zero and less than \002%d\002."), max_exception_limit);
@@ -387,7 +388,7 @@ private:
 		}
 		else
 		{
-			if (mask.find('!') != Anope::string::npos || mask.find('@') != Anope::string::npos)
+			if (mask.find('!') != Warden::string::npos || mask.find('@') != Warden::string::npos)
 			{
 				source.Reply(_("Invalid hostmask. Only real hostmasks are valid, as exceptions are not matched against nicks or usernames."));
 				return;
@@ -412,7 +413,7 @@ private:
 			exception->mask = mask;
 			exception->limit = limit;
 			exception->reason = reason;
-			exception->time = Anope::CurTime;
+			exception->time = Warden::CurTime;
 			exception->who = source.GetNick();
 			exception->expires = expires;
 
@@ -425,15 +426,15 @@ private:
 				Log(LOG_ADMIN, source, this) << "to set the session limit for " << mask << " to " << limit;
 				OperServ::session_service->AddException(exception);
 				source.Reply(_("Session limit for \002%s\002 set to \002%d\002."), mask.c_str(), limit);
-				if (Anope::ReadOnly)
+				if (Warden::ReadOnly)
 					source.Reply(READ_ONLY_MODE);
 			}
 		}
 	}
 
-	void DoDel(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoDel(CommandSource &source, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &mask = params.size() > 1 ? params[1] : "";
+		const Warden::string &mask = params.size() > 1 ? params[1] : "";
 
 		if (mask.empty())
 		{
@@ -441,7 +442,7 @@ private:
 			return;
 		}
 
-		if (isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			ExceptionDelCallback list(source, mask, this);
 			list.Process();
@@ -461,13 +462,13 @@ private:
 				source.Reply(_("\002%s\002 not found on session-limit exception list."), mask.c_str());
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 	}
 
-	void ProcessList(CommandSource &source, const std::vector<Anope::string> &params, ListFormatter &list)
+	void ProcessList(CommandSource &source, const std::vector<Warden::string> &params, ListFormatter &list)
 	{
-		const Anope::string &mask = params.size() > 1 ? params[1] : "";
+		const Warden::string &mask = params.size() > 1 ? params[1] : "";
 
 		if (OperServ::session_service->GetExceptions().empty())
 		{
@@ -475,7 +476,7 @@ private:
 			return;
 		}
 
-		if (!mask.empty() && mask.find_first_not_of("1234567890,-") == Anope::string::npos)
+		if (!mask.empty() && mask.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			class ExceptionListCallback final
 				: public NumberList
@@ -483,7 +484,7 @@ private:
 				CommandSource &source;
 				ListFormatter &list;
 			public:
-				ExceptionListCallback(CommandSource &_source, ListFormatter &_list, const Anope::string &numlist) : NumberList(numlist, false), source(_source), list(_list)
+				ExceptionListCallback(CommandSource &_source, ListFormatter &_list, const Warden::string &numlist) : NumberList(numlist, false), source(_source), list(_list)
 				{
 				}
 
@@ -495,12 +496,12 @@ private:
 					auto *e = OperServ::session_service->GetExceptions()[Number - 1];
 
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(Number);
+					entry["Number"] = Warden::ToString(Number);
 					entry["Mask"] = e->mask;
 					entry["Creator"] = e->who;
-					entry["Created"] = Anope::strftime(e->time, NULL, true);
-					entry["Expires"] = Anope::Expires(e->expires, source.GetAccount());
-					entry["Limit"] = Anope::ToString(e->limit);
+					entry["Created"] = Warden::strftime(e->time, NULL, true);
+					entry["Expires"] = Warden::Expires(e->expires, source.GetAccount());
+					entry["Limit"] = Warden::ToString(e->limit);
 					entry["Reason"] = e->reason;
 					this->list.AddEntry(entry);
 				}
@@ -513,15 +514,15 @@ private:
 			for (unsigned i = 0, end = OperServ::session_service->GetExceptions().size(); i < end; ++i)
 			{
 				auto *e = OperServ::session_service->GetExceptions()[i];
-				if (mask.empty() || Anope::Match(e->mask, mask))
+				if (mask.empty() || Warden::Match(e->mask, mask))
 				{
 					ListFormatter::ListEntry entry;
-					entry["Number"] = Anope::ToString(i + 1);
+					entry["Number"] = Warden::ToString(i + 1);
 					entry["Mask"] = e->mask;
 					entry["Creator"] = e->who;
-					entry["Created"] = Anope::strftime(e->time, NULL, true);
-					entry["Expires"] = Anope::Expires(e->expires, source.GetAccount());
-					entry["Limit"] = Anope::ToString(e->limit);
+					entry["Created"] = Warden::strftime(e->time, NULL, true);
+					entry["Expires"] = Warden::Expires(e->expires, source.GetAccount());
+					entry["Limit"] = Warden::ToString(e->limit);
 					entry["Reason"] = e->reason;
 					list.AddEntry(entry);
 				}
@@ -537,7 +538,7 @@ private:
 		}
 	}
 
-	void DoList(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoList(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		ListFormatter list(source.GetAccount());
 		list.AddColumn(_("Number")).AddColumn(_("Limit")).AddColumn(_("Mask")).AddColumn(_("Reason"));
@@ -546,7 +547,7 @@ private:
 		this->ProcessList(source, params, list);
 	}
 
-	void DoView(CommandSource &source, const std::vector<Anope::string> &params)
+	void DoView(CommandSource &source, const std::vector<Warden::string> &params)
 	{
 		ListFormatter list(source.GetAccount());
 		list.AddColumn(_("Number")).AddColumn(_("Mask")).AddColumn(_("Creator")).AddColumn(_("Created")).AddColumn(_("Expires")).AddColumn(_("Limit")).AddColumn(_("Reason"));
@@ -565,9 +566,9 @@ public:
 		this->SetSyntax(_("VIEW [\037mask\037 | \037list\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[0];
+		const Warden::string &cmd = params[0];
 
 		if (!session_limit)
 			source.Reply(_("Session limiting is disabled."));
@@ -583,7 +584,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -638,7 +639,7 @@ class OSSession final
 	ServiceReference<XLineManager> akills;
 
 public:
-	OSSession(const Anope::string &modname, const Anope::string &creator)
+	OSSession(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, ss(this)
 		, commandossession(this)
@@ -660,8 +661,8 @@ public:
 		session_limit = block.Get<unsigned>("defaultsessionlimit");
 		max_session_kill = block.Get<unsigned>("maxsessionkill");
 		session_autokill_expiry = block.Get<time_t>("sessionautokillexpiry");
-		sle_reason = block.Get<const Anope::string>("sessionlimitexceeded");
-		sle_detailsloc = block.Get<const Anope::string>("sessionlimitdetailsloc");
+		sle_reason = block.Get<const Warden::string>("sessionlimitexceeded");
+		sle_detailsloc = block.Get<const Warden::string>("sessionlimitdetailsloc");
 
 		max_exception_limit = block.Get<unsigned>("maxsessionlimit");
 		exception_expiry = block.Get<time_t>("exceptionexpiry");
@@ -715,7 +716,7 @@ public:
 				{
 					if (!sle_reason.empty())
 					{
-						auto message = Anope::Template(sle_reason, {
+						auto message = Warden::Template(sle_reason, {
 							{ "ip", u->ip.addr() },
 						});
 						u->SendMessage(OperServ, message);
@@ -726,10 +727,10 @@ public:
 
 				++session->hits;
 
-				const Anope::string &akillmask = "*@" + session->addr.mask();
+				const Warden::string &akillmask = "*@" + session->addr.mask();
 				if (max_session_kill && session->hits >= max_session_kill && akills && !akills->HasEntry(akillmask))
 				{
-					auto *x = new XLine(akillmask, OperServ ? OperServ->nick : "", Anope::CurTime + session_autokill_expiry, "Session limit exceeded", XLineManager::GenerateUID());
+					auto *x = new XLine(akillmask, OperServ ? OperServ->nick : "", Warden::CurTime + session_autokill_expiry, "Session limit exceeded", XLineManager::GenerateUID());
 					akills->AddXLine(x);
 					akills->Send(NULL, x);
 					Log(OperServ, "akill/session") << "Added a temporary AKILL for \002" << akillmask << "\002 due to excessive connections";
@@ -746,7 +747,7 @@ public:
 		}
 	}
 
-	void OnUserQuit(User *u, const Anope::string &msg) override
+	void OnUserQuit(User *u, const Warden::string &msg) override
 	{
 		if (!session_limit || !u->server || u->server->IsULined())
 			return;
@@ -771,13 +772,13 @@ public:
 
 	void OnExpireTick() override
 	{
-		if (Anope::NoExpire)
+		if (Warden::NoExpire)
 			return;
 		for (unsigned i = this->ss.GetExceptions().size(); i > 0; --i)
 		{
 			auto *e = this->ss.GetExceptions()[i - 1];
 
-			if (!e->expires || e->expires > Anope::CurTime)
+			if (!e->expires || e->expires > Warden::CurTime)
 				continue;
 			BotInfo *OperServ = Config->GetClient("OperServ");
 			Log(OperServ, "expire/exception") << "Session exception for " << e->mask << " has expired.";

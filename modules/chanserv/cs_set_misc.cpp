@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,19 +20,19 @@ static Module *me;
 
 struct CommandData final
 {
-	Anope::string description;
-	Anope::string pattern;
-	Anope::string syntax;
-	Anope::string title;
+	Warden::string description;
+	Warden::string pattern;
+	Warden::string syntax;
+	Warden::string title;
 	unsigned numeric = 0;
 };
 
-static Anope::map<CommandData> command_data;
+static Warden::map<CommandData> command_data;
 
 struct CSMiscData;
-static Anope::map<ExtensibleItem<CSMiscData> *> items;
+static Warden::map<ExtensibleItem<CSMiscData> *> items;
 
-static ExtensibleItem<CSMiscData> *GetItem(const Anope::string &name)
+static ExtensibleItem<CSMiscData> *GetItem(const Warden::string &name)
 {
 	ExtensibleItem<CSMiscData> *&it = items[name];
 	if (!it)
@@ -49,7 +50,7 @@ struct CSMiscData final
 {
 	CSMiscData(Extensible *obj) : Serializable("CSMiscData") { }
 
-	CSMiscData(ChannelInfo *c, const Anope::string &n, const Anope::string &d) : Serializable("CSMiscData")
+	CSMiscData(ChannelInfo *c, const Warden::string &n, const Warden::string &d) : Serializable("CSMiscData")
 	{
 		object = c->name;
 		name = n;
@@ -85,7 +86,7 @@ struct CSMiscDataType
 		CSMiscData *d = NULL;
 		if (obj)
 		{
-			d = anope_dynamic_static_cast<CSMiscData *>(obj);
+			d = warden_dynamic_static_cast<CSMiscData *>(obj);
 			d->object = ci->name;
 			d->name = sname;
 			d->data = sdata;
@@ -101,10 +102,10 @@ struct CSMiscDataType
 	}
 };
 
-static Anope::string GetAttribute(const Anope::string &command)
+static Warden::string GetAttribute(const Warden::string &command)
 {
 	size_t sp = command.rfind(' ');
-	if (sp != Anope::string::npos)
+	if (sp != Warden::string::npos)
 		return CHANSERV_SET_MISC_PREFIX + command.substr(sp + 1);
 	return CHANSERV_SET_MISC_PREFIX + command;
 }
@@ -121,13 +122,13 @@ class CommandCSSetMisc final
 	: public Command
 {
 private:
-	bool CheckSyntax(CommandSource &source, ExtensibleItem<CSMiscData> *ext, const Anope::string &value) const
+	bool CheckSyntax(CommandSource &source, ExtensibleItem<CSMiscData> *ext, const Warden::string &value) const
 	{
 		auto it = command_data.find(ext->name);
 		if (it == command_data.end() || it->second.pattern.empty())
 			return true; // No syntax validation.
 
-		ServiceReference<RegexProvider> regex("Regex", Config->GetBlock("options").Get<const Anope::string>("regexengine"));
+		ServiceReference<RegexProvider> regex("Regex", Config->GetBlock("options").Get<const Warden::string>("regexengine"));
 		if (!regex)
 			return true; // No regex engine.
 
@@ -146,20 +147,20 @@ private:
 	}
 
 public:
-	CommandCSSetMisc(Module *creator, const Anope::string &cname = "chanserv/set/misc") : Command(creator, cname, 1, 2)
+	CommandCSSetMisc(Module *creator, const Warden::string &cname = "chanserv/set/misc") : Command(creator, cname, 1, 2)
 	{
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
 		}
 
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
-		const Anope::string &param = params.size() > 1 ? params[1] : "";
+		const Warden::string &param = params.size() > 1 ? params[1] : "";
 		if (ci == NULL)
 		{
 			source.Reply(CHAN_X_NOT_REGISTERED, params[0].c_str());
@@ -213,7 +214,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		auto it = command_data.find(GetAttribute(source.command));
 		if (it != command_data.end() && !it->second.description.empty())
@@ -234,7 +235,7 @@ public:
 			value = it->second.syntax.c_str();
 
 		this->ClearSyntax();
-		this->SetSyntax(Anope::Format(
+		this->SetSyntax(Warden::Format(
 			source.Translate(_("\037channel\037 [\037%s\037]")),
 			source.Translate(value)
 		));
@@ -250,7 +251,7 @@ class CSSetMisc final
 	CSMiscDataType csmiscdata_type;
 
 public:
-	CSSetMisc(const Anope::string &modname, const Anope::string &creator)
+	CSSetMisc(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandcssetmisc(this)
 	{
@@ -269,11 +270,11 @@ public:
 
 		for (const auto &[_,  block] : conf.GetBlocks("command"))
 		{
-			if (block.Get<const Anope::string>("command") != "chanserv/set/misc")
+			if (block.Get<const Warden::string>("command") != "chanserv/set/misc")
 				continue;
 
-			Anope::string cname = block.Get<const Anope::string>("name");
-			Anope::string desc = block.Get<const Anope::string>("misc_description");
+			Warden::string cname = block.Get<const Warden::string>("name");
+			Warden::string desc = block.Get<const Warden::string>("misc_description");
 			if (cname.empty() || desc.empty())
 				continue;
 
@@ -283,9 +284,9 @@ public:
 
 			auto &data = command_data[extname];
 			data.description = desc;
-			data.title = block.Get<const Anope::string>("misc_title");
-			data.pattern = block.Get<const Anope::string>("misc_pattern");
-			data.syntax = block.Get<const Anope::string>("misc_syntax");
+			data.title = block.Get<const Warden::string>("misc_title");
+			data.pattern = block.Get<const Warden::string>("misc_pattern");
+			data.syntax = block.Get<const Warden::string>("misc_syntax");
 
 			const auto numeric = block.Get<unsigned>("misc_numeric");
 			if (numeric >= 1 && numeric <= 999)

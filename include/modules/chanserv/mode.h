@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -31,11 +32,11 @@ protected:
 	ModeLock() = default;
 
 public:
-	Anope::string ci;
+	Warden::string ci;
 	bool set;
-	Anope::string name;
-	Anope::string param;
-	Anope::string setter;
+	Warden::string name;
+	Warden::string param;
+	Warden::string setter;
 	time_t created;
 
 	virtual ~ModeLock() = default;
@@ -55,7 +56,7 @@ public:
 	 * @param status True to check mlock on, false for mlock off
 	 * @return true on success, false on fail
 	 */
-	virtual bool HasMLock(ChannelMode *mode, const Anope::string &param, bool status) const = 0;
+	virtual bool HasMLock(ChannelMode *mode, const Warden::string &param, bool status) const = 0;
 
 	/** Set a mlock
 	 * @param mode The mode
@@ -65,7 +66,7 @@ public:
 	 * @param created When the mlock was created
 	 * @return true on success, false on failure (module blocking)
 	 */
-	virtual bool SetMLock(ChannelMode *mode, bool status, const Anope::string &param = "", Anope::string setter = "", time_t created = Anope::CurTime) = 0;
+	virtual bool SetMLock(ChannelMode *mode, bool status, const Warden::string &param = "", Warden::string setter = "", time_t created = Warden::CurTime) = 0;
 
 	/** Remove a mlock
 	 * @param mode The mode
@@ -73,7 +74,7 @@ public:
 	 * @param param The param of the mode, required if it is a list or status mode
 	 * @return true on success, false on failure
 	 */
-	virtual bool RemoveMLock(ChannelMode *mode, bool status, const Anope::string &param = "") = 0;
+	virtual bool RemoveMLock(ChannelMode *mode, bool status, const Warden::string &param = "") = 0;
 
 	virtual void RemoveMLock(ModeLock *mlock) = 0;
 
@@ -90,20 +91,20 @@ public:
 	 * @param name The mode name to get a list of
 	 * @return a list of mlocks for the given mode
 	 */
-	virtual std::list<ModeLock *> GetModeLockList(const Anope::string &name) = 0;
+	virtual std::list<ModeLock *> GetModeLockList(const Warden::string &name) = 0;
 
 	/** Get details for a specific mlock
 	 * @param mname The mode name
 	 * @param An optional param to match with
 	 * @return The MLock, if any
 	 */
-	virtual const ModeLock *GetMLock(const Anope::string &mname, const Anope::string &param = "") = 0;
+	virtual const ModeLock *GetMLock(const Warden::string &mname, const Warden::string &param = "") = 0;
 
 	/** Get the current mode locks as a string
 	 * @param complete True to show mlock parameters as well
 	 * @return A string of mode locks, eg: +nrt
 	 */
-	virtual Anope::string GetMLockAsString(bool complete) const = 0;
+	virtual Warden::string GetMLockAsString(bool complete) const = 0;
 
 	virtual void Check() = 0;
 };

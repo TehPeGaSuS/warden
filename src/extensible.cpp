@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,7 +17,7 @@
 
 static std::set<ExtensibleBase *> extensible_items;
 
-ExtensibleBase::ExtensibleBase(Module *m, const Anope::string &n) : Service(m, "Extensible", n)
+ExtensibleBase::ExtensibleBase(Module *m, const Warden::string &n) : Service(m, "Extensible", n)
 {
 	extensible_items.insert(this);
 }
@@ -37,7 +38,7 @@ void Extensible::UnsetExtensibles()
 		(*extension_items.begin())->Unset(this);
 }
 
-bool Extensible::HasExt(const Anope::string &name) const
+bool Extensible::HasExt(const Warden::string &name) const
 {
 	ExtensibleRef<void *> ref(name);
 	if (ref)
@@ -65,7 +66,7 @@ void Extensible::ExtensibleUnserialize(Extensible *e, Serializable *s, Serialize
 }
 
 template<>
-bool *Extensible::Extend(const Anope::string &name, const bool &what)
+bool *Extensible::Extend(const Warden::string &name, const bool &what)
 {
 	ExtensibleRef<bool> ref(name);
 	if (ref)

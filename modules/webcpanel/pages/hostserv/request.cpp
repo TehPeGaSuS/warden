@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,17 +15,17 @@
 
 #include "../../webcpanel.h"
 
-WebCPanel::HostServ::Request::Request(const Anope::string &cat, const Anope::string &u) : WebPanelProtectedPage (cat, u)
+WebCPanel::HostServ::Request::Request(const Warden::string &cat, const Warden::string &u) : WebPanelProtectedPage (cat, u)
 {
 }
 
-bool WebCPanel::HostServ::Request::OnRequest(HTTP::Provider *server, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
+bool WebCPanel::HostServ::Request::OnRequest(HTTP::Provider *server, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
 {
 
-	const Anope::string req = WebPanel::GetRequestData(message.post_data, "req");
+	const Warden::string req = WebPanel::GetRequestData(message.post_data, "req");
 	if (!req.empty())
 	{
-		std::vector<Anope::string> params;
+		std::vector<Warden::string> params;
 		params.push_back(req);
 
 		WebPanel::RunCommand(client, na->nc->display, na->nc, "HostServ", "hostserv/request", params, replacements, "CMDR");

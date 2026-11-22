@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -17,10 +18,10 @@
 
 enum
 {
-	// Used by anope.{account,channel,oper,server,user}.
+	// Used by warden.{account,channel,oper,server,user}.
 	ERR_NO_SUCH_TARGET = RPC::ERR_CUSTOM_START,
 
-	// Used by anope.list{Accounts,Channels,Opers,Servers,Users}.
+	// Used by warden.list{Accounts,Channels,Opers,Servers,Users}.
 	ERR_NO_SUCH_DETAIL = RPC::ERR_CUSTOM_START,
 };
 
@@ -28,9 +29,9 @@ class SaveData final
 	: public Serialize::Data
 {
 public:
-	Anope::unordered_map<Anope::string> data;
+	Warden::unordered_map<Warden::string> data;
 
-	bool LoadInternal(const Anope::string &key, Anope::string &value) override
+	bool LoadInternal(const Warden::string &key, Warden::string &value) override
 	{
 		return false; // This module can only store data.
 	}
@@ -44,13 +45,13 @@ public:
 			switch (data.GetType(k))
 			{
 				case Serialize::DataType::BOOL:
-					map.Reply(k, Anope::Convert<bool>(v, false));
+					map.Reply(k, Warden::Convert<bool>(v, false));
 					break;
 				case Serialize::DataType::FLOAT:
-					map.Reply(k, Anope::Convert<double>(v, 0.0));
+					map.Reply(k, Warden::Convert<double>(v, 0.0));
 					break;
 				case Serialize::DataType::INT:
-					map.Reply(k, Anope::Convert<int64_t>(v, 0));
+					map.Reply(k, Warden::Convert<int64_t>(v, 0));
 					break;
 				case Serialize::DataType::TEXT:
 				{
@@ -61,25 +62,25 @@ public:
 					break;
 				}
 				case Serialize::DataType::UINT:
-					map.Reply(k, Anope::Convert<uint64_t>(v, 0));
+					map.Reply(k, Warden::Convert<uint64_t>(v, 0));
 					break;
 			}
 		}
 	}
 
-	bool StoreInternal(const Anope::string &key, const Anope::string &value) override
+	bool StoreInternal(const Warden::string &key, const Warden::string &value) override
 	{
 		data[key] = value;
 		return true;
 	}
 };
 
-class AnopeListAccountsRPCEvent final
+class WardenListAccountsRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeListAccountsRPCEvent(Module *o)
-		: RPC::Event(o, "anope.listAccounts")
+	WardenListAccountsRPCEvent(Module *o)
+		: RPC::Event(o, "warden.listAccounts")
 	{
 	}
 
@@ -173,19 +174,19 @@ public:
 	}
 };
 
-class AnopeAccountRPCEvent final
+class WardenAccountRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeAccountRPCEvent(Module *o)
-		: RPC::Event(o, "anope.account", 1)
+	WardenAccountRPCEvent(Module *o)
+		: RPC::Event(o, "warden.account", 1)
 	{
 	}
 
 	bool Run(RPC::ServiceInterface *iface, HTTP::Client *client, RPC::Request &request) override
 	{
 		auto *na = request.data[0].is_pos_number_only()
-			? NickAlias::FindId(Anope::Convert(request.data[0], 0))
+			? NickAlias::FindId(Warden::Convert(request.data[0], 0))
 			: NickAlias::Find(request.data[0]);
 		if (!na)
 		{
@@ -193,17 +194,17 @@ public:
 			return true;
 		}
 
-		AnopeListAccountsRPCEvent::GetInfo(na->nc, request.Root());
+		WardenListAccountsRPCEvent::GetInfo(na->nc, request.Root());
 		return true;
 	}
 };
 
-class AnopeListChannelsRPCEvent final
+class WardenListChannelsRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeListChannelsRPCEvent(Module *o)
-		: RPC::Event(o, "anope.listChannels")
+	WardenListChannelsRPCEvent(Module *o)
+		: RPC::Event(o, "warden.listChannels")
 	{
 	}
 
@@ -232,7 +233,7 @@ public:
 			}
 		}
 
-		std::vector<Anope::string> modelist = { "+" };
+		std::vector<Warden::string> modelist = { "+" };
 		for (const auto &[mname, mdata] : c->GetModes())
 		{
 			auto *cm = ModeManager::FindChannelModeByName(mname);
@@ -285,12 +286,12 @@ public:
 	}
 };
 
-class AnopeChannelRPCEvent final
+class WardenChannelRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeChannelRPCEvent(Module *o)
-		: RPC::Event(o, "anope.channel", 1)
+	WardenChannelRPCEvent(Module *o)
+		: RPC::Event(o, "warden.channel", 1)
 	{
 	}
 
@@ -303,17 +304,17 @@ public:
 			return true;
 		}
 
-		AnopeListChannelsRPCEvent::GetInfo(c, request.Root());
+		WardenListChannelsRPCEvent::GetInfo(c, request.Root());
 		return true;
 	}
 };
 
-class AnopeListOpersRPCEvent final
+class WardenListOpersRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeListOpersRPCEvent(Module *o)
-		: RPC::Event(o, "anope.listOpers")
+	WardenListOpersRPCEvent(Module *o)
+		: RPC::Event(o, "warden.listOpers")
 	{
 	}
 
@@ -383,12 +384,12 @@ public:
 	}
 };
 
-class AnopeOperRPCEvent final
+class WardenOperRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeOperRPCEvent(Module *o)
-		: RPC::Event(o, "anope.oper", 1)
+	WardenOperRPCEvent(Module *o)
+		: RPC::Event(o, "warden.oper", 1)
 	{
 	}
 
@@ -401,17 +402,17 @@ public:
 			return true;
 		}
 
-		AnopeListOpersRPCEvent::GetInfo(o, request.Root());
+		WardenListOpersRPCEvent::GetInfo(o, request.Root());
 		return true;
 	}
 };
 
-class AnopeListServersRPCEvent final
+class WardenListServersRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeListServersRPCEvent(Module *o)
-		: RPC::Event(o, "anope.listServers")
+	WardenListServersRPCEvent(Module *o)
+		: RPC::Event(o, "warden.listServers")
 	{
 	}
 
@@ -461,12 +462,12 @@ public:
 	}
 };
 
-class AnopeServerRPCEvent final
+class WardenServerRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeServerRPCEvent(Module *o)
-		: RPC::Event(o, "anope.server")
+	WardenServerRPCEvent(Module *o)
+		: RPC::Event(o, "warden.server")
 	{
 	}
 
@@ -479,17 +480,17 @@ public:
 			return true;
 		}
 
-		AnopeListServersRPCEvent::GetInfo(s, request.Root());
+		WardenListServersRPCEvent::GetInfo(s, request.Root());
 		return true;
 	}
 };
 
-class AnopeListUsersRPCEvent final
+class WardenListUsersRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeListUsersRPCEvent(Module *o)
-		: RPC::Event(0, "anope.listUsers")
+	WardenListUsersRPCEvent(Module *o)
+		: RPC::Event(0, "warden.listUsers")
 	{
 	}
 
@@ -546,7 +547,7 @@ public:
 		else
 			root.Reply("fingerprint", u->fingerprint);
 
-		std::vector<Anope::string> modelist = { "+" };
+		std::vector<Warden::string> modelist = { "+" };
 		for (const auto &[mname, mdata] : u->GetModeList())
 		{
 			auto *um = ModeManager::FindUserModeByName(mname);
@@ -600,12 +601,12 @@ public:
 	}
 };
 
-class AnopeUserRPCEvent final
+class WardenUserRPCEvent final
 	: public RPC::Event
 {
 public:
-	AnopeUserRPCEvent(Module *o)
-		: RPC::Event(o, "anope.user", 1)
+	WardenUserRPCEvent(Module *o)
+		: RPC::Event(o, "warden.user", 1)
 	{
 	}
 
@@ -618,7 +619,7 @@ public:
 			return true;
 		}
 
-		AnopeListUsersRPCEvent::GetInfo(u, request.Root());
+		WardenListUsersRPCEvent::GetInfo(u, request.Root());
 		return true;
 	}
 };
@@ -627,34 +628,34 @@ class ModuleRPCData final
 	: public Module
 {
 private:
-	AnopeListAccountsRPCEvent anopelistaccountsrpcevent;
-	AnopeAccountRPCEvent anopeaccountrpcevent;
+	WardenListAccountsRPCEvent wardenlistaccountsrpcevent;
+	WardenAccountRPCEvent wardenaccountrpcevent;
 
-	AnopeListChannelsRPCEvent anopelistchannelsrpcevent;
-	AnopeChannelRPCEvent anopechannelrpcevent;
+	WardenListChannelsRPCEvent wardenlistchannelsrpcevent;
+	WardenChannelRPCEvent wardenchannelrpcevent;
 
-	AnopeListOpersRPCEvent anopelistopersrpcevent;
-	AnopeOperRPCEvent anopeoperrpcevent;
+	WardenListOpersRPCEvent wardenlistopersrpcevent;
+	WardenOperRPCEvent wardenoperrpcevent;
 
-	AnopeListServersRPCEvent anopelistserversrpcevent;
-	AnopeServerRPCEvent anopeserverrpcevent;
+	WardenListServersRPCEvent wardenlistserversrpcevent;
+	WardenServerRPCEvent wardenserverrpcevent;
 
-	AnopeListUsersRPCEvent anopelistusersrpcevent;
-	AnopeUserRPCEvent anopeuserrpcevent;
+	WardenListUsersRPCEvent wardenlistusersrpcevent;
+	WardenUserRPCEvent wardenuserrpcevent;
 
 public:
-	ModuleRPCData(const Anope::string &modname, const Anope::string &creator)
+	ModuleRPCData(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, EXTRA | VENDOR)
-		, anopelistaccountsrpcevent(this)
-		, anopeaccountrpcevent(this)
-		, anopelistchannelsrpcevent(this)
-		, anopechannelrpcevent(this)
-		, anopelistopersrpcevent(this)
-		, anopeoperrpcevent(this)
-		, anopelistserversrpcevent(this)
-		, anopeserverrpcevent(this)
-		, anopelistusersrpcevent(this)
-		, anopeuserrpcevent(this)
+		, wardenlistaccountsrpcevent(this)
+		, wardenaccountrpcevent(this)
+		, wardenlistchannelsrpcevent(this)
+		, wardenchannelrpcevent(this)
+		, wardenlistopersrpcevent(this)
+		, wardenoperrpcevent(this)
+		, wardenlistserversrpcevent(this)
+		, wardenserverrpcevent(this)
+		, wardenlistusersrpcevent(this)
+		, wardenuserrpcevent(this)
 	{
 	}
 

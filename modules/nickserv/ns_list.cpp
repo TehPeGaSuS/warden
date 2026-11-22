@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,18 +25,18 @@ public:
 		this->SetSyntax(_("\037pattern\037 [DISPLAY] [NOEXPIRE] [SUSPENDED] [UNCONFIRMED]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		auto from = 0u, to = 0u;
 		auto pattern = params[0];
 		if (pattern[0] == '#')
 		{
-			Anope::string n1, n2;
+			Warden::string n1, n2;
 			sepstream(pattern.substr(1), '-').GetToken(n1, 0);
 			sepstream(pattern, '-').GetToken(n2, 1);
 
-			auto num1 = Anope::TryConvert<int>(n1);
-			auto num2 = Anope::TryConvert<int>(n2);
+			auto num1 = Warden::TryConvert<int>(n1);
+			auto num2 = Warden::TryConvert<int>(n2);
 			if (!num1.has_value() || !num2.has_value())
 			{
 				source.Reply(LIST_INCORRECT_RANGE);
@@ -51,7 +52,7 @@ public:
 		const auto is_servadmin = source.HasCommand("nickserv/list");
 		if (is_servadmin && params.size() > 1)
 		{
-			Anope::string keyword;
+			Warden::string keyword;
 			spacesepstream keywords(params[1]);
 			while (keywords.GetToken(keyword))
 			{
@@ -75,7 +76,7 @@ public:
 				: _("\002{nick}\002 -- {status} (account: {account})");
 		});
 
-		Anope::map<NickAlias *> ordered_map;
+		Warden::map<NickAlias *> ordered_map;
 		for (const auto &[nick, na] : *NickAliasList)
 			ordered_map[nick] = na;
 
@@ -96,7 +97,7 @@ public:
 			else if (unconfirmed && !na->nc->HasExt("UNCONFIRMED"))
 				continue;
 
-			if (na->nick.equals_ci(pattern) || Anope::Match(na->nick, pattern, false, true))
+			if (na->nick.equals_ci(pattern) || Warden::Match(na->nick, pattern, false, true))
 			{
 				if (((count + 1 >= from && count + 1 <= to) || (!from && !to)) && ++nnicks <= listmax)
 				{
@@ -124,7 +125,7 @@ public:
 		source.Reply(_("End of list - %d/%d matches shown."), nnicks > listmax ? listmax : nnicks, nnicks);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -165,7 +166,7 @@ public:
 		), "nickserv/list");
 		examples.SendTo(source);
 
-		const Anope::string &regexengine = Config->GetBlock("options").Get<const Anope::string>("regexengine");
+		const Warden::string &regexengine = Config->GetBlock("options").Get<const Warden::string>("regexengine");
 		if (!regexengine.empty())
 		{
 			source.Reply(" ");
@@ -185,15 +186,15 @@ class CommandNSSetPrivate
 	: public Command
 {
 public:
-	CommandNSSetPrivate(Module *creator, const Anope::string &sname = "nickserv/set/private", size_t min = 1) : Command(creator, sname, min, min + 1)
+	CommandNSSetPrivate(Module *creator, const Warden::string &sname = "nickserv/set/private", size_t min = 1) : Command(creator, sname, min, min + 1)
 	{
 		this->SetDesc(_("Prevent the nickname from appearing in the LIST command"));
 		this->SetSyntax("{ON | OFF}");
 	}
 
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param)
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -228,12 +229,12 @@ public:
 			this->OnSyntaxError(source, "PRIVATE");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params[0]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -260,12 +261,12 @@ public:
 		this->SetSyntax(_("\037nickname\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params[1]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -294,7 +295,7 @@ class NSList final
 	SerializableExtensibleItem<bool> priv;
 
 public:
-	NSList(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	NSList(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandnslist(this), commandnssetprivate(this), commandnssasetprivate(this),
 		priv(this, "NS_PRIVATE")
 	{

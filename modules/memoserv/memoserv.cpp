@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,25 +26,25 @@ class MemoServCore final
 
 	static bool SendMemoMail(NickCore *nc, MemoInfo *mi, Memo *m)
 	{
-		Anope::map<Anope::string> vars = {
+		Warden::map<Warden::string> vars = {
 			{ "receiver", nc->display                                                             },
 			{ "sender",   m->sender                                                               },
-			{ "number",   Anope::ToString(mi->GetIndex(m) + 1)                                    },
+			{ "number",   Warden::ToString(mi->GetIndex(m) + 1)                                    },
 			{ "text",     m->text                                                                 },
-			{ "network",  Config->GetBlock("networkinfo").Get<const Anope::string>("networkname") },
+			{ "network",  Config->GetBlock("networkinfo").Get<const Warden::string>("networkname") },
 		};
 
 		return memoemail.Send(nc, vars);
 	}
 
 public:
-	MemoServCore(const Anope::string &modname, const Anope::string &creator)
+	MemoServCore(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, PSEUDOCLIENT | VENDOR)
 		, MemoServ::Service(this)
 	{
 	}
 
-	MemoServ::MemoResult Send(const Anope::string &source, const Anope::string &target, const Anope::string &message, bool force) override
+	MemoServ::MemoResult Send(const Warden::string &source, const Warden::string &target, const Warden::string &message, bool force) override
 	{
 		bool ischan;
 		MemoInfo *mi = MemoInfo::GetMemoInfo(target, ischan);
@@ -51,7 +52,7 @@ public:
 		if (mi == NULL)
 			return MemoServ::MEMO_INVALID_TARGET;
 
-		Anope::string sender_display = source;
+		Warden::string sender_display = source;
 
 		User *sender = User::Find(source, true);
 		if (sender != NULL)
@@ -59,7 +60,7 @@ public:
 			if (!sender->HasPriv("memoserv/no-limit") && !force)
 			{
 				time_t send_delay = Config->GetModule("memoserv").Get<time_t>("senddelay");
-				if (send_delay > 0 && sender->lastmemosend + send_delay > Anope::CurTime)
+				if (send_delay > 0 && sender->lastmemosend + send_delay > Warden::CurTime)
 					return MemoServ::MEMO_TOO_FAST;
 				else if (!mi->memomax)
 					return MemoServ::MEMO_TARGET_FULL;
@@ -77,14 +78,14 @@ public:
 		}
 
 		if (sender != NULL)
-			sender->lastmemosend = Anope::CurTime;
+			sender->lastmemosend = Warden::CurTime;
 
 		auto *m = new Memo();
 		m->mi = mi;
 		mi->memos->push_back(m);
 		m->owner = target;
 		m->sender = sender_display;
-		m->time = Anope::CurTime;
+		m->time = Warden::CurTime;
 		m->text = message;
 		m->unread = true;
 
@@ -154,7 +155,7 @@ public:
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		const Anope::string &msnick = conf.GetModule(this).Get<const Anope::string>("client");
+		const Warden::string &msnick = conf.GetModule(this).Get<const Warden::string>("client");
 
 		if (msnick.empty())
 			throw ConfigException(Module::name + ": <client> must be defined");
@@ -198,7 +199,7 @@ public:
 		}
 	}
 
-	void OnUserAway(User *u, const Anope::string &message) override
+	void OnUserAway(User *u, const Warden::string &message) override
 	{
 		if (message.empty())
 			this->Check(u);
@@ -214,7 +215,7 @@ public:
 		this->Check(user);
 	}
 
-	EventReturn OnPreHelp(CommandSource &source, const std::vector<Anope::string> &params) override
+	EventReturn OnPreHelp(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!params.empty() || source.c || source.service != *MemoServ)
 			return EVENT_CONTINUE;
@@ -232,7 +233,7 @@ public:
 		return EVENT_CONTINUE;
 	}
 
-	void OnPostHelp(CommandSource &source, const std::vector<Anope::string> &params) override
+	void OnPostHelp(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!params.empty() || source.c || source.service != *MemoServ)
 			return;

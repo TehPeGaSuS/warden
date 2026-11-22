@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -37,7 +38,7 @@ public:
 		}
 		catch (const SocketException &ex)
 		{
-			Log(LOG_TERMINAL) << "Unable to connect to uplink #" << (Anope::CurrentUplink + 1) << " (" << Config->Uplinks[Anope::CurrentUplink].str() << "): " << ex.GetReason();
+			Log(LOG_TERMINAL) << "Unable to connect to uplink #" << (Warden::CurrentUplink + 1) << " (" << Config->Uplinks[Warden::CurrentUplink].str() << "): " << ex.GetReason();
 		}
 		return false;
 	}
@@ -51,21 +52,21 @@ void Uplink::Connect()
 		return;
 	}
 
-	if (++Anope::CurrentUplink >= Config->Uplinks.size())
-		Anope::CurrentUplink = 0;
+	if (++Warden::CurrentUplink >= Config->Uplinks.size())
+		Warden::CurrentUplink = 0;
 
-	Configuration::Uplink &u = Config->Uplinks[Anope::CurrentUplink];
+	Configuration::Uplink &u = Config->Uplinks[Warden::CurrentUplink];
 
 	new UplinkSocket();
-	if (!Config->GetBlock("serverinfo").Get<const Anope::string>("localhost").empty())
-		UplinkSock->Bind(Config->GetBlock("serverinfo").Get<const Anope::string>("localhost"));
+	if (!Config->GetBlock("serverinfo").Get<const Warden::string>("localhost").empty())
+		UplinkSock->Bind(Config->GetBlock("serverinfo").Get<const Warden::string>("localhost"));
 	FOREACH_MOD(OnPreServerConnect, ());
-	Anope::string ip = Anope::Resolve(u.host, u.protocol);
-	Log(LOG_TERMINAL) << "Attempting to connect to uplink #" << (Anope::CurrentUplink + 1) << " " << ip << " (" << u.str() << ")";
+	Warden::string ip = Warden::Resolve(u.host, u.protocol);
+	Log(LOG_TERMINAL) << "Attempting to connect to uplink #" << (Warden::CurrentUplink + 1) << " " << ip << " (" << u.str() << ")";
 	UplinkSock->Connect(ip, u.port);
 }
 
-void Uplink::SendInternal(const Anope::map<Anope::string> &tags, const MessageSource &source, const Anope::string &command, const std::vector<Anope::string> &params)
+void Uplink::SendInternal(const Warden::map<Warden::string> &tags, const MessageSource &source, const Warden::string &command, const std::vector<Warden::string> &params)
 {
 	if (!UplinkSock)
 	{
@@ -73,10 +74,10 @@ void Uplink::SendInternal(const Anope::map<Anope::string> &tags, const MessageSo
 		return;
 	}
 
-	Anope::map<Anope::string> fulltags(tags);
+	Warden::map<Warden::string> fulltags(tags);
 	IRCD->PopulateTags(fulltags, source, command, params);
 
-	Anope::string message;
+	Warden::string message;
 	if (!IRCD->Format(message, fulltags, source, command, params))
 		return;
 
@@ -84,7 +85,7 @@ void Uplink::SendInternal(const Anope::map<Anope::string> &tags, const MessageSo
 	UplinkSock->Write(message);
 
 	Log(LOG_RAWIO) << "Sent " << message;
-	if (Anope::ProtocolDebug)
+	if (Warden::ProtocolDebug)
 	{
 		auto sent_tag = false;
 		for (const auto &[tname, tvalue] : fulltags)
@@ -115,23 +116,23 @@ void Uplink::SendInternal(const Anope::map<Anope::string> &tags, const MessageSo
 	}
 }
 
-UplinkSocket::UplinkSocket() : Socket(-1, Config->Uplinks[Anope::CurrentUplink].protocol), ConnectionSocket(), BufferedSocket()
+UplinkSocket::UplinkSocket() : Socket(-1, Config->Uplinks[Warden::CurrentUplink].protocol), ConnectionSocket(), BufferedSocket()
 {
 	UplinkSock = this;
 }
 
 UplinkSocket::~UplinkSocket()
 {
-	if (!error && !Anope::Quitting)
+	if (!error && !Warden::Quitting)
 	{
 		this->OnError("");
 
-		std::vector<Anope::string> advice = {
-			"You are connecting Anope to an SSL-only port without configuring SSL (or vice versa).",
+		std::vector<Warden::string> advice = {
+			"You are connecting Warden to an SSL-only port without configuring SSL (or vice versa).",
 		};
 		if (IRCD)
 		{
-			advice.push_back(Anope::Format("You are using the wrong protocol module (currently %s for %s).",
+			advice.push_back(Warden::Format("You are using the wrong protocol module (currently %s for %s).",
 				IRCD->owner->name.c_str(), IRCD->GetProtocolName().c_str()));
 			IRCD->GetLinkAdvice(advice);
 		}
@@ -150,15 +151,15 @@ UplinkSocket::~UplinkSocket()
 			if (u->server == Me)
 			{
 				/* Don't use quitmsg here, it may contain information you don't want people to see */
-				const auto *reason = Anope::Restarting ? "Restarting" : "Shutting down";
-				IRCD->SendQuit(u, reason, Anope::QuitReason);
+				const auto *reason = Warden::Restarting ? "Restarting" : "Shutting down";
+				IRCD->SendQuit(u, reason, Warden::QuitReason);
 				BotInfo *bi = BotInfo::Find(u->GetUID());
 				if (bi != NULL)
 					bi->introduced = false;
 			}
 		}
 
-		IRCD->SendSquit(Me, Anope::QuitReason);
+		IRCD->SendSquit(Me, Warden::QuitReason);
 	}
 
 	for (unsigned i = Me->GetLinks().size(); i > 0; --i)
@@ -170,20 +171,20 @@ UplinkSocket::~UplinkSocket()
 
 	Me->Unsync();
 
-	if (Anope::AtTerm())
+	if (Warden::AtTerm())
 	{
-		if (static_cast<unsigned>(Anope::CurrentUplink + 1) == Config->Uplinks.size())
+		if (static_cast<unsigned>(Warden::CurrentUplink + 1) == Config->Uplinks.size())
 		{
-			Anope::QuitReason = "Unable to connect to any uplink";
-			Anope::Quitting = true;
-			Anope::ReturnValue = -1;
+			Warden::QuitReason = "Unable to connect to any uplink";
+			Warden::Quitting = true;
+			Warden::ReturnValue = -1;
 		}
 		else
 		{
 			new ReconnectTimer(1);
 		}
 	}
-	else if (!Anope::Quitting)
+	else if (!Warden::Quitting)
 	{
 		time_t retry = Config->GetBlock("options").Get<time_t>("retrywait");
 
@@ -195,9 +196,9 @@ UplinkSocket::~UplinkSocket()
 bool UplinkSocket::ProcessRead()
 {
 	bool b = BufferedSocket::ProcessRead();
-	for (Anope::string buf; !(buf = this->GetLine()).empty();)
+	for (Warden::string buf; !(buf = this->GetLine()).empty();)
 	{
-		Anope::Process(buf);
+		Warden::Process(buf);
 		User::QuitUsers();
 		Channel::DeleteChannels();
 	}
@@ -206,14 +207,14 @@ bool UplinkSocket::ProcessRead()
 
 void UplinkSocket::OnConnect()
 {
-	Log(LOG_TERMINAL) << "Successfully connected to uplink #" << (Anope::CurrentUplink + 1) << " " << Config->Uplinks[Anope::CurrentUplink].str();
+	Log(LOG_TERMINAL) << "Successfully connected to uplink #" << (Warden::CurrentUplink + 1) << " " << Config->Uplinks[Warden::CurrentUplink].str();
 	IRCD->SendConnect();
 	FOREACH_MOD(OnServerConnect, ());
 }
 
-void UplinkSocket::OnError(const Anope::string &err)
+void UplinkSocket::OnError(const Warden::string &err)
 {
-	Anope::string what = !this->flags[SF_CONNECTED] ? "Unable to connect to" : "Lost connection from";
-	Log(LOG_TERMINAL) << what << " uplink #" << (Anope::CurrentUplink + 1) << " (" << Config->Uplinks[Anope::CurrentUplink].str() << ")" << (!err.empty() ? (": " + err) : "");
+	Warden::string what = !this->flags[SF_CONNECTED] ? "Unable to connect to" : "Lost connection from";
+	Log(LOG_TERMINAL) << what << " uplink #" << (Warden::CurrentUplink + 1) << " (" << Config->Uplinks[Warden::CurrentUplink].str() << ")" << (!err.empty() ? (": " + err) : "");
 	error |= !err.empty();
 }

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -22,8 +23,8 @@
 # include <libintl.h>
 #endif
 
-std::vector<Anope::string> Language::Languages;
-std::vector<Anope::string> Language::Domains;
+std::vector<Warden::string> Language::Languages;
+std::vector<Warden::string> Language::Domains;
 
 void Language::InitLanguages()
 {
@@ -32,18 +33,18 @@ void Language::InitLanguages()
 
 	Languages.clear();
 
-	if (!bindtextdomain("anope", Anope::LocaleDir.c_str()))
-		Log() << "Error calling bindtextdomain, " << Anope::LastError();
+	if (!bindtextdomain("warden", Warden::LocaleDir.c_str()))
+		Log() << "Error calling bindtextdomain, " << Warden::LastError();
 	else
-		Log(LOG_DEBUG) << "Successfully bound anope to " << Anope::LocaleDir;
+		Log(LOG_DEBUG) << "Successfully bound warden to " << Warden::LocaleDir;
 
 	setlocale(LC_ALL, "");
 
-	spacesepstream sep(Config->GetBlock("options").Get<const Anope::string>("languages"));
-	Anope::string language;
+	spacesepstream sep(Config->GetBlock("options").Get<const Warden::string>("languages"));
+	Warden::string language;
 	while (sep.GetToken(language))
 	{
-		const Anope::string &lang_name = Translate(language.c_str(), _("English"));
+		const Warden::string &lang_name = Translate(language.c_str(), _("English"));
 		if (lang_name == "English")
 		{
 			Log() << "Unable to use language " << language;
@@ -144,7 +145,7 @@ const char *Language::Translate(const char *lang, const char *string)
 
 	SetLocale(lang);
 
-	const char *translated_string = dgettext("anope", string);
+	const char *translated_string = dgettext("warden", string);
 	for (unsigned i = 0; translated_string == string && i < Domains.size(); ++i)
 		translated_string = dgettext(Domains[i].c_str(), string);
 
@@ -159,7 +160,7 @@ const char *Language::Translate(const char *lang, int count, const char *singula
 
 	SetLocale(lang);
 
-	const char *translated_string = dngettext("anope", singular, plural, count);
+	const char *translated_string = dngettext("warden", singular, plural, count);
 	for (unsigned i = 0; (translated_string == singular || translated_string == plural) && i < Domains.size(); ++i)
 		translated_string = dngettext(Domains[i].c_str(), singular, plural, count);
 

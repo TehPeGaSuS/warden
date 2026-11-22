@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -20,7 +21,7 @@
 // The extension used for module file extensions.
 #define DLL_EXT "@CMAKE_SHARED_LIBRARY_SUFFIX@"
 
-// Whether Anope was built in debug mode.
+// Whether Warden was built in debug mode.
 #cmakedefine01 DEBUG_BUILD
 
 // The default config directory.
@@ -47,13 +48,13 @@
 // Whether the getentropy() function is available.
 #cmakedefine01 HAVE_GETENTROPY
 
-// Whether Anope was built with localization support.
+// Whether Warden was built with localization support.
 #cmakedefine01 HAVE_LOCALIZATION
 
 // Whether the umask() function is available.
 #cmakedefine01 HAVE_UMASK
 
-// Whether Anope was built in a reproducible way.
+// Whether Warden was built in a reproducible way.
 #cmakedefine01 REPRODUCIBLE_BUILD
 
 #ifdef _WIN32

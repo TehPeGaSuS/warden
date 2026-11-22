@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -23,7 +24,7 @@
 
 Serialize::Checker<nickalias_map> NickAliasList(NICKALIAS_TYPE);
 
-NickAlias::NickAlias(const Anope::string &nickname, NickCore *nickcore)
+NickAlias::NickAlias(const Warden::string &nickname, NickCore *nickcore)
 	: Serializable(NICKALIAS_TYPE)
 	, nick(nickname)
 	, nc(nickcore)
@@ -81,7 +82,7 @@ NickAlias::~NickAlias()
 	NickAliasList->erase(this->nick);
 }
 
-void NickAlias::SetVHost(const Anope::string &ident, const Anope::string &host, const Anope::string &creator, time_t created)
+void NickAlias::SetVHost(const Warden::string &ident, const Warden::string &host, const Warden::string &creator, time_t created)
 {
 	this->vhost_ident = ident;
 	this->vhost_host = host;
@@ -102,17 +103,17 @@ bool NickAlias::HasVHost() const
 	return !this->vhost_host.empty();
 }
 
-const Anope::string &NickAlias::GetVHostIdent() const
+const Warden::string &NickAlias::GetVHostIdent() const
 {
 	return this->vhost_ident;
 }
 
-const Anope::string &NickAlias::GetVHostHost() const
+const Warden::string &NickAlias::GetVHostHost() const
 {
 	return this->vhost_host;
 }
 
-Anope::string NickAlias::GetVHostMask() const
+Warden::string NickAlias::GetVHostMask() const
 {
 	if (this->GetVHostIdent().empty())
 		return this->GetVHostHost();
@@ -120,7 +121,7 @@ Anope::string NickAlias::GetVHostMask() const
 	return this->GetVHostIdent() + "@" + this->GetVHostHost();
 }
 
-const Anope::string &NickAlias::GetVHostCreator() const
+const Warden::string &NickAlias::GetVHostCreator() const
 {
 	return this->vhost_creator;
 }
@@ -132,12 +133,12 @@ time_t NickAlias::GetVHostCreated() const
 
 void NickAlias::UpdateSeen(User *u)
 {
-	this->last_seen = Anope::CurTime;
+	this->last_seen = Warden::CurTime;
 	this->last_userhost = u->GetIdent() + "@" + u->GetDisplayedHost();
 	this->last_userhost_real = u->GetIdent() + "@" + u->host;
 }
 
-NickAlias *NickAlias::Find(const Anope::string &nick)
+NickAlias *NickAlias::Find(const Warden::string &nick)
 {
 	auto it = NickAliasList->find(nick);
 	if (it != NickAliasList->end())
@@ -192,7 +193,7 @@ Serializable *NickAlias::Type::Unserialize(Serializable *obj, Serialize::Data &d
 
 	NickAlias *na;
 	if (obj)
-		na = anope_dynamic_static_cast<NickAlias *>(obj);
+		na = warden_dynamic_static_cast<NickAlias *>(obj);
 	else
 		na = new NickAlias(data.Load("nick"), core);
 

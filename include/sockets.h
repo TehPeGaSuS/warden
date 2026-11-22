@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,9 +22,9 @@
 #include <sys/un.h>
 #endif
 
-#include "anope.h"
+#include "warden.h"
 
-// This has to be after anope.h
+// This has to be after warden.h
 #ifdef _WIN32
 # include <afunix.h>
 #endif
@@ -39,7 +40,7 @@ union CoreExport sockaddrs
 
 	/** Construct the object, sets everything to 0
 	 */
-	sockaddrs(const Anope::string &address = "");
+	sockaddrs(const Warden::string &address = "");
 
 	/** Memset the object to 0
 	 */
@@ -62,17 +63,17 @@ union CoreExport sockaddrs
 	/** Get the address represented by this addr
 	 * @return The address
 	 */
-	Anope::string addr() const;
+	Warden::string addr() const;
 
 	/** Gets the endpoint represented by this addr.
 	 * @return The endpoint.
 	 */
-	Anope::string str() const;
+	Warden::string str() const;
 
 	/** Get the reverse address represented by this addr
 	 * @return The reverse address
 	 */
-	Anope::string reverse() const;
+	Warden::string reverse() const;
 
 	/* Is this address ipv6? */
 	bool ipv6() const;
@@ -94,7 +95,7 @@ union CoreExport sockaddrs
 	 * @param pport An option port to include in the  sockaddr structures
 	 * @throws A socket exception if given invalid IPs
 	 */
-	void pton(int type, const Anope::string &address, int pport = 0);
+	void pton(int type, const Warden::string &address, int pport = 0);
 
 	/** The equivalent of inet_ntop
 	 * @param type AF_INET or AF_INET6
@@ -107,13 +108,13 @@ union CoreExport sockaddrs
 class CoreExport cidr final
 {
 	sockaddrs addr;
-	Anope::string cidr_ip;
+	Warden::string cidr_ip;
 	unsigned short cidr_len;
 public:
-	cidr(const Anope::string &ip);
-	cidr(const Anope::string &ip, unsigned char len);
+	cidr(const Warden::string &ip);
+	cidr(const Warden::string &ip, unsigned char len);
 	cidr(const sockaddrs &ip, unsigned char len);
-	Anope::string mask() const;
+	Warden::string mask() const;
 	bool match(const sockaddrs &other);
 	bool valid() const;
 
@@ -134,7 +135,7 @@ public:
 	/** Constructor for socket exceptions
 	 * @param message Error message
 	 */
-	SocketException(const Anope::string &message) : CoreException(message) { }
+	SocketException(const Warden::string &message) : CoreException(message) { }
 
 	/** Destructor
 	 * @throws Nothing
@@ -173,7 +174,7 @@ public:
 	 * @param size The length of the data
 	 */
 	virtual ssize_t Send(Socket *s, const char *buf, size_t sz);
-	ssize_t Send(Socket *s, const Anope::string &buf);
+	ssize_t Send(Socket *s, const Warden::string &buf);
 
 	/** Accept a connection from a socket
 	 * @param s The socket
@@ -192,14 +193,14 @@ public:
 	 * @param ip The IP to bind to
 	 * @param port The optional port to bind to
 	 */
-	virtual void Bind(Socket *s, const Anope::string &ip, int port = 0);
+	virtual void Bind(Socket *s, const Warden::string &ip, int port = 0);
 
 	/** Connect the socket
 	 * @param s The socket
 	 * @param target IP to connect to
 	 * @param port to connect to
 	 */
-	virtual void Connect(ConnectionSocket *s, const Anope::string &target, int port);
+	virtual void Connect(ConnectionSocket *s, const Warden::string &target, int port);
 
 	/** Called to potentially finish a pending connection
 	 * @param s The socket
@@ -265,7 +266,7 @@ public:
 	 * @param ip The ip
 	 * @param port The port
 	 */
-	void Bind(const Anope::string &ip, int port = 0);
+	void Bind(const Warden::string &ip, int port = 0);
 
 	/** Called when there either is a read or write event.
 	 * @return true to continue to call ProcessRead/ProcessWrite, false to not continue
@@ -293,9 +294,9 @@ class CoreExport BufferedSocket
 {
 protected:
 	/* Things read from the socket */
-	Anope::string read_buffer;
+	Warden::string read_buffer;
 	/* Things to be written to the socket */
-	Anope::string write_buffer;
+	Warden::string write_buffer;
 	/* How much data was received from this socket on this recv() */
 	int recv_len;
 
@@ -314,7 +315,7 @@ public:
 
 	/** Gets the new line from the input buffer, if any
 	 */
-	Anope::string GetLine();
+	Warden::string GetLine();
 
 	/** Write to the socket
 	* @param message The message
@@ -323,7 +324,7 @@ protected:
 	virtual void Write(const char *buffer, size_t l);
 public:
 	void Write(const char *message, ...) ATTR_FORMAT(2, 3);
-	void Write(const Anope::string &message);
+	void Write(const Warden::string &message);
 
 	/** Get the length of the read buffer
 	 * @return The length of the read buffer
@@ -372,7 +373,7 @@ public:
 	 */
 	virtual void Write(const char *buffer, size_t l);
 	void Write(const char *message, ...) ATTR_FORMAT(2, 3);
-	void Write(const Anope::string &message);
+	void Write(const Warden::string &message);
 
 	/** Called with data from the socket
 	 * @param buffer The data
@@ -391,7 +392,7 @@ public:
 	 * @param port The port to listen on
 	 * @param ipv6 true for ipv6
 	 */
-	ListenSocket(const Anope::string &bindip, int port, bool ipv6);
+	ListenSocket(const Warden::string &bindip, int port, bool ipv6);
 	virtual ~ListenSocket() = default;
 
 	/** Process what has come in from the connection
@@ -418,7 +419,7 @@ public:
 	 * @param TargetHost The target host to connect to
 	 * @param Port The target port to connect to
 	 */
-	void Connect(const Anope::string &TargetHost, int Port);
+	void Connect(const Warden::string &TargetHost, int Port);
 
 	/** Called when there either is a read or write event.
 	 * Used to determine whether or not this socket is connected yet.
@@ -438,7 +439,7 @@ public:
 	/** Called when a connection is not successful
 	 * @param error The error
 	 */
-	virtual void OnError(const Anope::string &error);
+	virtual void OnError(const Warden::string &error);
 };
 
 class CoreExport ClientSocket
@@ -473,7 +474,7 @@ public:
 
 	/** Called when there was an error accepting the client
 	 */
-	virtual void OnError(const Anope::string &error);
+	virtual void OnError(const Warden::string &error);
 };
 
 class CoreExport Pipe
@@ -497,7 +498,7 @@ public:
 	 * @param sz The amount of data to wirite
 	 */
 	void Write(const char *data, size_t sz);
-	inline void Write(const Anope::string &data) { this->Write(data.c_str(), data.length() + 1); }
+	inline void Write(const Warden::string &data) { this->Write(data.c_str(), data.length() + 1); }
 
 	/** Read data from this pipe
 	 * @param data A buffer to read data into

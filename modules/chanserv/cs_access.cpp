@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,7 +15,7 @@
 
 #include "module.h"
 
-static std::map<Anope::string, int16_t, ci::less> defaultLevels;
+static std::map<Warden::string, int16_t, ci::less> defaultLevels;
 
 static inline void reset_levels(ChannelInfo *ci)
 {
@@ -23,7 +24,7 @@ static inline void reset_levels(ChannelInfo *ci)
 		ci->SetLevel(priv, level);
 }
 
-static Anope::string LevelToString(CommandSource &source, int16_t level)
+static Warden::string LevelToString(CommandSource &source, int16_t level)
 {
 	if (level == ACCESS_INVALID)
 		return source.Translate(_("(disabled)"));
@@ -31,7 +32,7 @@ static Anope::string LevelToString(CommandSource &source, int16_t level)
 	if (level == ACCESS_FOUNDER)
 		return source.Translate(_("(founder only)"));
 
-	return Anope::ToString(level);
+	return Warden::ToString(level);
 }
 
 class AccessChanAccess final
@@ -44,19 +45,19 @@ public:
 	{
 	}
 
-	bool HasPriv(const Anope::string &name) const override
+	bool HasPriv(const Warden::string &name) const override
 	{
 		return this->ci->GetLevel(name) != ACCESS_INVALID && this->level >= this->ci->GetLevel(name);
 	}
 
-	Anope::string AccessSerialize() const override
+	Warden::string AccessSerialize() const override
 	{
-		return Anope::ToString(this->level);
+		return Warden::ToString(this->level);
 	}
 
-	void AccessUnserialize(const Anope::string &data) override
+	void AccessUnserialize(const Warden::string &data) override
 	{
-		if (auto l = Anope::TryConvert<int>(data))
+		if (auto l = Warden::TryConvert<int>(data))
 			this->level = l.value();
 	}
 
@@ -65,7 +66,7 @@ public:
 		if (this->provider != other.provider)
 			return ChanAccess::operator>(other);
 		else
-			return this->level > anope_dynamic_static_cast<const AccessChanAccess *>(&other)->level;
+			return this->level > warden_dynamic_static_cast<const AccessChanAccess *>(&other)->level;
 	}
 
 	bool operator<(const ChanAccess &other) const override
@@ -73,7 +74,7 @@ public:
 		if (this->provider != other.provider)
 			return ChanAccess::operator<(other);
 		else
-			return this->level < anope_dynamic_static_cast<const AccessChanAccess *>(&other)->level;
+			return this->level < warden_dynamic_static_cast<const AccessChanAccess *>(&other)->level;
 	}
 };
 
@@ -93,7 +94,7 @@ public:
 		return new AccessChanAccess(this);
 	}
 
-	void GetAccess(CommandSource& source, const Privilege *p, Anope::map<Anope::string> &access) override
+	void GetAccess(CommandSource& source, const Privilege *p, Warden::map<Warden::string> &access) override
 	{
 		auto it = defaultLevels.find(p->name);
 		if (it != defaultLevels.end())
@@ -108,7 +109,7 @@ class CommandCSAccess final
 private:
 	static void AddEntry(ListFormatter &list, const ChannelInfo *ci, const ChanAccess *access, unsigned number)
 	{
-		Anope::string timebuf;
+		Warden::string timebuf;
 		if (ci->c)
 		{
 			for (const auto &[_, cuc] : ci->c->users)
@@ -123,11 +124,11 @@ private:
 			if (access->last_seen == 0)
 				timebuf = TIME_NEVER;
 			else
-				timebuf = Anope::strftime(access->last_seen, NULL, true);
+				timebuf = Warden::strftime(access->last_seen, NULL, true);
 		}
 
 		ListFormatter::ListEntry entry;
-		entry["Number"] = Anope::ToString(number);
+		entry["Number"] = Warden::ToString(number);
 		entry["Level"] = access->AccessSerialize();
 		entry["Mask"] = access->Mask();
 		entry["Creator"] = access->creator;
@@ -137,14 +138,14 @@ private:
 	}
 
 
-	void DoAdd(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoAdd(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		Anope::string mask = params[2];
-		Anope::string description = params.size() > 4 ? params[4] : "";
+		Warden::string mask = params[2];
+		Warden::string description = params.size() > 4 ? params[4] : "";
 		Privilege *p = NULL;
 		int level = ACCESS_INVALID;
 
-		if (auto lvl = Anope::TryConvert<int>(params[3]))
+		if (auto lvl = Warden::TryConvert<int>(params[3]))
 			level = lvl.value();
 		else
 		{
@@ -229,7 +230,7 @@ private:
 					return;
 				}
 
-				if (mask.find_first_of("!*@") == Anope::string::npos)
+				if (mask.find_first_of("!*@") == Warden::string::npos)
 				{
 					auto *targ = User::Find(mask, true);
 					if (!targ)
@@ -294,12 +295,12 @@ private:
 		ServiceReference<AccessProvider> provider("AccessProvider", "access/access");
 		if (!provider)
 			return;
-		auto *access = anope_dynamic_static_cast<AccessChanAccess *>(provider->Create());
+		auto *access = warden_dynamic_static_cast<AccessChanAccess *>(provider->Create());
 		access->SetMask(mask, ci);
 		access->creator = source.GetNick();
 		access->level = level;
 		access->last_seen = 0;
-		access->created = Anope::CurTime;
+		access->created = Warden::CurTime;
 		access->description = description;
 		ci->AddAccess(access);
 
@@ -312,16 +313,16 @@ private:
 			source.Reply(_("\002%s\002 added to %s access list at level \002%d\002."), access->Mask().c_str(), ci->name.c_str(), level);
 	}
 
-	void DoDel(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoDel(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		Anope::string mask = params[2];
+		Warden::string mask = params[2];
 
 		const NickAlias *na = NickAlias::Find(mask);
 		if (na && na->nc)
 		{
 			mask = na->nc->display;
 		}
-		else if (!isdigit(mask[0]) && mask.find_first_of("#!*@") == Anope::string::npos)
+		else if (!isdigit(mask[0]) && mask.find_first_of("#!*@") == Warden::string::npos)
 		{
 			User *targ = User::Find(mask, true);
 			if (targ != NULL)
@@ -335,7 +336,7 @@ private:
 
 		if (!ci->GetAccessCount())
 			source.Reply(_("%s access list is empty."), ci->name.c_str());
-		else if (isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Anope::string::npos)
+		else if (isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			class AccessDelCallback final
 				: public NumberList
@@ -344,11 +345,11 @@ private:
 				ChannelInfo *ci;
 				Command *c;
 				unsigned deleted = 0;
-				Anope::string nicks;
+				Warden::string nicks;
 				bool denied = false;
 				bool override = false;
 			public:
-				AccessDelCallback(CommandSource &_source, ChannelInfo *_ci, Command *_c, const Anope::string &numlist) : NumberList(numlist, true), source(_source), ci(_ci), c(_c)
+				AccessDelCallback(CommandSource &_source, ChannelInfo *_ci, Command *_c, const Warden::string &numlist) : NumberList(numlist, true), source(_source), ci(_ci), c(_c)
 				{
 					if (!source.AccessFor(ci).HasPriv("ACCESS_CHANGE") && source.HasPriv("chanserv/access/modify"))
 						this->override = true;
@@ -431,15 +432,15 @@ private:
 		}
 	}
 
-	void ProcessList(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params, ListFormatter &list)
+	void ProcessList(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params, ListFormatter &list)
 	{
-		const Anope::string &nick = params.size() > 2 ? params[2] : "";
+		const Warden::string &nick = params.size() > 2 ? params[2] : "";
 		const auto show_all = params.size() > 3 && params[3].equals_ci("ALL");
 		unsigned foreign = 0;
 
 		if (!ci->GetAccessCount())
 			source.Reply(_("%s access list is empty."), ci->name.c_str());
-		else if (!nick.empty() && nick.find_first_not_of("1234567890,-") == Anope::string::npos)
+		else if (!nick.empty() && nick.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			class AccessListCallback final
 				: public NumberList
@@ -450,7 +451,7 @@ private:
 				unsigned &foreign;
 
 			public:
-				AccessListCallback(ListFormatter &_list, ChannelInfo *_ci, const Anope::string &numlist, bool _show_all, unsigned &_foreign)
+				AccessListCallback(ListFormatter &_list, ChannelInfo *_ci, const Warden::string &numlist, bool _show_all, unsigned &_foreign)
 					: NumberList(numlist, false)
 					, list(_list)
 					, ci(_ci)
@@ -483,7 +484,7 @@ private:
 			{
 				const ChanAccess *access = ci->GetAccess(i);
 
-				if (!nick.empty() && !Anope::Match(access->Mask(), nick))
+				if (!nick.empty() && !Warden::Match(access->Mask(), nick))
 					continue;
 
 				if (!show_all && access->provider->name != "access/access")
@@ -507,14 +508,14 @@ private:
 
 		if (foreign)
 		{
-			const auto full_command = Anope::Format("%s %s %s %s", source.command.c_str(),
+			const auto full_command = Warden::Format("%s %s %s %s", source.command.c_str(),
 				ci->name.c_str(), params[1].upper().c_str(), nick.empty() ? "*" : nick.c_str()).nobreak();
 
 			source.Reply(foreign, CHAN_ACCESS_FOREIGN, foreign, full_command.c_str());
 		}
 	}
 
-	void DoList(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoList(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
 		if (!ci->GetAccessCount())
 		{
@@ -534,7 +535,7 @@ private:
 		this->ProcessList(source, ci, params, list);
 	}
 
-	void DoView(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoView(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
 		if (!ci->GetAccessCount())
 		{
@@ -582,11 +583,11 @@ public:
 		this->SetSyntax(_("\037channel\037 CLEAR"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[1];
-		const Anope::string &nick = params.size() > 2 ? params[2] : "";
-		const Anope::string &s = params.size() > 3 ? params[3] : "";
+		const Warden::string &cmd = params[1];
+		const Warden::string &nick = params.size() > 2 ? params[2] : "";
+		const Warden::string &s = params.size() > 3 ? params[3] : "";
 
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
 		if (ci == NULL)
@@ -622,7 +623,7 @@ public:
 			this->OnSyntaxError(source, cmd);
 		else if (!has_access)
 			source.Reply(ACCESS_DENIED);
-		else if (Anope::ReadOnly && !is_list)
+		else if (Warden::ReadOnly && !is_list)
 			source.Reply(READ_ONLY_MODE);
 		else if (cmd.equals_ci("ADD"))
 			this->DoAdd(source, ci, params);
@@ -638,7 +639,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -706,7 +707,7 @@ public:
 		examples.SendTo(source);
 
 		BotInfo *bi;
-		Anope::string cmd;
+		Warden::string cmd;
 		if (Command::FindFromService("chanserv/levels", bi, cmd))
 		{
 			source.Reply(" ");
@@ -725,10 +726,10 @@ public:
 class CommandCSLevels final
 	: public Command
 {
-	void DoSet(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoSet(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &what = params[2];
-		const Anope::string &lev = params[3];
+		const Warden::string &what = params[2];
+		const Warden::string &lev = params[3];
 
 		int level;
 
@@ -736,7 +737,7 @@ class CommandCSLevels final
 			level = ACCESS_FOUNDER;
 		else
 		{
-			if (auto lvl = Anope::TryConvert<int>(lev))
+			if (auto lvl = Warden::TryConvert<int>(lev))
 				level = lvl.value();
 			else
 			{
@@ -771,9 +772,9 @@ class CommandCSLevels final
 		}
 	}
 
-	void DoDisable(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoDisable(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &what = params[2];
+		const Warden::string &what = params[2];
 
 		/* Don't allow disabling of the founder level. It would be hard to change it back if you don't have access to use this command */
 		if (what.equals_ci("FOUNDER"))
@@ -843,11 +844,11 @@ public:
 		this->SetSyntax(_("\037channel\037 RESET"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[1];
-		const Anope::string &what = params.size() > 2 ? params[2] : "";
-		const Anope::string &s = params.size() > 3 ? params[3] : "";
+		const Warden::string &cmd = params[1];
+		const Warden::string &what = params.size() > 2 ? params[2] : "";
+		const Warden::string &s = params.size() > 3 ? params[3] : "";
 
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
 		if (ci == NULL)
@@ -871,7 +872,7 @@ public:
 			this->OnSyntaxError(source, cmd);
 		else if (!has_access)
 			source.Reply(ACCESS_DENIED);
-		else if (Anope::ReadOnly && !cmd.equals_ci("LIST"))
+		else if (Warden::ReadOnly && !cmd.equals_ci("LIST"))
 			source.Reply(READ_ONLY_MODE);
 		else if (cmd.equals_ci("SET"))
 			this->DoSet(source, ci, params);
@@ -885,7 +886,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		if (subcommand.equals_ci("DESC"))
 		{
@@ -952,7 +953,7 @@ class CSAccess final
 	CommandCSLevels commandcslevels;
 
 public:
-	CSAccess(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	CSAccess(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		accessprovider(this), commandcsaccess(this), commandcslevels(this)
 	{
 		this->SetPermanent(true);
@@ -965,13 +966,13 @@ public:
 
 		for (const auto &[_,  priv] : conf.GetBlocks("privilege"))
 		{
-			const Anope::string &pname = priv.Get<const Anope::string>("name");
+			const Warden::string &pname = priv.Get<const Warden::string>("name");
 
 			Privilege *p = PrivilegeManager::FindPrivilege(pname);
 			if (p == NULL)
 				continue;
 
-			const Anope::string &value = priv.Get<const Anope::string>("level");
+			const Warden::string &value = priv.Get<const Warden::string>("level");
 			if (value.empty())
 				continue;
 			else if (value.equals_ci("founder"))
@@ -988,7 +989,7 @@ public:
 		reset_levels(ci);
 	}
 
-	EventReturn OnGroupCheckPriv(const AccessGroup *group, const Anope::string &priv) override
+	EventReturn OnGroupCheckPriv(const AccessGroup *group, const Warden::string &priv) override
 	{
 		if (group->ci == NULL)
 			return EVENT_CONTINUE;
@@ -999,7 +1000,7 @@ public:
 			/* Access accessprovider is the only accessprovider with the concept of negative access,
 			 * so check they don't have negative access
 			 */
-			const auto *aca = anope_dynamic_static_cast<const AccessChanAccess *>(highest);
+			const auto *aca = warden_dynamic_static_cast<const AccessChanAccess *>(highest);
 
 			if (aca->level < 0)
 				return EVENT_CONTINUE;

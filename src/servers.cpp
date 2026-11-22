@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -22,15 +23,15 @@
 #include "config.h"
 #include "channels.h"
 
-/* Anope */
+/* Warden */
 Server *Me = NULL;
 
-Anope::map<Server *> Servers::ByName;
-Anope::map<Server *> Servers::ByID;
+Warden::map<Server *> Servers::ByName;
+Warden::map<Server *> Servers::ByID;
 
-std::set<Anope::string> Servers::Capab;
+std::set<Warden::string> Servers::Capab;
 
-Server::Server(Server *up, const Anope::string &sname, const Anope::string &desc, const Anope::string &ssid, unsigned shops, bool jupe)
+Server::Server(Server *up, const Warden::string &sname, const Warden::string &desc, const Warden::string &ssid, unsigned shops, bool jupe)
 	: name(sname)
 	, hops(shops)
 	, description(desc)
@@ -57,23 +58,23 @@ Server::Server(Server *up, const Anope::string &sname, const Anope::string &desc
 			{
 				spacesepstream modesep(bi->botmodes.empty() ? IRCD->DefaultPseudoclientModes : "+" + bi->botmodes);
 
-				Anope::string modechars;
+				Warden::string modechars;
 				modesep.GetToken(modechars);
 
-				std::vector<Anope::string> modeparams;
+				std::vector<Warden::string> modeparams;
 				modesep.GetTokens(modeparams);
 
 				bi->SetModesInternal(bi, modechars, modeparams);
 				for (const auto &botchannel : bi->botchannels)
 				{
 					size_t h = botchannel.find('#');
-					if (h == Anope::string::npos)
+					if (h == Warden::string::npos)
 						continue;
-					Anope::string chname = botchannel.substr(h);
+					Warden::string chname = botchannel.substr(h);
 					Channel *c = Channel::Find(chname);
 					if (c && c->FindUser(bi))
 					{
-						Anope::string want_modes = botchannel.substr(0, h);
+						Warden::string want_modes = botchannel.substr(0, h);
 						for (char want_mode : want_modes)
 						{
 							ChannelMode *cm = ModeManager::FindChannelModeByChar(want_mode);
@@ -167,7 +168,7 @@ Server::~Server()
 		Servers::ByID.erase(this->sid);
 }
 
-void Server::Delete(const Anope::string &reason)
+void Server::Delete(const Warden::string &reason)
 {
 	this->quit_reason = reason;
 	this->quitting = true;
@@ -175,7 +176,7 @@ void Server::Delete(const Anope::string &reason)
 	delete this;
 }
 
-const Anope::string &Server::GetName() const
+const Warden::string &Server::GetName() const
 {
 	return this->name;
 }
@@ -185,17 +186,17 @@ unsigned Server::GetHops() const
 	return this->hops;
 }
 
-void Server::SetDescription(const Anope::string &desc)
+void Server::SetDescription(const Warden::string &desc)
 {
 	this->description = desc;
 }
 
-const Anope::string &Server::GetDescription() const
+const Warden::string &Server::GetDescription() const
 {
 	return this->description;
 }
 
-void Server::SetSID(const Anope::string &nsid)
+void Server::SetSID(const Warden::string &nsid)
 {
 	if (!this->sid.empty())
 		throw CoreException("Server already has an id?");
@@ -203,7 +204,7 @@ void Server::SetSID(const Anope::string &nsid)
 	Servers::ByID[nsid] = this;
 }
 
-const Anope::string &Server::GetSID() const
+const Warden::string &Server::GetSID() const
 {
 	if (!this->sid.empty() && IRCD->RequiresID)
 		return this->sid;
@@ -211,7 +212,7 @@ const Anope::string &Server::GetSID() const
 		return this->name;
 }
 
-const Anope::string &Server::GetQuitReason() const
+const Warden::string &Server::GetQuitReason() const
 {
 	return this->quit_reason;
 }
@@ -296,10 +297,10 @@ void Server::Sync(bool sync_links)
 				c->Sync();
 		}
 
-		if (!Anope::NoFork)
+		if (!Warden::NoFork)
 		{
 			Log(LOG_TERMINAL) << "Successfully linked, launching into background...";
-			Anope::Fork();
+			Warden::Fork();
 		}
 	}
 }
@@ -337,7 +338,7 @@ bool Server::IsQuitting() const
 	return quitting;
 }
 
-void Server::Notice(BotInfo *source, const Anope::string &message)
+void Server::Notice(BotInfo *source, const Warden::string &message)
 {
 	if (Config->DefPrivmsg)
 		IRCD->SendGlobalPrivmsg(source, this, message);
@@ -345,9 +346,9 @@ void Server::Notice(BotInfo *source, const Anope::string &message)
 		IRCD->SendGlobalNotice(source, this, message);
 }
 
-Server *Server::Find(const Anope::string &name, bool name_only)
+Server *Server::Find(const Warden::string &name, bool name_only)
 {
-	Anope::map<Server *>::iterator it;
+	Warden::map<Server *>::iterator it;
 
 	if (!name_only)
 	{

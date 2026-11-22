@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,20 +25,20 @@ public:
 		this->RequireUser(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		User *u = source.GetUser();
 		NickAlias *na = NickAlias::Find(u->nick);
 
 		if (na && na->nc == source.GetAccount())
-			na->last_seen = Anope::CurTime;
+			na->last_seen = Warden::CurTime;
 
 		FOREACH_MOD(OnNickUpdate, (u));
 
 		source.Reply(_("Status updated (memos, vhost, chmodes, flags)."));
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -56,7 +57,7 @@ class NSUpdate final
 	CommandNSUpdate commandnsupdate;
 
 public:
-	NSUpdate(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	NSUpdate(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandnsupdate(this)
 	{
 

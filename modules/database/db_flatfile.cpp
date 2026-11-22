@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -20,7 +21,7 @@ class LoadData final
 public:
 	std::fstream *fs;
 	Serializable::Id id = 0;
-	std::map<Anope::string, Anope::string> data;
+	std::map<Warden::string, Warden::string> data;
 	bool read = false;
 
 	LoadData(std::fstream &fsref)
@@ -28,22 +29,22 @@ public:
 	{
 	}
 
-	bool LoadInternal(const Anope::string &key, Anope::string &value) override
+	bool LoadInternal(const Warden::string &key, Warden::string &value) override
 	{
 		if (!read)
 		{
-			for (Anope::string token; std::getline(*this->fs, token.str());)
+			for (Warden::string token; std::getline(*this->fs, token.str());)
 			{
 				if (token.find("ID ") == 0)
 				{
-					this->id = Anope::Convert<Serializable::Id>(token.substr(3), 0);
+					this->id = Warden::Convert<Serializable::Id>(token.substr(3), 0);
 					continue;
 				}
 				else if (token.find("DATA ") != 0)
 					break;
 
 				size_t sp = token.find(' ', 5); // Skip DATA
-				if (sp != Anope::string::npos)
+				if (sp != Warden::string::npos)
 					data[token.substr(5, sp - 5)] = token.substr(sp + 1);
 			}
 
@@ -54,7 +55,7 @@ public:
 		return true;
 	}
 
-	bool StoreInternal(const Anope::string &key, const Anope::string &value) override
+	bool StoreInternal(const Warden::string &key, const Warden::string &value) override
 	{
 		return false; // This module can only load data.
 	}
@@ -64,7 +65,7 @@ public:
 		size_t hash = 0;
 		for (const auto &[_, value] : this->data)
 			if (!value.empty())
-				hash ^= Anope::hash_cs()(value);
+				hash ^= Warden::hash_cs()(value);
 		return hash;
 	}
 
@@ -83,16 +84,16 @@ private:
 	bool loaded = false;
 
 public:
-	DBFlatFile(const Anope::string &modname, const Anope::string &creator)
+	DBFlatFile(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, DATABASE | DEPRECATED | VENDOR)
 	{
 	}
 
 	EventReturn OnLoadDatabase() override
 	{
-		std::set<Anope::string> tried_dbs;
+		std::set<Warden::string> tried_dbs;
 
-		const auto db_name = Anope::ExpandData(Config->GetModule(this).Get<const Anope::string>("database", "anope.db"));
+		const auto db_name = Warden::ExpandData(Config->GetModule(this).Get<const Warden::string>("database", "warden.db"));
 
 		std::fstream fd(db_name.c_str(), std::ios_base::in | std::ios_base::binary);
 		if (!fd.is_open())
@@ -101,9 +102,9 @@ public:
 			return EVENT_STOP;
 		}
 
-		std::map<Anope::string, std::vector<std::streampos> > positions;
+		std::map<Warden::string, std::vector<std::streampos> > positions;
 
-		for (Anope::string buf; std::getline(fd, buf.str());)
+		for (Warden::string buf; std::getline(fd, buf.str());)
 			if (buf.find("OBJECT ") == 0)
 				positions[buf.substr(7)].push_back(fd.tellg());
 
@@ -137,11 +138,11 @@ public:
 		if (!loaded)
 			return;
 
-		Anope::string db_name;
+		Warden::string db_name;
 		if (stype->GetOwner())
-			db_name = Anope::ExpandData("module_" + stype->GetOwner()->name + ".db");
+			db_name = Warden::ExpandData("module_" + stype->GetOwner()->name + ".db");
 		else
-			db_name = Anope::ExpandData(Config->GetModule(this).Get<const Anope::string>("database", "anope.db"));
+			db_name = Warden::ExpandData(Config->GetModule(this).Get<const Warden::string>("database", "warden.db"));
 
 		std::fstream fd(db_name.c_str(), std::ios_base::in | std::ios_base::binary);
 		if (!fd.is_open())
@@ -151,7 +152,7 @@ public:
 		}
 
 		LoadData ld(fd);
-		for (Anope::string buf; std::getline(fd, buf.str());)
+		for (Warden::string buf; std::getline(fd, buf.str());)
 		{
 			if (buf == "OBJECT " + stype->GetName())
 			{

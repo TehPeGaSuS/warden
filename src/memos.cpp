@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -65,7 +66,7 @@ Serializable *Memo::Type::Unserialize(Serializable *obj, Serialize::Data &data) 
 
 	Memo *m;
 	if (obj)
-		m = anope_dynamic_static_cast<Memo *>(obj);
+		m = warden_dynamic_static_cast<Memo *>(obj);
 	else
 	{
 		m = new Memo();
@@ -124,13 +125,13 @@ bool MemoInfo::HasIgnore(User *u)
 {
 	for (const auto &ignore : this->ignores)
 	{
-		if (u->nick.equals_ci(ignore) || (u->IsIdentified() && u->Account()->display.equals_ci(ignore)) || Anope::Match(u->GetMask(), Anope::string(ignore)))
+		if (u->nick.equals_ci(ignore) || (u->IsIdentified() && u->Account()->display.equals_ci(ignore)) || Warden::Match(u->GetMask(), Warden::string(ignore)))
 			return true;
 	}
 	return false;
 }
 
-MemoInfo *MemoInfo::GetMemoInfo(const Anope::string &target, bool &ischan)
+MemoInfo *MemoInfo::GetMemoInfo(const Warden::string &target, bool &ischan)
 {
 	if (!target.empty() && target[0] == '#')
 	{

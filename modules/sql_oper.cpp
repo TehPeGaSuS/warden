@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,7 +19,7 @@
 struct SQLOper final
 	: Oper
 {
-	SQLOper(const Anope::string &n, OperType *o) : Oper(n, o) { }
+	SQLOper(const Warden::string &n, OperType *o) : Oper(n, o) { }
 };
 
 class SQLOperResult final
@@ -64,7 +65,7 @@ public:
 			return;
 		}
 
-		Anope::string opertype;
+		Warden::string opertype;
 		try
 		{
 			opertype = r.Get(0, "opertype");
@@ -77,7 +78,7 @@ public:
 
 		Log(LOG_DEBUG) << "sql_oper: Got result for " << user->nick << ", opertype " << opertype;
 
-		Anope::string modes;
+		Warden::string modes;
 		try
 		{
 			modes = r.Get(0, "modes");
@@ -134,12 +135,12 @@ public:
 class ModuleSQLOper final
 	: public Module
 {
-	Anope::string query;
+	Warden::string query;
 
 	ServiceReference<SQL::Provider> SQL;
 
 public:
-	ModuleSQLOper(const Anope::string &modname, const Anope::string &creator)
+	ModuleSQLOper(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, EXTRA | VENDOR)
 		, SQL("SQL::Provider")
 	{
@@ -160,8 +161,8 @@ public:
 	void OnReload(Configuration::Conf &conf) override
 	{
 		const auto &config = conf.GetModule(this);
-		this->query = config.Get<const Anope::string>("query");
-		this->SQL.SetServiceName(config.Get<const Anope::string>("engine"));
+		this->query = config.Get<const Warden::string>("query");
+		this->SQL.SetServiceName(config.Get<const Warden::string>("engine"));
 	}
 
 	void OnNickIdentify(User *u) override

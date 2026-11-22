@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,7 +26,7 @@ private:
 	CommandSource &source;
 
 public:
-	QueueDelCallback(CommandSource &src, const Anope::string &list)
+	QueueDelCallback(CommandSource &src, const Warden::string &list)
 		: NumberList(list, true)
 		, source(src)
 	{
@@ -53,7 +54,7 @@ class CommandGLQueue final
 	: public Command
 {
 private:
-	void DoAdd(CommandSource &source, const Anope::string &message)
+	void DoAdd(CommandSource &source, const Warden::string &message)
 	{
 		if (message.empty())
 		{
@@ -86,7 +87,7 @@ private:
 		Log(LOG_ADMIN, source, this) << "to clear their queue.";
 	}
 
-	void DoDel(CommandSource &source, const Anope::string &what)
+	void DoDel(CommandSource &source, const Warden::string &what)
 	{
 		if (what.empty())
 		{
@@ -119,7 +120,7 @@ private:
 		for (size_t i = 0; i < q->size(); ++i)
 		{
 			ListFormatter::ListEntry entry;
-			entry["Number"] = Anope::ToString(i + 1);
+			entry["Number"] = Warden::ToString(i + 1);
 			entry["Message"] = (*q)[i];
 			list.AddEntry(entry);
 		}
@@ -137,7 +138,7 @@ public:
 		this->SetSyntax("CLEAR");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!Global::service)
 		{
@@ -159,7 +160,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply("");
@@ -191,7 +192,7 @@ private:
 	CommandGLQueue commandglqueue;
 
 public:
-	GLQueue(const Anope::string &modname, const Anope::string &creator)
+	GLQueue(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandglqueue(this)
 	{

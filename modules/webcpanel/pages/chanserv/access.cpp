@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,17 +15,17 @@
 
 #include "../../webcpanel.h"
 
-WebCPanel::ChanServ::Access::Access(const Anope::string &cat, const Anope::string &u) : WebPanelProtectedPage(cat, u)
+WebCPanel::ChanServ::Access::Access(const Warden::string &cat, const Warden::string &u) : WebPanelProtectedPage(cat, u)
 {
 }
 
-bool WebCPanel::ChanServ::Access::OnRequest(HTTP::Provider *server, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
+bool WebCPanel::ChanServ::Access::OnRequest(HTTP::Provider *server, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
 {
 	TemplateFileServer Page("chanserv/access.html");
 
 	BuildChanList(na, replacements);
 
-	const Anope::string chname = WebPanel::GetRequestData(message.get_data, "channel");
+	const Warden::string chname = WebPanel::GetRequestData(message.get_data, "channel");
 	if (chname.empty())
 	{
 		Page.Serve(server, page_name, client, message, reply, replacements);
@@ -52,15 +53,15 @@ bool WebCPanel::ChanServ::Access::OnRequest(HTTP::Provider *server, const Anope:
 
 	replacements["ACCESS_LIST"] = "YES";
 
-	const Anope::string paccess = WebPanel::GetRequestData(message.post_data, "access");
-	const Anope::string pmask = WebPanel::GetRequestData(message.post_data, "mask");
+	const Warden::string paccess = WebPanel::GetRequestData(message.post_data, "access");
+	const Warden::string pmask = WebPanel::GetRequestData(message.post_data, "mask");
 
 	if (u_access.HasPriv("ACCESS_CHANGE") || has_priv)
 	{
-		const Anope::string mask = WebPanel::GetRequestData(message.get_data, "mask");
+		const Warden::string mask = WebPanel::GetRequestData(message.get_data, "mask");
 		if (message.get_data.count("del") && !mask.empty())
 		{
-			std::vector<Anope::string> params;
+			std::vector<Warden::string> params;
 			params.push_back(ci->name);
 			params.push_back("DEL");
 			params.push_back(mask);
@@ -69,11 +70,11 @@ bool WebCPanel::ChanServ::Access::OnRequest(HTTP::Provider *server, const Anope:
 		}
 		else if (!pmask.empty() && !paccess.empty() && message.post_data.count("provider"))
 		{
-			const Anope::string &provider = message.post_data["provider"];
+			const Warden::string &provider = message.post_data["provider"];
 
 			if (provider == "chanserv/access")
 			{
-				std::vector<Anope::string> params;
+				std::vector<Warden::string> params;
 				params.push_back(ci->name);
 				params.push_back("ADD");
 				params.push_back(pmask);
@@ -83,7 +84,7 @@ bool WebCPanel::ChanServ::Access::OnRequest(HTTP::Provider *server, const Anope:
 			}
 			else if (provider == "chanserv/xop")
 			{
-				std::vector<Anope::string> params;
+				std::vector<Warden::string> params;
 				params.push_back(ci->name);
 				params.push_back("ADD");
 				params.push_back(pmask);
@@ -92,7 +93,7 @@ bool WebCPanel::ChanServ::Access::OnRequest(HTTP::Provider *server, const Anope:
 			}
 			else if (provider == "chanserv/flags")
 			{
-				std::vector<Anope::string> params;
+				std::vector<Warden::string> params;
 				params.push_back(ci->name);
 				params.push_back("MODIFY");
 				params.push_back(pmask);
@@ -129,9 +130,9 @@ bool WebCPanel::ChanServ::Access::OnRequest(HTTP::Provider *server, const Anope:
 	return true;
 }
 
-std::set<Anope::string> WebCPanel::ChanServ::Access::GetData()
+std::set<Warden::string> WebCPanel::ChanServ::Access::GetData()
 {
-	std::set<Anope::string> v;
+	std::set<Warden::string> v;
 	v.insert("channel");
 	return v;
 }

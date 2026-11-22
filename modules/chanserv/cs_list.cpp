@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,9 +26,9 @@ public:
 		this->SetSyntax(_("\037pattern\037 [SUSPENDED] [NOEXPIRE]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		Anope::string pattern = params[0];
+		Warden::string pattern = params[0];
 		unsigned nchans;
 		bool is_servadmin = source.HasCommand("chanserv/list");
 		int count = 0, from = 0, to = 0;
@@ -35,19 +36,19 @@ public:
 
 		if (pattern[0] == '#')
 		{
-			Anope::string n1, n2;
+			Warden::string n1, n2;
 			sepstream(pattern.substr(1), '-').GetToken(n1, 0);
 			sepstream(pattern, '-').GetToken(n2, 1);
 
-			auto num1 = Anope::TryConvert<int>(n1);
-			auto num2 = Anope::TryConvert<int>(n2);
+			auto num1 = Warden::TryConvert<int>(n1);
+			auto num2 = Warden::TryConvert<int>(n2);
 
 			if (!num1.has_value() || !num2.has_value())
 			{
 				source.Reply(LIST_INCORRECT_RANGE);
 				source.Reply(_(
 					"To search for channels starting with #, search for the channel "
-					"name without the #-sign prepended (\002anope\002 instead of \002#anope\002)."
+					"name without the #-sign prepended (\002warden\002 instead of \002#warden\002)."
 				));
 				return;
 			}
@@ -61,7 +62,7 @@ public:
 
 		if (is_servadmin && params.size() > 1)
 		{
-			Anope::string keyword;
+			Warden::string keyword;
 			spacesepstream keywords(params[1]);
 			while (keywords.GetToken(keyword))
 			{
@@ -72,7 +73,7 @@ public:
 			}
 		}
 
-		Anope::string spattern = "#" + pattern;
+		Warden::string spattern = "#" + pattern;
 		auto listmax = Config->GetModule(this->owner).Get<unsigned>("listmax", "50");
 
 		source.Reply(_("List of entries matching \002%s\002:"), pattern.c_str());
@@ -86,7 +87,7 @@ public:
 				: _("\002{name}\002 ({description})");
 		});
 
-		Anope::map<ChannelInfo *> ordered_map;
+		Warden::map<ChannelInfo *> ordered_map;
 		for (const auto &[cname, ci] : *RegisteredChannelList)
 			ordered_map[cname] = ci;
 
@@ -111,7 +112,7 @@ public:
 			if (channoexpire && !ci->HasExt("CS_NO_EXPIRE"))
 				continue;
 
-			if (pattern.equals_ci(ci->name) || ci->name.equals_ci(spattern) || Anope::Match(ci->name, pattern, false, true) || Anope::Match(ci->name, spattern, false, true) || Anope::Match(ci->desc, pattern, false, true) || Anope::Match(ci->last_topic, pattern, false, true))
+			if (pattern.equals_ci(ci->name) || ci->name.equals_ci(spattern) || Warden::Match(ci->name, pattern, false, true) || Warden::Match(ci->name, spattern, false, true) || Warden::Match(ci->desc, pattern, false, true) || Warden::Match(ci->last_topic, pattern, false, true))
 			{
 				if (((count + 1 >= from && count + 1 <= to) || (!from && !to)) && ++nchans <= listmax)
 				{
@@ -135,7 +136,7 @@ public:
 		source.Reply(_("End of list - %d/%d matches shown."), nchans > listmax ? listmax : nchans, nchans);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -157,8 +158,8 @@ public:
 		));
 
 		ExampleWrapper examples;
-		examples.AddEntry("*anope*", _(
-			"Lists all registered channels with \037anope\037 in their name (case insensitive). "
+		examples.AddEntry("*warden*", _(
+			"Lists all registered channels with \037warden\037 in their name (case insensitive). "
 		));
 		examples.AddEntry("#51-100", _(
 			"Lists all registered channels within the given range (51-100)."
@@ -171,14 +172,14 @@ public:
 		), "chanserv/list");
 		examples.SendTo(source);
 
-		if (!Config->GetBlock("options").Get<const Anope::string>("regexengine").empty())
+		if (!Config->GetBlock("options").Get<const Warden::string>("regexengine").empty())
 		{
 			source.Reply(" ");
 			source.Reply(_(
 					"Regex matches are also supported using the %s engine. "
 					"Enclose your pattern in // if this is desired."
 				),
-				Config->GetBlock("options").Get<const Anope::string>("regexengine").c_str());
+				Config->GetBlock("options").Get<const Warden::string>("regexengine").c_str());
 		}
 
 		return true;
@@ -189,15 +190,15 @@ class CommandCSSetPrivate final
 	: public Command
 {
 public:
-	CommandCSSetPrivate(Module *creator, const Anope::string &cname = "chanserv/set/private") : Command(creator, cname, 2, 2)
+	CommandCSSetPrivate(Module *creator, const Warden::string &cname = "chanserv/set/private") : Command(creator, cname, 2, 2)
 	{
 		this->SetDesc(_("Hide channel from the LIST command"));
 		this->SetSyntax(_("\037channel\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -237,14 +238,14 @@ public:
 			this->OnSyntaxError(source, "PRIVATE");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
 		source.Reply(_("Enables or disables the \002private\002 option for a channel."));
 
 		BotInfo *bi;
-		Anope::string cmd;
+		Warden::string cmd;
 		if (Command::FindFromService("chanserv/list", bi, cmd))
 		{
 			source.Reply(_("When \002private\002 is set, the channel will not appear in %s's %s command."),
@@ -263,7 +264,7 @@ class CSList final
 	SerializableExtensibleItem<bool> priv;
 
 public:
-	CSList(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	CSList(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandcslist(this), commandcssetprivate(this), priv(this, "CS_PRIVATE")
 	{
 	}

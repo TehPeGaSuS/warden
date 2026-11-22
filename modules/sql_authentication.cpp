@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,7 +22,7 @@ namespace
 	Module *me;
 
 	ServiceReference<Encryption::Provider> encryption("Encryption::Provider");
-	Anope::string password_hash, password_field;
+	Warden::string password_hash, password_field;
 }
 class SQLAuthenticationResult final
 	: public SQL::Interface
@@ -29,7 +30,7 @@ class SQLAuthenticationResult final
 	Reference<User> user;
 	IdentifyRequest *req;
 
-	void OnFail(const Anope::string &reason)
+	void OnFail(const Warden::string &reason)
 	{
 		Log(LOG_DEBUG) << "sql_authentication: Unsuccessful authentication for " << req->GetAccount() << ": " << reason;
 		delete this;
@@ -72,7 +73,7 @@ public:
 
 		Log(LOG_DEBUG) << "sql_authentication: Successful authentication for " << req->GetAccount();
 
-		Anope::string email;
+		Warden::string email;
 		try
 		{
 			email = r.Get(0, "email");
@@ -110,13 +111,13 @@ public:
 class ModuleSQLAuthentication final
 	: public Module
 {
-	Anope::string query;
-	Anope::string disable_reason, disable_email_reason;
+	Warden::string query;
+	Warden::string disable_reason, disable_email_reason;
 
 	ServiceReference<SQL::Provider> SQL;
 
 public:
-	ModuleSQLAuthentication(const Anope::string &modname, const Anope::string &creator)
+	ModuleSQLAuthentication(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, EXTRA | VENDOR)
 		, SQL("SQL::Provider")
 	{
@@ -126,20 +127,20 @@ public:
 	void OnReload(Configuration::Conf &conf) override
 	{
 		const auto &config = conf.GetModule(this);
-		this->query =  config.Get<const Anope::string>("query");
-		this->disable_reason = config.Get<const Anope::string>("disable_reason");
-		this->disable_email_reason = config.Get<Anope::string>("disable_email_reason");
-		this->SQL.SetServiceName(config.Get<const Anope::string>("engine"));
+		this->query =  config.Get<const Warden::string>("query");
+		this->disable_reason = config.Get<const Warden::string>("disable_reason");
+		this->disable_email_reason = config.Get<Warden::string>("disable_email_reason");
+		this->SQL.SetServiceName(config.Get<const Warden::string>("engine"));
 
-		password_hash = config.Get<const Anope::string>("password_hash");
+		password_hash = config.Get<const Warden::string>("password_hash");
 		if (!password_hash.empty())
 		{
-			password_field = config.Get<const Anope::string>("password_field", "password");
+			password_field = config.Get<const Warden::string>("password_field", "password");
 			encryption.SetServiceName(password_hash);
 		}
 	}
 
-	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Anope::string> &params) override
+	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Warden::string> &params) override
 	{
 		if (!this->disable_reason.empty() && (command->name == "nickserv/register" || command->name == "nickserv/group"))
 		{

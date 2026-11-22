@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -23,28 +24,28 @@ private:
 	unsigned iv[8];
 
 	/* returns the IV as base64-encrypted string */
-	Anope::string GetIVString()
+	Warden::string GetIVString()
 	{
 		char buf[33];
 		for (int i = 0; i < 8; ++i)
 			UNPACK32(iv[i], reinterpret_cast<unsigned char *>(&buf[i << 2]));
 		buf[32] = '\0';
-		return Anope::Hex(buf, 32);
+		return Warden::Hex(buf, 32);
 	}
 
 	/* splits the appended IV from the password string so it can be used for the next encryption */
 	/* password format:  <hashmethod>:<password_b64>:<iv_b64> */
-	void GetIVFromPass(const Anope::string &password)
+	void GetIVFromPass(const Warden::string &password)
 	{
 		size_t pos = password.find(':');
-		Anope::string buf = password.substr(password.find(':', pos + 1) + 1, password.length());
+		Warden::string buf = password.substr(password.find(':', pos + 1) + 1, password.length());
 		char buf2[33];
-		Anope::Unhex(buf, buf2, sizeof(buf2));
+		Warden::Unhex(buf, buf2, sizeof(buf2));
 		for (int i = 0 ; i < 8; ++i)
 			PACK32(reinterpret_cast<unsigned char *>(&buf2[i << 2]), &iv[i]);
 	}
 
-	Anope::string EncryptInternal(const Anope::string &src)
+	Warden::string EncryptInternal(const Warden::string &src)
 	{
 		sha256_ctx ctx;
 		sha256_init(&ctx);
@@ -53,13 +54,13 @@ private:
 		sha256_update(&ctx, reinterpret_cast<const unsigned char *>(src.data()), src.length());
 		unsigned char digest[SHA256_DIGEST_SIZE];
 		sha256_final(&ctx, digest);
-		Anope::string hash(reinterpret_cast<const char *>(&digest), sizeof(digest));
+		Warden::string hash(reinterpret_cast<const char *>(&digest), sizeof(digest));
 
-		return "sha256:" + Anope::Hex(hash) + ":" + GetIVString();
+		return "sha256:" + Warden::Hex(hash) + ":" + GetIVString();
 	}
 
 public:
-	ESHA256(const Anope::string &modname, const Anope::string &creator)
+	ESHA256(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, DEPRECATED | ENCRYPTION | VENDOR)
 	{
 		if (ModuleManager::FindFirstOf(ENCRYPTION) == this)
@@ -74,10 +75,10 @@ public:
 
 		NickCore *nc = na->nc;
 		auto pos = nc->pass.find(':');
-		if (pos == Anope::string::npos)
+		if (pos == Warden::string::npos)
 			return;
 
-		Anope::string hash_method(nc->pass.begin(), nc->pass.begin() + pos);
+		Warden::string hash_method(nc->pass.begin(), nc->pass.begin() + pos);
 		if (!hash_method.equals_cs("sha256"))
 			return;
 
@@ -88,7 +89,7 @@ public:
 			// If we are NOT the first encryption module we want to re-encrypt
 			// the password with the primary encryption method.
 			if (ModuleManager::FindFirstOf(ENCRYPTION) != this)
-				Anope::Encrypt(req->GetPassword(), nc->pass);
+				Warden::Encrypt(req->GetPassword(), nc->pass);
 			req->Success(this, na);
 		}
 	}

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -45,7 +46,7 @@ public:
 		this->SetSyntax(_("[\037channel\037] [\037nick\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params);
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params);
 };
 
 class CommandCSGStats final
@@ -58,7 +59,7 @@ public:
 		this->SetSyntax(_("\037nick\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params);
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params);
 };
 
 
@@ -71,9 +72,9 @@ class CSStats final
 	CommandCSGStats commandcsgstats;
 	ServiceReference<SQL::Provider> sql;
 	MySQLInterface sqlinterface;
-	Anope::string prefix;
+	Warden::string prefix;
 public:
-	CSStats(const Anope::string &modname, const Anope::string &creator)
+	CSStats(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandcsstats(this)
 		, commandcsgstats(this)
@@ -86,8 +87,8 @@ public:
 	void OnReload(Configuration::Conf &conf) override
 	{
 		const auto &block = conf.GetModule("chanstats");
-		prefix = block.Get<const Anope::string>("prefix", "chanstats21_");
-		this->sql.SetServiceName(block.Get<const Anope::string>("engine"));
+		prefix = block.Get<const Warden::string>("prefix", "chanstats21_");
+		this->sql.SetServiceName(block.Get<const Warden::string>("engine"));
 	}
 
 	SQL::Result RunQuery(const SQL::Query &query)
@@ -101,9 +102,9 @@ public:
 		return res;
 	}
 
-	void DoStats(CommandSource &source, const bool is_global, const std::vector<Anope::string> &params)
+	void DoStats(CommandSource &source, const bool is_global, const std::vector<Warden::string> &params)
 	{
-		Anope::string display, channel;
+		Warden::string display, channel;
 
 		/*
 		 * possible parameters are:
@@ -174,12 +175,12 @@ public:
 	}
 };
 
-void CommandCSStats::Execute(CommandSource &source, const std::vector<Anope::string> &params)
+void CommandCSStats::Execute(CommandSource &source, const std::vector<Warden::string> &params)
 {
 	me->DoStats(source, false, params);
 }
 
-void CommandCSGStats::Execute(CommandSource &source, const std::vector<Anope::string> &params)
+void CommandCSGStats::Execute(CommandSource &source, const std::vector<Warden::string> &params)
 {
 	me->DoStats(source, true, params);
 }

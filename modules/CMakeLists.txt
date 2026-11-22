@@ -57,16 +57,16 @@ macro(inline_cmake TARGET FILE)
 endmacro()
 
 macro(build_module SRC MODULE_SRC)
-  string(REGEX MATCH "\\.c$" ANOPE18MODULE ${MODULE_SRC})
-  if(ANOPE18MODULE)
-    message(FATAL_ERROR "Anope 1 modules are not compatible with Anope 2!\nOffending module: ${MODULE_SRC}")
+  string(REGEX MATCH "\\.c$" WARDEN18MODULE ${MODULE_SRC})
+  if(WARDEN18MODULE)
+    message(FATAL_ERROR "Warden 1 modules are not compatible with Warden 2!\nOffending module: ${MODULE_SRC}")
   endif()
   string(REGEX MATCH "\\.cpp$" CPP ${MODULE_SRC})
   if(CPP)
     file(RELATIVE_PATH FNAME ${SRC} ${MODULE_SRC})
     # Convert the real source file extension to have a library extension
     string(REGEX REPLACE "\\.cpp$" "${CMAKE_SHARED_LIBRARY_SUFFIX}" SO ${FNAME})
-    # Generate the module and set its linker flags, also set it to depend on the main Anope executable to be built beforehand
+    # Generate the module and set its linker flags, also set it to depend on the main Warden executable to be built beforehand
     add_library(${SO} MODULE ${MODULE_SRC})
     # Execute inline CMake code for the module
     inline_cmake(${SO} ${MODULE_SRC})
@@ -87,7 +87,7 @@ macro(build_module SRC MODULE_SRC)
     if(HAVE_LOCALIZATION)
       add_dependencies(${SO} module_language)
     endif()
-    # For Windows only, have the module link to the export library of Anope.
+    # For Windows only, have the module link to the export library of Warden.
     if(WIN32)
       target_link_libraries(${SO} PUBLIC ${PROGRAM_NAME})
       set_target_properties(${PROGRAM_NAME} PROPERTIES VERSION "${VERSION_DOTTED}")
@@ -123,7 +123,7 @@ macro(build_subdir)
   cmake_path(GET CMAKE_CURRENT_SOURCE_DIR FILENAME FOLDER_NAME)
   set(SO "${FOLDER_NAME}${CMAKE_SHARED_LIBRARY_SUFFIX}")
 
-  # Generate the module and set it's linker flags, also set it to depend on the main Anope executable to be built beforehand
+  # Generate the module and set it's linker flags, also set it to depend on the main Warden executable to be built beforehand
   add_library(${SO} MODULE ${MODULES_SUBDIR_SRCS})
   set_target_properties(${SO} PROPERTIES
     BUILD_WITH_INSTALL_RPATH ON
@@ -136,7 +136,7 @@ macro(build_subdir)
   if(HAVE_LOCALIZATION)
     add_dependencies(${SO} module_language)
   endif()
-  # For Windows only, have the module link to the export library of Anope .
+  # For Windows only, have the module link to the export library of Warden .
   if(WIN32)
     target_link_libraries(${SO} PUBLIC ${PROGRAM_NAME})
     set_target_properties(${SO} PROPERTIES VERSION "${VERSION_DOTTED}")

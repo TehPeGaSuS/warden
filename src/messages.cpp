@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,17 +25,17 @@
 #include "channels.h"
 #include "numeric.h"
 
-void Message::Away::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Away::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	source.GetUser()->SetAway(params.empty() ? "" : params[0]);
 }
 
-void Message::Capab::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Capab::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	if (params.size() == 1)
 	{
 		spacesepstream sep(params[0]);
-		Anope::string token;
+		Warden::string token;
 		while (sep.GetToken(token))
 			Servers::Capab.insert(token);
 	}
@@ -45,26 +46,26 @@ void Message::Capab::Run(MessageSource &source, const std::vector<Anope::string>
 	}
 }
 
-void Message::Error::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Error::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
-	Anope::QuitReason = "Received an error from the uplink: " + params.back();
-	Anope::Quitting = true;
-	Log(LOG_TERMINAL) << Anope::QuitReason;
+	Warden::QuitReason = "Received an error from the uplink: " + params.back();
+	Warden::Quitting = true;
+	Log(LOG_TERMINAL) << Warden::QuitReason;
 }
 
-Message::Ignore::Ignore(Module *creator, const Anope::string &mname)
+Message::Ignore::Ignore(Module *creator, const Warden::string &mname)
 	: IRCDMessage(creator, mname, 0)
 {
 	SetFlag(FLAG_SOFT_LIMIT);
 }
 
-void Message::Ignore::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Ignore::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	Log(LOG_DEBUG_3) << "Intentionally ignoring " << name << " message";
 }
 
 
-void Message::Invite::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Invite::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	User *targ = User::Find(params[0]);
 	Channel *c = Channel::Find(params[1]);
@@ -75,12 +76,12 @@ void Message::Invite::Run(MessageSource &source, const std::vector<Anope::string
 	FOREACH_MOD(OnInvite, (source.GetUser(), c, targ));
 }
 
-void Message::Join::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Join::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	User *user = source.GetUser();
-	const Anope::string &channels = params[0];
+	const Warden::string &channels = params[0];
 
-	Anope::string channel;
+	Warden::string channel;
 	commasepstream sep(channels);
 
 	while (sep.GetToken(channel))
@@ -105,14 +106,14 @@ void Message::Join::Run(MessageSource &source, const std::vector<Anope::string> 
 		users.emplace_back(ChannelStatus(), user);
 
 		Channel *chan = Channel::Find(channel);
-		SJoin(source, channel, chan ? chan->created : Anope::CurTime, "", {}, users);
+		SJoin(source, channel, chan ? chan->created : Warden::CurTime, "", {}, users);
 	}
 }
 
-void Message::Join::SJoin(MessageSource &source, const Anope::string &chan, time_t ts, const Anope::string &modes, const std::vector<Anope::string> &modeparams, const std::list<SJoinUser> &users)
+void Message::Join::SJoin(MessageSource &source, const Warden::string &chan, time_t ts, const Warden::string &modes, const std::vector<Warden::string> &modeparams, const std::list<SJoinUser> &users)
 {
 	bool created;
-	Channel *c = Channel::FindOrCreate(chan, created, ts ? ts : Anope::CurTime);
+	Channel *c = Channel::FindOrCreate(chan, created, ts ? ts : Warden::CurTime);
 	bool keep_their_modes = true;
 
 	if (created)
@@ -175,24 +176,24 @@ void Message::Join::SJoin(MessageSource &source, const Anope::string &chan, time
 	}
 }
 
-void Message::Kick::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Kick::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
-	const Anope::string &channel = params[0];
-	const Anope::string &users = params[1];
-	const Anope::string &reason = params.size() > 2 ? params[2] : "";
+	const Warden::string &channel = params[0];
+	const Warden::string &users = params[1];
+	const Warden::string &reason = params.size() > 2 ? params[2] : "";
 
 	Channel *c = Channel::Find(channel);
 	if (!c)
 		return;
 
-	Anope::string user;
+	Warden::string user;
 	commasepstream sep(users);
 
 	while (sep.GetToken(user))
 		c->KickInternal(source, user, reason);
 }
 
-void Message::Kill::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Kill::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	User *u = User::Find(params[0]);
 	BotInfo *bi;
@@ -205,10 +206,10 @@ void Message::Kill::Run(MessageSource &source, const std::vector<Anope::string> 
 	{
 		static time_t last_time = 0;
 
-		if (last_time == Anope::CurTime)
-			throw ProtocolException("Kill loop detected. Is Anope U:Lined?");
+		if (last_time == Warden::CurTime)
+			throw ProtocolException("Kill loop detected. Is Warden U:Lined?");
 
-		last_time = Anope::CurTime;
+		last_time = Warden::CurTime;
 
 		bi->OnKill();
 	}
@@ -216,7 +217,7 @@ void Message::Kill::Run(MessageSource &source, const std::vector<Anope::string> 
 		u->KillInternal(source, params[1]);
 }
 
-void Message::Mode::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Mode::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	if (IRCD->IsChannelValid(params[0]))
 	{
@@ -235,13 +236,13 @@ void Message::Mode::Run(MessageSource &source, const std::vector<Anope::string> 
 }
 
 /* XXX We should cache the file somewhere not open/read/close it on every request */
-void Message::MOTD::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::MOTD::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	Server *s = Server::Find(params[0]);
 	if (s != Me)
 		return;
 
-	auto motdfile = Anope::ExpandConfig(Config->GetBlock("serverinfo").Get<const Anope::string>("motd"));
+	auto motdfile = Warden::ExpandConfig(Config->GetBlock("serverinfo").Get<const Warden::string>("motd"));
 	std::ifstream stream(motdfile.str());
 	if (!stream.is_open())
 	{
@@ -250,14 +251,14 @@ void Message::MOTD::Run(MessageSource &source, const std::vector<Anope::string> 
 	}
 
 	IRCD->SendNumeric(RPL_MOTDSTART, source.GetSource(), "- " + s->GetName() + " Message of the Day");
-	for (Anope::string line; std::getline(stream, line.str()); )
-		IRCD->SendNumeric(RPL_MOTD, source.GetSource(), Anope::Format("- %s", line.c_str()));
+	for (Warden::string line; std::getline(stream, line.str()); )
+		IRCD->SendNumeric(RPL_MOTD, source.GetSource(), Warden::Format("- %s", line.c_str()));
 	IRCD->SendNumeric(RPL_ENDOFMOTD, source.GetSource(), "End of /MOTD command.");
 }
 
-void Message::Notice::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Notice::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
-	Anope::string message = params[1];
+	Warden::string message = params[1];
 
 	User *u = source.GetUser();
 
@@ -271,12 +272,12 @@ void Message::Notice::Run(MessageSource &source, const std::vector<Anope::string
 	}
 }
 
-void Message::Part::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Part::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	User *u = source.GetUser();
-	const Anope::string &reason = params.size() > 1 ? params[1] : "";
+	const Warden::string &reason = params.size() > 1 ? params[1] : "";
 
-	Anope::string channel;
+	Warden::string channel;
 	commasepstream sep(params[0]);
 
 	while (sep.GetToken(channel))
@@ -293,15 +294,15 @@ void Message::Part::Run(MessageSource &source, const std::vector<Anope::string> 
 	}
 }
 
-void Message::Ping::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Ping::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	IRCD->SendPong(params.size() > 1 ? params[1] : Me->GetSID(), params[0]);
 }
 
-void Message::Privmsg::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Privmsg::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
-	const Anope::string &receiver = params[0];
-	Anope::string message = params[1];
+	const Warden::string &receiver = params[0];
+	Warden::string message = params[1];
 
 	User *u = source.GetUser();
 
@@ -317,12 +318,12 @@ void Message::Privmsg::Run(MessageSource &source, const std::vector<Anope::strin
 	{
 		/* If a server is specified (nick@server format), make sure it matches
 		 * us, and strip it off. */
-		Anope::string botname = receiver;
+		Warden::string botname = receiver;
 		size_t s = receiver.find('@');
 		bool nick_only = false;
-		if (s != Anope::string::npos)
+		if (s != Warden::string::npos)
 		{
-			Anope::string servername(receiver.begin() + s + 1, receiver.end());
+			Warden::string servername(receiver.begin() + s + 1, receiver.end());
 			botname = botname.substr(0, s);
 			nick_only = true;
 			if (!servername.equals_ci(Me->GetName()))
@@ -335,8 +336,8 @@ void Message::Privmsg::Run(MessageSource &source, const std::vector<Anope::strin
 		BotInfo *bi = BotInfo::Find(botname, nick_only);
 		if (bi)
 		{
-			Anope::string ctcpname, ctcpbody;
-			if (Anope::ParseCTCP(message, ctcpname, ctcpbody))
+			Warden::string ctcpname, ctcpbody;
+			if (Warden::ParseCTCP(message, ctcpname, ctcpbody))
 			{
 				auto ctcpit = bi->ctcps.find(ctcpname);
 				if (ctcpit != bi->ctcps.end())
@@ -356,9 +357,9 @@ void Message::Privmsg::Run(MessageSource &source, const std::vector<Anope::strin
 	return;
 }
 
-void Message::Quit::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Quit::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
-	const Anope::string &reason = params[0];
+	const Warden::string &reason = params[0];
 	User *user = source.GetUser();
 
 	Log(user, "quit") << "quit (Reason: " << (!reason.empty() ? reason : "no reason") << ")";
@@ -366,7 +367,7 @@ void Message::Quit::Run(MessageSource &source, const std::vector<Anope::string> 
 	user->Quit(reason);
 }
 
-void Message::SQuit::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::SQuit::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	Server *s = Server::Find(params[0]);
 
@@ -387,7 +388,7 @@ void Message::SQuit::Run(MessageSource &source, const std::vector<Anope::string>
 	s->Delete(s->GetName() + " " + s->GetUplink()->GetName());
 }
 
-void Message::Stats::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Stats::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	User *u = source.GetUser();
 
@@ -397,8 +398,8 @@ void Message::Stats::Run(MessageSource &source, const std::vector<Anope::string>
 			if (u->HasMode("OPER"))
 			{
 				IRCD->SendNumeric(RPL_STATSLINKINFO, source.GetSource(), "Server SendBuf SentBytes SentMsgs RecvBuf RecvBytes RecvMsgs ConnTime");
-				IRCD->SendNumeric(RPL_STATSLINKINFO, source.GetSource(), Config->Uplinks[Anope::CurrentUplink].host, UplinkSock->WriteBufferLen(),
-					TotalWritten, UplinkSock->sent_msgs, UplinkSock->ReadBufferLen(), TotalRead, UplinkSock->recv_msgs, Anope::CurTime - Anope::StartTime);
+				IRCD->SendNumeric(RPL_STATSLINKINFO, source.GetSource(), Config->Uplinks[Warden::CurrentUplink].host, UplinkSock->WriteBufferLen(),
+					TotalWritten, UplinkSock->sent_msgs, UplinkSock->ReadBufferLen(), TotalRead, UplinkSock->recv_msgs, Warden::CurTime - Warden::StartTime);
 			}
 
 			IRCD->SendNumeric(RPL_STATSLINKINFO, source.GetSource(), params[0][0], "End of /STATS report.");
@@ -423,9 +424,9 @@ void Message::Stats::Run(MessageSource &source, const std::vector<Anope::string>
 			break;
 		case 'u':
 		{
-			long uptime = static_cast<long>(Anope::CurTime - Anope::StartTime);
-			IRCD->SendNumeric(RPL_STATSUPTIME, source.GetSource(), Anope::Format("Services up %ld day%s, %02ld:%02ld:%02ld", uptime / 86400, uptime / 86400 == 1 ? "" : "s", (uptime / 3600) % 24, (uptime / 60) % 60, uptime % 60));
-			IRCD->SendNumeric(RPL_STATSCONN, source.GetSource(), Anope::Format("Current users: %zu (%zu ops); maximum %zu", UserListByNick.size(), OperCount, MaxUserCount));
+			long uptime = static_cast<long>(Warden::CurTime - Warden::StartTime);
+			IRCD->SendNumeric(RPL_STATSUPTIME, source.GetSource(), Warden::Format("Services up %ld day%s, %02ld:%02ld:%02ld", uptime / 86400, uptime / 86400 == 1 ? "" : "s", (uptime / 3600) % 24, (uptime / 60) % 60, uptime % 60));
+			IRCD->SendNumeric(RPL_STATSCONN, source.GetSource(), Warden::Format("Current users: %zu (%zu ops); maximum %zu", UserListByNick.size(), OperCount, MaxUserCount));
 			IRCD->SendNumeric(RPL_STATSLINKINFO, source.GetSource(), params[0][0], "End of /STATS report.");
 			break;
 		} /* case 'u' */
@@ -437,32 +438,32 @@ void Message::Stats::Run(MessageSource &source, const std::vector<Anope::string>
 	return;
 }
 
-void Message::Time::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Time::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
-	const auto *tm = localtime(&Anope::CurTime);
+	const auto *tm = localtime(&Warden::CurTime);
 	char timebuf[64];
 	strftime(timebuf, sizeof(timebuf), "%A, %d %B %Y @ %H:%M:%S %Z", tm);
-	const auto timestr = Anope::Format("%s (%lu)", timebuf, Anope::CurTime);
+	const auto timestr = Warden::Format("%s (%lu)", timebuf, Warden::CurTime);
 	IRCD->SendNumeric(RPL_TIME, source.GetSource(), Me->GetName(), timestr);
 }
 
-void Message::Topic::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Topic::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	Channel *c = Channel::Find(params[0]);
 	if (c)
-		c->ChangeTopicInternal(source.GetUser(), source.GetSource(), params[1], Anope::CurTime);
+		c->ChangeTopicInternal(source.GetUser(), source.GetSource(), params[1], Warden::CurTime);
 
 	return;
 }
 
-void Message::Version::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Version::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	Module *enc = ModuleManager::FindFirstOf(ENCRYPTION);
-	IRCD->SendNumeric(RPL_VERSION, source.GetSource(), "Anope-" + Anope::Version(), Me->GetName(), Anope::Format("%s -(%s) -- %s",
-		IRCD->GetProtocolName().c_str(), enc ? enc->name.c_str() : "(none)", Anope::VersionBuildString().c_str()));
+	IRCD->SendNumeric(RPL_VERSION, source.GetSource(), "Warden-" + Warden::Version(), Me->GetName(), Warden::Format("%s -(%s) -- %s",
+		IRCD->GetProtocolName().c_str(), enc ? enc->name.c_str() : "(none)", Warden::VersionBuildString().c_str()));
 }
 
-void Message::Whois::Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags)
+void Message::Whois::Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags)
 {
 	User *u = User::Find(params[0]);
 
@@ -472,9 +473,9 @@ void Message::Whois::Run(MessageSource &source, const std::vector<Anope::string>
 		IRCD->SendNumeric(RPL_WHOISUSER, source.GetSource(), u->nick, u->GetIdent(), u->host, '*', u->realname);
 		if (bi)
 			IRCD->SendNumeric(RPL_WHOISREGNICK, source.GetSource(), bi->nick, "is a registered nick");
-		IRCD->SendNumeric(RPL_WHOISSERVER, source.GetSource(), u->nick, Me->GetName(), Config->GetBlock("serverinfo").Get<const Anope::string>("description"));
+		IRCD->SendNumeric(RPL_WHOISSERVER, source.GetSource(), u->nick, Me->GetName(), Config->GetBlock("serverinfo").Get<const Warden::string>("description"));
 		if (bi)
-			IRCD->SendNumeric(RPL_WHOISIDLE, source.GetSource(), bi->nick, Anope::CurTime - bi->lastmsg, bi->signon, "seconds idle, signon time");
+			IRCD->SendNumeric(RPL_WHOISIDLE, source.GetSource(), bi->nick, Warden::CurTime - bi->lastmsg, bi->signon, "seconds idle, signon time");
 		IRCD->SendNumeric(RPL_WHOISOPERATOR, source.GetSource(), u->nick, "is a Network Service");
 		IRCD->SendNumeric(RPL_ENDOFWHOIS, source.GetSource(), u->nick, "End of /WHOIS list.");
 	}

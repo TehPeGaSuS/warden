@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -66,7 +67,7 @@ class DBSQL final
 {
 	ServiceReference<Provider> sql;
 	SQLSQLInterface sqlinterface;
-	Anope::string prefix;
+	Warden::string prefix;
 	bool import;
 
 	std::set<Serializable *> updated_items;
@@ -75,7 +76,7 @@ class DBSQL final
 	bool loaded = false;
 	bool imported = false;
 
-	Anope::string GetTableName(Serialize::Type *s_type)
+	Warden::string GetTableName(Serialize::Type *s_type)
 	{
 		return this->prefix + s_type->GetName();
 	}
@@ -85,13 +86,13 @@ class DBSQL final
 		if (!this->sql)
 		{
 			static time_t last_warn = 0;
-			if (last_warn + 300 < Anope::CurTime)
+			if (last_warn + 300 < Warden::CurTime)
 			{
-				last_warn = Anope::CurTime;
+				last_warn = Warden::CurTime;
 				Log(this) << "db_sql: Unable to execute query, is SQL (" << this->sql.GetServiceName() << ") configured correctly?";
 			}
 		}
-		else if (!Anope::Quitting)
+		else if (!Warden::Quitting)
 		{
 			if (iface == NULL)
 				iface = &this->sqlinterface;
@@ -102,7 +103,7 @@ class DBSQL final
 	}
 
 public:
-	DBSQL(const Anope::string &modname, const Anope::string &creator)
+	DBSQL(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, DATABASE | VENDOR)
 		, sql("SQL::Provider")
 		, sqlinterface(this)
@@ -173,8 +174,8 @@ public:
 	void OnReload(Configuration::Conf &conf) override
 	{
 		const auto &block = conf.GetModule(this);
-		this->sql.SetServiceName(block.Get<const Anope::string>("engine"));
-		this->prefix = block.Get<const Anope::string>("prefix", "anope21_");
+		this->sql.SetServiceName(block.Get<const Warden::string>("engine"));
+		this->prefix = block.Get<const Warden::string>("prefix", "warden21_");
 		this->import = block.Get<bool>("import");
 	}
 
@@ -234,7 +235,7 @@ public:
 			return;
 		Serialize::Type *s_type = obj->GetSerializableType();
 		if (s_type && obj->object_id > 0)
-			this->RunBackground("DELETE FROM `" + GetTableName(s_type) + "` WHERE `id` = " + Anope::ToString(obj->object_id));
+			this->RunBackground("DELETE FROM `" + GetTableName(s_type) + "` WHERE `id` = " + Warden::ToString(obj->object_id));
 		this->updated_items.erase(obj);
 	}
 
@@ -267,7 +268,7 @@ public:
 			Serializable *obj = sb->Unserialize(NULL, data);
 			if (obj)
 			{
-				auto oid = Anope::TryConvert<Serializable::Id>(res.Get(j, "id"));
+				auto oid = Warden::TryConvert<Serializable::Id>(res.Get(j, "id"));
 				if (oid.has_value())
 					obj->object_id = oid.value();
 				else

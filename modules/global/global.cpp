@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,9 +22,9 @@ class GlobalCore final
 {
 private:
 	Reference<BotInfo> global;
-	PrimitiveExtensibleItem<std::vector<Anope::string>> queue;
+	PrimitiveExtensibleItem<std::vector<Warden::string>> queue;
 
-	void ServerGlobal(BotInfo *sender, Server *server, bool children, const Anope::string &message)
+	void ServerGlobal(BotInfo *sender, Server *server, bool children, const Warden::string &message)
 	{
 		if (server != Me && !server->IsJuped())
 			server->Notice(sender, message);
@@ -36,7 +37,7 @@ private:
 	}
 
 public:
-	GlobalCore(const Anope::string &modname, const Anope::string &creator)
+	GlobalCore(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, PSEUDOCLIENT | VENDOR)
 		, Global::Service(this)
 		, queue(this, "global-queue")
@@ -53,12 +54,12 @@ public:
 		return global;
 	}
 
-	const std::vector<Anope::string> *GetQueue(NickCore* nc) const override
+	const std::vector<Warden::string> *GetQueue(NickCore* nc) const override
 	{
 		return queue.Get(nc);
 	}
 
-	size_t Queue(NickCore *nc, const Anope::string &message) override
+	size_t Queue(NickCore *nc, const Warden::string &message) override
 	{
 		auto *q = queue.Require(nc);
 		q->push_back(message);
@@ -67,7 +68,7 @@ public:
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		const auto glnick = conf.GetModule(this).Get<const Anope::string>("client");
+		const auto glnick = conf.GetModule(this).Get<const Warden::string>("client");
 		if (glnick.empty())
 			throw ConfigException(Module::name + ": <client> must be defined");
 
@@ -80,26 +81,26 @@ public:
 
 	void OnRestart() override
 	{
-		const auto msg = Config->GetModule(this).Get<const Anope::string>("globaloncycledown");
+		const auto msg = Config->GetModule(this).Get<const Warden::string>("globaloncycledown");
 		if (!msg.empty())
 			this->SendSingle(msg, nullptr, nullptr, nullptr);
 	}
 
 	void OnShutdown() override
 	{
-		const auto msg = Config->GetModule(this).Get<const Anope::string>("globaloncycledown");
+		const auto msg = Config->GetModule(this).Get<const Warden::string>("globaloncycledown");
 		if (!msg.empty())
 			this->SendSingle(msg, nullptr, nullptr, nullptr);
 	}
 
 	void OnNewServer(Server *s) override
 	{
-		const auto msg = Config->GetModule(this).Get<const Anope::string>("globaloncycleup");
+		const auto msg = Config->GetModule(this).Get<const Warden::string>("globaloncycleup");
 		if (!msg.empty() && !Me->IsSynced())
 			s->Notice(global, msg);
 	}
 
-	EventReturn OnPreHelp(CommandSource &source, const std::vector<Anope::string> &params) override
+	EventReturn OnPreHelp(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!params.empty() || source.c || source.service != *global)
 			return EVENT_CONTINUE;
@@ -133,7 +134,7 @@ public:
 		return success;
 	}
 
-	bool SendSingle(const Anope::string &message, CommandSource *source, BotInfo* sender, Server* server) override
+	bool SendSingle(const Warden::string &message, CommandSource *source, BotInfo* sender, Server* server) override
 	{
 		// We MUST have a sender.
 		if (!sender)
@@ -141,11 +142,11 @@ public:
 		if (!sender)
 			return false;
 
-		Anope::string line;
+		Warden::string line;
 		if (source && !Config->GetModule(this).Get<bool>("anonymousglobal"))
 		{
 			// A source is available and they're not anonymous.
-			line = Anope::Format("[%s] %s", source->GetNick().c_str(), message.c_str());
+			line = Warden::Format("[%s] %s", source->GetNick().c_str(), message.c_str());
 		}
 		else
 		{

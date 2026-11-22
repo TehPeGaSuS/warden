@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,7 +25,7 @@ struct EntryMsgImpl final
 	{
 	}
 
-	EntryMsgImpl(ChannelInfo *c, const Anope::string &cname, const Anope::string &cmessage, time_t ct = Anope::CurTime)
+	EntryMsgImpl(ChannelInfo *c, const Warden::string &cname, const Warden::string &cmessage, time_t ct = Warden::CurTime)
 		: Serializable(CHANSERV_ENTRY_MESSAGE_TYPE)
 	{
 		this->chan = c->name;
@@ -94,7 +95,7 @@ Serializable *EntryMsgTypeImpl::Unserialize(Serializable *obj, Serialize::Data &
 	const auto swhen = data.Load<time_t>("when");
 	if (obj)
 	{
-		auto *msg = anope_dynamic_static_cast<EntryMsgImpl *>(obj);
+		auto *msg = warden_dynamic_static_cast<EntryMsgImpl *>(obj);
 		msg->chan = ci->name;
 		msg->creator = screator;
 		msg->message = smessage;
@@ -133,9 +134,9 @@ private:
 			auto *msg = (*messages)->at(i);
 
 			ListFormatter::ListEntry entry;
-			entry["Number"] = Anope::ToString(i + 1);
+			entry["Number"] = Warden::ToString(i + 1);
 			entry["Creator"] = msg->creator;
-			entry["Created"] = Anope::strftime(msg->when, NULL, true);
+			entry["Created"] = Warden::strftime(msg->when, NULL, true);
 			entry["Message"] = msg->message;
 			list.AddEntry(entry);
 		}
@@ -144,7 +145,7 @@ private:
 		source.Reply(_("End of entry message list."));
 	}
 
-	void DoAdd(CommandSource &source, ChannelInfo *ci, const Anope::string &message)
+	void DoAdd(CommandSource &source, ChannelInfo *ci, const Warden::string &message)
 	{
 		auto *messages = ci->Require<ChanServ::EntryMessageList>(CHANSERV_ENTRY_MESSAGE_EXT);
 
@@ -158,7 +159,7 @@ private:
 		}
 	}
 
-	void DoDel(CommandSource &source, ChannelInfo *ci, const Anope::string &message)
+	void DoDel(CommandSource &source, ChannelInfo *ci, const Warden::string &message)
 	{
 		auto *messages = ci->Require<ChanServ::EntryMessageList>(CHANSERV_ENTRY_MESSAGE_EXT);
 
@@ -168,7 +169,7 @@ private:
 			source.Reply(_("Entry message list for \002%s\002 is empty."), ci->name.c_str());
 		else
 		{
-			auto i = Anope::Convert<unsigned>(message, 0);
+			auto i = Warden::Convert<unsigned>(message, 0);
 			if (i > 0 && i <= (*messages)->size())
 			{
 				delete (*messages)->at(i - 1);
@@ -202,7 +203,7 @@ public:
 		this->SetSyntax(_("\037channel\037 CLEAR"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
 		if (ci == NULL)
@@ -211,7 +212,7 @@ public:
 			return;
 		}
 
-		if (Anope::ReadOnly && !params[1].equals_ci("LIST"))
+		if (Warden::ReadOnly && !params[1].equals_ci("LIST"))
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -237,7 +238,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -279,7 +280,7 @@ class CSEntryMessage final
 	EntryMsgTypeImpl entrymsg_type;
 
 public:
-	CSEntryMessage(const Anope::string &modname, const Anope::string &creator)
+	CSEntryMessage(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandentrymsg(this)
 		, eml(this, CHANSERV_ENTRY_MESSAGE_EXT)
@@ -297,9 +298,9 @@ public:
 			const auto timestamp = Config->GetModule(this).Get<bool>("timestamp", "yes");
 			for (const auto &message : *(*messages))
 			{
-				Anope::map<Anope::string> tags;
+				Warden::map<Warden::string> tags;
 				if (timestamp)
-					tags["time"] = Anope::FormatISO8601(message->when, 0);
+					tags["time"] = Warden::FormatISO8601(message->when, 0);
 
 				if (u->ShouldPrivmsg())
 					IRCD->SendContextPrivmsg(c->ci->WhoSends(), u, c, message->message, tags);

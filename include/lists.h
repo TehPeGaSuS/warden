@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -15,7 +16,7 @@
 #pragma once
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 
 /** A class to process numbered lists (passed to most DEL/LIST/VIEW commands).
  * The function HandleNumber is called for every number in the list. Note that
@@ -40,7 +41,7 @@ public:
 	 * @param list The list
 	 * @param descending True to make HandleNumber get called with numbers in descending order
 	 */
-	NumberList(const Anope::string &list, bool descending);
+	NumberList(const Warden::string &list, bool descending);
 
 	/** Destructor, does nothing
 	 */
@@ -61,5 +62,5 @@ public:
 	 * @param list The list
 	 * @return false to stop processing
 	 */
-	virtual bool InvalidRange(const Anope::string &list);
+	virtual bool InvalidRange(const Warden::string &list);
 };

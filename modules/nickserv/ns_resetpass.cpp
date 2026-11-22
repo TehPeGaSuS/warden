@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -36,7 +37,7 @@ public:
 		this->AllowUnregistered(true);
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		const NickAlias *na;
 
@@ -56,7 +57,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -71,7 +72,7 @@ public:
 
 struct ResetInfo final
 {
-	Anope::string code;
+	Warden::string code;
 	time_t time;
 };
 
@@ -91,9 +92,9 @@ public:
 		this->SetSyntax(_("[\037nickname\037] \037code\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		Anope::string code, nick;
+		Warden::string code, nick;
 		if (params.size() > 1)
 		{
 			nick = params[0];
@@ -133,7 +134,7 @@ public:
 			return;
 		}
 
-		if (ri->time < Anope::CurTime - GetExpiry(owner))
+		if (ri->time < Warden::CurTime - GetExpiry(owner))
 		{
 			reset.Unset(nc);
 			source.Reply(_("The password reset request for %s has expired."),
@@ -143,7 +144,7 @@ public:
 
 		reset.Unset(nc);
 
-		if (Config->GetModule("nickserv").Get<const Anope::string>("registration").equals_ci("mail"))
+		if (Config->GetModule("nickserv").Get<const Warden::string>("registration").equals_ci("mail"))
 			nc->Shrink<bool>("UNCONFIRMED");
 
 		if (source.GetUser())
@@ -154,7 +155,7 @@ public:
 			na->nick.c_str(), source.service->GetQueryCommand("nickserv/set/password").c_str());
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -163,7 +164,7 @@ public:
 				"%s after requesting a reset to do this before your request expires. Once you "
 				"have done this you can set the password using %s."
 			),
-			Anope::Duration(GetExpiry(owner), source.GetAccount()).c_str(),
+			Warden::Duration(GetExpiry(owner), source.GetAccount()).c_str(),
 			source.service->GetQueryCommand("nickserv/set/password").c_str()
 		);
 		return true;
@@ -179,7 +180,7 @@ private:
 	PrimitiveExtensibleItem<ResetInfo> reset;
 
 public:
-	NSResetPass(const Anope::string &modname, const Anope::string &creator)
+	NSResetPass(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnsconfirmpassword(this, reset)
 		, commandnsresetpass(this)
@@ -198,14 +199,14 @@ public:
 static bool SendResetEmail(User *u, const NickAlias *na, BotInfo *bi, Module* owner)
 {
 	auto *ri = na->nc->Extend<ResetInfo>("reset");
-	ri->code = Anope::Random(Config->GetBlock("options").Get<size_t>("codelength", "15"));
-	ri->time = Anope::CurTime;
+	ri->code = Warden::Random(Config->GetBlock("options").Get<size_t>("codelength", "15"));
+	ri->time = Warden::CurTime;
 
-	Anope::map<Anope::string> vars = {
+	Warden::map<Warden::string> vars = {
 		{ "nick",    na->nick                                                                },
-		{ "network", Config->GetBlock("networkinfo").Get<const Anope::string>("networkname") },
+		{ "network", Config->GetBlock("networkinfo").Get<const Warden::string>("networkname") },
 		{ "code",    ri->code                                                                },
-		{ "expiry",  Anope::Duration(GetExpiry(owner), na->nc)                               },
+		{ "expiry",  Warden::Duration(GetExpiry(owner), na->nc)                               },
 	};
 
 	return resetemail.Send(u, na->nc, bi, vars);

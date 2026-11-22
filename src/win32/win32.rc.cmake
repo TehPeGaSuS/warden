@@ -31,7 +31,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Version
 //
 
-VER_ANOPE VERSIONINFO
+VER_WARDEN VERSIONINFO
  FILEVERSION @VERSION_COMMA@
  PRODUCTVERSION @VERSION_COMMA@
  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
@@ -48,13 +48,13 @@ BEGIN
     BEGIN
         BLOCK "040904b0"
         BEGIN
-            VALUE "CompanyName", "Anope Team"
-            VALUE "FileDescription", "Anope IRC Services"
+            VALUE "CompanyName", "Warden Team"
+            VALUE "FileDescription", "Warden IRC Services"
             VALUE "FileVersion", "@VERSION_FULL@"
-            VALUE "InternalName", "Anope"
+            VALUE "InternalName", "Warden"
             VALUE "LegalCopyright", "Copyright (C) 2003-2026 Anope Team"
-            VALUE "OriginalFilename", "anope.exe"
-            VALUE "ProductName", "Anope"
+            VALUE "OriginalFilename", "warden.exe"
+            VALUE "ProductName", "Warden"
             VALUE "ProductVersion", "@VERSION_DOTTED@"
         END
     END
@@ -73,7 +73,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-ICON_APP                ICON                    "@Anope_SOURCE_DIR@/src/win32/anope-icon.ico"
+ICON_APP                ICON                    "@Warden_SOURCE_DIR@/src/win32/warden-icon.ico"
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 

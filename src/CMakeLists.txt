@@ -30,7 +30,7 @@ if(WIN32)
   list(APPEND SRC_SRCS ${CMAKE_CURRENT_BINARY_DIR}/win32/win32.rc)
 endif()
 
-# Generate the Anope executable and set it's linker flags, also set it to export it's symbols even though it's not a module
+# Generate the Warden executable and set it's linker flags, also set it to export it's symbols even though it's not a module
 add_executable(${PROGRAM_NAME} ${SRC_SRCS})
 set_target_properties(${PROGRAM_NAME} PROPERTIES
   BUILD_WITH_INSTALL_RPATH ON
@@ -41,7 +41,7 @@ if(WIN32)
   set_target_properties(${PROGRAM_NAME} PROPERTIES VERSION "${VERSION_DOTTED}")
 endif()
 
-# Building the Anope executable requires the version.h header to be generated
+# Building the Warden executable requires the version.h header to be generated
 add_dependencies(${PROGRAM_NAME} headers)
 
 # Also require the language files if we have gettext
@@ -49,7 +49,7 @@ if(HAVE_LOCALIZATION)
   add_dependencies(${PROGRAM_NAME} language)
 endif()
 
-# Set Anope to be installed to the bin directory
+# Set Warden to be installed to the bin directory
 install(TARGETS ${PROGRAM_NAME}
   DESTINATION ${BIN_DIR}
   RUNTIME

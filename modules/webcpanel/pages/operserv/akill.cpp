@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,11 +15,11 @@
 
 #include "../../webcpanel.h"
 
-WebCPanel::OperServ::Akill::Akill(const Anope::string &cat, const Anope::string &u) : WebPanelProtectedPage(cat, u)
+WebCPanel::OperServ::Akill::Akill(const Warden::string &cat, const Warden::string &u) : WebPanelProtectedPage(cat, u)
 {
 }
 
-bool WebCPanel::OperServ::Akill::OnRequest(HTTP::Provider *server, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
+bool WebCPanel::OperServ::Akill::OnRequest(HTTP::Provider *server, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
 {
 
 	static ServiceReference<XLineManager> akills("XLineManager","xlinemanager/sgline");
@@ -32,12 +33,12 @@ bool WebCPanel::OperServ::Akill::OnRequest(HTTP::Provider *server, const Anope::
 		if (akills->GetCount() == 0)
 			replacements["AKILLS"] = "No Akills to display.";
 
-		const Anope::string expiry = WebPanel::GetRequestData(message.post_data, "expiry");
-		const Anope::string mask = WebPanel::GetRequestData(message.post_data, "mask");
-		const Anope::string reason = WebPanel::GetRequestData(message.post_data, "reason");
+		const Warden::string expiry = WebPanel::GetRequestData(message.post_data, "expiry");
+		const Warden::string mask = WebPanel::GetRequestData(message.post_data, "mask");
+		const Warden::string reason = WebPanel::GetRequestData(message.post_data, "reason");
 		if (!expiry.empty() && !mask.empty() && !reason.empty())
 		{
-			std::vector<Anope::string> params;
+			std::vector<Warden::string> params;
 			std::stringstream cmdstr;
 			params.push_back("ADD");
 			cmdstr << "+" << expiry;
@@ -49,10 +50,10 @@ bool WebCPanel::OperServ::Akill::OnRequest(HTTP::Provider *server, const Anope::
 
 
 
-		const Anope::string number = WebPanel::GetRequestData(message.get_data, "number");
+		const Warden::string number = WebPanel::GetRequestData(message.get_data, "number");
 		if (message.get_data.count("del") && !number.empty())
 		{
-			std::vector<Anope::string> params;
+			std::vector<Warden::string> params;
 			params.push_back("DEL");
 			params.push_back(number);
 			WebPanel::RunCommand(client, na->nc->display, na->nc, "OperServ", "operserv/akill", params, replacements);
@@ -61,11 +62,11 @@ bool WebCPanel::OperServ::Akill::OnRequest(HTTP::Provider *server, const Anope::
 		for (unsigned i = 0, end = akills->GetCount(); i < end; ++i)
 		{
 			const XLine *x = akills->GetEntry(i);
-			replacements["NUMBER"] = Anope::ToString(i + 1);
+			replacements["NUMBER"] = Warden::ToString(i + 1);
 			replacements["HOST"] = x->mask;
 			replacements["SETTER"] = x->by;
-			replacements["TIME"] = Anope::strftime(x->created, NULL, true);
-			replacements["EXPIRE"] = Anope::Expires(x->expires, na->nc);
+			replacements["TIME"] = Warden::strftime(x->created, NULL, true);
+			replacements["EXPIRE"] = Warden::Expires(x->expires, na->nc);
 			replacements["REASON"] = x->reason;
 		}
 	}

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,11 +25,11 @@ public:
 		this->SetSyntax(_("[{\037pattern\037 | \037nick\037} [\037SECRET\037]]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &pattern = !params.empty() ? params[0] : "";
-		const Anope::string &opt = params.size() > 1 ? params[1] : "";
-		std::set<Anope::string> modes;
+		const Warden::string &pattern = !params.empty() ? params[0] : "";
+		const Warden::string &opt = params.size() > 1 ? params[1] : "";
+		std::set<Warden::string> modes;
 		User *u2;
 		unsigned int count = 0;
 
@@ -70,7 +71,7 @@ public:
 
 				ListFormatter::ListEntry entry;
 				entry["Name"] = cc->chan->name;
-				entry["Users"] = Anope::ToString(cc->chan->users.size());
+				entry["Users"] = Warden::ToString(cc->chan->users.size());
 				entry["Modes"] = cc->chan->GetModes(true, true);
 				entry["Topic"] = cc->chan->topic;
 				list.AddEntry(entry);
@@ -84,7 +85,7 @@ public:
 
 			for (const auto &[_, c] : ChannelList)
 			{
-				if (!pattern.empty() && !Anope::Match(c->name, pattern, false, true))
+				if (!pattern.empty() && !Warden::Match(c->name, pattern, false, true))
 					continue;
 				if (!modes.empty())
 				{
@@ -97,7 +98,7 @@ public:
 
 				ListFormatter::ListEntry entry;
 				entry["Name"] = c->name;
-				entry["Users"] = Anope::ToString(c->users.size());
+				entry["Users"] = Warden::ToString(c->users.size());
 				entry["Modes"] = c->GetModes(true, true);
 				entry["Topic"] = c->topic;
 				list.AddEntry(entry);
@@ -110,7 +111,7 @@ public:
 		source.Reply(_("End of channel list. \002%u\002 channels shown."), count);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -124,7 +125,7 @@ public:
 			"+p mode."
 		));
 
-		const Anope::string &regexengine = Config->GetBlock("options").Get<const Anope::string>("regexengine");
+		const Warden::string &regexengine = Config->GetBlock("options").Get<const Warden::string>("regexengine");
 		if (!regexengine.empty())
 		{
 			source.Reply(" ");
@@ -149,12 +150,12 @@ public:
 		this->SetSyntax(_("[{\037pattern\037 | \037channel\037} [\037INVISIBLE\037]]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &pattern = !params.empty() ? params[0] : "";
-		const Anope::string &opt = params.size() > 1 ? params[1] : "";
+		const Warden::string &pattern = !params.empty() ? params[0] : "";
+		const Warden::string &opt = params.size() > 1 ? params[1] : "";
 		Channel *c;
-		std::set<Anope::string> modes;
+		std::set<Warden::string> modes;
 		unsigned int count = 0;
 
 		if (!pattern.empty())
@@ -196,7 +197,7 @@ public:
 		else
 		{
 			/* Historically this has been ordered, so... */
-			Anope::map<User *> ordered_map;
+			Warden::map<User *> ordered_map;
 			for (const auto &[nick, user] : UserListByNick)
 				ordered_map[nick] = user;
 
@@ -209,7 +210,7 @@ public:
 				if (!pattern.empty())
 				{
 					/* check displayed host, host, and ip */
-					Anope::string masks[] = {
+					Warden::string masks[] = {
 						u2->nick + "!" + u2->GetIdent() + "@" + u2->GetDisplayedHost(),
 						u2->nick + "!" + u2->GetIdent() + "@" + u2->host,
 						u2->nick + "!" + u2->GetIdent() + "@" + u2->ip.addr()
@@ -219,7 +220,7 @@ public:
 					for (const auto &mask : masks)
 					{
 						/* Check mask with realname included, too */
-						if (Anope::Match(mask, pattern, false, true) || Anope::Match(mask + "#" + u2->realname, pattern, false, true))
+						if (Warden::Match(mask, pattern, false, true) || Warden::Match(mask + "#" + u2->realname, pattern, false, true))
 						{
 							match = true;
 							break;
@@ -253,7 +254,7 @@ public:
 		source.Reply(_("End of users list. \002%u\002 users shown."), count);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -267,7 +268,7 @@ public:
 			"with the +i flag will be listed."
 		));
 
-		const Anope::string &regexengine = Config->GetBlock("options").Get<const Anope::string>("regexengine");
+		const Warden::string &regexengine = Config->GetBlock("options").Get<const Warden::string>("regexengine");
 		if (!regexengine.empty())
 		{
 			source.Reply(" ");
@@ -289,7 +290,7 @@ class OSList final
 	CommandOSUserList commandosuserlist;
 
 public:
-	OSList(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSList(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandoschanlist(this), commandosuserlist(this)
 	{
 

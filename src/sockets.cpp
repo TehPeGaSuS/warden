@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -31,11 +32,11 @@ uint32_t TotalWritten = 0;
 
 SocketIO NormalSocketIO;
 
-sockaddrs::sockaddrs(const Anope::string &address)
+sockaddrs::sockaddrs(const Warden::string &address)
 {
 	this->clear();
-	if (!address.empty() && address.find_first_not_of_ci("0123456789abcdef.:") == Anope::string::npos)
-		this->pton(address.find(':') != Anope::string::npos ? AF_INET6 : AF_INET, address);
+	if (!address.empty() && address.find_first_not_of_ci("0123456789abcdef.:") == Warden::string::npos)
+		this->pton(address.find(':') != Warden::string::npos ? AF_INET6 : AF_INET, address);
 }
 
 void sockaddrs::clear()
@@ -82,7 +83,7 @@ int sockaddrs::port() const
 	return -1;
 }
 
-Anope::string sockaddrs::addr() const
+Warden::string sockaddrs::addr() const
 {
 	switch (sa.sa_family)
 	{
@@ -109,7 +110,7 @@ Anope::string sockaddrs::addr() const
 	return "";
 }
 
-Anope::string sockaddrs::str() const
+Warden::string sockaddrs::str() const
 {
 	switch (sa.sa_family)
 	{
@@ -118,14 +119,14 @@ Anope::string sockaddrs::str() const
 			char v4address[INET_ADDRSTRLEN];
 			if (!inet_ntop(AF_INET, &sa4.sin_addr, v4address, sizeof(v4address)))
 				strcpy(v4address, "0.0.0.0");
-			return Anope::Format("%s:%u", v4address, sa4.sin_port);
+			return Warden::Format("%s:%u", v4address, sa4.sin_port);
 		}
 		case AF_INET6:
 		{
 			char v6address[INET6_ADDRSTRLEN];
 			if (!inet_ntop(AF_INET6, &sa6.sin6_addr, v6address, sizeof(v6address)))
 				strcpy(v6address, "0:0:0:0:0:0:0:0");
-			return Anope::Format("[%s]:%u", v6address, sa6.sin6_port);
+			return Warden::Format("[%s]:%u", v6address, sa6.sin6_port);
 		}
 		case AF_UNIX:
 			return saun.sun_path;
@@ -136,7 +137,7 @@ Anope::string sockaddrs::str() const
 	return "";
 }
 
-Anope::string sockaddrs::reverse() const
+Warden::string sockaddrs::reverse() const
 {
 	char address[128];
 
@@ -198,7 +199,7 @@ bool sockaddrs::operator==(const sockaddrs &other) const
 	return false;
 }
 
-void sockaddrs::pton(int type, const Anope::string &address, int pport)
+void sockaddrs::pton(int type, const Warden::string &address, int pport)
 {
 	this->clear();
 
@@ -269,12 +270,12 @@ void sockaddrs::ntop(int type, const void *src)
 	this->clear();
 }
 
-cidr::cidr(const Anope::string &ip)
+cidr::cidr(const Warden::string &ip)
 {
-	bool ipv6 = ip.find(':') != Anope::string::npos;
+	bool ipv6 = ip.find(':') != Warden::string::npos;
 	size_t sl = ip.find_last_of('/');
 
-	if (sl == Anope::string::npos)
+	if (sl == Warden::string::npos)
 	{
 		this->cidr_ip = ip;
 		this->cidr_len = ipv6 ? 128 : 32;
@@ -282,18 +283,18 @@ cidr::cidr(const Anope::string &ip)
 	}
 	else
 	{
-		Anope::string real_ip = ip.substr(0, sl);
-		Anope::string cidr_range = ip.substr(sl + 1);
+		Warden::string real_ip = ip.substr(0, sl);
+		Warden::string cidr_range = ip.substr(sl + 1);
 
 		this->cidr_ip = real_ip;
-		this->cidr_len = Anope::Convert<unsigned int>(cidr_range, ipv6 ? 128 : 32);
+		this->cidr_len = Warden::Convert<unsigned int>(cidr_range, ipv6 ? 128 : 32);
 		this->addr.pton(ipv6 ? AF_INET6 : AF_INET, real_ip);
 	}
 }
 
-cidr::cidr(const Anope::string &ip, unsigned char len)
+cidr::cidr(const Warden::string &ip, unsigned char len)
 {
-	bool ipv6 = ip.find(':') != Anope::string::npos;
+	bool ipv6 = ip.find(':') != Warden::string::npos;
 	this->addr.pton(ipv6 ? AF_INET6 : AF_INET, ip);
 	this->cidr_ip = ip;
 	this->cidr_len = len;
@@ -305,12 +306,12 @@ cidr::cidr(const sockaddrs &a, unsigned char len) : addr(a)
 	this->cidr_len = len;
 }
 
-Anope::string cidr::mask() const
+Warden::string cidr::mask() const
 {
 	if ((this->addr.ipv6() && this->cidr_len == 128) || (!this->addr.ipv6() && this->cidr_len == 32))
 		return this->cidr_ip;
 	else
-		return Anope::Format("%s/%d", this->cidr_ip.c_str(), this->cidr_len);
+		return Warden::Format("%s/%d", this->cidr_ip.c_str(), this->cidr_len);
 }
 
 bool cidr::match(const sockaddrs &other)
@@ -446,7 +447,7 @@ ssize_t SocketIO::Send(Socket *s, const char *buf, size_t sz)
 	return i;
 }
 
-ssize_t SocketIO::Send(Socket *s, const Anope::string &buf)
+ssize_t SocketIO::Send(Socket *s, const Warden::string &buf)
 {
 	return this->Send(s, buf.c_str(), buf.length());
 }
@@ -466,7 +467,7 @@ ClientSocket *SocketIO::Accept(ListenSocket *s)
 		return ns;
 	}
 	else
-		throw SocketException("Unable to accept connection: " + Anope::LastError());
+		throw SocketException("Unable to accept connection: " + Warden::LastError());
 }
 
 SocketFlag SocketIO::FinishAccept(ClientSocket *cs)
@@ -474,14 +475,14 @@ SocketFlag SocketIO::FinishAccept(ClientSocket *cs)
 	return SF_ACCEPTED;
 }
 
-void SocketIO::Bind(Socket *s, const Anope::string &ip, int port)
+void SocketIO::Bind(Socket *s, const Warden::string &ip, int port)
 {
 	s->bindaddr.pton(s->GetFamily(), ip, port);
 	if (bind(s->GetFD(), &s->bindaddr.sa, s->bindaddr.size()) == -1)
-		throw SocketException("Unable to bind to address: " + Anope::LastError());
+		throw SocketException("Unable to bind to address: " + Warden::LastError());
 }
 
-void SocketIO::Connect(ConnectionSocket *s, const Anope::string &target, int port)
+void SocketIO::Connect(ConnectionSocket *s, const Warden::string &target, int port)
 {
 	s->flags[SF_CONNECTING] = s->flags[SF_CONNECTED] = false;
 	s->conaddr.pton(s->GetFamily(), target, port);
@@ -489,7 +490,7 @@ void SocketIO::Connect(ConnectionSocket *s, const Anope::string &target, int por
 	if (c == -1)
 	{
 		if (!SocketEngine::IgnoreErrno())
-			s->OnError(Anope::LastError());
+			s->OnError(Warden::LastError());
 		else
 		{
 			SocketEngine::Change(s, true, SF_WRITABLE);
@@ -522,7 +523,7 @@ SocketFlag SocketIO::FinishConnect(ConnectionSocket *s)
 	else
 	{
 		errno = optval;
-		s->OnError(optval ? Anope::LastError() : "");
+		s->OnError(optval ? Warden::LastError() : "");
 		return SF_DEAD;
 	}
 }
@@ -549,7 +550,7 @@ Socket::~Socket()
 {
 	SocketEngine::Change(this, false, SF_READABLE);
 	SocketEngine::Change(this, false, SF_WRITABLE);
-	anope_close(this->sock);
+	warden_close(this->sock);
 	this->io->Destroy();
 	SocketEngine::Sockets.erase(this->sock);
 }
@@ -573,7 +574,7 @@ bool Socket::SetBlocking(bool state)
 		return !fcntl(this->GetFD(), F_SETFL, f | O_NONBLOCK);
 }
 
-void Socket::Bind(const Anope::string &ip, int port)
+void Socket::Bind(const Warden::string &ip, int port)
 {
 	this->io->Bind(this, ip, port);
 }
@@ -597,7 +598,7 @@ void Socket::ProcessError()
 {
 }
 
-ListenSocket::ListenSocket(const Anope::string &bindip, int port, bool i)
+ListenSocket::ListenSocket(const Warden::string &bindip, int port, bool i)
 {
 	this->SetBlocking(false);
 
@@ -608,7 +609,7 @@ ListenSocket::ListenSocket(const Anope::string &bindip, int port, bool i)
 	this->io->Bind(this, bindip, port);
 
 	if (listen(sock, SOMAXCONN) == -1)
-		throw SocketException("Unable to listen: " + Anope::LastError());
+		throw SocketException("Unable to listen: " + Warden::LastError());
 }
 
 bool ListenSocket::ProcessRead()

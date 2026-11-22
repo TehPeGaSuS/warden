@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -24,9 +25,9 @@ public:
 		this->SetSyntax(_("{\037MODIFY\037|\037VIEW\037} [\037block name\037 \037item name\037 \037item value\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &what = params[0];
+		const Warden::string &what = params[0];
 
 		if (what.equals_ci("MODIFY") && params.size() > 3)
 		{
@@ -54,7 +55,7 @@ public:
 		else if (what.equals_ci("VIEW"))
 		{
 			/* Blocks we should show */
-			const Anope::string show_blocks[] = { "serverinfo", "networkinfo", "options", "" };
+			const Warden::string show_blocks[] = { "serverinfo", "networkinfo", "options", "" };
 
 			Log(LOG_ADMIN, source, this) << "VIEW";
 
@@ -92,7 +93,7 @@ public:
 					continue;
 
 				ListFormatter::ListEntry entry;
-				entry["Module Name"] = block.Get<Anope::string>("name");
+				entry["Module Name"] = block.Get<Warden::string>("name");
 
 				for (const auto &[name, value] : items)
 				{
@@ -109,14 +110,14 @@ public:
 			this->OnSyntaxError(source, what);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
 		source.Reply(_(
 			"Allows you to change and view configuration settings. "
 			"Settings changed by this command are temporary and will not be reflected "
-			"back into the configuration file, and will be lost if Anope is shut down, "
+			"back into the configuration file, and will be lost if Warden is shut down, "
 			"restarted, or the configuration is reloaded."
 		));
 
@@ -139,7 +140,7 @@ class OSConfig final
 	CommandOSConfig commandosconfig;
 
 public:
-	OSConfig(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSConfig(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandosconfig(this)
 	{
 

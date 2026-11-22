@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,7 +20,7 @@
 
 namespace
 {
-	Anope::string TypeToString(OperServ::ForbidType ft)
+	Warden::string TypeToString(OperServ::ForbidType ft)
 	{
 		switch (ft)
 		{
@@ -38,7 +39,7 @@ namespace
 		}
 	}
 
-	OperServ::ForbidType StringToType(const Anope::string &ft)
+	OperServ::ForbidType StringToType(const Warden::string &ft)
 	{
 		if (ft.equals_ci("NICK") || ft.equals_ci("1"))
 			return OperServ::FT_NICK;
@@ -68,9 +69,9 @@ struct ForbidDataImpl final
 struct ForbidDataFile final
 	: OperServ::ForbidData
 {
-	ForbidDataFile(OperServ::ForbidType t, const Anope::string &c, const Anope::string &m, const Anope::string &r)
+	ForbidDataFile(OperServ::ForbidType t, const Warden::string &c, const Warden::string &m, const Warden::string &r)
 	{
-		created = Anope::CurTime;
+		created = Warden::CurTime;
 		creator = c;
 		immutable = true;
 		mask = m;
@@ -109,7 +110,7 @@ Serializable *ForbidDataTypeImpl::Unserialize(Serializable *obj, Serialize::Data
 
 	ForbidDataImpl *fb;
 	if (obj)
-		fb = anope_dynamic_static_cast<ForbidDataImpl *>(obj);
+		fb = warden_dynamic_static_cast<ForbidDataImpl *>(obj);
 	else
 		fb = new ForbidDataImpl();
 
@@ -173,31 +174,31 @@ public:
 		return new ForbidDataImpl();
 	}
 
-	OperServ::ForbidData *FindForbid(const Anope::string &mask, OperServ::ForbidType ftype) override
+	OperServ::ForbidData *FindForbid(const Warden::string &mask, OperServ::ForbidType ftype) override
 	{
 		for (unsigned i = this->forbids(ftype).size(); i > 0; --i)
 		{
 			auto *d = this->forbids(ftype)[i - 1];
 
-			if (!Anope::NoExpire && d->expires && Anope::CurTime >= d->expires)
+			if (!Warden::NoExpire && d->expires && Warden::CurTime >= d->expires)
 			{
 				Expire(d, ftype, i - 1);
 				continue;
 			}
 
-			if (Anope::Match(mask, d->mask, false, true))
+			if (Warden::Match(mask, d->mask, false, true))
 				return d;
 		}
 		return NULL;
 	}
 
-	OperServ::ForbidData *FindForbidExact(const Anope::string &mask, OperServ::ForbidType ftype) override
+	OperServ::ForbidData *FindForbidExact(const Warden::string &mask, OperServ::ForbidType ftype) override
 	{
 		for (unsigned i = this->forbids(ftype).size(); i > 0; --i)
 		{
 			auto *d = this->forbids(ftype)[i - 1];
 
-			if (!Anope::NoExpire && d->expires && Anope::CurTime >= d->expires)
+			if (!Warden::NoExpire && d->expires && Warden::CurTime >= d->expires)
 			{
 				Expire(d, ftype, i - 1);
 				continue;
@@ -217,7 +218,7 @@ public:
 			{
 				auto *d = this->forbids(j).at(i - 1);
 
-				if (d->expires && !Anope::NoExpire && Anope::CurTime >= d->expires)
+				if (d->expires && !Warden::NoExpire && Warden::CurTime >= d->expires)
 					Expire(d, j, i - 1);
 				else
 					f.push_back(d);
@@ -240,7 +241,7 @@ public:
 		this->SetSyntax("LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER}");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!OperServ::forbid_service)
 		{
@@ -248,15 +249,15 @@ public:
 			return;
 		}
 
-		const Anope::string &command = params[0];
-		const Anope::string &subcommand = params.size() > 1 ? params[1] : "";
+		const Warden::string &command = params[0];
+		const Warden::string &subcommand = params.size() > 1 ? params[1] : "";
 
 		auto ftype = StringToType(subcommand);
 		if (command.equals_ci("ADD") && params.size() > 3 && ftype != OperServ::FT_SIZE)
 		{
-			const Anope::string &expiry = params[2][0] == '+' ? params[2] : "";
-			const Anope::string &entry = !expiry.empty() ? params[3] : params[2];
-			Anope::string reason;
+			const Warden::string &expiry = params[2][0] == '+' ? params[2] : "";
+			const Warden::string &entry = !expiry.empty() ? params[3] : params[2];
+			Warden::string reason;
 			if (expiry.empty())
 				reason = params[3] + " ";
 			if (params.size() > 4)
@@ -273,14 +274,14 @@ public:
 
 			if (!expiry.empty())
 			{
-				expiryt = Anope::DoTime(expiry);
+				expiryt = Warden::DoTime(expiry);
 				if (expiryt < 0)
 				{
 					source.Reply(BAD_EXPIRY_TIME);
 					return;
 				}
 				else if (expiryt)
-					expiryt += Anope::CurTime;
+					expiryt += Warden::CurTime;
 			}
 
 			NickAlias *target = NickAlias::Find(entry);
@@ -301,17 +302,17 @@ public:
 			d->mask = entry;
 			d->creator = source.GetNick();
 			d->reason = reason;
-			d->created = Anope::CurTime;
+			d->created = Warden::CurTime;
 			d->expires = expiryt;
 			d->type = ftype;
 			if (created)
 				OperServ::forbid_service->AddForbid(d);
 
-			if (Anope::ReadOnly)
+			if (Warden::ReadOnly)
 				source.Reply(READ_ONLY_MODE);
 
 			Log(LOG_ADMIN, source, this) << "to add a forbid on " << entry << " of type " << subcommand;
-			source.Reply(_("Added a forbid on %s of type %s to expire on %s."), entry.c_str(), subcommand.lower().c_str(), d->expires ? Anope::strftime(d->expires, source.GetAccount()).c_str() : "never");
+			source.Reply(_("Added a forbid on %s of type %s to expire on %s."), entry.c_str(), subcommand.lower().c_str(), d->expires ? Warden::strftime(d->expires, source.GetAccount()).c_str() : "never");
 
 			/* apply forbid */
 			switch (ftype)
@@ -357,7 +358,7 @@ public:
 						if (IRCD->CanSQLineChannel && OperServ)
 						{
 							time_t inhabit = Config->GetModule("chanserv").Get<time_t>("inhabit", "1m");
-							XLine x(c->name, OperServ->nick, Anope::CurTime + inhabit, d->reason);
+							XLine x(c->name, OperServ->nick, Warden::CurTime + inhabit, d->reason);
 							IRCD->SendSQLine(NULL, &x);
 						}
 						else if (ChanServ::service)
@@ -375,7 +376,7 @@ public:
 							if (u->server == Me || u->HasMode("OPER"))
 								continue;
 
-							reason = Anope::Format(Language::Translate(u, _("This channel has been forbidden: %s")), d->reason.c_str());
+							reason = Warden::Format(Language::Translate(u, _("This channel has been forbidden: %s")), d->reason.c_str());
 
 							c->Kick(source.service, u, reason);
 						}
@@ -406,12 +407,12 @@ public:
 		}
 		else if (command.equals_ci("DEL") && params.size() > 2 && ftype != OperServ::FT_SIZE)
 		{
-			const Anope::string &entry = params[2];
+			const Warden::string &entry = params[2];
 
 			auto *d = OperServ::forbid_service->FindForbidExact(entry, ftype);
 			if (d != NULL)
 			{
-				if (Anope::ReadOnly)
+				if (Warden::ReadOnly)
 					source.Reply(READ_ONLY_MODE);
 				else if (d->immutable)
 					source.Reply(_("Forbid on %s can not be removed as it is from a file."), entry.c_str());
@@ -455,7 +456,7 @@ public:
 					entry["Mask"] = forbid->mask;
 					entry["Type"] = stype;
 					entry["Creator"] = forbid->creator;
-					entry["Expires"] = forbid->expires ? Anope::strftime(forbid->expires, NULL, true).c_str() : TIME_NEVER;
+					entry["Expires"] = forbid->expires ? Warden::strftime(forbid->expires, NULL, true).c_str() : TIME_NEVER;
 					entry["Reason"] = forbid->reason;
 					list.AddEntry(entry);
 					++shown;
@@ -481,7 +482,7 @@ public:
 			this->OnSyntaxError(source, command);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -490,7 +491,7 @@ public:
 			"and email addresses. Wildcards are accepted for all entries."
 		));
 
-		const Anope::string &regexengine = Config->GetBlock("options").Get<const Anope::string>("regexengine");
+		const Warden::string &regexengine = Config->GetBlock("options").Get<const Warden::string>("regexengine");
 		if (!regexengine.empty())
 		{
 			source.Reply(" ");
@@ -515,7 +516,7 @@ private:
 	std::vector<OperServ::ForbidData *> fileforbids;
 
 public:
-	OSForbid(const Anope::string &modname, const Anope::string &creator)
+	OSForbid(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, forbidService(this)
 		, commandosforbid(this)
@@ -531,9 +532,9 @@ public:
 		const auto &modconf = conf.GetModule(this);
 		for (const auto &[_,  fileblock] : modconf.GetBlocks("file"))
 		{
-			const auto reasonstr = fileblock.Get<const Anope::string>("reason");
+			const auto reasonstr = fileblock.Get<const Warden::string>("reason");
 
-			const auto typestr = fileblock.Get<const Anope::string>("type");
+			const auto typestr = fileblock.Get<const Warden::string>("type");
 			auto type = StringToType(typestr);
 			if (type == OperServ::FT_SIZE)
 			{
@@ -541,14 +542,14 @@ public:
 				continue;
 			}
 
-			const auto filestr = Anope::ExpandConfig(fileblock.Get<const Anope::string>("file"));
+			const auto filestr = Warden::ExpandConfig(fileblock.Get<const Warden::string>("file"));
 			std::ifstream file(filestr.str());
 			if (!file.is_open())
 			{
 				Log(this) << "Unable to read " << filestr << ", ignoring.";
 				continue;
 			}
-			for (Anope::string forbidstr; std::getline(file, forbidstr.str()); )
+			for (Warden::string forbidstr; std::getline(file, forbidstr.str()); )
 			{
 				forbidstr = forbidstr.trim();
 				if (forbidstr.empty())
@@ -577,7 +578,7 @@ public:
 		this->OnUserNickChange(u, "");
 	}
 
-	void OnUserNickChange(User *u, const Anope::string &) override
+	void OnUserNickChange(User *u, const Warden::string &) override
 	{
 		if (u->HasMode("OPER"))
 			return;
@@ -595,7 +596,7 @@ public:
 		}
 	}
 
-	EventReturn OnCheckKick(User *u, Channel *c, Anope::string &mask, Anope::string &reason) override
+	EventReturn OnCheckKick(User *u, Channel *c, Warden::string &mask, Warden::string &reason) override
 	{
 		BotInfo *OperServ = Config->GetClient("OperServ");
 		if (u->HasMode("OPER") || !OperServ)
@@ -607,7 +608,7 @@ public:
 			if (IRCD->CanSQLineChannel)
 			{
 				time_t inhabit = Config->GetModule("chanserv").Get<time_t>("inhabit", "1m");
-				XLine x(c->name, OperServ->nick, Anope::CurTime + inhabit, d->reason);
+				XLine x(c->name, OperServ->nick, Warden::CurTime + inhabit, d->reason);
 				IRCD->SendSQLine(NULL, &x);
 			}
 			else if (ChanServ::service)
@@ -615,7 +616,7 @@ public:
 				ChanServ::service->Hold(c);
 			}
 
-			reason = Anope::Format(Language::Translate(u, _("This channel has been forbidden: %s")), d->reason.c_str());
+			reason = Warden::Format(Language::Translate(u, _("This channel has been forbidden: %s")), d->reason.c_str());
 
 			return EVENT_STOP;
 		}
@@ -623,7 +624,7 @@ public:
 		return EVENT_CONTINUE;
 	}
 
-	EventReturn OnPasswordValidate(CommandSource &source, NickCore *nc, const Anope::string &pass) override
+	EventReturn OnPasswordValidate(CommandSource &source, NickCore *nc, const Warden::string &pass) override
 	{
 		const auto* forbid = this->forbidService.FindForbid(pass, OperServ::FT_PASSWORD);
 		if (forbid != nullptr)
@@ -637,7 +638,7 @@ public:
 		return EVENT_CONTINUE;
 	}
 
-	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Anope::string> &params) override
+	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Warden::string> &params) override
 	{
 		if (command->name == "nickserv/info" && !params.empty() && params[0][0] != '=')
 		{

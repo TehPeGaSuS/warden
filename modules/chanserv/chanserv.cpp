@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,10 +17,10 @@
 #include "modules/chanserv/mode.h"
 #include "modules/chanserv/service.h"
 
-inline static Anope::string BotModes()
+inline static Warden::string BotModes()
 {
-	return Config->GetModule("botserv").Get<Anope::string>("botmodes",
-		Config->GetModule("chanserv").Get<Anope::string>("botmodes", "o")
+	return Config->GetModule("botserv").Get<Warden::string>("botmodes",
+		Config->GetModule("chanserv").Get<Warden::string>("botmodes", "o")
 	);
 }
 
@@ -28,13 +29,13 @@ class ChanServCore final
 	, public ChanServ::Service
 {
 	Reference<BotInfo> ChanServ;
-	std::vector<Anope::string> defaults;
+	std::vector<Warden::string> defaults;
 	ExtensibleItem<bool> inhabit;
 	ExtensibleRef<bool> persist;
 	bool always_lower = false;
 
 public:
-	ChanServCore(const Anope::string &modname, const Anope::string &creator)
+	ChanServCore(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, PSEUDOCLIENT | VENDOR)
 		, ChanServ::Service(this)
 		, inhabit(this, "inhabit")
@@ -114,7 +115,7 @@ public:
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		const Anope::string &channick = conf.GetModule(this).Get<const Anope::string>("client");
+		const Warden::string &channick = conf.GetModule(this).Get<const Warden::string>("client");
 
 		if (channick.empty())
 			throw ConfigException(Module::name + ": <client> must be defined");
@@ -125,7 +126,7 @@ public:
 
 		ChanServ = bi;
 
-		spacesepstream(conf.GetModule(this).Get<const Anope::string>("defaults")).GetTokens(defaults);
+		spacesepstream(conf.GetModule(this).Get<const Warden::string>("defaults")).GetTokens(defaults);
 		if (defaults.empty())
 		{
 			defaults = {
@@ -148,7 +149,7 @@ public:
 			ChanServ = NULL;
 	}
 
-	EventReturn OnBotPrivmsg(User *u, BotInfo *bi, Anope::string &message, const Anope::map<Anope::string> &tags) override
+	EventReturn OnBotPrivmsg(User *u, BotInfo *bi, Warden::string &message, const Warden::map<Warden::string> &tags) override
 	{
 		if (bi == ChanServ && Config->GetModule(this).Get<bool>("opersonly") && !u->HasMode("OPER"))
 		{
@@ -224,7 +225,7 @@ public:
 	{
 		/* remove access entries that are this channel */
 
-		std::deque<Anope::string> chans;
+		std::deque<Warden::string> chans;
 		ci->GetChannelReferences(chans);
 
 		for (const auto &chan : chans)
@@ -249,13 +250,13 @@ public:
 		{
 			ci->c->RemoveMode(ci->WhoSends(), "REGISTERED", "", false);
 
-			const Anope::string &require = Config->GetModule(this).Get<const Anope::string>("require");
+			const Warden::string &require = Config->GetModule(this).Get<const Warden::string>("require");
 			if (!require.empty())
 				ci->c->SetModes(ci->WhoSends(), false, "-%s", require.c_str());
 		}
 	}
 
-	EventReturn OnPreHelp(CommandSource &source, const std::vector<Anope::string> &params) override
+	EventReturn OnPreHelp(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!params.empty() || source.c || source.service != *ChanServ)
 			return EVENT_CONTINUE;
@@ -275,7 +276,7 @@ public:
 		return EVENT_CONTINUE;
 	}
 
-	void OnPostHelp(CommandSource &source, const std::vector<Anope::string> &params) override
+	void OnPostHelp(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!params.empty() || source.c || source.service != *ChanServ)
 			return;
@@ -289,7 +290,7 @@ public:
 					"(i.e. which no user on the channel's access list enters "
 					"for that period of time) will be automatically dropped."
 				),
-				Anope::Duration(chanserv_expire, source.nc).c_str());
+				Warden::Duration(chanserv_expire, source.nc).c_str());
 		}
 		if (source.IsServicesOper())
 		{
@@ -312,7 +313,7 @@ public:
 		else
 			c->RemoveMode(c->WhoSends(), "REGISTERED", "", false);
 
-		const Anope::string &require = Config->GetModule(this).Get<const Anope::string>("require");
+		const Warden::string &require = Config->GetModule(this).Get<const Warden::string>("require");
 		if (!require.empty())
 		{
 			if (c->ci)
@@ -331,8 +332,8 @@ public:
 
 	EventReturn OnCanSet(User *u, Channel *c, const ChannelMode *cm) override
 	{
-		if (Config->GetModule(this).Get<const Anope::string>("nomlock").find(cm->mchar) != Anope::string::npos
-			|| Config->GetModule(this).Get<const Anope::string>("require").find(cm->mchar) != Anope::string::npos)
+		if (Config->GetModule(this).Get<const Warden::string>("nomlock").find(cm->mchar) != Warden::string::npos
+			|| Config->GetModule(this).Get<const Warden::string>("require").find(cm->mchar) != Warden::string::npos)
 			return EVENT_STOP;
 		return EVENT_CONTINUE;
 	}
@@ -356,7 +357,7 @@ public:
 	{
 		time_t chanserv_expire = Config->GetModule(this).Get<time_t>("expire", "30d");
 
-		if (!chanserv_expire || Anope::NoExpire || Anope::ReadOnly)
+		if (!chanserv_expire || Warden::NoExpire || Warden::ReadOnly)
 			return;
 
 		for (auto it = RegisteredChannelList->begin(), it_end = RegisteredChannelList->end(); it != it_end; )
@@ -366,7 +367,7 @@ public:
 
 			bool expire = false;
 
-			if (Anope::CurTime - ci->last_used >= chanserv_expire)
+			if (Warden::CurTime - ci->last_used >= chanserv_expire)
 			{
 				if (ci->c)
 				{
@@ -461,7 +462,7 @@ public:
 
 	EventReturn OnChannelModeSet(Channel *c, MessageSource &setter, ChannelMode *mode, const ModeData &data) override
 	{
-		if (!always_lower && Anope::CurTime == c->created && c->ci && setter.GetUser() && !setter.GetUser()->server->IsULined())
+		if (!always_lower && Warden::CurTime == c->created && c->ci && setter.GetUser() && !setter.GetUser()->server->IsULined())
 		{
 			auto *memb = c->FindUser(setter.GetUser());
 			ChannelMode *cm = ModeManager::FindChannelModeByName("OP");
@@ -484,8 +485,8 @@ public:
 			return;
 
 		time_t chanserv_expire = Config->GetModule(this).Get<time_t>("expire", "30d");
-		if (!ci->HasExt("CS_NO_EXPIRE") && chanserv_expire && !Anope::NoExpire && ci->last_used != Anope::CurTime)
-			info[_("Expires")] = Anope::strftime(ci->last_used + chanserv_expire, source.GetAccount());
+		if (!ci->HasExt("CS_NO_EXPIRE") && chanserv_expire && !Warden::NoExpire && ci->last_used != Warden::CurTime)
+			info[_("Expires")] = Warden::strftime(ci->last_used + chanserv_expire, source.GetAccount());
 	}
 
 	void OnSetCorrectModes(User *user, Channel *chan, AccessGroup &access, bool &give_modes, bool &take_modes) override

@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2008-2011 Robin Burchell <w00t@inspircd.org>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,12 +19,12 @@
 #pragma once
 
 #include "users.h"
-#include "anope.h"
+#include "warden.h"
 #include "serialize.h"
 #include "commands.h"
 
 
-typedef Anope::map<BotInfo *> botinfo_map;
+typedef Warden::map<BotInfo *> botinfo_map;
 
 extern CoreExport Serialize::Checker<botinfo_map> BotListByNick, BotListByUID;
 
@@ -51,13 +52,13 @@ public:
 	/* Map of actual command names -> service name/permission required */
 	CommandInfo::map commands;
 	/** CTCP responses this bot can send. */
-	Anope::map<std::function<void(BotInfo *, User *, const Anope::string &)>> ctcps;
+	Warden::map<std::function<void(BotInfo *, User *, const Warden::string &)>> ctcps;
 	/* The server-side alias used to message this bot. */
-	Anope::string alias;
+	Warden::string alias;
 	/* Modes the bot should have as configured in service:modes */
-	Anope::string botmodes;
+	Warden::string botmodes;
 	/* Channels the bot should be in as configured in service:channels */
-	std::vector<Anope::string> botchannels;
+	std::vector<Warden::string> botchannels;
 	/* Whether or not this bot is introduced to the network */
 	bool introduced;
 	/* Bot can only be assigned by irc ops */
@@ -72,7 +73,7 @@ public:
 	 * @param real The realname to give the bot.
 	 * @param bmodes The modes to give the bot.
 	 */
-	BotInfo(const Anope::string &nick, const Anope::string &user = "", const Anope::string &host = "", const Anope::string &real = "", const Anope::string &bmodes = "");
+	BotInfo(const Warden::string &nick, const Warden::string &user = "", const Warden::string &host = "", const Warden::string &real = "", const Warden::string &bmodes = "");
 
 	/** Destroy a bot, clearing up appropriately.
 	 */
@@ -88,7 +89,7 @@ public:
 	/** Change the nickname for the bot.
 	 * @param newnick The nick to change to
 	 */
-	void SetNewNick(const Anope::string &newnick);
+	void SetNewNick(const Warden::string &newnick);
 
 	/** Return the channels this bot is assigned to
 	 */
@@ -120,20 +121,20 @@ public:
 	 * @param chname The channel name
 	 * @param status The status the bot should have on the channel
 	 */
-	void Join(const Anope::string &chname, ChannelStatus *status = NULL);
+	void Join(const Warden::string &chname, ChannelStatus *status = NULL);
 
 	/** Part this bot from a channel
 	 * @param c The channel
 	 * @param reason The reason we're parting
 	 */
-	void Part(Channel *c, const Anope::string &reason = "");
+	void Part(Channel *c, const Warden::string &reason = "");
 
 	/** Called when a user messages this bot
 	 * @param u The user
 	 * @param message The users' message
 	 * @params tags Message tags
 	 */
-	void OnMessage(User *u, const Anope::string &message, const Anope::map<Anope::string> &tags);
+	void OnMessage(User *u, const Warden::string &message, const Warden::map<Warden::string> &tags);
 
 	/** Link a command name to a command in services
 	 * @param cname The command name
@@ -141,21 +142,21 @@ public:
 	 * @param permission Permission required to execute the command, if any
 	 * @return The commandinfo for the newly created command
 	 */
-	CommandInfo &SetCommand(const Anope::string &cname, const Anope::string &sname, const Anope::string &permission = "");
+	CommandInfo &SetCommand(const Warden::string &cname, const Warden::string &sname, const Warden::string &permission = "");
 
 	/** Get command info for a command
 	 * @param cname The command name
 	 * @return A struct containing service name and permission
 	 */
-	CommandInfo *GetCommand(const Anope::string &cname);
+	CommandInfo *GetCommand(const Warden::string &cname);
 
 	/** Get the command that users can use to send a message to this bot. */
-	Anope::string GetQueryCommand(const Anope::string &command = "", const Anope::string &extra = "") const;
+	Warden::string GetQueryCommand(const Warden::string &command = "", const Warden::string &extra = "") const;
 
 	/** Find a bot by nick
 	 * @param nick The nick
 	 * @param nick_only True to only look by nick, and not by UID
 	 * @return The bot, if it exists
 	 */
-	static BotInfo *Find(const Anope::string &nick, bool nick_only = false);
+	static BotInfo *Find(const Warden::string &nick, bool nick_only = false);
 };

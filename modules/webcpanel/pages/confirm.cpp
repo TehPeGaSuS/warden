@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,7 +15,7 @@
 
 #include "../webcpanel.h"
 
-bool WebCPanel::Confirm::OnRequest(HTTP::Provider *server, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply)
+bool WebCPanel::Confirm::OnRequest(HTTP::Provider *server, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply)
 {
 	TemplateFileServer::Replacements replacements;
 	replacements["TITLE"] = page_title;
@@ -26,13 +27,13 @@ bool WebCPanel::Confirm::OnRequest(HTTP::Provider *server, const Anope::string &
 		return true;
 	}
 
-	const Anope::string user = WebPanel::GetRequestData(message.post_data, "username");
-	const Anope::string pass = WebPanel::GetRequestData(message.post_data, "password");
+	const Warden::string user = WebPanel::GetRequestData(message.post_data, "username");
+	const Warden::string pass = WebPanel::GetRequestData(message.post_data, "password");
 	if (!user.empty() && !pass.empty())
 	{
-		std::vector<Anope::string> params;
+		std::vector<Warden::string> params;
 		params.push_back(pass);
-		const Anope::string email = WebPanel::GetRequestData(message.post_data, "email");
+		const Warden::string email = WebPanel::GetRequestData(message.post_data, "email");
 		if (!email.empty())
 			params.push_back(email);
 

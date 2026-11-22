@@ -149,7 +149,7 @@ while (1)
 	if ($input eq "q") {
 		if (-e "build/CMakeFiles") {
 			system("cmake", "build/.");
-			print "\nNow cd build, then run make to build Anope.\n\n";
+			print "\nNow cd build, then run make to build Warden.\n\n";
 		} else {
 			print "\nBuild directory not found. You should run ./Config now.\n\n"
 		}

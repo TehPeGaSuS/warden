@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -22,7 +23,7 @@ class MemoDelCallback final
 	ChannelInfo *ci;
 	MemoInfo *mi;
 public:
-	MemoDelCallback(CommandSource &_source, Command *c, ChannelInfo *_ci, MemoInfo *_mi, const Anope::string &list) : NumberList(list, true), source(_source), cmd(c), ci(_ci), mi(_mi)
+	MemoDelCallback(CommandSource &_source, Command *c, ChannelInfo *_ci, MemoInfo *_mi, const Warden::string &list) : NumberList(list, true), source(_source), cmd(c), ci(_ci), mi(_mi)
 	{
 	}
 
@@ -50,9 +51,9 @@ public:
 		this->SetSyntax(_("[\037channel\037] {\037num\037 | \037list\037 | LAST | ALL}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -60,7 +61,7 @@ public:
 
 		MemoInfo *mi;
 		ChannelInfo *ci = NULL;
-		Anope::string numstr = !params.empty() ? params[0] : "", chan;
+		Warden::string numstr = !params.empty() ? params[0] : "", chan;
 
 		if (!numstr.empty() && numstr[0] == '#')
 		{
@@ -126,7 +127,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -161,7 +162,7 @@ class MSDel final
 	CommandMSDel commandmsdel;
 
 public:
-	MSDel(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	MSDel(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandmsdel(this)
 	{
 

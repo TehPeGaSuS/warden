@@ -1,8 +1,8 @@
-# Building Anope on Windows
+# Building Warden on Windows
 
 ## Dependencies
 
-You will need the following software installed to build Anope:
+You will need the following software installed to build Warden:
 
 * [CMake 3.20 or newer](https://cmake.org/download/#latest)
 * [Conan 2 or newer](https://conan.io/downloads) (optional if you don't want to build extra modules)
@@ -11,14 +11,14 @@ You will need the following software installed to build Anope:
 
 ## Building
 
-First you need to download the latest version of the Anope source code from [the releases page](https://github.com/anope/anope/releases) and unpack it using Windows Explorer.
+First you need to download the latest version of the Warden source code from [the releases page](https://github.com/anope/anope/releases) and unpack it using Windows Explorer.
 
 ---
 
-Once you have the source code unpacked you need open the Command Prompt and move to the directory in which Anope has been unpacked. You can do this by pressing Control+R and then entering `cmd.exe` and pressing enter. Once the terminal opens you can move to the directory using the following command (assuming you unpacked to `C:\Users\Example\Downloads\anope-2.1`):
+Once you have the source code unpacked you need open the Command Prompt and move to the directory in which Warden has been unpacked. You can do this by pressing Control+R and then entering `cmd.exe` and pressing enter. Once the terminal opens you can move to the directory using the following command (assuming you unpacked to `C:\Users\Example\Downloads\warden-2.1`):
 
 ```cmd
-cd C:\Users\Example\Downloads\anope-2.1
+cd C:\Users\Example\Downloads\warden-2.1
 ```
 
 ---
@@ -44,7 +44,7 @@ This will probably take a long time if its the first time you have run it.
 
 ---
 
-Now you're ready to build Anope.
+Now you're ready to build Warden.
 
 ```cmd
 cd .\build
@@ -54,4 +54,4 @@ msbuild PACKAGE.vcxproj /P:Configuration=Release /P:Platform=x64 /VERBOSITY:MINI
 
 Once the build finishes the installer will be available in the build directory. You can install this by opening the directory in Windows Explorer and then running it as you would with most Windows installers.
 
-Once installed Anope will be available at `C:\Program Files\Anope`.
+Once installed Warden will be available at `C:\Program Files\Warden`.

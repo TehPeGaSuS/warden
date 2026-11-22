@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -63,8 +64,8 @@ private:
 
 		for (auto *user : users)
 		{
-			Anope::string mask = ci->GetIdealBan(user);
-			Anope::string reason = Anope::Format(Language::Translate(user, _("RESTRICTED enforced by %s")), source.GetNick().c_str());
+			Warden::string mask = ci->GetIdealBan(user);
+			Warden::string reason = Warden::Format(Language::Translate(user, _("RESTRICTED enforced by %s")), source.GetNick().c_str());
 			ci->c->SetMode(NULL, "BAN", mask);
 			ci->c->Kick(NULL, user, reason);
 		}
@@ -91,8 +92,8 @@ private:
 
 		for (auto *user : users)
 		{
-			Anope::string mask = ci->GetIdealBan(user);
-			Anope::string reason = Anope::Format(Language::Translate(user, _("REGONLY enforced by %s")), source.GetNick().c_str());
+			Warden::string mask = ci->GetIdealBan(user);
+			Warden::string reason = Warden::Format(Language::Translate(user, _("REGONLY enforced by %s")), source.GetNick().c_str());
 			if (!ci->c->HasMode("REGISTEREDONLY"))
 				ci->c->SetMode(NULL, "BAN", mask);
 			ci->c->Kick(NULL, user, reason);
@@ -120,8 +121,8 @@ private:
 
 		for (auto *user : users)
 		{
-			Anope::string mask = ci->GetIdealBan(user);
-			Anope::string reason = Anope::Format(Language::Translate(user, _("SSLONLY enforced by %s")), source.GetNick().c_str());
+			Warden::string mask = ci->GetIdealBan(user);
+			Warden::string reason = Warden::Format(Language::Translate(user, _("SSLONLY enforced by %s")), source.GetNick().c_str());
 			if (!ci->c->HasMode("SSL"))
 				ci->c->SetMode(NULL, "BAN", mask);
 			ci->c->Kick(NULL, user, reason);
@@ -149,7 +150,7 @@ private:
 
 		for (auto *user : users)
 		{
-			Anope::string reason = Anope::Format(Language::Translate(user, _("BANS enforced by %s")), source.GetNick().c_str());
+			Warden::string reason = Warden::Format(Language::Translate(user, _("BANS enforced by %s")), source.GetNick().c_str());
 			ci->c->Kick(NULL, user, reason);
 		}
 
@@ -161,14 +162,14 @@ private:
 		bool override = !source.AccessFor(ci).HasPriv("AKICK") && source.HasPriv("chanserv/access/modify");
 		Log(override ? LOG_OVERRIDE : LOG_COMMAND, source, this, ci) << "to enforce limit";
 
-		Anope::string l_str;
+		Warden::string l_str;
 		if (!ci->c->GetParam("LIMIT", l_str))
 		{
 			source.Reply(_("No limit is set on %s."), ci->name.c_str());
 			return;
 		}
 
-		auto l = Anope::Convert<int>(l_str, -1);
+		auto l = Warden::Convert<int>(l_str, -1);
 		if (l < 0)
 		{
 			source.Reply(_("The limit on %s is not valid."), ci->name.c_str());
@@ -197,7 +198,7 @@ private:
 
 		for (auto *user : users)
 		{
-			Anope::string reason = Anope::Format(Language::Translate(user, _("LIMIT enforced by %s")), source.GetNick().c_str());
+			Warden::string reason = Warden::Format(Language::Translate(user, _("LIMIT enforced by %s")), source.GetNick().c_str());
 			ci->c->Kick(NULL, user, reason);
 		}
 
@@ -211,9 +212,9 @@ public:
 		this->SetSyntax(_("\037channel\037 \037what\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &what = params.size() > 1 ? params[1] : "";
+		const Warden::string &what = params.size() > 1 ? params[1] : "";
 
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
 
@@ -239,7 +240,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -268,7 +269,7 @@ class CSEnforce final
 	CommandCSEnforce commandcsenforce;
 
 public:
-	CSEnforce(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	CSEnforce(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandcsenforce(this)
 	{
 

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -23,9 +24,9 @@ private:
 	struct Session final
 		: SASL::Session
 	{
-		std::vector<Anope::string> certs;
+		std::vector<Warden::string> certs;
 
-		Session(SASL::Mechanism *m, const Anope::string &u)
+		Session(SASL::Mechanism *m, const Warden::string &u)
 			: SASL::Session(m, u)
 		{
 		}
@@ -37,14 +38,14 @@ public:
 	{
 	}
 
-	Session *CreateSession(const Anope::string &uid) override
+	Session *CreateSession(const Warden::string &uid) override
 	{
 		return new Session(this, uid);
 	}
 
 	bool ProcessMessage(SASL::Session *sess, const SASL::Message &m) override
 	{
-		auto *mysess = anope_dynamic_static_cast<Session *>(sess);
+		auto *mysess = warden_dynamic_static_cast<Session *>(sess);
 
 		if (m.type == "S")
 		{
@@ -93,7 +94,7 @@ private:
 	External external;
 
 public:
-	ModuleSASLExternal(const Anope::string &modname, const Anope::string &creator)
+	ModuleSASLExternal(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, external(this)
 	{

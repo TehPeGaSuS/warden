@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -35,7 +36,7 @@ class MySSLService final
 	: public SSLService
 {
 public:
-	MySSLService(Module *o, const Anope::string &n);
+	MySSLService(Module *o, const Warden::string &n);
 
 	/** Initialize a socket to use SSL
 	 * @param s The socket
@@ -86,7 +87,7 @@ public:
 	 * @param target IP to connect to
 	 * @param port to connect to
 	 */
-	void Connect(ConnectionSocket *s, const Anope::string &target, int port) override;
+	void Connect(ConnectionSocket *s, const Warden::string &target, int port) override;
 
 	/** Called to potentially finish a pending connection
 	 * @param s The socket
@@ -104,12 +105,12 @@ static SSLModule *me;
 class SSLModule final
 	: public Module
 {
-	Anope::string certfile, keyfile;
+	Warden::string certfile, keyfile;
 
 public:
 	MySSLService service;
 
-	SSLModule(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, EXTRA | VENDOR), service(this, "ssl")
+	SSLModule(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, EXTRA | VENDOR), service(this, "ssl")
 	{
 		me = this;
 
@@ -130,7 +131,7 @@ public:
 		SSL_CTX_set_mode(client_ctx, SSL_MODE_ENABLE_PARTIAL_WRITE | SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
 		SSL_CTX_set_mode(server_ctx, SSL_MODE_ENABLE_PARTIAL_WRITE | SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
 
-		Anope::string context_name = "Anope";
+		Warden::string context_name = "Warden";
 		SSL_CTX_set_session_id_context(client_ctx, reinterpret_cast<const unsigned char *>(context_name.c_str()), context_name.length());
 		SSL_CTX_set_session_id_context(server_ctx, reinterpret_cast<const unsigned char *>(context_name.c_str()), context_name.length());
 
@@ -158,10 +159,10 @@ public:
 	{
 		const auto &config = conf.GetModule(this);
 
-		this->certfile = Anope::ExpandConfig(config.Get<const Anope::string>("cert", "fullchain.pem"));
-		this->keyfile = Anope::ExpandConfig(config.Get<const Anope::string>("key", "privkey.pem"));
+		this->certfile = Warden::ExpandConfig(config.Get<const Warden::string>("cert", "fullchain.pem"));
+		this->keyfile = Warden::ExpandConfig(config.Get<const Warden::string>("key", "privkey.pem"));
 
-		if (Anope::IsFile(this->certfile))
+		if (Warden::IsFile(this->certfile))
 		{
 			if (!SSL_CTX_use_certificate_chain_file(client_ctx, this->certfile.c_str()) || !SSL_CTX_use_certificate_chain_file(server_ctx, this->certfile.c_str()))
 				throw ConfigException("Error loading certificate");
@@ -171,7 +172,7 @@ public:
 		else
 			Log() << "Unable to open certificate " << this->certfile;
 
-		if (Anope::IsFile(this->keyfile))
+		if (Warden::IsFile(this->keyfile))
 		{
 			if (!SSL_CTX_use_PrivateKey_file(client_ctx, this->keyfile.c_str(), SSL_FILETYPE_PEM) || !SSL_CTX_use_PrivateKey_file(server_ctx, this->keyfile.c_str(), SSL_FILETYPE_PEM))
 				throw ConfigException("Error loading private key");
@@ -180,7 +181,7 @@ public:
 		}
 		else
 		{
-			if (Anope::IsFile(this->certfile))
+			if (Warden::IsFile(this->certfile))
 				throw ConfigException("Error loading private key " + this->keyfile + " - file not found");
 			else
 				Log() << "Unable to open private key " << this->keyfile;
@@ -223,7 +224,7 @@ public:
 
 	void OnPreServerConnect() override
 	{
-		const auto &config = Config->GetBlock("uplink", Anope::CurrentUplink);
+		const auto &config = Config->GetBlock("uplink", Warden::CurrentUplink);
 
 		if (config.Get<bool>("ssl"))
 		{
@@ -232,7 +233,7 @@ public:
 	}
 };
 
-MySSLService::MySSLService(Module *o, const Anope::string &n) : SSLService(o, n)
+MySSLService::MySSLService(Module *o, const Warden::string &n) : SSLService(o, n)
 {
 }
 
@@ -301,11 +302,11 @@ ClientSocket *SSLSocketIO::Accept(ListenSocket *s)
 #endif
 
 	if (newsock < 0 || newsock == INVALID_SOCKET)
-		throw SocketException("Unable to accept connection: " + Anope::LastError());
+		throw SocketException("Unable to accept connection: " + Warden::LastError());
 
 	ClientSocket *newsocket = s->OnAccept(newsock, conaddr);
 	me->service.Init(newsocket);
-	SSLSocketIO *io = anope_dynamic_static_cast<SSLSocketIO *>(newsocket->io);
+	SSLSocketIO *io = warden_dynamic_static_cast<SSLSocketIO *>(newsocket->io);
 
 	io->sslsock = SSL_new(server_ctx);
 	if (!io->sslsock)
@@ -331,7 +332,7 @@ SocketFlag SSLSocketIO::FinishAccept(ClientSocket *cs)
 	else if (!cs->flags[SF_ACCEPTING])
 		throw SocketException("SSLSocketIO::FinishAccept called for a socket not accepted nor accepting?");
 
-	SSLSocketIO *io = anope_dynamic_static_cast<SSLSocketIO *>(cs->io);
+	SSLSocketIO *io = warden_dynamic_static_cast<SSLSocketIO *>(cs->io);
 
 	int ret = SSL_accept(io->sslsock);
 	if (ret <= 0)
@@ -362,7 +363,7 @@ SocketFlag SSLSocketIO::FinishAccept(ClientSocket *cs)
 	}
 }
 
-void SSLSocketIO::Connect(ConnectionSocket *s, const Anope::string &target, int port)
+void SSLSocketIO::Connect(ConnectionSocket *s, const Warden::string &target, int port)
 {
 	if (s->io == &NormalSocketIO)
 		throw SocketException("Attempting to connect uninitialized socket with SSL");
@@ -373,9 +374,9 @@ void SSLSocketIO::Connect(ConnectionSocket *s, const Anope::string &target, int 
 	int c = connect(s->GetFD(), &s->conaddr.sa, s->conaddr.size());
 	if (c == -1)
 	{
-		if (Anope::LastErrorCode() != EINPROGRESS)
+		if (Warden::LastErrorCode() != EINPROGRESS)
 		{
-			s->OnError(Anope::LastError());
+			s->OnError(Warden::LastError());
 			s->flags[SF_DEAD] = true;
 			return;
 		}
@@ -402,7 +403,7 @@ SocketFlag SSLSocketIO::FinishConnect(ConnectionSocket *s)
 	else if (!s->flags[SF_CONNECTING])
 		throw SocketException("SSLSocketIO::FinishConnect called for a socket not connected nor connecting?");
 
-	SSLSocketIO *io = anope_dynamic_static_cast<SSLSocketIO *>(s->io);
+	SSLSocketIO *io = warden_dynamic_static_cast<SSLSocketIO *>(s->io);
 
 	if (io->sslsock == NULL)
 	{

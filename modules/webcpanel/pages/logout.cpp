@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,11 +15,11 @@
 
 #include "../webcpanel.h"
 
-WebCPanel::Logout::Logout(const Anope::string &u) : WebPanelProtectedPage("", u)
+WebCPanel::Logout::Logout(const Warden::string &u) : WebPanelProtectedPage("", u)
 {
 }
 
-bool WebCPanel::Logout::OnRequest(HTTP::Provider *server, const Anope::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
+bool WebCPanel::Logout::OnRequest(HTTP::Provider *server, const Warden::string &page_name, HTTP::Client *client, HTTP::Message &message, HTTP::Reply &reply, NickAlias *na, TemplateFileServer::Replacements &replacements)
 {
 	if (!WebPanel::IsAllowedOrigin(message))
 	{
@@ -27,10 +28,10 @@ bool WebCPanel::Logout::OnRequest(HTTP::Provider *server, const Anope::string &p
 		return true;
 	}
 
-	na->Shrink<Anope::string>("webcpanel_id");
-	na->Shrink<Anope::string>("webcpanel_ip");
+	na->Shrink<Warden::string>("webcpanel_id");
+	na->Shrink<Warden::string>("webcpanel_ip");
 
 	reply.error = HTTP::FOUND;
-	reply.headers["Location"] = Anope::string("http") + (server->IsSSL() ? "s" : "") + "://" + message.headers["Host"] + "/";
+	reply.headers["Location"] = Warden::string("http") + (server->IsSSL() ? "s" : "") + "://" + message.headers["Host"] + "/";
 	return true;
 }

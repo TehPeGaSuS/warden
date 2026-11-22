@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -35,18 +36,18 @@ bool DefConModesSet = false;
 struct DefconConfig final
 {
 	std::vector<std::bitset<32> > DefCon;
-	std::set<Anope::string> DefConModesOn, DefConModesOff;
-	std::map<Anope::string, Anope::string> DefConModesOnParams;
+	std::set<Warden::string> DefConModesOn, DefConModesOff;
+	std::map<Warden::string, Warden::string> DefConModesOnParams;
 
 	int defaultlevel, sessionlimit;
-	Anope::string chanmodes, message, offmessage, akillreason;
-	std::vector<Anope::string> defcons;
+	Warden::string chanmodes, message, offmessage, akillreason;
+	std::vector<Warden::string> defcons;
 	time_t akillexpire, timeout;
 	bool globalondefcon;
 
 	unsigned max_session_kill;
 	time_t session_autokill_expiry;
-	Anope::string sle_reason, sle_detailsloc;
+	Warden::string sle_reason, sle_detailsloc;
 
 	DefconConfig()
 	{
@@ -74,17 +75,17 @@ struct DefconConfig final
 		this->DefCon[dlevel][level] = false;
 	}
 
-	bool SetDefConParam(const Anope::string &name, const Anope::string &buf)
+	bool SetDefConParam(const Warden::string &name, const Warden::string &buf)
 	{
 	       return DefConModesOnParams.emplace(name, buf).second;
 	}
 
-	void UnsetDefConParam(const Anope::string &name)
+	void UnsetDefConParam(const Warden::string &name)
 	{
 		DefConModesOnParams.erase(name);
 	}
 
-	bool GetDefConParam(const Anope::string &name, Anope::string &buf)
+	bool GetDefConParam(const Warden::string &name, Warden::string &buf)
 	{
 	       auto it = DefConModesOnParams.find(name);
 
@@ -103,7 +104,7 @@ struct DefconConfig final
 static DefconConfig DConfig;
 
 static void runDefCon();
-static Anope::string defconReverseModes(const Anope::string &modes);
+static Warden::string defconReverseModes(const Warden::string &modes);
 
 static Timer *timeout;
 
@@ -138,7 +139,7 @@ public:
 				if (!DConfig.offmessage.empty())
 					Global::service->SendSingle(DConfig.offmessage);
 				else
-					Global::service->SendSingle(Anope::Format(Language::Translate(_("The Defcon level is now at: \002%d\002")), DConfig.defaultlevel));
+					Global::service->SendSingle(Warden::Format(Language::Translate(_("The Defcon level is now at: \002%d\002")), DConfig.defaultlevel));
 
 				if (!DConfig.message.empty())
 					Global::service->SendSingle(DConfig.message);
@@ -184,9 +185,9 @@ public:
 		this->SetSyntax(_("[\0021\002|\0022\002|\0023\002|\0024\002|\0025\002]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &lvl = params[0];
+		const Warden::string &lvl = params[0];
 
 		if (lvl.empty())
 		{
@@ -195,7 +196,7 @@ public:
 			return;
 		}
 
-		auto newLevel = Anope::Convert<int>(lvl, 0);
+		auto newLevel = Warden::Convert<int>(lvl, 0);
 		if (newLevel < 1 || newLevel > 5)
 		{
 			this->OnSyntaxError(source, "");
@@ -223,7 +224,7 @@ public:
 				Global::service->SendSingle(DConfig.offmessage);
 			else if (DConfig.defaultlevel != 5)
 			{
-				Global::service->SendSingle(Anope::Format(_("The Defcon level is now at: \002%d\002"), DConfig.defaultlevel));
+				Global::service->SendSingle(Warden::Format(_("The Defcon level is now at: \002%d\002"), DConfig.defaultlevel));
 				if (!DConfig.message.empty())
 					Global::service->SendSingle(DConfig.message);
 			}
@@ -233,7 +234,7 @@ public:
 		runDefCon();
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -257,7 +258,7 @@ class OSDefcon final
 		int add = -1; /* 1 if adding, 0 if deleting, -1 if neither */
 		ChannelMode *cm;
 		ChannelModeParam *cmp;
-		Anope::string modes, param;
+		Warden::string modes, param;
 
 		spacesepstream ss(DConfig.chanmodes);
 
@@ -295,7 +296,7 @@ class OSDefcon final
 
 					if (cm->type == MODE_PARAM)
 					{
-						cmp = anope_dynamic_static_cast<ChannelModeParam *>(cm);
+						cmp = warden_dynamic_static_cast<ChannelModeParam *>(cm);
 
 						if (!ss.GetToken(param))
 						{
@@ -329,7 +330,7 @@ class OSDefcon final
 	}
 
 public:
-	OSDefcon(const Anope::string &modname, const Anope::string &creator)
+	OSDefcon(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, akills("XLineManager", "xlinemanager/sgline")
 		, commandosdefcon(this)
@@ -344,26 +345,26 @@ public:
 		{
 		const auto &block = conf.GetModule(this);
 		dconfig.defaultlevel = block.Get<int>("defaultlevel");
-		dconfig.defcons[4] = block.Get<const Anope::string>("level4");
-		dconfig.defcons[3] = block.Get<const Anope::string>("level3");
-		dconfig.defcons[2] = block.Get<const Anope::string>("level2");
-		dconfig.defcons[1] = block.Get<const Anope::string>("level1");
+		dconfig.defcons[4] = block.Get<const Warden::string>("level4");
+		dconfig.defcons[3] = block.Get<const Warden::string>("level3");
+		dconfig.defcons[2] = block.Get<const Warden::string>("level2");
+		dconfig.defcons[1] = block.Get<const Warden::string>("level1");
 		dconfig.sessionlimit = block.Get<int>("sessionlimit");
-		dconfig.akillreason = block.Get<const Anope::string>("akillreason");
+		dconfig.akillreason = block.Get<const Warden::string>("akillreason");
 		dconfig.akillexpire = block.Get<time_t>("akillexpire");
-		dconfig.chanmodes = block.Get<const Anope::string>("chanmodes");
+		dconfig.chanmodes = block.Get<const Warden::string>("chanmodes");
 		dconfig.timeout = block.Get<time_t>("timeout");
 		dconfig.globalondefcon = block.Get<bool>("globalondefcon");
-		dconfig.message = block.Get<const Anope::string>("message");
-		dconfig.offmessage = block.Get<const Anope::string>("offmessage");
+		dconfig.message = block.Get<const Warden::string>("message");
+		dconfig.offmessage = block.Get<const Warden::string>("offmessage");
 		}
 
 		{
 		const auto &block = conf.GetModule("os_session");
 		dconfig.max_session_kill = block.Get<unsigned>("maxsessionkill");
 		dconfig.session_autokill_expiry = block.Get<time_t>("sessionautokillexpiry");
-		dconfig.sle_reason = block.Get<const Anope::string>("sessionlimitexceeded");
-		dconfig.sle_detailsloc = block.Get<const Anope::string>("sessionlimitdetailsloc");
+		dconfig.sle_reason = block.Get<const Warden::string>("sessionlimitexceeded");
+		dconfig.sle_detailsloc = block.Get<const Warden::string>("sessionlimitdetailsloc");
 		}
 
 		if (dconfig.defaultlevel < 1 || dconfig.defaultlevel > 5)
@@ -374,7 +375,7 @@ public:
 		for (unsigned level = 1; level < 5; ++level)
 		{
 			spacesepstream operations(dconfig.defcons[level]);
-			Anope::string operation;
+			Warden::string operation;
 			while (operations.GetToken(operation))
 			{
 				if (operation.equals_ci("nonewchannels"))
@@ -423,11 +424,11 @@ public:
 		return EVENT_CONTINUE;
 	}
 
-	EventReturn OnChannelModeUnset(Channel *c, MessageSource &source, ChannelMode *mode, const Anope::string &) override
+	EventReturn OnChannelModeUnset(Channel *c, MessageSource &source, ChannelMode *mode, const Warden::string &) override
 	{
 		if (DConfig.Check(DEFCON_FORCE_CHAN_MODES) && DConfig.DefConModesOn.count(mode->name) && source.GetUser() && !source.GetBot())
 		{
-			Anope::string param;
+			Warden::string param;
 
 			if (DConfig.GetDefConParam(mode->name, param))
 				c->SetMode(Config->GetClient("OperServ"), mode, param);
@@ -441,7 +442,7 @@ public:
 		return EVENT_CONTINUE;
 	}
 
-	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Anope::string> &params) override
+	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Warden::string> &params) override
 	{
 		if (DConfig.Check(DEFCON_OPER_ONLY) && !source.IsOper())
 		{
@@ -497,7 +498,7 @@ public:
 		if (DConfig.Check(DEFCON_AKILL_NEW_CLIENTS) && akills)
 		{
 			Log(OperServ, "operserv/defcon") << "DEFCON: adding akill for *@" << u->host;
-			XLine x("*@" + u->host, OperServ ? OperServ->nick : "defcon", Anope::CurTime + DConfig.akillexpire, DConfig.akillreason, XLineManager::GenerateUID());
+			XLine x("*@" + u->host, OperServ ? OperServ->nick : "defcon", Warden::CurTime + DConfig.akillexpire, DConfig.akillreason, XLineManager::GenerateUID());
 			akills->Send(NULL, &x);
 		}
 
@@ -519,7 +520,7 @@ public:
 			{
 				if (!DConfig.sle_reason.empty())
 				{
-					auto message = Anope::Template(DConfig.sle_reason, {
+					auto message = Warden::Template(DConfig.sle_reason, {
 						{ "ip", u->ip.addr() },
 					});
 					u->SendMessage(OperServ, message);
@@ -530,7 +531,7 @@ public:
 				++session->hits;
 				if (akills && DConfig.max_session_kill && session->hits >= DConfig.max_session_kill)
 				{
-					XLine x("*@" + session->addr.mask(), OperServ ? OperServ->nick : "", Anope::CurTime + DConfig.session_autokill_expiry, "Defcon session limit exceeded", XLineManager::GenerateUID());
+					XLine x("*@" + session->addr.mask(), OperServ ? OperServ->nick : "", Warden::CurTime + DConfig.session_autokill_expiry, "Defcon session limit exceeded", XLineManager::GenerateUID());
 					akills->Send(NULL, &x);
 					Log(OperServ, "akill/defcon") << "[DEFCON] Added a temporary AKILL for \002*@" << session->addr.mask() << "\002 due to excessive connections";
 				}
@@ -544,7 +545,7 @@ public:
 
 	void OnChannelModeAdd(ChannelMode *cm) override
 	{
-		if (DConfig.chanmodes.find(cm->mchar) != Anope::string::npos)
+		if (DConfig.chanmodes.find(cm->mchar) != Warden::string::npos)
 			this->ParseModeString();
 	}
 
@@ -578,7 +579,7 @@ static void runDefCon()
 			if (DConfig.chanmodes[0] == '+' || DConfig.chanmodes[0] == '-')
 			{
 				DefConModesSet = false;
-				Anope::string newmodes = defconReverseModes(DConfig.chanmodes);
+				Warden::string newmodes = defconReverseModes(DConfig.chanmodes);
 				if (!newmodes.empty())
 				{
 					Log(OperServ, "operserv/defcon") << "DEFCON: setting " << newmodes << " on all channels";
@@ -590,11 +591,11 @@ static void runDefCon()
 	}
 }
 
-static Anope::string defconReverseModes(const Anope::string &modes)
+static Warden::string defconReverseModes(const Warden::string &modes)
 {
 	if (modes.empty())
 		return "";
-	Anope::string newmodes;
+	Warden::string newmodes;
 	for (auto mode : modes)
 	{
 		if (mode == '+')

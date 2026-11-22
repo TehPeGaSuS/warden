@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -18,13 +19,13 @@
 
 enum
 {
-	// Used by anope.messageNetwork and anope.messageServer
+	// Used by warden.messageNetwork and warden.messageServer
 	ERR_NO_GLOBAL_SERVICE = RPC::ERR_CUSTOM_START,
 
-	// Used by anope.messageServer
+	// Used by warden.messageServer
 	ERR_NO_SUCH_SERVER = RPC::ERR_CUSTOM_START + 1,
 
-	// Used by anope.messageUser
+	// Used by warden.messageUser
 	ERR_NO_SUCH_SOURCE = RPC::ERR_CUSTOM_START,
 	ERR_NO_SUCH_TARGET = RPC::ERR_CUSTOM_START + 1,
 };
@@ -34,7 +35,7 @@ class MessageNetworkRPCEvent final
 {
 public:
 	MessageNetworkRPCEvent(Module *o)
-		: RPC::Event(o, "anope.messageNetwork", 1)
+		: RPC::Event(o, "warden.messageNetwork", 1)
 	{
 	}
 
@@ -47,7 +48,7 @@ public:
 		}
 
 		for (const auto &message : request.data)
-			Global::service->SendSingle(Anope::ReplaceUnsafe(message));
+			Global::service->SendSingle(Warden::ReplaceUnsafe(message));
 		return true;
 	}
 };
@@ -57,7 +58,7 @@ class MessageServerRPCEvent final
 {
 public:
 	MessageServerRPCEvent(Module *o)
-		: RPC::Event(o, "anope.messageServer", 2)
+		: RPC::Event(o, "warden.messageServer", 2)
 	{
 	}
 
@@ -76,9 +77,9 @@ public:
 			return true;
 		}
 
-		std::vector<Anope::string> messages(request.data.begin() + 1, request.data.end());
+		std::vector<Warden::string> messages(request.data.begin() + 1, request.data.end());
 		for (const auto &message : messages)
-			Global::service->SendSingle(Anope::ReplaceUnsafe(message), nullptr, nullptr, s);
+			Global::service->SendSingle(Warden::ReplaceUnsafe(message), nullptr, nullptr, s);
 		return true;
 	}
 };
@@ -88,7 +89,7 @@ class MessageUserRPCEvent final
 {
 public:
 	MessageUserRPCEvent(Module *o)
-		: RPC::Event(o, "anope.messageUser", 3)
+		: RPC::Event(o, "warden.messageUser", 3)
 	{
 	}
 
@@ -108,7 +109,7 @@ public:
 			return true;
 		}
 
-		u->SendMessage(bi, Anope::ReplaceUnsafe(request.data[2]));
+		u->SendMessage(bi, Warden::ReplaceUnsafe(request.data[2]));
 		return true;
 	}
 };
@@ -122,7 +123,7 @@ private:
 	MessageUserRPCEvent messageuserrpcevent;
 
 public:
-	ModuleRPCSystem(const Anope::string &modname, const Anope::string &creator)
+	ModuleRPCSystem(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, EXTRA | VENDOR)
 		, messagenetworkrpcevent(this)
 		, messageserverrpcevent(this)

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,10 +26,10 @@ public:
 		this->SetSyntax(_("\037channel\037 CLEAR [ALL]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &target = params[0];
-		const Anope::string &modes = params[1];
+		const Warden::string &target = params[0];
+		const Warden::string &modes = params[1];
 
 		Reference<Channel> c = Channel::Find(target);
 		if (!c)
@@ -69,9 +70,9 @@ public:
 		else
 		{
 			spacesepstream sep(modes + (params.size() > 2 ? " " + params[2] : ""));
-			Anope::string mode;
+			Warden::string mode;
 			int add = 1;
-			Anope::string log_modes, log_params;
+			Warden::string log_modes, log_params;
 
 			sep.GetToken(mode);
 			for (unsigned i = 0; i < mode.length() && c; ++i)
@@ -95,10 +96,10 @@ public:
 				if (!cm)
 					continue;
 
-				Anope::string param, param_log;
+				Warden::string param, param_log;
 				if (cm->type != MODE_REGULAR)
 				{
-					if (cm->type == MODE_PARAM && !add && anope_dynamic_static_cast<ChannelModeParam *>(cm)->minus_no_arg)
+					if (cm->type == MODE_PARAM && !add && warden_dynamic_static_cast<ChannelModeParam *>(cm)->minus_no_arg)
 						;
 					else if (!sep.GetToken(param))
 						continue;
@@ -129,7 +130,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -153,10 +154,10 @@ public:
 		this->SetSyntax(_("\037user\037 \037modes\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &target = params[0];
-		const Anope::string &modes = params[1];
+		const Warden::string &target = params[0];
+		const Warden::string &modes = params[1];
 
 		User *u2 = User::Find(target, true);
 		if (!u2)
@@ -172,7 +173,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -191,7 +192,7 @@ class OSMode final
 	CommandOSUMode commandosumode;
 
 public:
-	OSMode(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSMode(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandosmode(this), commandosumode(this)
 	{
 

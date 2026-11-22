@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,7 +20,7 @@
 #include "account.h"
 #include "protocol.h"
 
-Privilege::Privilege(const Anope::string &n, const Anope::string &d, int r) : name(n), desc(d), rank(r)
+Privilege::Privilege(const Warden::string &n, const Warden::string &d, int r) : name(n), desc(d), rank(r)
 {
 }
 
@@ -57,7 +58,7 @@ void PrivilegeManager::RemovePrivilege(Privilege &p)
 	}
 }
 
-Privilege *PrivilegeManager::FindPrivilege(const Anope::string &name)
+Privilege *PrivilegeManager::FindPrivilege(const Warden::string &name)
 {
 	for (unsigned i = Privileges.size(); i > 0; --i)
 		if (Privileges[i - 1].name.equals_ci(name))
@@ -75,7 +76,7 @@ void PrivilegeManager::ClearPrivileges()
 	Privileges.clear();
 }
 
-AccessProvider::AccessProvider(Module *o, const Anope::string &n) : Service(o, "AccessProvider", n)
+AccessProvider::AccessProvider(Module *o, const Warden::string &n) : Service(o, "AccessProvider", n)
 {
 	Providers.push_back(this);
 }
@@ -94,13 +95,13 @@ const std::list<AccessProvider *>& AccessProvider::GetProviders()
 	return Providers;
 }
 
-void AccessProvider::SendAccess(CommandSource &source, const Anope::string& pname)
+void AccessProvider::SendAccess(CommandSource &source, const Warden::string& pname)
 {
 	auto *p = PrivilegeManager::FindPrivilege(pname);
 	if (!p)
 		return; // Privilege missing.
 
-	Anope::map<Anope::string> access;
+	Warden::map<Warden::string> access;
 	for (auto *service : Service::GetServices("AccessProvider"))
 	{
 		auto *accessprovider = static_cast<AccessProvider *>(service);
@@ -140,7 +141,7 @@ ChanAccess::~ChanAccess()
 	}
 }
 
-void ChanAccess::SetMask(const Anope::string &m, ChannelInfo *c)
+void ChanAccess::SetMask(const Warden::string &m, ChannelInfo *c)
 {
 	if (*nc != NULL)
 		nc->RemoveChannelReference(this->ci);
@@ -171,7 +172,7 @@ void ChanAccess::SetMask(const Anope::string &m, ChannelInfo *c)
 	}
 }
 
-const Anope::string &ChanAccess::Mask() const
+const Warden::string &ChanAccess::Mask() const
 {
 	if (nc)
 		return nc->display;
@@ -212,7 +213,7 @@ Serializable *ChanAccess::Type::Unserialize(Serializable *obj, Serialize::Data &
 
 	ChanAccess *access;
 	if (obj)
-		access = anope_dynamic_static_cast<ChanAccess *>(obj);
+		access = warden_dynamic_static_cast<ChanAccess *>(obj);
 	else
 		access = aprovider->Create();
 	access->ci = ci;
@@ -239,10 +240,10 @@ bool ChanAccess::Matches(const User *u, const NickCore *acc, ChannelInfo *&next)
 
 	if (u)
 	{
-		bool is_mask = this->mask.find_first_of("!@?*") != Anope::string::npos;
-		if (is_mask && Anope::Match(u->nick, this->mask))
+		bool is_mask = this->mask.find_first_of("!@?*") != Warden::string::npos;
+		if (is_mask && Warden::Match(u->nick, this->mask))
 			return true;
-		else if (Anope::Match(u->GetDisplayedMask(), this->mask))
+		else if (Warden::Match(u->GetDisplayedMask(), this->mask))
 			return true;
 	}
 
@@ -250,7 +251,7 @@ bool ChanAccess::Matches(const User *u, const NickCore *acc, ChannelInfo *&next)
 	{
 		for (auto *na : *acc->aliases)
 		{
-			if (Anope::Match(na->nick, this->mask))
+			if (Warden::Match(na->nick, this->mask))
 				return true;
 		}
 	}
@@ -314,7 +315,7 @@ AccessGroup::AccessGroup()
 	this->super_admin = this->founder = false;
 }
 
-static bool HasPriv(const ChanAccess::Path &path, const Anope::string &name)
+static bool HasPriv(const ChanAccess::Path &path, const Warden::string &name)
 {
 	if (path.empty())
 		return false;
@@ -331,7 +332,7 @@ static bool HasPriv(const ChanAccess::Path &path, const Anope::string &name)
 	return true;
 }
 
-bool AccessGroup::HasPriv(const Anope::string &name) const
+bool AccessGroup::HasPriv(const Warden::string &name) const
 {
 	if (this->super_admin)
 		return true;

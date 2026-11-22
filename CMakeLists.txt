@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.20 FATAL_ERROR)
 
 # Set the project as C++ primarily with C for the vendored libraries
-project(Anope CXX C)
+project(Warden CXX C)
 
 # Force the locale to C for later uses of things like gcc so the messages come up in English, not the user's default language
 set(ENV{LC_ALL} C)
@@ -59,14 +59,14 @@ endif()
 
 # Use the following directories as includes
 include_directories(
-  ${Anope_BINARY_DIR}/include
-  ${Anope_SOURCE_DIR}/include
-  ${Anope_SOURCE_DIR}/vendor
+  ${Warden_BINARY_DIR}/include
+  ${Warden_SOURCE_DIR}/include
+  ${Warden_SOURCE_DIR}/vendor
 )
 
 if(WIN32)
-  # If using Windows, include the windows specific folder for anope_windows.h
-  include_directories(${Anope_SOURCE_DIR}/src/win32)
+  # If using Windows, include the windows specific folder for warden_windows.h
+  include_directories(${Warden_SOURCE_DIR}/src/win32)
 endif()
 
 # If using Visual Studio, set the C++ flags accordingly
@@ -92,7 +92,7 @@ if(CMAKE_THREAD_LIBS_INIT)
   link_libraries(${CMAKE_THREAD_LIBS_INIT})
 endif()
 
-# On Windows, also link Anope to the memory library and Winsock.
+# On Windows, also link Warden to the memory library and Winsock.
 if(WIN32)
   link_libraries("Ws2_32")
   if(MSVC)
@@ -101,7 +101,7 @@ if(WIN32)
 endif()
 
 if(NOT PROGRAM_NAME)
-  set(PROGRAM_NAME anope)
+  set(PROGRAM_NAME warden)
 endif()
 
 # If we are not using Visual Studio, we'll run the following checks
@@ -144,11 +144,11 @@ if(NOT WIN32 AND RUNGROUP)
   find_program(CHMOD "chmod" REQUIRED)
 endif()
 
-# If a INSTDIR was passed in to CMake, use it as the install prefix, otherwise set the default install prefix to the anope directory under the user's home directory
+# If a INSTDIR was passed in to CMake, use it as the install prefix, otherwise set the default install prefix to the warden directory under the user's home directory
 if(INSTDIR)
   set(CMAKE_INSTALL_PREFIX "${INSTDIR}")
 elseif(NOT CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/anope-${VERSION_MAJOR}-${VERSION_MINOR}")
+  set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/warden-${VERSION_MAJOR}-${VERSION_MINOR}")
 endif()
 
 function(configure_path VARIABLE DEFAULT)
@@ -185,7 +185,7 @@ configure_path(LOG_DIR "logs")
 
 # Version number processing
 # Find all lines in src/version.sh that start with VERSION_
-file(STRINGS ${Anope_SOURCE_DIR}/src/version.sh VERSIONS REGEX "^VERSION_")
+file(STRINGS ${Warden_SOURCE_DIR}/src/version.sh VERSIONS REGEX "^VERSION_")
 # Iterate through the strings found
 foreach(VERSION_STR ${VERSIONS})
   string(REGEX REPLACE "^VERSION_([A-Z]+)=\"?([^\"]*)\"?$" "\\1;\\2" VERSION_OUT ${VERSION_STR})
@@ -201,9 +201,9 @@ endforeach()
 set(VERSION_BUILD 0)
 
 # Only change the build number if version.h exists
-if(EXISTS "${Anope_SOURCE_DIR}/include/version.h")
+if(EXISTS "${Warden_SOURCE_DIR}/include/version.h")
   # Attempt to read the build number from include/version.h
-  file(STRINGS ${Anope_SOURCE_DIR}/src/version.sh VERSIONS REGEX "^#define VERSION_BUILD")
+  file(STRINGS ${Warden_SOURCE_DIR}/src/version.sh VERSIONS REGEX "^#define VERSION_BUILD")
   foreach(VERSION_STR ${VERSIONS})
     # Get the length of the string
     string(LENGTH ${VERSION_STR} VERSION_LEN)
@@ -226,7 +226,7 @@ set(VERSION_FULL_NOBUILD "${VERSION_DOTTED_NOBUILD}${VERSION_EXTRA}")
 # Only do the following for Windows
 if(WIN32)
   # Generate the win32.rc file using the above variables
-  configure_file(${Anope_SOURCE_DIR}/src/win32/win32.rc.cmake ${Anope_BINARY_DIR}/src/win32/win32.rc)
+  configure_file(${Warden_SOURCE_DIR}/src/win32/win32.rc.cmake ${Warden_BINARY_DIR}/src/win32/win32.rc)
 endif()
 
 # At install time, create the following additional directories
@@ -242,7 +242,7 @@ if(NOT WIN32 AND RUNGROUP)
 endif()
 # On Windows platforms, install extra files
 if(WIN32)
-  install(FILES ${Anope_SOURCE_DIR}/src/win32/anope.bat
+  install(FILES ${Warden_SOURCE_DIR}/src/win32/warden.bat
     DESTINATION ${BIN_DIR}
   )
 endif()
@@ -252,18 +252,18 @@ install(CODE "file(REMOVE_RECURSE \"$ENV{DESTDIR}${ABSOLUTE_MODULE_DIR}\")")
 # Only process the CPack section if we have CPack
 if(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
   # Various options for CPack
-  set(CPACK_PACKAGE_NAME "Anope IRC Services")
-  set(CPACK_PACKAGE_VENDOR "Anope Team")
+  set(CPACK_PACKAGE_NAME "Warden IRC Services")
+  set(CPACK_PACKAGE_VENDOR "Warden Team")
   set(CPACK_PACKAGE_VERSION_MAJOR ${VERSION_MAJOR})
   set(CPACK_PACKAGE_VERSION_MINOR ${VERSION_MINOR})
   set(CPACK_PACKAGE_VERSION_PATCH "${VERSION_PATCH}${VERSION_EXTRA}")
-  set(CPACK_PACKAGE_FILE_NAME "anope-${VERSION_FULL_NOBUILD}")
-  set(CPACK_RESOURCE_FILE_LICENSE "${Anope_SOURCE_DIR}/docs/LICENSE.txt")
+  set(CPACK_PACKAGE_FILE_NAME "warden-${VERSION_FULL_NOBUILD}")
+  set(CPACK_RESOURCE_FILE_LICENSE "${Warden_SOURCE_DIR}/docs/LICENSE.txt")
   # The following doesn't actually do anything. :(
-  #set(CPACK_RESOURCE_FILE_README "${Anope_SOURCE_DIR}/docs/README")
+  #set(CPACK_RESOURCE_FILE_README "${Warden_SOURCE_DIR}/docs/README")
   # The following is primarily for NSIS
   if(WIN32)
-    # Get the filename of the Anope binary, to use later
+    # Get the filename of the Warden binary, to use later
     set(SERVICES_BINARY "bin\\\\${PROGRAM_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
     # By default, do not warn when built on machines using only VS Express:
     IF(NOT DEFINED CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS)
@@ -272,24 +272,24 @@ if(EXISTS "${CMAKE_ROOT}/Modules/CPack.cmake")
     # Also for Windows, include installing the MSVCRT library
     include(InstallRequiredSystemLibraries)
     set(CPACK_GENERATOR "NSIS")
-    set(CPACK_PACKAGE_INSTALL_DIRECTORY "Anope")
+    set(CPACK_PACKAGE_INSTALL_DIRECTORY "Warden")
     set(CPACK_PACKAGE_EXECUTABLES "")
     set(CPACK_NSIS_MENU_LINKS
-      "${SERVICES_BINARY}" "Anope IRC Services"
-      "bin\\\\anope.bat\\\" \\\"-debug -nofork" "Anope IRC Services (Debug and Window Logging)"
-      "bin\\\\anope.bat\\\" \\\"-nofork" "Anope IRC Services (Window Logging)"
-      "bin\\\\anope.bat\\\" \\\"-nothird" "Anope IRC Services (No Third Party Modules)"
-      "https://www.anope.org/" "Anope Web Site"
+      "${SERVICES_BINARY}" "Warden IRC Services"
+      "bin\\\\warden.bat\\\" \\\"-debug -nofork" "Warden IRC Services (Debug and Window Logging)"
+      "bin\\\\warden.bat\\\" \\\"-nofork" "Warden IRC Services (Window Logging)"
+      "bin\\\\warden.bat\\\" \\\"-nothird" "Warden IRC Services (No Third Party Modules)"
+      "https://github.com/TehPeGaSuS/warden" "Warden Web Site"
     )
     # The following doesn't work, but a bug report has been filed about it
     #set(CPACK_CREATE_DESKTOP_LINK_${SERVICES_BINARY} TRUE)
-    set(CPACK_NSIS_MUI_ICON "${Anope_SOURCE_DIR}/src\\\\win32\\\\anope-icon.ico")
-    set(CPACK_NSIS_MUI_UNIICON "${Anope_SOURCE_DIR}/src\\\\win32\\\\anope-icon.ico")
+    set(CPACK_NSIS_MUI_ICON "${Warden_SOURCE_DIR}/src\\\\win32\\\\warden-icon.ico")
+    set(CPACK_NSIS_MUI_UNIICON "${Warden_SOURCE_DIR}/src\\\\win32\\\\warden-icon.ico")
     set(CPACK_NSIS_INSTALLED_ICON_NAME "${SERVICES_BINARY}")
-    set(CPACK_NSIS_URL_INFO_ABOUT "https://www.anope.org/")
+    set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/TehPeGaSuS/warden")
     set(CPACK_NSIS_COMPRESSOR "/SOLID lzma")
   endif()
-  set(CPACK_SOURCE_PACKAGE_FILE_NAME "anope-${VERSION_FULL_NOBUILD}-source")
+  set(CPACK_SOURCE_PACKAGE_FILE_NAME "warden-${VERSION_FULL_NOBUILD}-source")
   set(CPACK_SOURCE_GENERATOR "TGZ")
   set(CPACK_MONOLITHIC_INSTALL TRUE)
   include(CPack)

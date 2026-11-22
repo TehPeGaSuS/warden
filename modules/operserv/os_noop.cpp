@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,10 +26,10 @@ public:
 		this->SetSyntax(_("REVOKE \037server\037"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[0];
-		const Anope::string &server = params[1];
+		const Warden::string &cmd = params[0];
+		const Warden::string &server = params[1];
 
 		Server *s = Server::Find(server, true);
 		if (s == NULL)
@@ -39,12 +40,12 @@ public:
 		{
 			/* Remove the O:lines */
 			IRCD->SendSVSNOOP(s, true);
-			s->Extend<Anope::string>("noop", source.GetNick());
+			s->Extend<Warden::string>("noop", source.GetNick());
 
 			Log(LOG_ADMIN, source, this) << "SET on " << s->GetName();
 			source.Reply(_("All operators from \002%s\002 have been removed."), s->GetName().c_str());
 
-			Anope::string reason = "NOOP command used by " + source.GetNick();
+			Warden::string reason = "NOOP command used by " + source.GetNick();
 			/* Kill all the IRCops of the server */
 			for (const auto &[_, u2] : UserListByNick)
 			{
@@ -54,7 +55,7 @@ public:
 		}
 		else if (cmd.equals_ci("REVOKE"))
 		{
-			s->Shrink<Anope::string>("noop");
+			s->Shrink<Warden::string>("noop");
 			IRCD->SendSVSNOOP(s, false);
 			Log(LOG_ADMIN, source, this) << "REVOKE on " << s->GetName();
 			source.Reply(_("All O:lines of \002%s\002 have been reset."), s->GetName().c_str());
@@ -63,7 +64,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -81,22 +82,22 @@ class OSNOOP final
 	: public Module
 {
 	CommandOSNOOP commandosnoop;
-	PrimitiveExtensibleItem<Anope::string> noop;
+	PrimitiveExtensibleItem<Warden::string> noop;
 
 public:
-	OSNOOP(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	OSNOOP(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		commandosnoop(this), noop(this, "noop")
 	{
 		if (!IRCD || !IRCD->CanSVSNOOP)
 			throw ModuleException("Your IRCd does not support SVSNOOP.");
 	}
 
-	void OnUserModeSet(const MessageSource &, User *u, const Anope::string &mname) override
+	void OnUserModeSet(const MessageSource &, User *u, const Warden::string &mname) override
 	{
-		Anope::string *setter;
+		Warden::string *setter;
 		if (mname == "OPER" && (setter = noop.Get(u->server)))
 		{
-			Anope::string reason = "NOOP command used by " + *setter;
+			Warden::string reason = "NOOP command used by " + *setter;
 			BotInfo *OperServ = Config->GetClient("OperServ");
 			u->Kill(OperServ, reason);
 		}

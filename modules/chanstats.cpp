@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -25,7 +26,7 @@ public:
 		this->SetSyntax(_("\037channel\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
 		if (!ci)
@@ -61,7 +62,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -74,12 +75,12 @@ class CommandNSSetChanstats
 	: public Command
 {
 public:
-	CommandNSSetChanstats(Module *creator, const Anope::string &sname = "nickserv/set/chanstats", size_t min = 1 ) : Command(creator, sname, min, min + 1)
+	CommandNSSetChanstats(Module *creator, const Warden::string &sname = "nickserv/set/chanstats", size_t min = 1 ) : Command(creator, sname, min, min + 1)
 	{
 		this->SetDesc(_("Turn chanstats statistics on or off"));
 		this->SetSyntax("{ON | OFF}");
 	}
-	void Run(CommandSource &source, const Anope::string &user, const Anope::string &param, bool saset = false)
+	void Run(CommandSource &source, const Warden::string &user, const Warden::string &param, bool saset = false)
 	{
 		NickAlias *na = NickAlias::Find(user);
 		if (!na)
@@ -115,12 +116,12 @@ public:
 			this->OnSyntaxError(source, "CHANSTATS");
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, source.nc->display, params[0]);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -139,12 +140,12 @@ public:
 		this->SetSyntax(_("\037nickname\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->Run(source, params[0], params[1], true);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -185,8 +186,8 @@ class MChanstats final
 	ServiceReference<SQL::Provider> sql;
 	MySQLInterface sqlinterface;
 	SQL::Query query;
-	Anope::string SmileysHappy, SmileysSad, SmileysOther, prefix;
-	std::vector<Anope::string> TableList, ProcedureList, EventList;
+	Warden::string SmileysHappy, SmileysSad, SmileysOther, prefix;
+	std::vector<Warden::string> TableList, ProcedureList, EventList;
 
 	void RunQuery(const SQL::Query &q)
 	{
@@ -194,28 +195,28 @@ class MChanstats final
 			sql->Run(&sqlinterface, q);
 	}
 
-	static size_t CountWords(const Anope::string &msg)
+	static size_t CountWords(const Warden::string &msg)
 	{
 		size_t words = 0;
-		for (size_t pos = 0; pos != Anope::string::npos; pos = msg.find(" ", pos+1))
+		for (size_t pos = 0; pos != Warden::string::npos; pos = msg.find(" ", pos+1))
 			words++;
 		return words;
 	}
-	static size_t CountSmileys(const Anope::string &msg, const Anope::string &smileylist)
+	static size_t CountSmileys(const Warden::string &msg, const Warden::string &smileylist)
 	{
 		size_t smileys = 0;
 		spacesepstream sep(smileylist);
-		Anope::string buf;
+		Warden::string buf;
 
 		while (sep.GetToken(buf) && !buf.empty())
 		{
-			for (size_t pos = msg.find(buf, 0); pos != Anope::string::npos; pos = msg.find(buf, pos+1))
+			for (size_t pos = msg.find(buf, 0); pos != Warden::string::npos; pos = msg.find(buf, pos+1))
 				smileys++;
 		}
 		return smileys;
 	}
 
-	Anope::string GetDisplay(User *u)
+	Warden::string GetDisplay(User *u)
 	{
 		if (u && u->IsIdentified() && ns_stats.HasExt(u->Account()))
 			return u->Account()->display;
@@ -234,7 +235,7 @@ class MChanstats final
 		SQL::Result r = this->sql->RunQuery(this->sql->GetTables(prefix));
 		for (int i = 0; i < r.Rows(); ++i)
 		{
-			const std::map<Anope::string, Anope::string> &map = r.Row(i);
+			const std::map<Warden::string, Warden::string> &map = r.Row(i);
 			for (auto it = map.begin(); it != map.end(); ++it)
 				TableList.push_back(it->second);
 		}
@@ -252,7 +253,7 @@ class MChanstats final
 		}
 	}
 
-	bool HasTable(const Anope::string &table)
+	bool HasTable(const Warden::string &table)
 	{
 		for (auto it = TableList.begin(); it != TableList.end(); ++it)
 			if (*it == table)
@@ -260,7 +261,7 @@ class MChanstats final
 		return false;
 	}
 
-	bool HasProcedure(const Anope::string &table)
+	bool HasProcedure(const Warden::string &table)
 	{
 		for (auto it = ProcedureList.begin(); it != ProcedureList.end(); ++it)
 			if (*it == table)
@@ -268,7 +269,7 @@ class MChanstats final
 		return false;
 	}
 
-	bool HasEvent(const Anope::string &table)
+	bool HasEvent(const Warden::string &table)
 	{
 		for (auto it = EventList.begin(); it != EventList.end(); ++it)
 			if (*it == table)
@@ -496,7 +497,7 @@ class MChanstats final
 
 
 public:
-	MChanstats(const Anope::string &modname, const Anope::string &creator)
+	MChanstats(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, EXTRA | VENDOR)
 		, cs_stats(this, "CS_STATS")
 		, ns_stats(this, "NS_STATS")
@@ -511,11 +512,11 @@ public:
 	void OnReload(Configuration::Conf &conf) override
 	{
 		const auto &block = conf.GetModule(this);
-		prefix = block.Get<const Anope::string>("prefix", "chanstats21_");
-		SmileysHappy = block.Get<const Anope::string>("SmileysHappy");
-		SmileysSad = block.Get<const Anope::string>("SmileysSad");
-		SmileysOther = block.Get<const Anope::string>("SmileysOther");
-		this->sql.SetServiceName(block.Get<const Anope::string>("engine"));
+		prefix = block.Get<const Warden::string>("prefix", "chanstats21_");
+		SmileysHappy = block.Get<const Warden::string>("SmileysHappy");
+		SmileysSad = block.Get<const Warden::string>("SmileysSad");
+		SmileysOther = block.Get<const Warden::string>("SmileysOther");
+		this->sql.SetServiceName(block.Get<const Warden::string>("engine"));
 		if (sql)
 			this->CheckTables();
 		else
@@ -538,7 +539,7 @@ public:
 			info.AddOption(_("Chanstats"));
 	}
 
-	void OnTopicUpdated(User *source, Channel *c, const Anope::string &user, const Anope::string &topic) override
+	void OnTopicUpdated(User *source, Channel *c, const Warden::string &user, const Warden::string &topic) override
 	{
 		if (!source || !source->IsIdentified() || !c->ci || !cs_stats.HasExt(c->ci))
 			return;
@@ -554,7 +555,7 @@ public:
 		return EVENT_CONTINUE;
 	}
 
-	EventReturn OnChannelModeUnset(Channel *c, MessageSource &setter, ChannelMode *, const Anope::string &param) override
+	EventReturn OnChannelModeUnset(Channel *c, MessageSource &setter, ChannelMode *, const Warden::string &param) override
 	{
 		this->OnModeChange(c, setter.GetUser());
 		return EVENT_CONTINUE;
@@ -573,7 +574,7 @@ private:
 	}
 
 public:
-	void OnPreUserKicked(const MessageSource &source, Membership *memb, const Anope::string &kickmsg) override
+	void OnPreUserKicked(const MessageSource &source, Membership *memb, const Warden::string &kickmsg) override
 	{
 		if (!memb->chan->ci || !cs_stats.HasExt(memb->chan->ci))
 			return;
@@ -589,7 +590,7 @@ public:
 		this->RunQuery(query);
 	}
 
-	void OnPrivmsg(User *u, Channel *c, Anope::string &msg, const Anope::map<Anope::string> &tags) override
+	void OnPrivmsg(User *u, Channel *c, Warden::string &msg, const Warden::map<Warden::string> &tags) override
 	{
 		if (!c->ci || !cs_stats.HasExt(c->ci))
 			return;
@@ -598,7 +599,7 @@ public:
 		size_t words = this->CountWords(msg);
 
 		size_t action = 0;
-		if (msg.find("\01ACTION")!=Anope::string::npos)
+		if (msg.find("\01ACTION")!=Warden::string::npos)
 		{
 			action = 1;
 			letters = letters - 7;
@@ -637,7 +638,7 @@ public:
 		this->RunQuery(query);
 	}
 
-	void OnChangeCoreDisplay(NickCore *nc, const Anope::string &newdisplay) override
+	void OnChangeCoreDisplay(NickCore *nc, const Warden::string &newdisplay) override
 	{
 		query = "CALL " + prefix + "chanstats_proc_chgdisplay(@old_display@, @new_display@);";
 		query.SetValue("old_display", nc->display);

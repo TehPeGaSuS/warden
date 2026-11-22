@@ -1,9 +1,10 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 // Copyright (C) 2014 Attila Molnar <attilamolnar@hush.com>
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -34,7 +35,7 @@ class MySSLService final
 	: public SSLService
 {
 public:
-	MySSLService(Module *o, const Anope::string &n);
+	MySSLService(Module *o, const Warden::string &n);
 
 	/** Initialize a socket to use SSL
 	 * @param s The socket
@@ -85,7 +86,7 @@ public:
 	 * @param target IP to connect to
 	 * @param port to connect to
 	 */
-	void Connect(ConnectionSocket *s, const Anope::string &target, int port) override;
+	void Connect(ConnectionSocket *s, const Warden::string &target, int port) override;
 
 	/** Called to potentially finish a pending connection
 	 * @param s The socket
@@ -107,14 +108,14 @@ namespace GnuTLS
 		~Init() { gnutls_global_deinit(); }
 	};
 
-	/** Used to create a gnutls_datum_t* from an Anope::string
+	/** Used to create a gnutls_datum_t* from an Warden::string
 	 */
 	class Datum final
 	{
 		gnutls_datum_t datum;
 
 	public:
-		Datum(const Anope::string &dat)
+		Datum(const Warden::string &dat)
 		{
 			datum.data = reinterpret_cast<unsigned char *>(const_cast<char *>(dat.data()));
 			datum.size = static_cast<unsigned int>(dat.length());
@@ -128,7 +129,7 @@ namespace GnuTLS
 		gnutls_dh_params_t dh_params = nullptr;
 
 	public:
-		void Import(const Anope::string &dhstr)
+		void Import(const Warden::string &dhstr)
 		{
 			if (dh_params != NULL)
 			{
@@ -182,11 +183,11 @@ namespace GnuTLS
 
 	public:
 		/** Import */
-		X509Key(const Anope::string &keystr)
+		X509Key(const Warden::string &keystr)
 		{
 			int ret = gnutls_x509_privkey_import(key.key, Datum(keystr).get(), GNUTLS_X509_FMT_PEM);
 			if (ret < 0)
-				throw ConfigException("Error loading private key: " + Anope::string(gnutls_strerror(ret)));
+				throw ConfigException("Error loading private key: " + Warden::string(gnutls_strerror(ret)));
 		}
 
 		gnutls_x509_privkey_t &get() { return key.key; }
@@ -198,7 +199,7 @@ namespace GnuTLS
 
 	public:
 		/** Import */
-		X509CertList(const Anope::string &certstr)
+		X509CertList(const Warden::string &certstr)
 		{
 			unsigned int certcount = 3;
 			certs.resize(certcount);
@@ -214,7 +215,7 @@ namespace GnuTLS
 			}
 
 			if (ret < 0)
-				throw ConfigException("Unable to load certificates" + Anope::string(gnutls_strerror(ret)));
+				throw ConfigException("Unable to load certificates" + Warden::string(gnutls_strerror(ret)));
 
 			// Resize the vector to the actual number of certs because we rely on its size being correct
 			// when deallocating the certs
@@ -237,10 +238,10 @@ namespace GnuTLS
 		gnutls_certificate_credentials_t cred;
 		DHParams dh;
 
-		static Anope::string LoadFile(const Anope::string &filename)
+		static Warden::string LoadFile(const Warden::string &filename)
 		{
 			std::ifstream ifs(filename.c_str());
-			const Anope::string ret((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
+			const Warden::string ret((std::istreambuf_iterator<char>(ifs)), std::istreambuf_iterator<char>());
 			return ret;
 		}
 
@@ -250,7 +251,7 @@ namespace GnuTLS
 		X509CertList certs;
 		X509Key key;
 
-		X509CertCredentials(const Anope::string &certfile, const Anope::string &keyfile)
+		X509CertCredentials(const Warden::string &certfile, const Warden::string &keyfile)
 			: certs(LoadFile(certfile)), key(LoadFile(keyfile))
 		{
 			if (gnutls_certificate_allocate_credentials(&cred) < 0)
@@ -277,9 +278,9 @@ namespace GnuTLS
 			gnutls_set_default_priority(sess);
 		}
 
-		void SetDH(const Anope::string &dhfile)
+		void SetDH(const Warden::string &dhfile)
 		{
-			const Anope::string dhdata = LoadFile(dhfile);
+			const Warden::string dhdata = LoadFile(dhfile);
 			dh.Import(dhdata);
 			gnutls_certificate_set_dh_params(cred, dh.get());
 		}
@@ -303,7 +304,7 @@ public:
 	GnuTLS::X509CertCredentials *cred = nullptr;
 	MySSLService service;
 
-	GnuTLSModule(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, EXTRA | VENDOR), service(this, "ssl")
+	GnuTLSModule(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, EXTRA | VENDOR), service(this, "ssl")
 	{
 		me = this;
 		this->SetPermanent(true);
@@ -326,9 +327,9 @@ public:
 			cred->decrref();
 	}
 
-	static void CheckFile(const Anope::string &filename)
+	static void CheckFile(const Warden::string &filename)
 	{
-		if (!Anope::IsFile(filename))
+		if (!Warden::IsFile(filename))
 		{
 			Log() << "File does not exist: " << filename;
 			throw ConfigException("Error loading certificate/private key");
@@ -339,9 +340,9 @@ public:
 	{
 		const auto &config = conf.GetModule(this);
 
-		const Anope::string certfile = Anope::ExpandConfig(config.Get<const Anope::string>("cert", "fullchain.pem"));
-		const Anope::string keyfile = Anope::ExpandConfig(config.Get<const Anope::string>("key", "privkey.pem"));
-		const Anope::string dhfile = Anope::ExpandConfig(config.Get<const Anope::string>("dh", "dhparams.pem"));
+		const Warden::string certfile = Warden::ExpandConfig(config.Get<const Warden::string>("cert", "fullchain.pem"));
+		const Warden::string keyfile = Warden::ExpandConfig(config.Get<const Warden::string>("key", "privkey.pem"));
+		const Warden::string dhfile = Warden::ExpandConfig(config.Get<const Warden::string>("dh", "dhparams.pem"));
 
 		CheckFile(certfile);
 		CheckFile(keyfile);
@@ -349,7 +350,7 @@ public:
 		GnuTLS::X509CertCredentials *newcred = new GnuTLS::X509CertCredentials(certfile, keyfile);
 
 		// DH params is not mandatory
-		if (Anope::IsFile(dhfile))
+		if (Warden::IsFile(dhfile))
 		{
 			try
 			{
@@ -373,7 +374,7 @@ public:
 
 	void OnPreServerConnect() override
 	{
-		const auto &config = Config->GetBlock("uplink", Anope::CurrentUplink);
+		const auto &config = Config->GetBlock("uplink", Warden::CurrentUplink);
 
 		if (config.Get<bool>("ssl"))
 		{
@@ -382,7 +383,7 @@ public:
 	}
 };
 
-MySSLService::MySSLService(Module *o, const Anope::string &n) : SSLService(o, n)
+MySSLService::MySSLService(Module *o, const Warden::string &n) : SSLService(o, n)
 {
 }
 
@@ -464,11 +465,11 @@ ClientSocket *SSLSocketIO::Accept(ListenSocket *s)
 #endif
 
 	if (newsock < 0 || newsock == INVALID_SOCKET)
-		throw SocketException("Unable to accept connection: " + Anope::LastError());
+		throw SocketException("Unable to accept connection: " + Warden::LastError());
 
 	ClientSocket *newsocket = s->OnAccept(newsock, conaddr);
 	me->service.Init(newsocket);
-	SSLSocketIO *io = anope_dynamic_static_cast<SSLSocketIO *>(newsocket->io);
+	SSLSocketIO *io = warden_dynamic_static_cast<SSLSocketIO *>(newsocket->io);
 
 	if (gnutls_init(&io->sess, GNUTLS_SERVER) != GNUTLS_E_SUCCESS)
 		throw SocketException("Unable to initialize SSL socket");
@@ -491,7 +492,7 @@ SocketFlag SSLSocketIO::FinishAccept(ClientSocket *cs)
 	else if (!cs->flags[SF_ACCEPTING])
 		throw SocketException("SSLSocketIO::FinishAccept called for a socket not accepted nor accepting?");
 
-	SSLSocketIO *io = anope_dynamic_static_cast<SSLSocketIO *>(cs->io);
+	SSLSocketIO *io = warden_dynamic_static_cast<SSLSocketIO *>(cs->io);
 
 	int ret = gnutls_handshake(io->sess);
 	if (ret < 0)
@@ -514,7 +515,7 @@ SocketFlag SSLSocketIO::FinishAccept(ClientSocket *cs)
 		}
 		else
 		{
-			cs->OnError(Anope::string(gnutls_strerror(ret)));
+			cs->OnError(Warden::string(gnutls_strerror(ret)));
 			cs->flags[SF_DEAD] = true;
 			cs->flags[SF_ACCEPTING] = false;
 			return SF_DEAD;
@@ -531,7 +532,7 @@ SocketFlag SSLSocketIO::FinishAccept(ClientSocket *cs)
 	}
 }
 
-void SSLSocketIO::Connect(ConnectionSocket *s, const Anope::string &target, int port)
+void SSLSocketIO::Connect(ConnectionSocket *s, const Warden::string &target, int port)
 {
 	if (s->io == &NormalSocketIO)
 		throw SocketException("Attempting to connect uninitialized socket with SSL");
@@ -542,9 +543,9 @@ void SSLSocketIO::Connect(ConnectionSocket *s, const Anope::string &target, int 
 	int c = connect(s->GetFD(), &s->conaddr.sa, s->conaddr.size());
 	if (c == -1)
 	{
-		if (Anope::LastErrorCode() != EINPROGRESS)
+		if (Warden::LastErrorCode() != EINPROGRESS)
 		{
-			s->OnError(Anope::LastError());
+			s->OnError(Warden::LastError());
 			s->flags[SF_DEAD] = true;
 			return;
 		}
@@ -571,7 +572,7 @@ SocketFlag SSLSocketIO::FinishConnect(ConnectionSocket *s)
 	else if (!s->flags[SF_CONNECTING])
 		throw SocketException("SSLSocketIO::FinishConnect called for a socket not connected nor connecting?");
 
-	SSLSocketIO *io = anope_dynamic_static_cast<SSLSocketIO *>(s->io);
+	SSLSocketIO *io = warden_dynamic_static_cast<SSLSocketIO *>(s->io);
 
 	if (io->sess == NULL)
 	{
@@ -603,7 +604,7 @@ SocketFlag SSLSocketIO::FinishConnect(ConnectionSocket *s)
 		}
 		else
 		{
-			s->OnError(Anope::string(gnutls_strerror(ret)));
+			s->OnError(Warden::string(gnutls_strerror(ret)));
 			s->flags[SF_CONNECTING] = false;
 			s->flags[SF_DEAD] = true;
 			return SF_DEAD;

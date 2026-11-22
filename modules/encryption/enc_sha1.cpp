@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -38,11 +39,11 @@ public:
 		SHA1Update(&context, input, len);
 	}
 
-	Anope::string Finalize() override
+	Warden::string Finalize() override
 	{
 		unsigned char digest[20];
 		SHA1Final(digest, &context);
-		return Anope::string(reinterpret_cast<const char *>(&digest), sizeof(digest));
+		return Warden::string(reinterpret_cast<const char *>(&digest), sizeof(digest));
 	}
 };
 
@@ -53,7 +54,7 @@ private:
 	Encryption::SimpleProvider<SHA1Context> sha1provider;
 
 public:
-	ESHA1(const Anope::string &modname, const Anope::string &creator)
+	ESHA1(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, DEPRECATED | ENCRYPTION | VENDOR)
 		, sha1provider(this, "sha1", 20, 64)
 	{
@@ -74,20 +75,20 @@ public:
 
 		NickCore *nc = na->nc;
 		auto pos = nc->pass.find(':');
-		if (pos == Anope::string::npos)
+		if (pos == Warden::string::npos)
 			return;
 
-		Anope::string hash_method(nc->pass.begin(), nc->pass.begin() + pos);
+		Warden::string hash_method(nc->pass.begin(), nc->pass.begin() + pos);
 		if (!hash_method.equals_cs("sha1"))
 			return;
 
-		auto enc = "sha1:" + Anope::Hex(sha1provider.Encrypt(req->GetPassword()));
+		auto enc = "sha1:" + Warden::Hex(sha1provider.Encrypt(req->GetPassword()));
 		if (nc->pass.equals_cs(enc))
 		{
 			// If we are NOT the first encryption module we want to re-encrypt
 			// the password with the primary encryption method.
 			if (ModuleManager::FindFirstOf(ENCRYPTION) != this)
-				Anope::Encrypt(req->GetPassword(), nc->pass);
+				Warden::Encrypt(req->GetPassword(), nc->pass);
 			req->Success(this, na);
 		}
 	}

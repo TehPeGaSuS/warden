@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -13,7 +14,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "services.h"
-#include "anope.h"
+#include "warden.h"
 #include "sockets.h"
 #include "socketengine.h"
 #include "logger.h"
@@ -41,7 +42,7 @@ void SocketEngine::Init()
 	kq_fd = kqueue();
 
 	if (kq_fd < 0)
-		throw SocketException("Unable to create kqueue engine: " + Anope::LastError());
+		throw SocketException("Unable to create kqueue engine: " + Warden::LastError());
 
 	change_events.resize(DefaultSize);
 	event_events.resize(DefaultSize);
@@ -80,13 +81,13 @@ void SocketEngine::Process()
 	static timespec kq_timespec = { Config->ReadTimeout, 0 };
 	int total = kevent(kq_fd, &change_events.front(), change_count, &event_events.front(), event_events.size(), &kq_timespec);
 	change_count = 0;
-	Anope::UpdateTime();
+	Warden::UpdateTime();
 
 	/* EINTR can be given if the read timeout expires */
 	if (total == -1)
 	{
 		if (errno != EINTR)
-			Log() << "SockEngine::Process(): error: " << Anope::LastError();
+			Log() << "SockEngine::Process(): error: " << Warden::LastError();
 		return;
 	}
 

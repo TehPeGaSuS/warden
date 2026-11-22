@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -80,19 +81,19 @@ namespace DNS
 
 	struct Question
 	{
-		Anope::string name;
+		Warden::string name;
 		QueryType type = QUERY_NONE;
 		unsigned short qclass = 0;
 
 		Question() = default;
-		Question(const Anope::string &n, QueryType t, unsigned short c = 1) : name(n), type(t), qclass(c) { }
+		Question(const Warden::string &n, QueryType t, unsigned short c = 1) : name(n), type(t), qclass(c) { }
 		inline bool operator==(const Question & other) const { return name == other.name && type == other.type && qclass == other.qclass; }
 
 		struct hash final
 		{
 			size_t operator()(const Question &q) const
 			{
-				return Anope::hash_ci()(q.name);
+				return Warden::hash_ci()(q.name);
 			}
 		};
 	};
@@ -104,7 +105,7 @@ namespace DNS
 			uint16_t priority = UINT16_MAX;
 			uint16_t weight = 0;
 			uint16_t port = 0;
-			Anope::string host;
+			Warden::string host;
 		};
 	}
 
@@ -112,12 +113,12 @@ namespace DNS
 		: Question
 	{
 		unsigned int ttl = 0;
-		Anope::string rdata;
+		Warden::string rdata;
 		std::shared_ptr<void> rdataobj;
 		time_t created;
 
-		ResourceRecord(const Anope::string &n, QueryType t, unsigned short c = 1) : Question(n, t, c), created(Anope::CurTime) { }
-		ResourceRecord(const Question &q) : Question(q), created(Anope::CurTime) { }
+		ResourceRecord(const Warden::string &n, QueryType t, unsigned short c = 1) : Question(n, t, c), created(Warden::CurTime) { }
+		ResourceRecord(const Question &q) : Question(q), created(Warden::CurTime) { }
 	};
 
 	struct Query
@@ -148,7 +149,7 @@ namespace DNS
 		virtual bool HandlePacket(ReplySocket *s, const unsigned char *const data, int len, sockaddrs *from) = 0;
 
 		virtual void UpdateSerial() = 0;
-		virtual void Notify(const Anope::string &zone) = 0;
+		virtual void Notify(const Warden::string &zone) = 0;
 		virtual uint32_t GetSerial() const = 0;
 	};
 
@@ -167,7 +168,7 @@ namespace DNS
 		/* Creator of this request */
 		Module *creator;
 
-		Request(Manager *mgr, Module *c, const Anope::string &addr, QueryType qt, bool cache = false)
+		Request(Manager *mgr, Module *c, const Warden::string &addr, QueryType qt, bool cache = false)
 			: Timer(0)
 			, Question(addr, qt)
 			, manager(mgr)

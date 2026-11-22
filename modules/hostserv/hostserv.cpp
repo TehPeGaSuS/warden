@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -19,7 +20,7 @@ class HostServCore final
 {
 	Reference<BotInfo> HostServ;
 public:
-	HostServCore(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, PSEUDOCLIENT | VENDOR)
+	HostServCore(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, PSEUDOCLIENT | VENDOR)
 	{
 		if (!IRCD || !IRCD->CanSetVHost)
 			throw ModuleException("Your IRCd does not support vhosts");
@@ -27,7 +28,7 @@ public:
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		const Anope::string &hsnick = conf.GetModule(this).Get<const Anope::string>("client");
+		const Warden::string &hsnick = conf.GetModule(this).Get<const Warden::string>("client");
 
 		if (hsnick.empty())
 			throw ConfigException(Module::name + ": <client> must be defined");
@@ -82,13 +83,13 @@ public:
 		this->OnUserLogin(u);
 	}
 
-	void OnUserModeUnset(const MessageSource &setter, User *u, const Anope::string &mname) override
+	void OnUserModeUnset(const MessageSource &setter, User *u, const Warden::string &mname) override
 	{
 		if (mname == "OPER" && Config->GetModule(this).Get<bool>("activate_on_deoper", "yes"))
 			this->OnUserLogin(u);
 	}
 
-	EventReturn OnPreHelp(CommandSource &source, const std::vector<Anope::string> &params) override
+	EventReturn OnPreHelp(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		if (!params.empty() || source.c || source.service != *HostServ)
 			return EVENT_CONTINUE;

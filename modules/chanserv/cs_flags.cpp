@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,8 +22,8 @@
 #define FLAGS_NOT_MIGRATED_1    _("\002%s\002 can not be migrated to the %s access system because they have privileges that you do not.")
 #define FLAGS_NOT_MIGRATED_N   N_("\002%u\002 entry can not be migrated to the %s access system because they have privileges that you do not.", "\002%u\002 entries can not be migrated to the %s access system because they have privileges that you do not.")
 
-static std::map<Anope::string, char> defaultFlags;
-static Anope::map<Anope::string> migrationRequires;
+static std::map<Warden::string, char> defaultFlags;
+static Warden::map<Warden::string> migrationRequires;
 
 class FlagsChanAccess final
 	: public ChanAccess
@@ -34,24 +35,24 @@ public:
 	{
 	}
 
-	bool HasPriv(const Anope::string &priv) const override
+	bool HasPriv(const Warden::string &priv) const override
 	{
 		auto it = defaultFlags.find(priv);
 		return it != defaultFlags.end() && this->flags.count(it->second) > 0;
 	}
 
-	Anope::string AccessSerialize() const override
+	Warden::string AccessSerialize() const override
 	{
-		return Anope::string(this->flags.begin(), this->flags.end());
+		return Warden::string(this->flags.begin(), this->flags.end());
 	}
 
-	void AccessUnserialize(const Anope::string &data) override
+	void AccessUnserialize(const Warden::string &data) override
 	{
 		for (unsigned i = data.length(); i > 0; --i)
 			this->flags.insert(data[i - 1]);
 	}
 
-	static Anope::string DetermineFlags(const ChanAccess *access)
+	static Warden::string DetermineFlags(const ChanAccess *access)
 	{
 		if (access->provider->name == "access/flags")
 			return access->AccessSerialize();
@@ -65,7 +66,7 @@ public:
 		if (buffer.empty())
 			return "(none)";
 		else
-			return Anope::string(buffer.begin(), buffer.end());
+			return Warden::string(buffer.begin(), buffer.end());
 	}
 };
 
@@ -85,11 +86,11 @@ public:
 		return new FlagsChanAccess(this);
 	}
 
-	void GetAccess(CommandSource& source, const Privilege *p, Anope::map<Anope::string> &access) override
+	void GetAccess(CommandSource& source, const Privilege *p, Warden::map<Warden::string> &access) override
 	{
 		auto it = defaultFlags.find(p->name);
 		if (it != defaultFlags.end())
-			access[_("Flag")] = Anope::ToString(it->second);
+			access[_("Flag")] = Warden::ToString(it->second);
 	}
 };
 FlagsAccessProvider *FlagsAccessProvider::ap;
@@ -97,7 +98,7 @@ FlagsAccessProvider *FlagsAccessProvider::ap;
 class CommandCSFlags final
 	: public Command
 {
-	void DoModify(CommandSource &source, ChannelInfo *ci, Anope::string mask, const Anope::string &flags, Anope::string description)
+	void DoModify(CommandSource &source, ChannelInfo *ci, Warden::string mask, const Warden::string &flags, Warden::string description)
 	{
 		if (flags.empty())
 		{
@@ -153,7 +154,7 @@ class CommandCSFlags final
 					return;
 				}
 
-				if (mask.find_first_of("!*@") == Anope::string::npos)
+				if (mask.find_first_of("!*@") == Warden::string::npos)
 				{
 					auto *targ = User::Find(mask, true);
 					if (!targ)
@@ -213,7 +214,7 @@ class CommandCSFlags final
 					}
 
 				current = access;
-				Anope::string cur_flags = FlagsChanAccess::DetermineFlags(access);
+				Warden::string cur_flags = FlagsChanAccess::DetermineFlags(access);
 				for (unsigned j = cur_flags.length(); j > 0; --j)
 					current_flags.insert(cur_flags[j - 1]);
 				break;
@@ -316,12 +317,12 @@ class CommandCSFlags final
 		ServiceReference<AccessProvider> provider("AccessProvider", "access/flags");
 		if (!provider)
 			return;
-		auto *access = anope_dynamic_static_cast<FlagsChanAccess *>(provider->Create());
+		auto *access = warden_dynamic_static_cast<FlagsChanAccess *>(provider->Create());
 		access->SetMask(mask, ci);
 		access->creator = source.GetNick();
 		access->description = current && description.empty() ? current->description : description;
 		access->last_seen = current ? current->last_seen : 0;
-		access->created = Anope::CurTime;
+		access->created = Warden::CurTime;
 		access->flags = current_flags;
 
 		if (current != NULL)
@@ -343,9 +344,9 @@ class CommandCSFlags final
 			source.Reply(_("Flags for \002%s\002 on %s set to +\002%s\002"), access->Mask().c_str(), ci->name.c_str(), access->AccessSerialize().c_str());
 	}
 
-	static void DoList(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	static void DoList(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
-		const Anope::string &arg = params.size() > 2 ? params[2] : "";
+		const Warden::string &arg = params.size() > 2 ? params[2] : "";
 		const auto show_all = params.size() > 3 && params[3].equals_ci("ALL");
 
 		if (!ci->GetAccessCount())
@@ -368,7 +369,7 @@ class CommandCSFlags final
 		for (unsigned i = 0, end = ci->GetAccessCount(); i < end; ++i)
 		{
 			const ChanAccess *access = ci->GetAccess(i);
-			const Anope::string &flags = FlagsChanAccess::DetermineFlags(access);
+			const Warden::string &flags = FlagsChanAccess::DetermineFlags(access);
 
 			if (!arg.empty())
 			{
@@ -376,12 +377,12 @@ class CommandCSFlags final
 				{
 					bool pass = true;
 					for (size_t j = 1; j < arg.length(); ++j)
-						if (flags.find(arg[j]) == Anope::string::npos)
+						if (flags.find(arg[j]) == Warden::string::npos)
 							pass = false;
 					if (!pass)
 						continue;
 				}
-				else if (!Anope::Match(access->Mask(), arg))
+				else if (!Warden::Match(access->Mask(), arg))
 					continue;
 			}
 
@@ -393,11 +394,11 @@ class CommandCSFlags final
 
 			ListFormatter::ListEntry entry;
 			++count;
-			entry["Number"] = Anope::ToString(i + 1);
+			entry["Number"] = Warden::ToString(i + 1);
 			entry["Mask"] = access->Mask();
 			entry["Flags"] = flags;
 			entry["Creator"] = access->creator;
-			entry["Created"] = Anope::strftime(access->created, source.nc, true);
+			entry["Created"] = Warden::strftime(access->created, source.nc, true);
 			entry["Description"] = access->description;
 			list.AddEntry(entry);
 		}
@@ -416,19 +417,19 @@ class CommandCSFlags final
 
 		if (foreign)
 		{
-			const auto full_command = Anope::Format("%s %s LIST %s", source.command.c_str(),
+			const auto full_command = Warden::Format("%s %s LIST %s", source.command.c_str(),
 				ci->name.c_str(), arg.empty() ? "*" : arg.c_str()).nobreak();
 
 			source.Reply(foreign, CHAN_ACCESS_FOREIGN, foreign, full_command.c_str());
 		}
 	}
 
-	void DoMigrate(CommandSource &source, ChannelInfo *ci, const std::vector<Anope::string> &params)
+	void DoMigrate(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
 	{
 		auto override = false;
 
 		unsigned migrated = 0, notmigratable = 0, notmigrated = 0;
-		Anope::string migratedmask, notmigratablemask, notmigratedmask;
+		Warden::string migratedmask, notmigratablemask, notmigratedmask;
 		const auto &entry = params.size() > 2 ? params[2] : "*";
 		for (auto idx = ci->GetAccessCount(); idx > 0; --idx)
 		{
@@ -436,7 +437,7 @@ class CommandCSFlags final
 			if (access->provider->name == "access/flags")
 				continue; // Already using flags.
 
-			if (!Anope::Match(access->Mask(), entry))
+			if (!Warden::Match(access->Mask(), entry))
 				continue; // Not this entry.
 
 			std::set<char> newflags;
@@ -481,7 +482,7 @@ class CommandCSFlags final
 			migrated++;
 			migratedmask = access->Mask();
 
-			auto *newaccess = anope_dynamic_static_cast<FlagsChanAccess *>(FlagsAccessProvider::ap->Create());
+			auto *newaccess = warden_dynamic_static_cast<FlagsChanAccess *>(FlagsAccessProvider::ap->Create());
 			newaccess->SetMask(access->Mask(), ci);
 			newaccess->created = access->created;
 			newaccess->creator = access->creator;
@@ -546,10 +547,10 @@ public:
 		this->SetSyntax(_("\037channel\037 CLEAR"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &chan = params[0];
-		const Anope::string &cmd = params.size() > 1 ? params[1] : "";
+		const Warden::string &chan = params[0];
+		const Warden::string &cmd = params.size() > 1 ? params[1] : "";
 
 		ChannelInfo *ci = ChannelInfo::Find(chan);
 		if (ci == NULL)
@@ -571,7 +572,7 @@ public:
 
 		if (!has_access)
 			source.Reply(ACCESS_DENIED);
-		else if (Anope::ReadOnly && !is_list)
+		else if (Warden::ReadOnly && !is_list)
 			source.Reply(READ_ONLY_MODE);
 		else if (is_list)
 			this->DoList(source, ci, params);
@@ -581,7 +582,7 @@ public:
 			this->DoClear(source, ci);
 		else
 		{
-			Anope::string mask, flags, description;
+			Warden::string mask, flags, description;
 			if (cmd.equals_ci("MODIFY"))
 			{
 				mask = params.size() > 2 ? params[2] : "";
@@ -599,7 +600,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -626,7 +627,7 @@ public:
 			),
 			source.command.nobreak().c_str());
 
-		typedef std::multimap<char, Anope::string, ci::less> reverse_map;
+		typedef std::multimap<char, Warden::string, ci::less> reverse_map;
 		reverse_map reverse;
 		for (auto &[priv, flag] : defaultFlags)
 			reverse.emplace(flag, priv);
@@ -650,7 +651,7 @@ class CSFlags final
 	CommandCSFlags commandcsflags;
 
 public:
-	CSFlags(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	CSFlags(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		accessprovider(this), commandcsflags(this)
 	{
 		this->SetPermanent(true);
@@ -663,17 +664,17 @@ public:
 
 		for (const auto &[_,  priv] : conf.GetBlocks("privilege"))
 		{
-			const Anope::string &pname = priv.Get<const Anope::string>("name");
+			const Warden::string &pname = priv.Get<const Warden::string>("name");
 
 			Privilege *p = PrivilegeManager::FindPrivilege(pname);
 			if (p == NULL)
 				continue;
 
-			const Anope::string &value = priv.Get<const Anope::string>("flag");
+			const Warden::string &value = priv.Get<const Warden::string>("flag");
 			if (value.empty())
 				continue;
 
-			const auto &migration_requires = priv.Get<const Anope::string>("flag_migration_requires");
+			const auto &migration_requires = priv.Get<const Warden::string>("flag_migration_requires");
 			if (!migration_requires.empty())
 				migrationRequires[p->name] = migration_requires;
 

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -44,14 +45,14 @@ struct KickerDataImpl final
 	struct ExtensibleItem final
 		: ::ExtensibleItem<KickerDataImpl>
 	{
-		ExtensibleItem(Module *m, const Anope::string &ename) : ::ExtensibleItem<KickerDataImpl>(m, ename) { }
+		ExtensibleItem(Module *m, const Warden::string &ename) : ::ExtensibleItem<KickerDataImpl>(m, ename) { }
 
 		void ExtensibleSerialize(const Extensible *e, const Serializable *s, Serialize::Data &data) const override
 		{
 			if (s->GetSerializableType()->GetName() != CHANNELINFO_TYPE)
 				return;
 
-			const auto *ci = anope_dynamic_static_cast<const ChannelInfo *>(e);
+			const auto *ci = warden_dynamic_static_cast<const ChannelInfo *>(e);
 			auto *kd = this->Get(ci);
 			if (kd == NULL)
 				return;
@@ -85,7 +86,7 @@ struct KickerDataImpl final
 			if (s->GetSerializableType()->GetName() != CHANNELINFO_TYPE)
 				return;
 
-			auto *ci = anope_dynamic_static_cast<ChannelInfo *>(e);
+			auto *ci = warden_dynamic_static_cast<ChannelInfo *>(e);
 			auto *kd = ci->Require<BotServ::KickerData>(BOTSERV_KICKER_DATA_EXT);
 
 			kd->amsgs = data.Load<bool>("kickerdata:amsgs");
@@ -110,11 +111,11 @@ struct KickerDataImpl final
 			spacesepstream sep(data.Load("ttb"));
 			for (size_t i = 0; i < BotServ::TTB_SIZE; ++i)
 			{
-				Anope::string tok;
+				Warden::string tok;
 				if (!sep.GetToken(tok))
 					break;
 
-				if (auto n = Anope::TryConvert<int16_t>(tok))
+				if (auto n = Warden::TryConvert<int16_t>(tok))
 					kd->ttb[i] = n.value();
 			}
 
@@ -133,19 +134,19 @@ public:
 		this->SetSyntax(_("\037option\037 \037channel\037 {\037ON|OFF\037} [\037settings\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
 		source.Reply(_("Configures bot kickers.  \037option\037 can be one of:"));
 
 		HelpWrapper help;
-		Anope::string this_name = source.command;
+		Warden::string this_name = source.command;
 		for (const auto &[c_name, info] : source.service->commands)
 		{
 			if (c_name.find_ci(this_name + " ") == 0)
@@ -176,23 +177,23 @@ class CommandBSKickBase
 	: public Command
 {
 public:
-	CommandBSKickBase(Module *creator, const Anope::string &cname, int minarg, int maxarg) : Command(creator, cname, minarg, maxarg)
+	CommandBSKickBase(Module *creator, const Warden::string &cname, int minarg, int maxarg) : Command(creator, cname, minarg, maxarg)
 	{
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override = 0;
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override = 0;
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override = 0;
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override = 0;
 
 protected:
-	bool CheckArguments(CommandSource &source, const std::vector<Anope::string> &params, ChannelInfo *&ci)
+	bool CheckArguments(CommandSource &source, const std::vector<Warden::string> &params, ChannelInfo *&ci)
 	{
-		const Anope::string &chan = params[0];
-		const Anope::string &option = params[1];
+		const Warden::string &chan = params[0];
+		const Warden::string &option = params[1];
 
 		ci = ChannelInfo::Find(chan);
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 		else if (ci == NULL)
 			source.Reply(CHAN_X_NOT_REGISTERED, params[0].c_str());
@@ -210,13 +211,13 @@ protected:
 		return false;
 	}
 
-	void Process(CommandSource &source, ChannelInfo *ci, const Anope::string &param, const Anope::string &ttb, size_t ttb_idx, const Anope::string &optname, BotServ::KickerData *kd, bool &val)
+	void Process(CommandSource &source, ChannelInfo *ci, const Warden::string &param, const Warden::string &ttb, size_t ttb_idx, const Warden::string &optname, BotServ::KickerData *kd, bool &val)
 	{
 		if (param.equals_ci("ON"))
 		{
 			if (!ttb.empty())
 			{
-				kd->ttb[ttb_idx] = Anope::Convert<int16_t>(ttb, -1);
+				kd->ttb[ttb_idx] = Warden::Convert<int16_t>(ttb, -1);
 				if (kd->ttb[ttb_idx] < 0)
 				{
 					kd->ttb[ttb_idx] = 0;
@@ -262,7 +263,7 @@ public:
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037} [\037ttb\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci;
 		if (CheckArguments(source, params, ci))
@@ -273,7 +274,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -302,7 +303,7 @@ public:
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037} [\037ttb\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci;
 		if (CheckArguments(source, params, ci))
@@ -314,7 +315,7 @@ public:
 
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -346,7 +347,7 @@ public:
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037} [\037ttb\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci;
 		if (CheckArguments(source, params, ci))
@@ -357,7 +358,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -383,7 +384,7 @@ public:
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037} [\037ttb\037 [\037min\037 [\037percent\037]]]\002"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci;
 		if (!CheckArguments(source, params, ci))
@@ -393,13 +394,13 @@ public:
 
 		if (params[1].equals_ci("ON"))
 		{
-			const Anope::string &ttb = params.size() > 2 ? params[2] : "",
+			const Warden::string &ttb = params.size() > 2 ? params[2] : "",
 				&min = params.size() > 3 ? params[3] : "",
 				&percent = params.size() > 4 ? params[4] : "";
 
 			if (!ttb.empty())
 			{
-				kd->ttb[BotServ::TTB_CAPS] = Anope::Convert<int16_t>(ttb, -1);
+				kd->ttb[BotServ::TTB_CAPS] = Warden::Convert<int16_t>(ttb, -1);
 				if (kd->ttb[BotServ::TTB_CAPS] < 0)
 				{
 					kd->ttb[BotServ::TTB_CAPS] = 0;
@@ -410,11 +411,11 @@ public:
 			else
 				kd->ttb[BotServ::TTB_CAPS] = 0;
 
-			kd->capsmin = Anope::Convert(min, 0);
+			kd->capsmin = Warden::Convert(min, 0);
 			if (kd->capsmin < 1)
 				kd->capsmin = 10;
 
-			kd->capspercent = Anope::Convert(percent, 0);
+			kd->capspercent = Warden::Convert(percent, 0);
 			if (kd->capspercent < 1 || kd->capspercent > 100)
 				kd->capspercent = 25;
 
@@ -447,7 +448,7 @@ public:
 		kd->Check(ci);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -479,7 +480,7 @@ public:
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037} [\037ttb\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci;
 		if (CheckArguments(source, params, ci))
@@ -490,7 +491,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -516,7 +517,7 @@ public:
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037} [\037ttb\037 [\037ln\037 [\037secs\037]]]\002"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci;
 		if (!CheckArguments(source, params, ci))
@@ -526,13 +527,13 @@ public:
 
 		if (params[1].equals_ci("ON"))
 		{
-			const Anope::string &ttb = params.size() > 2 ? params[2] : "",
+			const Warden::string &ttb = params.size() > 2 ? params[2] : "",
 						&lines = params.size() > 3 ? params[3] : "",
 						&secs = params.size() > 4 ? params[4] : "";
 
 			if (!ttb.empty())
 			{
-				kd->ttb[BotServ::TTB_FLOOD] = Anope::Convert<int16_t>(ttb, -1);
+				kd->ttb[BotServ::TTB_FLOOD] = Warden::Convert<int16_t>(ttb, -1);
 				if (kd->ttb[BotServ::TTB_FLOOD] < 0)
 				{
 					kd->ttb[BotServ::TTB_FLOOD] = 0;
@@ -543,11 +544,11 @@ public:
 			else
 				kd->ttb[BotServ::TTB_FLOOD] = 0;
 
-			kd->floodlines = Anope::Convert(lines, -1);
+			kd->floodlines = Warden::Convert(lines, -1);
 			if (kd->floodlines < 2)
 				kd->floodlines = 6;
 
-			kd->floodsecs = Anope::Convert(secs, -1);
+			kd->floodsecs = Warden::Convert(secs, -1);
 			if (kd->floodsecs < 1)
 				kd->floodsecs = 10;
 
@@ -579,7 +580,7 @@ public:
 		kd->Check(ci);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -606,7 +607,7 @@ public:
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037} [\037ttb\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci;
 		if (CheckArguments(source, params, ci))
@@ -617,7 +618,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -643,7 +644,7 @@ public:
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037} [\037ttb\037 [\037num\037]]\002"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci;
 		if (!CheckArguments(source, params, ci))
@@ -653,12 +654,12 @@ public:
 
 		if (params[1].equals_ci("ON"))
 		{
-			const Anope::string &ttb = params.size() > 2 ? params[2] : "",
+			const Warden::string &ttb = params.size() > 2 ? params[2] : "",
 						&times = params.size() > 3 ? params[3] : "";
 
 			if (!ttb.empty())
 			{
-				kd->ttb[BotServ::TTB_REPEAT] = Anope::Convert(ttb, -1);
+				kd->ttb[BotServ::TTB_REPEAT] = Warden::Convert(ttb, -1);
 				if (kd->ttb[BotServ::TTB_REPEAT] < 0)
 				{
 					kd->ttb[BotServ::TTB_REPEAT] = 0;
@@ -669,7 +670,7 @@ public:
 			else
 				kd->ttb[BotServ::TTB_REPEAT] = 0;
 
-			kd->repeattimes = Anope::Convert<int16_t>(times, -1);
+			kd->repeattimes = Warden::Convert<int16_t>(times, -1);
 			if (kd->repeattimes < 1)
 				kd->repeattimes = 3;
 
@@ -726,7 +727,7 @@ public:
 		kd->Check(ci);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -754,7 +755,7 @@ public:
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037} [\037ttb\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci;
 		if (CheckArguments(source, params, ci))
@@ -765,7 +766,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -791,7 +792,7 @@ public:
 		this->SetSyntax(_("\037channel\037 {\037ON|OFF\037} [\037ttb\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci;
 		if (CheckArguments(source, params, ci))
@@ -802,7 +803,7 @@ public:
 		}
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -822,13 +823,13 @@ class CommandBSSetDontKickOps final
 	: public Command
 {
 public:
-	CommandBSSetDontKickOps(Module *creator, const Anope::string &sname = "botserv/set/dontkickops") : Command(creator, sname, 2, 2)
+	CommandBSSetDontKickOps(Module *creator, const Warden::string &sname = "botserv/set/dontkickops") : Command(creator, sname, 2, 2)
 	{
 		this->SetDesc(_("To protect ops against bot kicks"));
 		this->SetSyntax(_("\037channel\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
 		if (ci == NULL)
@@ -844,7 +845,7 @@ public:
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -873,7 +874,7 @@ public:
 		kd->Check(ci);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -890,13 +891,13 @@ class CommandBSSetDontKickVoices final
 	: public Command
 {
 public:
-	CommandBSSetDontKickVoices(Module *creator, const Anope::string &sname = "botserv/set/dontkickvoices") : Command(creator, sname, 2, 2)
+	CommandBSSetDontKickVoices(Module *creator, const Warden::string &sname = "botserv/set/dontkickvoices") : Command(creator, sname, 2, 2)
 	{
 		this->SetDesc(_("To protect voices against bot kicks"));
 		this->SetSyntax(_("\037channel\037 {ON | OFF}"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		ChannelInfo *ci = ChannelInfo::Find(params[0]);
 		if (ci == NULL)
@@ -912,7 +913,7 @@ public:
 			return;
 		}
 
-		if (Anope::ReadOnly)
+		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
 			return;
@@ -941,7 +942,7 @@ public:
 		kd->Check(ci);
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &) override
+	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -958,7 +959,7 @@ struct BanData final
 {
 	struct Data final
 	{
-		Anope::string mask;
+		Warden::string mask;
 		time_t last_use;
 		int16_t ttb[BotServ::TTB_SIZE];
 
@@ -971,13 +972,13 @@ struct BanData final
 	};
 
 private:
-	typedef Anope::map<Data> data_type;
+	typedef Warden::map<Data> data_type;
 	data_type data_map;
 
 public:
 	BanData(Extensible *) { }
 
-	Data &get(const Anope::string &key)
+	Data &get(const Warden::string &key)
 	{
 		return this->data_map[key];
 	}
@@ -992,11 +993,11 @@ public:
 		time_t keepdata = Config->GetModule(me).Get<time_t>("keepdata");
 		for (auto it = data_map.begin(), it_end = data_map.end(); it != it_end;)
 		{
-			const Anope::string &user = it->first;
+			const Warden::string &user = it->first;
 			Data &bd = it->second;
 			++it;
 
-			if (Anope::CurTime - bd.last_use > keepdata)
+			if (Warden::CurTime - bd.last_use > keepdata)
 				data_map.erase(user);
 		}
 	}
@@ -1006,7 +1007,7 @@ struct UserData final
 {
 	UserData(Extensible *)
 	{
-		last_use = last_start = Anope::CurTime;
+		last_use = last_start = Warden::CurTime;
 		lines = times = 0;
 		lastline.clear();
 	}
@@ -1019,10 +1020,10 @@ struct UserData final
 	time_t last_start;
 
 	/* for repeat kicker */
-	Anope::string lasttarget;
+	Warden::string lasttarget;
 	int16_t times;
 
-	Anope::string lastline;
+	Warden::string lastline;
 };
 
 class BanDataPurger final
@@ -1109,7 +1110,7 @@ class BSKick final
 
 			bd.ttb[ttbtype] = 0;
 
-			Anope::string mask = ci->GetIdealBan(u);
+			Warden::string mask = ci->GetIdealBan(u);
 
 			ci->c->SetMode(NULL, "BAN", mask);
 			FOREACH_MOD(OnBotBan, (u, ci, mask));
@@ -1123,13 +1124,13 @@ class BSKick final
 
 		const auto *fmt = Language::Translate(u, message);
 
-		Anope::string buf;
-		ANOPE_FORMAT(message, fmt, buf);
+		Warden::string buf;
+		WARDEN_FORMAT(message, fmt, buf);
 		ci->c->Kick(ci->bi, u, buf);
 	}
 
 public:
-	BSKick(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, VENDOR),
+	BSKick(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
 		bandata(this, "bandata"),
 		userdata(this, "userdata"),
 		kickerdata(this, BOTSERV_KICKER_DATA_EXT),
@@ -1152,14 +1153,14 @@ public:
 		if (!ci)
 			return;
 
-		Anope::string enabled = source.Translate(_("Enabled"));
-		Anope::string disabled = source.Translate(_("Disabled"));
+		Warden::string enabled = source.Translate(_("Enabled"));
+		Warden::string disabled = source.Translate(_("Disabled"));
 		auto *kd = kickerdata.Get(ci);
 
 		if (kd && kd->badwords)
 		{
 			if (kd->ttb[BotServ::TTB_BADWORDS])
-				info[_("Bad words kicker")] = Anope::Format("%s (%d kick(s) to ban)", enabled.c_str(), kd->ttb[BotServ::TTB_BADWORDS]);
+				info[_("Bad words kicker")] = Warden::Format("%s (%d kick(s) to ban)", enabled.c_str(), kd->ttb[BotServ::TTB_BADWORDS]);
 			else
 				info[_("Bad words kicker")] = enabled;
 		}
@@ -1169,7 +1170,7 @@ public:
 		if (kd && kd->bolds)
 		{
 			if (kd->ttb[BotServ::TTB_BOLDS])
-				info[_("Bolds kicker")] = Anope::Format("%s (%d kick(s) to ban)", enabled.c_str(), kd->ttb[BotServ::TTB_BOLDS]);
+				info[_("Bolds kicker")] = Warden::Format("%s (%d kick(s) to ban)", enabled.c_str(), kd->ttb[BotServ::TTB_BOLDS]);
 			else
 				info[_("Bolds kicker")] = enabled;
 		}
@@ -1179,9 +1180,9 @@ public:
 		if (kd && kd->caps)
 		{
 			if (kd->ttb[BotServ::TTB_CAPS])
-				info[_("Caps kicker")] = Anope::Format(_("%s (%d kick(s) to ban; minimum %d/%d%%)"), enabled.c_str(), kd->ttb[BotServ::TTB_CAPS], kd->capsmin, kd->capspercent);
+				info[_("Caps kicker")] = Warden::Format(_("%s (%d kick(s) to ban; minimum %d/%d%%)"), enabled.c_str(), kd->ttb[BotServ::TTB_CAPS], kd->capsmin, kd->capspercent);
 			else
-				info[_("Caps kicker")] = Anope::Format(_("%s (minimum %d/%d%%)"), enabled.c_str(), kd->capsmin, kd->capspercent);
+				info[_("Caps kicker")] = Warden::Format(_("%s (minimum %d/%d%%)"), enabled.c_str(), kd->capsmin, kd->capspercent);
 		}
 		else
 			info[_("Caps kicker")] = disabled;
@@ -1189,7 +1190,7 @@ public:
 		if (kd && kd->colors)
 		{
 			if (kd->ttb[BotServ::TTB_COLORS])
-				info[_("Colors kicker")] = Anope::Format(_("%s (%d kick(s) to ban)"), enabled.c_str(), kd->ttb[BotServ::TTB_COLORS]);
+				info[_("Colors kicker")] = Warden::Format(_("%s (%d kick(s) to ban)"), enabled.c_str(), kd->ttb[BotServ::TTB_COLORS]);
 			else
 				info[_("Colors kicker")] = enabled;
 		}
@@ -1199,9 +1200,9 @@ public:
 		if (kd && kd->flood)
 		{
 			if (kd->ttb[BotServ::TTB_FLOOD])
-				info[_("Flood kicker")] = Anope::Format(_("%s (%d kick(s) to ban; %d lines in %ds)"), enabled.c_str(), kd->ttb[BotServ::TTB_FLOOD], kd->floodlines, kd->floodsecs);
+				info[_("Flood kicker")] = Warden::Format(_("%s (%d kick(s) to ban; %d lines in %ds)"), enabled.c_str(), kd->ttb[BotServ::TTB_FLOOD], kd->floodlines, kd->floodsecs);
 			else
-				info[_("Flood kicker")] = Anope::Format(_("%s (%d lines in %ds)"), enabled.c_str(), kd->floodlines, kd->floodsecs);
+				info[_("Flood kicker")] = Warden::Format(_("%s (%d lines in %ds)"), enabled.c_str(), kd->floodlines, kd->floodsecs);
 		}
 		else
 			info[_("Flood kicker")] = disabled;
@@ -1209,9 +1210,9 @@ public:
 		if (kd && kd->repeat)
 		{
 			if (kd->ttb[BotServ::TTB_REPEAT])
-				info[_("Repeat kicker")] = Anope::Format(_("%s (%d kick(s) to ban; %d times)"), enabled.c_str(), kd->ttb[BotServ::TTB_REPEAT], kd->repeattimes);
+				info[_("Repeat kicker")] = Warden::Format(_("%s (%d kick(s) to ban; %d times)"), enabled.c_str(), kd->ttb[BotServ::TTB_REPEAT], kd->repeattimes);
 			else
-				info[_("Repeat kicker")] = Anope::Format(_("%s (%d times)"), enabled.c_str(), kd->repeattimes);
+				info[_("Repeat kicker")] = Warden::Format(_("%s (%d times)"), enabled.c_str(), kd->repeattimes);
 		}
 		else
 			info[_("Repeat kicker")] = disabled;
@@ -1219,7 +1220,7 @@ public:
 		if (kd && kd->reverses)
 		{
 			if (kd->ttb[BotServ::TTB_REVERSES])
-				info[_("Reverses kicker")] = Anope::Format(_("%s (%d kick(s) to ban)"), enabled.c_str(), kd->ttb[BotServ::TTB_REVERSES]);
+				info[_("Reverses kicker")] = Warden::Format(_("%s (%d kick(s) to ban)"), enabled.c_str(), kd->ttb[BotServ::TTB_REVERSES]);
 			else
 				info[_("Reverses kicker")] = enabled;
 		}
@@ -1229,7 +1230,7 @@ public:
 		if (kd && kd->underlines)
 		{
 			if (kd->ttb[BotServ::TTB_UNDERLINES])
-				info[_("Underlines kicker")] = Anope::Format(_("%s (%d kick(s) to ban)"), enabled.c_str(), kd->ttb[BotServ::TTB_UNDERLINES]);
+				info[_("Underlines kicker")] = Warden::Format(_("%s (%d kick(s) to ban)"), enabled.c_str(), kd->ttb[BotServ::TTB_UNDERLINES]);
 			else
 				info[_("Underlines kicker")] = enabled;
 		}
@@ -1239,7 +1240,7 @@ public:
 		if (kd && kd->italics)
 		{
 			if (kd->ttb[BotServ::TTB_ITALICS])
-				info[_("Italics kicker")] = Anope::Format(_("%s (%d kick(s) to ban)"), enabled.c_str(), kd->ttb[BotServ::TTB_ITALICS]);
+				info[_("Italics kicker")] = Warden::Format(_("%s (%d kick(s) to ban)"), enabled.c_str(), kd->ttb[BotServ::TTB_ITALICS]);
 			else
 				info[_("Italics kicker")] = enabled;
 		}
@@ -1249,7 +1250,7 @@ public:
 		if (kd && kd->amsgs)
 		{
 			if (kd->ttb[BotServ::TTB_AMSGS])
-				info[_("AMSG kicker")] = Anope::Format(_("%s (%d kick(s) to ban)"), enabled.c_str(), kd->ttb[BotServ::TTB_AMSGS]);
+				info[_("AMSG kicker")] = Warden::Format(_("%s (%d kick(s) to ban)"), enabled.c_str(), kd->ttb[BotServ::TTB_AMSGS]);
 			else
 				info[_("AMSG kicker")] = enabled;
 		}
@@ -1262,7 +1263,7 @@ public:
 			info.AddOption(_("Voices protection"));
 	}
 
-	void OnPrivmsg(User *u, Channel *c, Anope::string &msg, const Anope::map<Anope::string> &tags) override
+	void OnPrivmsg(User *u, Channel *c, Warden::string &msg, const Warden::map<Warden::string> &tags) override
 	{
 		/* Now we can make kicker stuff. We try to order the checks
 		 * from the fastest one to the slowest one, since there's
@@ -1286,20 +1287,20 @@ public:
 		else if (kd->dontkickvoices && c->HasUserStatus(u, "VOICE"))
 			return;
 
-		Anope::string realbuf = msg;
+		Warden::string realbuf = msg;
 
 		/* If it's a /me, cut the CTCP part because the ACTION will cause
 		 * problems with the caps or badwords kicker
 		 */
-		Anope::string ctcpname, ctcpbody;
-		if (Anope::ParseCTCP(msg, ctcpname, ctcpbody) && ctcpname.equals_ci("ACTION"))
+		Warden::string ctcpname, ctcpbody;
+		if (Warden::ParseCTCP(msg, ctcpname, ctcpbody) && ctcpname.equals_ci("ACTION"))
 			realbuf = ctcpbody;
 
 		if (realbuf.empty())
 			return;
 
 		/* Bolds kicker */
-		if (kd->bolds && realbuf.find(2) != Anope::string::npos)
+		if (kd->bolds && realbuf.find(2) != Warden::string::npos)
 		{
 			check_ban(ci, u, kd, BotServ::TTB_BOLDS);
 			bot_kick(ci, u, _("Don't use bolds on this channel!"));
@@ -1307,7 +1308,7 @@ public:
 		}
 
 		/* Color kicker */
-		if (kd->colors && realbuf.find(3) != Anope::string::npos)
+		if (kd->colors && realbuf.find(3) != Warden::string::npos)
 		{
 			check_ban(ci, u, kd, BotServ::TTB_COLORS);
 			bot_kick(ci, u, _("Don't use colors on this channel!"));
@@ -1315,7 +1316,7 @@ public:
 		}
 
 		/* Reverses kicker */
-		if (kd->reverses && realbuf.find(22) != Anope::string::npos)
+		if (kd->reverses && realbuf.find(22) != Warden::string::npos)
 		{
 			check_ban(ci, u, kd, BotServ::TTB_REVERSES);
 			bot_kick(ci, u, _("Don't use reverses on this channel!"));
@@ -1323,7 +1324,7 @@ public:
 		}
 
 		/* Italics kicker */
-		if (kd->italics && realbuf.find(29) != Anope::string::npos)
+		if (kd->italics && realbuf.find(29) != Warden::string::npos)
 		{
 			check_ban(ci, u, kd, BotServ::TTB_ITALICS);
 			bot_kick(ci, u, _("Don't use italics on this channel!"));
@@ -1331,7 +1332,7 @@ public:
 		}
 
 		/* Underlines kicker */
-		if (kd->underlines && realbuf.find(31) != Anope::string::npos)
+		if (kd->underlines && realbuf.find(31) != Warden::string::npos)
 		{
 			check_ban(ci, u, kd, BotServ::TTB_UNDERLINES);
 			bot_kick(ci, u, _("Don't use underlines on this channel!"));
@@ -1371,7 +1372,7 @@ public:
 			auto *badwords = ci->GetExt<BotServ::BadWords>(BOTSERV_BAD_WORDS_EXT);
 
 			/* Normalize the buffer */
-			Anope::string nbuf = Anope::RemoveFormatting(realbuf);
+			Warden::string nbuf = Warden::RemoveFormatting(realbuf);
 			bool casesensitive = Config->GetModule("botserv").Get<bool>("casesensitive");
 
 			/* Normalize can return an empty string if this only contains control codes etc */
@@ -1386,7 +1387,7 @@ public:
 					if (bw->word.length() > nbuf.length())
 						continue; // This can't ever match
 
-					if (bw->type == BotServ::BW_ANY && ((casesensitive && nbuf.find(bw->word) != Anope::string::npos) || (!casesensitive && nbuf.find_ci(bw->word) != Anope::string::npos)))
+					if (bw->type == BotServ::BW_ANY && ((casesensitive && nbuf.find(bw->word) != Warden::string::npos) || (!casesensitive && nbuf.find_ci(bw->word) != Warden::string::npos)))
 						mustkick = true;
 					else if (bw->type == BotServ::BW_SINGLE)
 					{
@@ -1402,9 +1403,9 @@ public:
 								mustkick = true;
 							else
 							{
-								Anope::string wordbuf = " " + bw->word + " ";
+								Warden::string wordbuf = " " + bw->word + " ";
 
-								if ((casesensitive && nbuf.find(wordbuf) != Anope::string::npos) || (!casesensitive && nbuf.find_ci(wordbuf) != Anope::string::npos))
+								if ((casesensitive && nbuf.find(wordbuf) != Warden::string::npos) || (!casesensitive && nbuf.find_ci(wordbuf) != Warden::string::npos))
 									mustkick = true;
 							}
 						}
@@ -1417,9 +1418,9 @@ public:
 							mustkick = true;
 						else
 						{
-							Anope::string wordbuf = " " + bw->word;
+							Warden::string wordbuf = " " + bw->word;
 
-							if ((casesensitive && nbuf.find(wordbuf) != Anope::string::npos) || (!casesensitive && nbuf.find_ci(wordbuf) != Anope::string::npos))
+							if ((casesensitive && nbuf.find(wordbuf) != Warden::string::npos) || (!casesensitive && nbuf.find_ci(wordbuf) != Warden::string::npos))
 								mustkick = true;
 						}
 					}
@@ -1431,9 +1432,9 @@ public:
 							mustkick = true;
 						else
 						{
-							Anope::string wordbuf = bw->word + " ";
+							Warden::string wordbuf = bw->word + " ";
 
-							if ((casesensitive && nbuf.find(wordbuf) != Anope::string::npos) || (!casesensitive && nbuf.find_ci(wordbuf) != Anope::string::npos))
+							if ((casesensitive && nbuf.find(wordbuf) != Warden::string::npos) || (!casesensitive && nbuf.find_ci(wordbuf) != Warden::string::npos))
 								mustkick = true;
 						}
 					}
@@ -1458,9 +1459,9 @@ public:
 			/* Flood kicker */
 			if (kd->flood)
 			{
-				if (Anope::CurTime - ud->last_start > kd->floodsecs)
+				if (Warden::CurTime - ud->last_start > kd->floodsecs)
 				{
-					ud->last_start = Anope::CurTime;
+					ud->last_start = Warden::CurTime;
 					ud->lines = 0;
 				}
 

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -21,7 +22,7 @@
 Serialize::Checker<nickcore_map> NickCoreList(NICKCORE_TYPE);
 Serialize::Checker<nickcoreid_map> NickCoreIdList(NICKCORE_TYPE);
 
-NickCore::NickCore(const Anope::string &coredisplay, uint64_t coreid)
+NickCore::NickCore(const Warden::string &coredisplay, uint64_t coreid)
 	: Serializable(NICKCORE_TYPE)
 	, chanaccess(CHANNELINFO_TYPE)
 	, uniqueid(coreid)
@@ -98,7 +99,7 @@ Serializable *NickCore::Type::Unserialize(Serializable *obj, Serialize::Data &da
 {
 	NickCore *nc;
 	if (obj)
-		nc = anope_dynamic_static_cast<NickCore *>(obj);
+		nc = warden_dynamic_static_cast<NickCore *>(obj);
 	else
 		nc = new NickCore(data.Load("display"), data.Load<uint64_t>("uniqueid"));
 
@@ -111,7 +112,7 @@ Serializable *NickCore::Type::Unserialize(Serializable *obj, Serialize::Data &da
 	{
 		nc->memos.ignores.clear();
 		spacesepstream sep(data.Load("memoignores"));
-		for (Anope::string buf; sep.GetToken(buf); )
+		for (Warden::string buf; sep.GetToken(buf); )
 			nc->memos.ignores.insert(buf);
 	}
 
@@ -205,7 +206,7 @@ void NickCore::GetChannelReferences(std::deque<ChannelInfo *> &queue)
 		queue.push_back(ci);
 }
 
-NickCore *NickCore::Find(const Anope::string &nick)
+NickCore *NickCore::Find(const Warden::string &nick)
 {
 	auto it = NickCoreList->find(nick);
 	if (it != NickCoreList->end())
@@ -240,8 +241,8 @@ uint64_t NickCore::GetId()
 	uint64_t attempt = 0;
 	while (!this->uniqueid)
 	{
-		const auto newidstr = this->display + "\0" + Anope::ToString(this->registered) + "\0" + Anope::ToString(attempt++);
-		const auto newid = Anope::hash_cs()(newidstr);
+		const auto newidstr = this->display + "\0" + Warden::ToString(this->registered) + "\0" + Warden::ToString(attempt++);
+		const auto newid = Warden::hash_cs()(newidstr);
 		if (NickCoreIdList->emplace(newid, this).second)
 		{
 			this->uniqueid = newid;

@@ -1,7 +1,7 @@
 [Unit]
 After=network.target
-Description=Anope IRC Services
-Documentation=https://wiki.anope.org/
+Description=Warden IRC Services
+Documentation=https://github.com/TehPeGaSuS/warden
 After=network-online.target
 Wants=network-online.target
 

@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,15 +17,15 @@
 #include "modules/httpd.h"
 #include "modules/ssl.h"
 
-static Anope::string BuildDate()
+static Warden::string BuildDate()
 {
 	char timebuf[64];
-	struct tm *tm = localtime(&Anope::CurTime);
+	struct tm *tm = localtime(&Warden::CurTime);
 	strftime(timebuf, sizeof(timebuf), "%a, %d %b %Y %H:%M:%S %Z", tm);
 	return timebuf;
 }
 
-static Anope::string GetStatusFromCode(HTTP::Error err)
+static Warden::string GetStatusFromCode(HTTP::Error err)
 {
 	switch (err)
 	{
@@ -49,9 +50,9 @@ class MyHTTPClient final
 	HTTP::Provider *provider;
 	HTTP::Message message;
 	bool header_done = false, served = false;
-	Anope::string page_name;
+	Warden::string page_name;
 	Reference<HTTP::Page> page;
-	Anope::string ip;
+	Warden::string ip;
 
 	unsigned content_length = 0;
 
@@ -99,7 +100,7 @@ class MyHTTPClient final
 public:
 	time_t created;
 
-	MyHTTPClient(HTTP::Provider *l, int f, const sockaddrs &a) : Socket(f, l->GetFamily()), HTTP::Client(l, f, a), provider(l), ip(a.addr()), created(Anope::CurTime)
+	MyHTTPClient(HTTP::Provider *l, int f, const sockaddrs &a) : Socket(f, l->GetFamily()), HTTP::Client(l, f, a), provider(l), ip(a.addr()), created(Warden::CurTime)
 	{
 		Log(LOG_DEBUG, "httpd") << "Accepted connection " << f << " from " << a.addr();
 	}
@@ -115,7 +116,7 @@ public:
 		return !(!BinarySocket::ProcessWrite() || this->write_buffer.empty());
 	}
 
-	Anope::string GetIP() const override
+	Warden::string GetIP() const override
 	{
 		return this->ip;
 	}
@@ -124,9 +125,9 @@ public:
 	{
 		message.content.append(buffer, l);
 
-		for (size_t nl; !this->header_done && (nl = message.content.find('\n')) != Anope::string::npos;)
+		for (size_t nl; !this->header_done && (nl = message.content.find('\n')) != Warden::string::npos;)
 		{
-			Anope::string token = message.content.substr(0, nl).trim();
+			Warden::string token = message.content.substr(0, nl).trim();
 			message.content = message.content.substr(nl + 1);
 
 			if (token.empty())
@@ -141,12 +142,12 @@ public:
 		if (this->message.content.length() >= this->content_length)
 		{
 			sepstream sep(this->message.content, '&');
-			Anope::string token;
+			Warden::string token;
 
 			while (sep.GetToken(token))
 			{
 				size_t sz = token.find('=');
-				if (sz == Anope::string::npos || !sz || sz + 1 >= token.length())
+				if (sz == Warden::string::npos || !sz || sz + 1 >= token.length())
 					continue;
 				this->message.post_data[token.substr(0, sz)] = HTTP::URLDecode(token.substr(sz + 1));
 				Log(LOG_DEBUG_2) << "HTTP POST from " << this->clientaddr.addr() << ": " << token.substr(0, sz) << ": " << this->message.post_data[token.substr(0, sz)];
@@ -158,13 +159,13 @@ public:
 		return true;
 	}
 
-	bool Read(const Anope::string &buf)
+	bool Read(const Warden::string &buf)
 	{
 		Log(LOG_DEBUG_2) << "HTTP from " << this->clientaddr.addr() << ": " << buf;
 
 		if (this->action == ACTION_NONE)
 		{
-			std::vector<Anope::string> params;
+			std::vector<Warden::string> params;
 			spacesepstream(buf).GetTokens(params);
 
 			if (params.empty() || (params[0] != "GET" && params[0] != "POST"))
@@ -184,18 +185,18 @@ public:
 			else if (params[0] == "POST")
 				this->action = ACTION_POST;
 
-			Anope::string targ = params[1];
+			Warden::string targ = params[1];
 			size_t q = targ.find('?');
-			if (q != Anope::string::npos)
+			if (q != Warden::string::npos)
 			{
 				sepstream sep(targ.substr(q + 1), '&');
 				targ = targ.substr(0, q);
 
-				Anope::string token;
+				Warden::string token;
 				while (sep.GetToken(token))
 				{
 					size_t sz = token.find('=');
-					if (sz == Anope::string::npos || !sz || sz + 1 >= token.length())
+					if (sz == Warden::string::npos || !sz || sz + 1 >= token.length())
 						continue;
 					this->message.get_data[token.substr(0, sz)] = HTTP::URLDecode(token.substr(sz + 1));
 				}
@@ -207,12 +208,12 @@ public:
 		else if (buf.find_ci("Cookie: ") == 0)
 		{
 			spacesepstream sep(buf.substr(8));
-			Anope::string token;
+			Warden::string token;
 
 			while (sep.GetToken(token))
 			{
 				size_t sz = token.find('=');
-				if (sz == Anope::string::npos || !sz || sz + 1 >= token.length())
+				if (sz == Warden::string::npos || !sz || sz + 1 >= token.length())
 					continue;
 				size_t end = token.length() - (sz + 1);
 				if (!sep.StreamEnd())
@@ -222,10 +223,10 @@ public:
 		}
 		else if (buf.find_ci("Content-Length: ") == 0)
 		{
-			if (auto len = Anope::TryConvert<unsigned>(buf.substr(16)))
+			if (auto len = Warden::TryConvert<unsigned>(buf.substr(16)))
 				this->content_length = len.value();
 		}
-		else if (buf.find(':') != Anope::string::npos)
+		else if (buf.find(':') != Warden::string::npos)
 		{
 			size_t sz = buf.find(':');
 			if (sz + 2 < buf.length())
@@ -235,7 +236,7 @@ public:
 		return true;
 	}
 
-	void SendError(HTTP::Error err, const Anope::string &msg) override
+	void SendError(HTTP::Error err, const Warden::string &msg) override
 	{
 		HTTP::Reply h;
 
@@ -250,16 +251,16 @@ public:
 	{
 		this->WriteClient("HTTP/1.1 " + GetStatusFromCode(msg->error));
 		this->WriteClient("Date: " + BuildDate());
-		this->WriteClient("Server: Anope-" + Anope::VersionShort());
+		this->WriteClient("Server: Warden-" + Warden::VersionShort());
 		if (msg->content_type.empty())
 			this->WriteClient("Content-Type: text/html");
 		else
 			this->WriteClient("Content-Type: " + msg->content_type);
-		this->WriteClient("Content-Length: " + Anope::ToString(msg->length));
+		this->WriteClient("Content-Length: " + Warden::ToString(msg->length));
 
 		for (const auto &cookie : msg->cookies)
 		{
-			Anope::string buf = "Set-Cookie:";
+			Warden::string buf = "Set-Cookie:";
 
 			for (const auto &[name, value] : cookie)
 				buf += " " + name + "=" + value + ";";
@@ -291,12 +292,12 @@ class MyHTTPProvider final
 	, public Timer
 {
 	int timeout;
-	std::map<Anope::string, HTTP::Page *> pages;
+	std::map<Warden::string, HTTP::Page *> pages;
 	std::list<Reference<MyHTTPClient> > clients;
 
 public:
-	MyHTTPProvider(Module *c, const Anope::string &n, const Anope::string &i, const unsigned short p, const int t, bool s)
-		: Socket(-1, i.find(':') == Anope::string::npos ? AF_INET : AF_INET6)
+	MyHTTPProvider(Module *c, const Warden::string &n, const Warden::string &i, const unsigned short p, const int t, bool s)
+		: Socket(-1, i.find(':') == Warden::string::npos ? AF_INET : AF_INET6)
 		, HTTP::Provider(c, n, i, p, s)
 		, Timer(c, 10)
 		, timeout(t)
@@ -308,7 +309,7 @@ public:
 		while (!this->clients.empty())
 		{
 			Reference<MyHTTPClient>& c = this->clients.front();
-			if (c && c->created + this->timeout >= Anope::CurTime)
+			if (c && c->created + this->timeout >= Warden::CurTime)
 				break;
 
 			delete c;
@@ -334,7 +335,7 @@ public:
 		this->pages.erase(page->GetURL());
 	}
 
-	HTTP::Page *FindPage(const Anope::string &pname) override
+	HTTP::Page *FindPage(const Warden::string &pname) override
 	{
 		if (this->pages.count(pname) == 0)
 			return NULL;
@@ -346,9 +347,9 @@ class HTTPD final
 	: public Module
 {
 	ServiceReference<SSLService> sslref;
-	std::map<Anope::string, MyHTTPProvider *> providers;
+	std::map<Warden::string, MyHTTPProvider *> providers;
 public:
-	HTTPD(const Anope::string &modname, const Anope::string &creator) : Module(modname, creator, EXTRA | VENDOR), sslref("SSLService", "ssl")
+	HTTPD(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, EXTRA | VENDOR), sslref("SSLService", "ssl")
 	{
 
 	}
@@ -370,19 +371,19 @@ public:
 	void OnReload(Configuration::Conf &config) override
 	{
 		const auto &conf = config.GetModule(this);
-		std::set<Anope::string> existing;
+		std::set<Warden::string> existing;
 
 		for (const auto &[_, block] : conf.GetBlocks("httpd"))
 		{
-			const Anope::string &hname = block.Get<const Anope::string>("name", "httpd/main");
+			const Warden::string &hname = block.Get<const Warden::string>("name", "httpd/main");
 			existing.insert(hname);
 
-			Anope::string ip = block.Get<const Anope::string>("ip");
+			Warden::string ip = block.Get<const Warden::string>("ip");
 			int port = block.Get<int>("port", "8080");
 			int timeout = block.Get<int>("timeout", "30");
 			bool ssl = block.Get<bool>("ssl", "no");
-			Anope::string ext_ip = block.Get<const Anope::string>("extforward_ip");
-			Anope::string ext_header = block.Get<const Anope::string>("extforward_header");
+			Warden::string ext_ip = block.Get<const Warden::string>("extforward_ip");
+			Warden::string ext_header = block.Get<const Warden::string>("extforward_header");
 
 			if (ip.empty())
 			{

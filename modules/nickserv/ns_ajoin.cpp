@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -54,7 +55,7 @@ struct AJoinEntryType final
 
 		AJoinEntry *aj;
 		if (obj)
-			aj = anope_dynamic_static_cast<AJoinEntry *>(obj);
+			aj = warden_dynamic_static_cast<AJoinEntry *>(obj);
 		else
 		{
 			aj = new AJoinEntry(nc);
@@ -98,7 +99,7 @@ class CommandNSAJoin final
 			{
 				AJoinEntry *aj = (*channels)->at(i);
 				ListFormatter::ListEntry entry;
-				entry["Number"] = Anope::ToString(i + 1);
+				entry["Number"] = Warden::ToString(i + 1);
 				entry["Channel"] = aj->channel;
 				entry["Key"] = aj->key;
 				list.AddEntry(entry);
@@ -109,17 +110,17 @@ class CommandNSAJoin final
 		}
 	}
 
-	void DoAdd(CommandSource &source, NickCore *nc, const Anope::string &chans, const Anope::string &keys)
+	void DoAdd(CommandSource &source, NickCore *nc, const Warden::string &chans, const Warden::string &keys)
 	{
 		const auto ajoinmax = Config->GetModule(this->owner).Get<unsigned>("ajoinmax");
 		auto *channels = nc->Require<AJoinList>("ajoinlist");
 
-		Anope::string addedchans;
-		Anope::string alreadyadded;
-		Anope::string invalidkey;
+		Warden::string addedchans;
+		Warden::string alreadyadded;
+		Warden::string invalidkey;
 		commasepstream ksep(keys, true);
 		commasepstream csep(chans);
-		for (Anope::string chan, key; csep.GetToken(chan);)
+		for (Warden::string chan, key; csep.GetToken(chan);)
 		{
 			ksep.GetToken(key);
 
@@ -141,7 +142,7 @@ class CommandNSAJoin final
 			else
 			{
 				Channel *c = Channel::Find(chan);
-				Anope::string k;
+				Warden::string k;
 				if (c && c->GetParam("KEY", k) && key != k)
 				{
 					invalidkey += chan + ", ";
@@ -177,14 +178,14 @@ class CommandNSAJoin final
 		source.Reply(_("%s added to %s's auto join list."), addedchans.c_str(), nc->display.c_str());
 	}
 
-	void DoDel(CommandSource &source, NickCore *nc, const Anope::string &chans)
+	void DoDel(CommandSource &source, NickCore *nc, const Warden::string &chans)
 	{
 		auto *channels = nc->Require<AJoinList>("ajoinlist");
-		Anope::string delchans;
-		Anope::string notfoundchans;
+		Warden::string delchans;
+		Warden::string notfoundchans;
 		commasepstream sep(chans);
 
-		for (Anope::string chan; sep.GetToken(chan);)
+		for (Warden::string chan; sep.GetToken(chan);)
 		{
 			unsigned i = 0;
 			for (; i < (*channels)->size(); ++i)
@@ -226,10 +227,10 @@ public:
 		this->SetSyntax(_("LIST [\037nickname\037]"));
 	}
 
-	void Execute(CommandSource &source, const std::vector<Anope::string> &params) override
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Anope::string &cmd = params[0];
-		Anope::string nick, param, param2;
+		const Warden::string &cmd = params[0];
+		Warden::string nick, param, param2;
 
 		if (cmd.equals_ci("LIST"))
 			nick = params.size() > 1 ? params[1] : "";
@@ -268,7 +269,7 @@ public:
 			source.Reply(NICK_X_SUSPENDED, nc->display.c_str());
 		else if (param.empty())
 			this->OnSyntaxError(source, "");
-		else if (Anope::ReadOnly)
+		else if (Warden::ReadOnly)
 			source.Reply(READ_ONLY_MODE);
 		else if (cmd.equals_ci("ADD"))
 			return this->DoAdd(source, nc, param, param2);
@@ -278,7 +279,7 @@ public:
 			this->OnSyntaxError(source, "");
 	}
 
-	bool OnHelp(CommandSource &source, const Anope::string &subcommand) override
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
 	{
 		this->SendSyntax(source);
 		source.Reply(" ");
@@ -300,7 +301,7 @@ class NSAJoin final
 	AJoinEntryType ajoinentry_type;
 
 public:
-	NSAJoin(const Anope::string &modname, const Anope::string &creator)
+	NSAJoin(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, commandnsajoin(this)
 		, ajoinlist(this, "ajoinlist")
@@ -333,7 +334,7 @@ public:
 				ci = ChannelInfo::Find(entry->channel);
 
 			bool need_invite = false;
-			Anope::string key = entry->key;
+			Warden::string key = entry->key;
 			AccessGroup u_access;
 
 			if (ci != NULL)
@@ -359,7 +360,7 @@ public:
 
 				if (c->HasMode("KEY"))
 				{
-					Anope::string k;
+					Warden::string k;
 					if (c->GetParam("KEY", k))
 					{
 						if (u_access.HasPriv("GETKEY"))
@@ -370,10 +371,10 @@ public:
 				}
 				if (c->HasMode("LIMIT"))
 				{
-					Anope::string l;
+					Warden::string l;
 					if (c->GetParam("LIMIT", l))
 					{
-						if (auto limit = Anope::TryConvert<unsigned>(l))
+						if (auto limit = Warden::TryConvert<unsigned>(l))
 						{
 							if (c->users.size() >= limit.value())
 								need_invite = true;

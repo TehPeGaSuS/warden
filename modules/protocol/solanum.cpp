@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -16,7 +17,7 @@
 #include "modules/chanserv/mode.h"
 #include "modules/nickserv/sasl.h"
 
-static Anope::string UplinkSID;
+static Warden::string UplinkSID;
 
 static ServiceReference<IRCDProto> ratbox("IRCDProto", "ratbox");
 
@@ -24,7 +25,7 @@ class ChannelModeLargeBan final
 	: public ChannelMode
 {
 public:
-	ChannelModeLargeBan(const Anope::string &mname, char modeChar) : ChannelMode(mname, modeChar) { }
+	ChannelModeLargeBan(const Warden::string &mname, char modeChar) : ChannelMode(mname, modeChar) { }
 
 	bool CanSet(User *u, Channel *c) const override
 	{
@@ -55,10 +56,10 @@ public:
 		MaxModes = 4;
 	}
 
-	void SendSVSKill(const MessageSource &source, User *targ, const Anope::string &reason) override { ratbox->SendSVSKill(source, targ, reason); }
-	void SendGlobalNotice(BotInfo *bi, const Server *dest, const Anope::string &msg) override { ratbox->SendGlobalNotice(bi, dest, msg); }
-	void SendGlobalPrivmsg(BotInfo *bi, const Server *dest, const Anope::string &msg) override { ratbox->SendGlobalPrivmsg(bi, dest, msg); }
-	void SendGlobops(const MessageSource &source, const Anope::string &buf) override { ratbox->SendGlobops(source, buf); }
+	void SendSVSKill(const MessageSource &source, User *targ, const Warden::string &reason) override { ratbox->SendSVSKill(source, targ, reason); }
+	void SendGlobalNotice(BotInfo *bi, const Server *dest, const Warden::string &msg) override { ratbox->SendGlobalNotice(bi, dest, msg); }
+	void SendGlobalPrivmsg(BotInfo *bi, const Server *dest, const Warden::string &msg) override { ratbox->SendGlobalPrivmsg(bi, dest, msg); }
+	void SendGlobops(const MessageSource &source, const Warden::string &buf) override { ratbox->SendGlobops(source, buf); }
 	void SendSGLine(User *u, const XLine *x) override { ratbox->SendSGLine(u, x); }
 	void SendSGLineDel(const XLine *x) override { ratbox->SendSGLineDel(x); }
 	void SendAkill(User *u, XLine *x) override { ratbox->SendAkill(u, x); }
@@ -69,18 +70,18 @@ public:
 	void SendServer(const Server *server) override { ratbox->SendServer(server); }
 	void SendChannel(Channel *c) override { ratbox->SendChannel(c); }
 	void SendTopic(const MessageSource &source, Channel *c) override { ratbox->SendTopic(source, c); }
-	bool IsIdentValid(const Anope::string &ident) override { return ratbox->IsIdentValid(ident); }
+	bool IsIdentValid(const Warden::string &ident) override { return ratbox->IsIdentValid(ident); }
 	void SendLogin(User *u, NickAlias *na) override { ratbox->SendLogin(u, na); }
 	void SendLogout(User *u) override { ratbox->SendLogout(u); }
 
-	bool IsTagValid(const Anope::string &tname, const Anope::string &tvalue) override
+	bool IsTagValid(const Warden::string &tname, const Warden::string &tvalue) override
 	{
 		return !!Servers::Capab.count("STAG");
 	}
 
-	void SendSASLMechanisms(std::vector<Anope::string> &mechanisms) override
+	void SendSASLMechanisms(std::vector<Warden::string> &mechanisms) override
 	{
-		Anope::string mechlist;
+		Warden::string mechlist;
 		for (const auto &mechanism : mechanisms)
 			mechlist += "," + mechanism;
 
@@ -89,7 +90,7 @@ public:
 
 	void SendConnect() override
 	{
-		Uplink::Send("PASS", Config->Uplinks[Anope::CurrentUplink].password, "TS", 6, Me->GetSID());
+		Uplink::Send("PASS", Config->Uplinks[Warden::CurrentUplink].password, "TS", 6, Me->GetSID());
 
 		/*
 		 * Received: CAPAB :BAN CHW CLUSTER ENCAP EOPMOD EUID EX IE KLN
@@ -129,13 +130,13 @@ public:
 		 *  arg[2] = '0'
 		 *  arg[3] = server's idea of UTC time
 		 */
-		Uplink::Send("SVINFO", 6, 6, 0, Anope::CurTime);
+		Uplink::Send("SVINFO", 6, 6, 0, Warden::CurTime);
 	}
 
 	void SendMode(const MessageSource &source, Channel *chan, const ModeManager::Change &change) override
 	{
 		size_t listcount = 0;
-		std::map<char, std::vector<Anope::string>> listchanges;
+		std::map<char, std::vector<Warden::string>> listchanges;
 		ModeManager::Change otherchanges;
 
 		const auto has_ebmask = Servers::Capab.count("EBMASK");
@@ -148,8 +149,8 @@ public:
 				if (it == listchanges.end())
 				{
 					// No line for this type, start a new one.
-					it = listchanges.emplace(mode->mchar, std::vector<Anope::string>()).first;
-					it->second.emplace_back(Anope::string());
+					it = listchanges.emplace(mode->mchar, std::vector<Warden::string>()).first;
+					it->second.emplace_back(Warden::string());
 				}
 
 				const auto reached_max_line = it->second.back().length() > IRCD->MaxLine - 100; // Leave room for command, channel, etc
@@ -157,7 +158,7 @@ public:
 				if (reached_max_modes || reached_max_line)
 				{
 					// End of the line, start a new one.
-					it->second.emplace_back(Anope::string());
+					it->second.emplace_back(Warden::string());
 					listcount = 0;
 				}
 
@@ -171,7 +172,7 @@ public:
 				if (has_ebmask)
 				{
 					listchange.push_back(' ');
-					listchange.append(Anope::ToString(data.set_at));
+					listchange.append(Warden::ToString(data.set_at));
 					listchange.push_back(' ');
 					listchange.append(data.set_by);
 				}
@@ -199,22 +200,22 @@ public:
 		Uplink::Send("EUID", u->nick, 1, u->timestamp, "+" + u->GetModes(), u->GetIdent(), u->host, 0, u->GetUID(), '*', '*', u->realname);
 	}
 
-	void SendForceNickChange(User *u, const Anope::string &newnick, time_t when) override
+	void SendForceNickChange(User *u, const Warden::string &newnick, time_t when) override
 	{
 		Uplink::Send("ENCAP", u->server->GetName(), "RSFNC", u->GetUID(), newnick, when, u->timestamp);
 	}
 
-	void SendSVSHold(const Anope::string &nick, time_t delay) override
+	void SendSVSHold(const Warden::string &nick, time_t delay) override
 	{
 		Uplink::Send("ENCAP", '*', "NICKDELAY", delay, nick);
 	}
 
-	void SendSVSHoldDel(const Anope::string &nick) override
+	void SendSVSHoldDel(const Warden::string &nick) override
 	{
 		Uplink::Send("ENCAP", '*', "NICKDELAY", 0, nick);
 	}
 
-	void SendVHost(User *u, const Anope::string &ident, const Anope::string &host) override
+	void SendVHost(User *u, const Warden::string &ident, const Warden::string &host) override
 	{
 		Uplink::Send("ENCAP", '*', "CHGHOST", u->GetUID(), host);
 	}
@@ -234,7 +235,7 @@ public:
 		Uplink::SendInternal({}, Me, "ENCAP", newparams);
 	}
 
-	void SendSVSLogin(const Anope::string &uid, NickAlias *na) override
+	void SendSVSLogin(const Warden::string &uid, NickAlias *na) override
 	{
 		Server *s = Server::Find(uid.substr(0, 3));
 
@@ -253,10 +254,10 @@ struct IRCDMessageCapab final
 	{
 	}
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		spacesepstream ss(params[0]);
-		for (Anope::string capab; ss.GetToken(capab); )
+		for (Warden::string capab; ss.GetToken(capab); )
 		{
 			if (capab.equals_cs("STAG"))
 				IRCD->CanTagMessage = true;
@@ -274,7 +275,7 @@ struct IRCDMessageEBMask final
 		SetFlag(FLAG_REQUIRE_SERVER);
 	}
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		// :42X EBMASK 1746321990 #channel b :foo!*@* 1746322038 bar!baz@localhost
 		auto *chan = Channel::Find(params[1]);
@@ -294,11 +295,11 @@ struct IRCDMessageEBMask final
 		while (!ms.StreamEnd())
 		{
 			ModeData data;
-			Anope::string set_at;
+			Warden::string set_at;
 			if (!ms.GetToken(data.value) || !ms.GetToken(set_at) || !ms.GetToken(data.set_by))
 				break; // Malformed token, drop it.
 
-			data.set_at = Anope::Convert(set_at, 0);
+			data.set_at = Warden::Convert(set_at, 0);
 			chan->SetModeInternal(source, cm, data);
 		}
 	}
@@ -312,7 +313,7 @@ struct IRCDMessageEncap final
 		SetFlag(FLAG_SOFT_LIMIT);
 	}
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		// In a burst, states that the source user is logged in as the account.
 		if (params[1] == "LOGIN" || params[1] == "SU")
@@ -397,7 +398,7 @@ struct IRCDMessageEUID final
 	 * user is not logged in with services). Hence a NICK or UID command received
 	 * from a remote server should not be sent in EUID form to other servers.
 	 */
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		NickAlias *na = NULL;
 		if (params[9] != "*")
@@ -415,7 +416,7 @@ struct IRCDMessageServer final
 	IRCDMessageServer(Module *creator) : IRCDMessage(creator, "SERVER", 3) { SetFlag(FLAG_REQUIRE_SERVER); }
 
 	// SERVER dev.anope.de 1 :solanum test server
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		// Servers other then our immediate uplink are introduced via SID
 		if (params[1] != "1")
@@ -431,7 +432,7 @@ struct IRCDMessagePass final
 {
 	IRCDMessagePass(Module *creator) : IRCDMessage(creator, "PASS", 4) { SetFlag(FLAG_REQUIRE_SERVER); }
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		// UplinkSID is used in IRCDMessageServer
 		UplinkSID = params[3];
@@ -446,7 +447,7 @@ struct IRCDMessageNotice final
 	{
 	}
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		if (Servers::Capab.count("ECHO"))
 			Uplink::Send(tags, "ECHO", 'N', source.GetSource(), params[1]);
@@ -463,7 +464,7 @@ struct IRCDMessagePrivmsg final
 	{
 	}
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		if (Servers::Capab.count("ECHO"))
 			Uplink::Send(tags, "ECHO", 'P', source.GetSource(), params[1]);
@@ -481,7 +482,7 @@ struct IRCDMessageTagmsg final
 		SetFlag(FLAG_REQUIRE_USER);
 	}
 
-	void Run(MessageSource &source, const std::vector<Anope::string> &params, const Anope::map<Anope::string> &tags) override
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
 	{
 		if (Servers::Capab.count("ECHO"))
 			Uplink::Send(tags, "ECHO", 'T', source.GetSource());
@@ -558,7 +559,7 @@ class ProtoSolanum final
 	}
 
 public:
-	ProtoSolanum(const Anope::string &modname, const Anope::string &creator)
+	ProtoSolanum(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, PROTOCOL | VENDOR)
 		, ircd_proto(this)
 		, message_away(this)
@@ -630,7 +631,7 @@ public:
 		Uplink::Send("ENCAP", '*', "IDENTIFIED", u->GetUID(), u->nick, "OFF");
 	}
 
-	void OnUserNickChange(User *u, const Anope::string &) override
+	void OnUserNickChange(User *u, const Warden::string &) override
 	{
 		// If the user is logged into an account check if we need to mark them
 		// as not identified to their nick.
@@ -646,7 +647,7 @@ public:
 		auto *modelocks = c->ci->GetExt<ChanServ::ModeLocks>(CHANSERV_MODE_LOCK_EXT);
 		if (modelocks && Servers::Capab.count("MLOCK") > 0)
 		{
-			Anope::string modes = modelocks->GetMLockAsString(false).replace_all_cs("+", "").replace_all_cs("-", "");
+			Warden::string modes = modelocks->GetMLockAsString(false).replace_all_cs("+", "").replace_all_cs("-", "");
 			Uplink::Send("MLOCK", c->created, c->ci->name, modes);
 		}
 	}
@@ -657,7 +658,7 @@ public:
 		ChannelMode *cm = ModeManager::FindChannelModeByName(lock->name);
 		if (cm && ci->c && modelocks && (cm->type == MODE_REGULAR || cm->type == MODE_PARAM) && Servers::Capab.count("MLOCK") > 0)
 		{
-			Anope::string modes = modelocks->GetMLockAsString(false).replace_all_cs("+", "").replace_all_cs("-", "") + cm->mchar;
+			Warden::string modes = modelocks->GetMLockAsString(false).replace_all_cs("+", "").replace_all_cs("-", "") + cm->mchar;
 			Uplink::Send("MLOCK", ci->c->created, ci->name, modes);
 		}
 
@@ -670,7 +671,7 @@ public:
 		ChannelMode *cm = ModeManager::FindChannelModeByName(lock->name);
 		if (cm && modelocks && ci->c && (cm->type == MODE_REGULAR || cm->type == MODE_PARAM) && Servers::Capab.count("MLOCK") > 0)
 		{
-			Anope::string modes = modelocks->GetMLockAsString(false).replace_all_cs("+", "").replace_all_cs("-", "").replace_all_cs(cm->mchar, "");
+			Warden::string modes = modelocks->GetMLockAsString(false).replace_all_cs("+", "").replace_all_cs("-", "").replace_all_cs(cm->mchar, "");
 			Uplink::Send("MLOCK", ci->c->created, ci->name, modes);
 		}
 

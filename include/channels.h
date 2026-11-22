@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -14,12 +15,12 @@
 
 #pragma once
 
-#include "anope.h"
+#include "warden.h"
 #include "extensible.h"
 #include "modes.h"
 #include "serialize.h"
 
-typedef Anope::unordered_map<Channel *> channel_map;
+typedef Warden::unordered_map<Channel *> channel_map;
 
 extern CoreExport channel_map ChannelList;
 
@@ -46,7 +47,7 @@ class CoreExport Channel final
 	static std::vector<Channel *> deleting;
 
 public:
-	typedef std::multimap<Anope::string, ModeData> ModeList;
+	typedef std::multimap<Warden::string, ModeData> ModeList;
 private:
 	/** A map of channel modes with their parameters set on this channel
 	 */
@@ -54,7 +55,7 @@ private:
 
 public:
 	/* Channel name */
-	Anope::string name;
+	Warden::string name;
 	/* Set if this channel is registered. ci->c == this. Contains information relevant to the registered channel */
 	Serialize::Reference<ChannelInfo> ci;
 	/* When the channel was created */
@@ -69,15 +70,15 @@ public:
 	ChanUserList users;
 
 	/* Current topic of the channel */
-	Anope::string topic;
+	Warden::string topic;
 	/* Who set the topic */
-	Anope::string topic_setter;
-	/* The timestamp associated with the topic. Not necessarily anywhere close to Anope::CurTime.
+	Warden::string topic_setter;
+	/* The timestamp associated with the topic. Not necessarily anywhere close to Warden::CurTime.
 	 * This is the time the topic was *originally set*. When we restore the topic we want to change the TS back
 	 * to this, but we can only do this on certain IRCds.
 	 */
 	time_t topic_ts = 0;
-	/* The actual time the topic was set, probably close to Anope::CurTime */
+	/* The actual time the topic was set, probably close to Warden::CurTime */
 	time_t topic_time = 0;
 
 	time_t server_modetime = 0;		/* Time of last server MODE */
@@ -91,7 +92,7 @@ private:
 	 * @param name The channel name
 	 * @param ts The time the channel was created
 	 */
-	Channel(const Anope::string &nname, time_t ts = Anope::CurTime);
+	Channel(const Warden::string &nname, time_t ts = Warden::CurTime);
 
 public:
 	/** Destructor
@@ -146,14 +147,14 @@ public:
 	 * @param name The mode name, eg CMODE_OP, CMODE_VOICE
 	 * @return true or false
 	 */
-	bool HasUserStatus(User *u, const Anope::string &name);
+	bool HasUserStatus(User *u, const Warden::string &name);
 
 	/** See if a channel has a mode
 	 * @param name The mode name
 	 * @return The number of modes set
 	 * @param param The optional mode param
 	 */
-	bool HasMode(const Anope::string &name, const Anope::string &param = "");
+	bool HasMode(const Warden::string &name, const Warden::string &param = "");
 
 	/** Counts the number of modes on the specified list.
 	 * @param cm The mode to count for.
@@ -174,7 +175,7 @@ public:
 	 * @param param The param
 	 * @param enforce_mlock true if mlocks should be enforced, false to override mlock
 	 */
-	void RemoveModeInternal(MessageSource &source, ChannelMode *cm, const Anope::string &param = "", bool enforce_mlock = true);
+	void RemoveModeInternal(MessageSource &source, ChannelMode *cm, const Warden::string &param = "", bool enforce_mlock = true);
 
 	/** Set a mode on a channel
 	 * @param bi The client setting the modes
@@ -191,7 +192,7 @@ public:
 	 * @param data Data about the mode
 	 * @param enforce_mlock true if mlocks should be enforced, false to override mlock
 	 */
-	void SetMode(BotInfo *bi, const Anope::string &name, const ModeData &data = {}, bool enforce_mlock = true);
+	void SetMode(BotInfo *bi, const Warden::string &name, const ModeData &data = {}, bool enforce_mlock = true);
 
 	/** Remove a mode from a channel
 	 * @param bi The client setting the modes
@@ -199,7 +200,7 @@ public:
 	 * @param param Optional param arg for the mode
 	 * @param enforce_mlock true if mlocks should be enforced, false to override mlock
 	 */
-	void RemoveMode(BotInfo *bi, ChannelMode *cm, const Anope::string &param = "", bool enforce_mlock = true);
+	void RemoveMode(BotInfo *bi, ChannelMode *cm, const Warden::string &param = "", bool enforce_mlock = true);
 
 	/**
 	 * Remove a mode from a channel
@@ -208,14 +209,14 @@ public:
 	 * @param param Optional param arg for the mode
 	 * @param enforce_mlock true if mlocks should be enforced, false to override mlock
 	 */
-	void RemoveMode(BotInfo *bi, const Anope::string &name, const Anope::string &param = "", bool enforce_mlock = true);
+	void RemoveMode(BotInfo *bi, const Warden::string &name, const Warden::string &param = "", bool enforce_mlock = true);
 
 	/** Get a modes parameter for the channel
 	 * @param name The mode
 	 * @param target a string to put the param into
 	 * @return true if the parameter was fetched, false if on error (mode not set) etc.
 	 */
-	bool GetParam(const Anope::string &name, Anope::string &target) const;
+	bool GetParam(const Warden::string &name, Warden::string &target) const;
 
 	/** Set a string of modes on the channel
 	 * @param bi The client setting the modes
@@ -223,28 +224,28 @@ public:
 	 * @param cmodes The modes to set
 	 */
 	void SetModes(BotInfo *bi, bool enforce_mlock, const char *cmodes, ...) ATTR_FORMAT(4, 5);
-	void SetModes(BotInfo *bi, bool enforce_mlock, const Anope::string &cmodes);
+	void SetModes(BotInfo *bi, bool enforce_mlock, const Warden::string &cmodes);
 
 	/** Set a string of modes internally on a channel
 	 * @param source The setter
 	 * @param mode the modes
 	 * @param enforce_mlock true to enforce mlock
 	 */
-	void SetModesInternal(MessageSource &source, const Anope::string &modes, const std::vector<Anope::string> &params, time_t ts = 0, bool enforce_mlock = true);
+	void SetModesInternal(MessageSource &source, const Warden::string &modes, const std::vector<Warden::string> &params, time_t ts = 0, bool enforce_mlock = true);
 
 	/** Does the given user match the given list? (CMODE_BAN, CMODE_EXCEPT, etc, a list mode)
 	 * @param u The user
 	 * @param list The mode of the list to check (eg CMODE_BAN)
 	 * @return true if the user matches the list
 	 */
-	bool MatchesList(User *u, const Anope::string &list);
+	bool MatchesList(User *u, const Warden::string &list);
 
 	/** Kick a user from a channel internally
 	 * @param source The sender of the kick
 	 * @param nick The nick being kicked
 	 * @param reason The reason for the kick
 	 */
-	void KickInternal(const MessageSource &source, const Anope::string &nick, const Anope::string &reason);
+	void KickInternal(const MessageSource &source, const Warden::string &nick, const Warden::string &reason);
 
 	/** Kick a user from the channel
 	 * @param bi The sender, can be NULL for the service bot for this channel
@@ -253,7 +254,7 @@ public:
 	 * @return true if the kick was successful, false if a module blocked the kick
 	 */
 	bool Kick(BotInfo *bi, User *u, const char *reason = NULL, ...) ATTR_FORMAT(4, 5);
-	bool Kick(BotInfo *bi, User *u, const Anope::string &reason);
+	bool Kick(BotInfo *bi, User *u, const Warden::string &reason);
 
 	/** Get all modes set on this channel, excluding status modes.
 	 * @return a map of modes and their optional parameters.
@@ -264,28 +265,28 @@ public:
 	 * @param name A mode name to get the list of
 	 * @return a vector of the list mode entries
 	 */
-	std::vector<Anope::string> GetModeList(const Anope::string &name);
+	std::vector<Warden::string> GetModeList(const Warden::string &name);
 
 	/** Get a string of the modes set on this channel
 	 * @param complete Include mode parameters
 	 * @param plus If set to false (with complete), mode parameters will not be given for modes requiring no parameters to be unset
 	 * @return A mode string
 	 */
-	Anope::string GetModes(bool complete, bool plus);
+	Warden::string GetModes(bool complete, bool plus);
 
 	/** Update the topic of the channel internally, and reset it if topiclock etc says to
 	 * @param user The user setting the new topic
 	 * @param newtopic The new topic
 	 * @param ts The time the new topic is being set
 	 */
-	void ChangeTopicInternal(User *u, const Anope::string &user, const Anope::string &newtopic, time_t ts = Anope::CurTime);
+	void ChangeTopicInternal(User *u, const Warden::string &user, const Warden::string &newtopic, time_t ts = Warden::CurTime);
 
 	/** Update the topic of the channel, and reset it if topiclock etc says to
 	 * @param user The user setting the topic
 	 * @param newtopic The new topic
 	 * @param ts The time when the new topic is being set
 	 */
-	void ChangeTopic(const Anope::string &user, const Anope::string &newtopic, time_t ts = Anope::CurTime);
+	void ChangeTopic(const Warden::string &user, const Warden::string &newtopic, time_t ts = Warden::CurTime);
 
 	/** Set the correct modes, or remove the ones granted without permission,
 	 * for the specified user.
@@ -300,7 +301,7 @@ public:
 	 * @param full Whether or not to match using the user's real host and IP
 	 * @return whether or not a ban was removed
 	 */
-	bool Unban(User *u, const Anope::string &mode, bool full = false);
+	bool Unban(User *u, const Warden::string &mode, bool full = false);
 
 	/** Check whether a user is permitted to be on this channel
 	 * @param u The user
@@ -319,20 +320,20 @@ public:
 	 * @param self Whether the user is removing modes on themself.
 	 * @return True if the user was unbanned; otherwise, false.
 	 */
-	bool ClearModes(User* user, const Anope::string &mode, bool self);
+	bool ClearModes(User* user, const Warden::string &mode, bool self);
 
 	/** Finds a channel
 	 * @param name The channel to find
 	 * @return The channel, if found
 	 */
-	static Channel *Find(const Anope::string &name);
+	static Channel *Find(const Warden::string &name);
 
 	/** Finds or creates a channel
 	 * @param name The channel name
 	 * @param created Set to true if the channel was just created
 	 * @param ts The time the channel was created
 	 */
-	static Channel *FindOrCreate(const Anope::string &name, bool &created, time_t ts = Anope::CurTime);
+	static Channel *FindOrCreate(const Warden::string &name, bool &created, time_t ts = Warden::CurTime);
 
 	void QueueForDeletion();
 

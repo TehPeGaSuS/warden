@@ -1,8 +1,9 @@
-// Anope IRC Services <https://www.anope.org/>
+// Warden IRC Services <https://github.com/TehPeGaSuS/warden>
 //
 // Copyright (C) 2003-2026 Anope Contributors
+// Copyright (C) 2026 Warden Contributors
 //
-// Anope is free software. You can use, modify, and/or distribute it under the
+// Warden is free software. You can use, modify, and/or distribute it under the
 // terms of version 2 of the GNU General Public License. See docs/LICENSE.txt
 // for the complete terms of this license and docs/AUTHORS.txt for a list of
 // contributors.
@@ -41,9 +42,9 @@ protected:
 	ForbidData() = default;
 
 public:
-	Anope::string mask;
-	Anope::string creator;
-	Anope::string reason;
+	Warden::string mask;
+	Warden::string creator;
+	Warden::string reason;
 	time_t created = 0;
 	time_t expires = 0;
 	bool immutable = false;
@@ -67,9 +68,9 @@ public:
 
 	virtual OperServ::ForbidData *CreateForbid() = 0;
 
-	virtual OperServ::ForbidData *FindForbid(const Anope::string &mask, OperServ::ForbidType type) = 0;
+	virtual OperServ::ForbidData *FindForbid(const Warden::string &mask, OperServ::ForbidType type) = 0;
 
-	virtual OperServ::ForbidData *FindForbidExact(const Anope::string &mask, OperServ::ForbidType type) = 0;
+	virtual OperServ::ForbidData *FindForbidExact(const Warden::string &mask, OperServ::ForbidType type) = 0;
 
 	virtual std::vector<OperServ::ForbidData *> GetForbids() = 0;
 };
