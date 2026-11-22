@@ -1,6 +1,6 @@
 ---
 name: Feature request
-description: Request that a new feature is added to Anope.
+description: Request that a new feature is added to Warden.
 body:
   - type: markdown
     attributes:

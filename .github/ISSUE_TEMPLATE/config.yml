@@ -1,5 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Support forum
-    url: https://github.com/orgs/anope/discussions/categories/support
-    about: Please ask support questions here.
+  - name: Questions and help
+    url: https://github.com/TehPeGaSuS/warden/discussions
+    about: Ask setup and usage questions in Discussions. Please don't ask about Warden in Anope's channels.
+  - name: Security issue
+    url: https://github.com/TehPeGaSuS/warden/security/advisories/new
+    about: Report crashes and security problems privately.

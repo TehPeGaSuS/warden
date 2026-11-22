@@ -22,8 +22,9 @@ Describe the environment in which you have tested this change:
 
 I have tested this pull request on:
 
-**Operating system name and version:** <!-- e.g. Linux 3.11 -->
-**Compiler name and version:** <!-- e.g. GCC 4.2.0 -->
+**Operating system name and version:** <!-- e.g. Ubuntu 26.04 -->
+**Compiler name and version:** <!-- e.g. GCC 15.2 -->
+**IRCd name and version:** <!-- e.g. UnrealIRCd 6.2.7 -->
 
 ## Checks
 
@@ -34,7 +35,7 @@ Tick the boxes for the checks you have made.
 I have ensured that:
 
 - [ ] The code I am submitting is my own work and/or I have permission from the author to share it.
-- [ ] Generative AI (Copilot, ChatGPT, etc) was not used to create any part of this pull request.
-- [ ] If the pull request contains a security fix I have followed the reporting rules mentioned in [the security policy](https://github.com/anope/anope/security/policy) (delete if not applicable).
+- [ ] I have said above whether AI tools were used for this pull request (AI help is welcome, but you must understand and be able to explain every change).
+- [ ] If the pull request contains a security fix I have followed the reporting rules mentioned in [the security policy](SECURITY.md) (delete if not applicable).
 - [ ] I have documented any features added by this pull request (delete if not applicable).
 - [ ] This pull request does not introduce any incompatible API changes (stable branches only, delete if not applicable).

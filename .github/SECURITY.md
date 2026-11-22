@@ -1,19 +1,17 @@
 # Security Policy
 
-## Supported Versions
+## Supported versions
 
-Currently the 2.0 (stable) branch is actively receiving security fixes. Support for 2.0 will end one year after 2.2 is released.
+Only the latest Warden release receives security fixes.
 
-The 2.1 (development) branch receives security fixes when they are synced from the 2.0 branch. We try to do this as soon as possible but but releases may be delayed by a few days if a maintainer does not have the time to do the release.
+Warden also watches Anope's security releases and ports fixes that apply to the shared code.
 
-Version | Supported
-------- | ---------
-2.1.x   | :warning:
-2.0.x   | :white_check_mark:
-1.8.x   | :x:
+## Reporting a vulnerability
 
-## Reporting a Vulnerability
+Please **do not** open a public issue for security problems, including crashes.
 
-Please do not report security vulnerabilities on GitHub. Instead, email the details to team@anope.org. If you do not get a response within a few days then get the attention of a developer in our development IRC channel at irc.teranova.net #anope-devel and PM them the details.
+Report it privately through [GitHub's private vulnerability reporting](https://github.com/TehPeGaSuS/warden/security/advisories/new). Include the Warden version (`warden --version`), the IRCd and version, and steps to reproduce.
 
-We will triage your issue as soon as possible and try to release a fixed version within a week of receiving your report.
+You should get a first reply within a few days. Fixes are released as soon as they are tested.
+
+If the problem also affects Anope, it will be reported to the Anope team privately, following [their security policy](https://github.com/anope/anope/security/policy), and any fix will not be published before theirs.

@@ -1,16 +1,29 @@
-## About
+# Warden
 
-Anope is an open source set of IRC services. It is highly modular, with a vast number of configurable parameters, and is the most used IRC services package. There are also many modules on the [modsite](https://modules.anope.org) to add additional features. It runs on Linux, BSD, and Windows, and supports many modern IRCds, including InspIRCd, UnrealIRCd, and ircd-hybrid. For more details, credits, command line options, and contact information see [docs/README](https://github.com/anope/anope/blob/2.0/docs/README).
+Warden is a set of IRC services (NickServ, ChanServ, OperServ and friends) for IRC networks. It is a fork of [Anope](https://github.com/anope/anope) 2.2, focused on networks with large lists (forbids, users, akills) and on UnrealIRCd.
 
-* [Website](https://anope.org)
-* [GitHub](https://github.com/anope)
-* IRC \#anope on irc.teranova.net
+> [!IMPORTANT]
+> **Warden is developed with AI assistance** (Claude). Every change is reviewed and tested by a human on real networks before it is released, but if that is a deal-breaker for you, Anope itself is the better choice.
+>
+> **Warden is not affiliated with or endorsed by the Anope team.** Please do not ask for Warden support in Anope's channels, forums or issue tracker. Report Warden problems here.
 
-## Installation
+## Why a fork?
 
-### Linux/BSD
-Download the latest release off of the [releases page](https://github.com/anope/anope/releases).
+Warden started from problems that hit big networks hard, such as services freezing for many seconds while reloading a forbid list of 10,000 entries, and list commands that cannot page through large results. Fixing those well needs changes Anope is not taking right now, so Warden takes them on separately.
 
+Warden is a clean break: it has its own name, namespace, binary and config file names. Anope's history and copyright stay intact, and the code remains GPLv2, so anything useful here is free for Anope to take.
+
+## Supported IRCds
+
+| Tier | IRCd | What it means |
+|---|---|---|
+| 1 | UnrealIRCd 6 | Tested on every release and run in production |
+| 2 | InspIRCd 4, Solanum, ircd-hybrid 8.2, ngIRCd | Best effort: tested, fixed when they break |
+| Unsupported | Everything else inherited from Anope (e.g. plexus) | Still in the tree, never tested, may be removed |
+
+Windows builds are inherited from Anope and **unsupported**: they may work, but nobody tests them.
+
+## Quick start
 
 ```
 $ ./Config
@@ -19,28 +32,30 @@ $ make
 $ make install
 ```
 
-Now change to the directory where you installed Anope to, e.g. `$ cd ~/anope/`
-
-### Windows
-Download the latest release off of the [releases page](https://github.com/anope/anope/releases) and run the installer.
-
-
-## Configuration
-
-Copy conf/anope.example.conf to conf/anope.conf
+Then, in the install directory:
 
 ```
-$ cp conf/anope.example.conf conf/anope.conf
+$ cp conf/warden.example.conf conf/warden.conf
 ```
 
-Edit anope.conf, configuring the uplink, serverinfo, and protocol module configurations. Example link blocks for popular IRCds are included in the the example.conf documentation. The [Anope wiki](https://wiki.anope.org) is also a good source of information. Our support channel is located at #anope on [irc.teranova.net](ircs://irc.teranova.net/anope).
+Edit `warden.conf` (uplink, serverinfo and the protocol module) and run `./bin/warden`. When asked for logs for a bug report, run `./bin/warden --support`.
 
-Note that the example configuration file includes other example configuration files. If you want to modify the other example configuration files, copy them (e.g. `modules.example.conf` to `modules.conf`) and modify the `include` directive in `anope.conf` to include the new file.
+The example configuration includes the other `*.example.conf` files. To change one of them, copy it (e.g. `modules.example.conf` to `modules.conf`) and point the matching `include` in `warden.conf` at the copy.
 
-## Running
+### Coming from Anope
 
-Run `$ ./bin/anope` to start Anope. If asked to provide logs for support, use the `--support` flag, e.g.: `$ ./bin/anope --support`
+Warden reads an existing `anope.conf` and `anope.json` if `warden.conf` / `warden.json` are not there, and warns you to rename them. The RPC interface also accepts the old `anope.*` method names for now, so tools like MagIRC keep working.
 
-## Installing extra modules
+## Extra modules
 
-Extra modules, which are usually modules which require extra libraries to use, such as m\_mysql, can be enabled with the `./extras` command from the source directory. Then re-run `Config`, `make` and `make install` again. Third party modules can be installed by placing them into the `modules/third` directory.
+Modules that need extra libraries (such as the SQL and LDAP modules) are enabled with `./extras` from the source directory; then re-run `Config`, `make` and `make install`. Third-party modules go in `modules/third`.
+
+## Help and bug reports
+
+* **Bugs:** [GitHub Issues](https://github.com/TehPeGaSuS/warden/issues)
+* **Questions and help:** [GitHub Discussions](https://github.com/TehPeGaSuS/warden/discussions)
+* **Security issues:** report them privately, see [SECURITY.md](.github/SECURITY.md)
+
+## Credits and licence
+
+Warden is built on more than two decades of work by the Anope contributors; see [docs/AUTHORS.txt](docs/AUTHORS.txt). It is free software under version 2 of the GNU General Public License; see [docs/LICENSE.txt](docs/LICENSE.txt).
