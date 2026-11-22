@@ -19,7 +19,7 @@
 
 static Warden::string UplinkSID;
 
-static ServiceReference<IRCDProto> ratbox("IRCDProto", "ratbox");
+static ServiceReference<IRCDProto> hybrid("IRCDProto", "hybrid");
 
 class ChannelModeLargeBan final
 	: public ChannelMode
@@ -38,6 +38,20 @@ class SolanumProto final
 	: public IRCDProto
 	, public SASL::ProtocolInterface
 {
+	static BotInfo *FindIntroduced()
+	{
+		BotInfo *bi = Config->GetClient("OperServ");
+
+		if (bi && bi->introduced)
+			return bi;
+
+		for (const auto &[_, bi] : *BotListByNick)
+			if (bi->introduced)
+				return bi;
+
+		return NULL;
+	}
+
 public:
 	SolanumProto(Module *creator)
 		: IRCDProto(creator, "Solanum")
@@ -56,23 +70,68 @@ public:
 		MaxModes = 4;
 	}
 
-	void SendSVSKill(const MessageSource &source, User *targ, const Warden::string &reason) override { ratbox->SendSVSKill(source, targ, reason); }
-	void SendGlobalNotice(BotInfo *bi, const Server *dest, const Warden::string &msg) override { ratbox->SendGlobalNotice(bi, dest, msg); }
-	void SendGlobalPrivmsg(BotInfo *bi, const Server *dest, const Warden::string &msg) override { ratbox->SendGlobalPrivmsg(bi, dest, msg); }
-	void SendGlobops(const MessageSource &source, const Warden::string &buf) override { ratbox->SendGlobops(source, buf); }
-	void SendSGLine(User *u, const XLine *x) override { ratbox->SendSGLine(u, x); }
-	void SendSGLineDel(const XLine *x) override { ratbox->SendSGLineDel(x); }
-	void SendAkill(User *u, XLine *x) override { ratbox->SendAkill(u, x); }
-	void SendAkillDel(const XLine *x) override { ratbox->SendAkillDel(x); }
-	void SendSQLine(User *u, const XLine *x) override { ratbox->SendSQLine(u, x); }
-	void SendSQLineDel(const XLine *x) override { ratbox->SendSQLineDel(x); }
-	void SendJoin(User *user, Channel *c, const ChannelStatus *status) override { ratbox->SendJoin(user, c, status); }
-	void SendServer(const Server *server) override { ratbox->SendServer(server); }
-	void SendChannel(Channel *c) override { ratbox->SendChannel(c); }
-	void SendTopic(const MessageSource &source, Channel *c) override { ratbox->SendTopic(source, c); }
-	bool IsIdentValid(const Warden::string &ident) override { return ratbox->IsIdentValid(ident); }
-	void SendLogin(User *u, NickAlias *na) override { ratbox->SendLogin(u, na); }
-	void SendLogout(User *u) override { ratbox->SendLogout(u); }
+	// Plain TS6, shared with ircd-hybrid.
+	void SendSVSKill(const MessageSource &source, User *targ, const Warden::string &reason) override { hybrid->SendSVSKill(source, targ, reason); }
+	void SendGlobalNotice(BotInfo *bi, const Server *dest, const Warden::string &msg) override { hybrid->SendGlobalNotice(bi, dest, msg); }
+	void SendGlobalPrivmsg(BotInfo *bi, const Server *dest, const Warden::string &msg) override { hybrid->SendGlobalPrivmsg(bi, dest, msg); }
+	void SendSGLine(User *u, const XLine *x) override { hybrid->SendSGLine(u, x); }
+	void SendSGLineDel(const XLine *x) override { hybrid->SendSGLineDel(x); }
+	void SendAkill(User *u, XLine *x) override { hybrid->SendAkill(u, x); }
+	void SendAkillDel(const XLine *x) override { hybrid->SendAkillDel(x); }
+	void SendJoin(User *user, Channel *c, const ChannelStatus *status) override { hybrid->SendJoin(user, c, status); }
+	void SendServer(const Server *server) override { hybrid->SendServer(server); }
+	void SendChannel(Channel *c) override { hybrid->SendChannel(c); }
+	bool IsIdentValid(const Warden::string &ident) override { return hybrid->IsIdentValid(ident); }
+
+	// Formerly in the ratbox module.
+	void SendGlobops(const MessageSource &source, const Warden::string &buf) override
+	{
+		Uplink::Send(source, "OPERWALL", buf);
+	}
+
+	void SendSQLine(User *, const XLine *x) override
+	{
+		// Calculate the time left before this would expire
+		time_t timeleft = x->expires ? x->expires - Warden::CurTime : x->expires;
+		Uplink::Send(FindIntroduced(), "ENCAP", '*', "RESV", timeleft, x->mask, 0, x->GetReason());
+	}
+
+	void SendSQLineDel(const XLine *x) override
+	{
+		Uplink::Send(FindIntroduced(), "ENCAP", '*', "UNRESV", x->mask);
+	}
+
+	void SendLogin(User *u, NickAlias *na) override
+	{
+		if (na->nc->HasExt("UNCONFIRMED"))
+			return;
+
+		Uplink::Send("ENCAP", '*', "SU", u->GetUID(), na->nc->display);
+	}
+
+	void SendLogout(User *u) override
+	{
+		Uplink::Send("ENCAP", '*', "SU", u->GetUID());
+	}
+
+	void SendTopic(const MessageSource &source, Channel *c) override
+	{
+		BotInfo *bi = source.GetBot();
+		bool needjoin = c->FindUser(bi) == NULL;
+
+		if (needjoin)
+		{
+			ChannelStatus status;
+
+			status.AddMode(ModeManager::FindChannelModeByName("OP"));
+			bi->Join(c, &status);
+		}
+
+		IRCDProto::SendTopic(source, c);
+
+		if (needjoin)
+			bi->Part(c);
+	}
 
 	bool IsTagValid(const Warden::string &tname, const Warden::string &tvalue) override
 	{
@@ -409,7 +468,68 @@ struct IRCDMessageEUID final
 	}
 };
 
-// we can't use this function from ratbox because we set a local variable here
+// Formerly in the ratbox module.
+struct IRCDMessageJoin final
+	: Message::Join
+{
+	IRCDMessageJoin(Module *creator) : Message::Join(creator, "JOIN") { }
+
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
+	{
+		if (params.size() == 1 && params[0] == "0")
+			return Message::Join::Run(source, params, tags);
+
+		if (params.size() < 2)
+			return;
+
+		std::vector<Warden::string> p = params;
+		p.erase(p.begin());
+
+		return Message::Join::Run(source, p, tags);
+	}
+};
+
+// Formerly in the ratbox module.
+struct IRCDMessageTBurst final
+	: IRCDMessage
+{
+	IRCDMessageTBurst(Module *creator) : IRCDMessage(creator, "TB", 3) { SetFlag(FLAG_SOFT_LIMIT); }
+
+	/*
+	 * params[0] = channel
+	 * params[1] = ts
+	 * params[2] = topic OR who set the topic
+	 * params[3] = topic if params[2] isn't the topic
+	 */
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
+	{
+		auto topic_time = IRCD->ExtractTimestamp(params[1]);
+		Channel *c = Channel::Find(params[0]);
+
+		if (!c)
+			return;
+
+		const Warden::string &setter = params.size() == 4 ? params[2] : "",
+			topic = params.size() == 4 ? params[3] : params[2];
+
+		c->ChangeTopicInternal(NULL, setter, topic, topic_time);
+	}
+};
+
+// Formerly in the ratbox module; Solanum normally sends EUID instead.
+struct IRCDMessageUID final
+	: IRCDMessage
+{
+	IRCDMessageUID(Module *creator) : IRCDMessage(creator, "UID", 9) { SetFlag(FLAG_REQUIRE_SERVER); }
+
+	// :42X UID Adam 1 1348535644 +aow Adam 192.168.0.5 192.168.0.5 42XAAAAAB :Adam
+	void Run(MessageSource &source, const std::vector<Warden::string> &params, const Warden::map<Warden::string> &tags) override
+	{
+		/* Source is always the server */
+		User::OnIntroduce(params[0], params[4], params[5], "", params[6], source.GetServer(), params[8], IRCD->ExtractTimestamp(params[2]), params[3], params[7], NULL);
+	}
+};
+
 struct IRCDMessageServer final
 	: IRCDMessage
 {
@@ -426,7 +546,6 @@ struct IRCDMessageServer final
 	}
 };
 
-// we can't use this function from ratbox because we set a local variable here
 struct IRCDMessagePass final
 	: IRCDMessage
 {
@@ -494,7 +613,7 @@ struct IRCDMessageTagmsg final
 class ProtoSolanum final
 	: public Module
 {
-	Module *m_ratbox;
+	Module *m_hybrid;
 
 	SolanumProto ircd_proto;
 
@@ -516,9 +635,8 @@ class ProtoSolanum final
 	Message::Version message_version;
 	Message::Whois message_whois;
 
-	/* Ratbox Message Handlers */
-	ServiceAlias message_bmask, message_join, message_nick, message_pong, message_sid, message_sjoin,
-		message_tb, message_tmode, message_uid;
+	/* Hybrid message handlers */
+	ServiceAlias message_bmask, message_nick, message_pong, message_sid, message_sjoin, message_tmode;
 
 	/* Ignored message handlers. */
 	Message::Ignore message_echo;
@@ -528,14 +646,50 @@ class ProtoSolanum final
 	IRCDMessageEBMask message_ebmask;
 	IRCDMessageEncap message_encap;
 	IRCDMessageEUID message_euid;
+	IRCDMessageJoin message_join;
 	IRCDMessageNotice message_notice;
 	IRCDMessagePass message_pass;
 	IRCDMessagePrivmsg message_privmsg;
 	IRCDMessageServer message_server;
 	IRCDMessageTagmsg message_tagmsg;
+	IRCDMessageTBurst message_tb;
+	IRCDMessageUID message_uid;
 
 	static void AddModes()
 	{
+		// Base TS6 modes, formerly added by the ratbox module (after
+		// hybrid's own, which are already in place at this point).
+		ModeManager::AddUserMode(new UserModeOperOnly("ADMIN", 'a'));
+		ModeManager::AddUserMode(new UserModeOperOnly("BOT", 'b'));
+		ModeManager::AddUserMode(new UserMode("DEAF", 'D'));
+		ModeManager::AddUserMode(new UserMode("CALLERID", 'g'));
+		ModeManager::AddUserMode(new UserMode("INVIS", 'i'));
+		ModeManager::AddUserMode(new UserModeOperOnly("LOCOPS", 'l'));
+		ModeManager::AddUserMode(new UserModeOperOnly("OPER", 'o'));
+		ModeManager::AddUserMode(new UserModeOperOnly("SNOMASK", 's'));
+		ModeManager::AddUserMode(new UserModeNoone("PROTECTED", 'S'));
+		ModeManager::AddUserMode(new UserMode("WALLOPS", 'w'));
+		ModeManager::AddUserMode(new UserModeOperOnly("OPERWALLS", 'z'));
+
+		ModeManager::AddChannelMode(new ChannelModeList("BAN", 'b'));
+		ModeManager::AddChannelMode(new ChannelModeList("EXCEPT", 'e'));
+		ModeManager::AddChannelMode(new ChannelModeList("INVITEOVERRIDE", 'I'));
+
+		ModeManager::AddChannelMode(new ChannelModeStatus("VOICE", 'v', '+', 0));
+		ModeManager::AddChannelMode(new ChannelModeStatus("OP", 'o', '@', 1));
+
+		ModeManager::AddChannelMode(new ChannelModeParam("LIMIT", 'l', true));
+		ModeManager::AddChannelMode(new ChannelModeKey('k'));
+
+		ModeManager::AddChannelMode(new ChannelMode("INVITE", 'i'));
+		ModeManager::AddChannelMode(new ChannelMode("MODERATED", 'm'));
+		ModeManager::AddChannelMode(new ChannelMode("NOEXTERNAL", 'n'));
+		ModeManager::AddChannelMode(new ChannelMode("PRIVATE", 'p'));
+		ModeManager::AddChannelMode(new ChannelMode("REGISTEREDONLY", 'r'));
+		ModeManager::AddChannelMode(new ChannelMode("SECRET", 's'));
+		ModeManager::AddChannelMode(new ChannelMode("TOPIC", 't'));
+		ModeManager::AddChannelMode(new ChannelMode("SSL", 'S'));
+
 		/* Add user modes */
 		ModeManager::AddUserMode(new UserMode("NOFORWARD", 'Q'));
 		ModeManager::AddUserMode(new UserMode("REGPRIV", 'R'));
@@ -578,41 +732,41 @@ public:
 		, message_topic(this)
 		, message_version(this)
 		, message_whois(this)
-		, message_bmask("IRCDMessage", "solanum/bmask", "ratbox/bmask")
-		, message_join("IRCDMessage", "solanum/join", "ratbox/join")
-		, message_nick("IRCDMessage", "solanum/nick", "ratbox/nick")
-		, message_pong("IRCDMessage", "solanum/pong", "ratbox/pong")
-		, message_sid("IRCDMessage", "solanum/sid", "ratbox/sid")
-		, message_sjoin("IRCDMessage", "solanum/sjoin", "ratbox/sjoin")
-		, message_tb("IRCDMessage", "solanum/tb", "ratbox/tb")
-		, message_tmode("IRCDMessage", "solanum/tmode", "ratbox/tmode")
-		, message_uid("IRCDMessage", "solanum/uid", "ratbox/uid")
+		, message_bmask("IRCDMessage", "solanum/bmask", "hybrid/bmask")
+		, message_nick("IRCDMessage", "solanum/nick", "hybrid/nick")
+		, message_pong("IRCDMessage", "solanum/pong", "hybrid/pong")
+		, message_sid("IRCDMessage", "solanum/sid", "hybrid/sid")
+		, message_sjoin("IRCDMessage", "solanum/sjoin", "hybrid/sjoin")
+		, message_tmode("IRCDMessage", "solanum/tmode", "hybrid/tmode")
 		, message_echo(this, "ECHO")
 		, message_capab(this)
 		, message_ebmask(this)
 		, message_encap(this)
 		, message_euid(this)
+		, message_join(this)
 		, message_notice(this)
 		, message_pass(this)
 		, message_privmsg(this)
 		, message_server(this)
 		, message_tagmsg(this)
+		, message_tb(this)
+		, message_uid(this)
 	{
-		if (ModuleManager::LoadModule("ratbox", User::Find(creator)) != MOD_ERR_OK)
-			throw ModuleException("Unable to load ratbox");
-		m_ratbox = ModuleManager::FindModule("ratbox");
-		if (!m_ratbox)
-			throw ModuleException("Unable to find ratbox");
-		if (!ratbox)
-			throw ModuleException("No protocol interface for ratbox");
+		if (ModuleManager::LoadModule("hybrid", User::Find(creator)) != MOD_ERR_OK)
+			throw ModuleException("Unable to load hybrid");
+		m_hybrid = ModuleManager::FindModule("hybrid");
+		if (!m_hybrid)
+			throw ModuleException("Unable to find hybrid");
+		if (!hybrid)
+			throw ModuleException("No protocol interface for hybrid");
 
 		this->AddModes();
 	}
 
 	~ProtoSolanum() override
 	{
-		m_ratbox = ModuleManager::FindModule("ratbox");
-		ModuleManager::UnloadModule(m_ratbox, NULL);
+		m_hybrid = ModuleManager::FindModule("hybrid");
+		ModuleManager::UnloadModule(m_hybrid, NULL);
 	}
 
 	void OnUserLogin(User *u) override
