@@ -1,6 +1,6 @@
 # Warden
 
-Warden is a set of IRC services (NickServ, ChanServ, OperServ and friends) for IRC networks. It is a fork of [Anope](https://github.com/anope/anope) 2.2, focused on networks with large lists (forbids, users, akills) and on UnrealIRCd.
+Warden is a set of IRC services (NickServ, ChanServ, OperServ and friends) for IRC networks. It is a fork of [Anope](https://github.com/anope/anope), focused on networks with large lists (forbids, users, akills) and on UnrealIRCd.
 
 > [!IMPORTANT]
 > **Warden is developed with AI assistance** (Claude). Every change is reviewed and tested by a human on real networks before it is released, but if that is a deal-breaker for you, Anope itself is the better choice.
