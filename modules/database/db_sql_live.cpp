@@ -24,6 +24,8 @@ class DBMySQL final
 {
 private:
 	Warden::string prefix;
+	// Whether the default prefix is used, so Anope's tables may be renamed.
+	bool migrate = false;
 	ServiceReference<Provider> SQL;
 	time_t lastwarn;
 	bool ro;
@@ -140,6 +142,8 @@ public:
 
 	EventReturn OnLoadDatabase() override
 	{
+		if (this->migrate && SQL)
+			SQL::MigrateAnopeTables(*SQL, this->name);
 		init = true;
 		return EVENT_STOP;
 	}
@@ -159,7 +163,10 @@ public:
 		const auto &block = conf.GetModule(this);
 
 		this->SQL.SetServiceName(block.Get<const Warden::string>("engine"));
-		this->prefix = block.Get<const Warden::string>("prefix", "warden21_");
+		this->prefix = block.Get<const Warden::string>("prefix");
+		this->migrate = this->prefix.empty();
+		if (this->migrate)
+			this->prefix = "warden21_";
 	}
 
 	void OnSerializableConstruct(Serializable *obj) override

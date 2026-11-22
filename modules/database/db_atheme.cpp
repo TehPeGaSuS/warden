@@ -1703,7 +1703,9 @@ public:
 		Warden::map<Warden::string> tmp_csmiscdata;
 		for (const auto &[_,  data] : modconf.GetBlocks("cs_set_misc"))
 		{
-			const auto &warden = data.Get<const Warden::string>("warden");
+			auto warden = data.Get<const Warden::string>("warden");
+			if (warden.empty())
+				warden = data.Get<const Warden::string>("anope"); // Anope configs.
 			const auto &atheme = data.Get<const Warden::string>("atheme");
 			if (warden.empty())
 				throw ConfigException(this->name + " missing cs_set_misc warden config entry" + (atheme.empty() ? "" : (" for atheme entry " + atheme)));
@@ -1716,7 +1718,9 @@ public:
 		Warden::map<Warden::string> tmp_nsmiscdata;
 		for (const auto &[_,  data] : modconf.GetBlocks("ns_set_misc"))
 		{
-			const auto &warden = data.Get<const Warden::string>("warden");
+			auto warden = data.Get<const Warden::string>("warden");
+			if (warden.empty())
+				warden = data.Get<const Warden::string>("anope"); // Anope configs.
 			const auto &atheme = data.Get<const Warden::string>("atheme");
 			if (warden.empty())
 				throw ConfigException(this->name + "missing ns_set_misc warden config entry" + (atheme.empty() ? "" : (" for atheme entry " + atheme)));

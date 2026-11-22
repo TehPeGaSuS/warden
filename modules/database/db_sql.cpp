@@ -68,6 +68,8 @@ class DBSQL final
 	ServiceReference<Provider> sql;
 	SQLSQLInterface sqlinterface;
 	Warden::string prefix;
+	// Whether the default prefix is used, so Anope's tables may be renamed.
+	bool migrate = false;
 	bool import;
 
 	std::set<Serializable *> updated_items;
@@ -175,7 +177,10 @@ public:
 	{
 		const auto &block = conf.GetModule(this);
 		this->sql.SetServiceName(block.Get<const Warden::string>("engine"));
-		this->prefix = block.Get<const Warden::string>("prefix", "warden21_");
+		this->prefix = block.Get<const Warden::string>("prefix");
+		this->migrate = this->prefix.empty();
+		if (this->migrate)
+			this->prefix = "warden21_";
 		this->import = block.Get<bool>("import");
 	}
 
@@ -205,6 +210,9 @@ public:
 			Log(this) << "Unable to load databases, is SQL (" << this->sql.GetServiceName() << ") configured correctly?";
 			return EVENT_CONTINUE;
 		}
+
+		if (this->migrate)
+			SQL::MigrateAnopeTables(*this->sql, this->name);
 
 		this->loading_databases = true;
 

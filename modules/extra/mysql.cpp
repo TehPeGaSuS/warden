@@ -317,7 +317,7 @@ public:
 					auto *ss = new MySQLService(this, connname, database, server, user, password, port, socket);
 					this->MySQLServices.emplace(connname, ss);
 
-					Log(LOG_NORMAL, "mysql") << "MySQL: Successfully connected to server " << connname << " (" << (socket.empty() ? server + ":" + port : socket) << ")";
+					Log(LOG_NORMAL, "mysql") << "MySQL: Successfully connected to server " << connname << " (" << (socket.empty() ? server + ":" + Warden::ToString(port) : socket) << ")";
 				}
 				catch (const SQL::Exception &ex)
 				{

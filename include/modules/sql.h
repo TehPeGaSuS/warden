@@ -192,4 +192,72 @@ namespace SQL
 		virtual Warden::string FromUnixtime(time_t) = 0;
 	};
 
+
+	/** Tables created by Anope 2.1 use the prefix anope21_ by default and Warden
+	 * uses warden21_. When the prefix is not configured, rename the Anope tables
+	 * once so that existing databases keep working. Does nothing if any
+	 * warden21_ table already exists.
+	 */
+	inline void MigrateAnopeTables(Provider *sql, const Warden::string &modname)
+	{
+		static const Warden::string oldprefix = "anope21_", newprefix = "warden21_";
+
+		auto list = [sql](const Warden::string &prefix) {
+			std::vector<Warden::string> tables;
+			auto res = sql->RunQuery(sql->GetTables(prefix));
+			for (int i = 0; i < res.Rows(); ++i)
+			{
+				const auto &row = res.Row(i);
+				// LIKE treats _ as a wildcard, so check the prefix exactly.
+				if (!row.empty() && row.begin()->second.compare(0, prefix.length(), prefix) == 0)
+					tables.push_back(row.begin()->second);
+			}
+			return tables;
+		};
+
+		const auto existing = list(newprefix);
+		const auto old = list(oldprefix);
+		if (old.empty())
+			return;
+		if (!existing.empty())
+		{
+			Log() << modname << ": both " << oldprefix << " and " << newprefix << " tables exist; using " << newprefix << " and leaving the " << oldprefix << " tables alone.";
+			return;
+		}
+
+		// SQLite tables have a timestamp trigger that names the table, and SQLite
+		// checks every trigger on each rename. Drop them all first and create
+		// them again afterwards. On MySQL this query fails and there are none.
+		std::set<Warden::string> triggers;
+		auto res = sql->RunQuery(Query("SELECT `name` FROM `sqlite_master` WHERE `type` = 'trigger' AND `name` LIKE '" + oldprefix + "%'"));
+		for (int i = 0; res && i < res.Rows(); ++i)
+		{
+			const auto &name = res.Row(i).begin()->second;
+			if (name.compare(0, oldprefix.length(), oldprefix) == 0)
+				triggers.insert(name);
+		}
+		for (const auto &trigger : triggers)
+			sql->RunQuery(Query("DROP TRIGGER `" + trigger + "`"));
+
+		auto addtrigger = [sql, &triggers](const Warden::string &oldtable, const Warden::string &table) {
+			if (triggers.count(oldtable + "_trigger"))
+				sql->RunQuery(Query("CREATE TRIGGER `" + table + "_trigger` AFTER UPDATE ON `" + table + "` FOR EACH ROW BEGIN UPDATE `" + table + "` SET `timestamp` = CURRENT_TIMESTAMP WHERE `id` = old.id; END"));
+		};
+
+		size_t renamed = 0;
+		for (const auto &table : old)
+		{
+			const auto target = newprefix + table.substr(oldprefix.length());
+			auto res = sql->RunQuery(Query("ALTER TABLE `" + table + "` RENAME TO `" + target + "`"));
+			if (!res)
+			{
+				Log() << modname << ": unable to rename " << table << " to " << target << ": " << res.GetError();
+				addtrigger(table, table);
+				continue;
+			}
+			addtrigger(table, target);
+			++renamed;
+		}
+		Log() << modname << ": renamed " << renamed << " of " << old.size() << " Anope tables (" << oldprefix << "* to " << newprefix << "*).";
+	}
 }
