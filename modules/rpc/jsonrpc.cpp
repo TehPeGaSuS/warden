@@ -139,7 +139,7 @@ public:
 
 		RPC::Request request(reply);
 		request.id = id;
-		request.name = yyjson_get_astr(root, "method");
+		request.name = RPC::CanonicalMethod(yyjson_get_astr(root, "method"));
 		if (request.name.empty())
 		{
 			yyjson_doc_free(doc);

@@ -93,6 +93,9 @@ public:
 	{
 		std::set<Warden::string> tried_dbs;
 
+		if (Config->GetModule(this).Get<const Warden::string>("database").empty())
+			Warden::MigrateFromAnope(Warden::ExpandData("warden.db"), Warden::ExpandData("anope.db"));
+
 		const auto db_name = Warden::ExpandData(Config->GetModule(this).Get<const Warden::string>("database", "warden.db"));
 
 		std::fstream fd(db_name.c_str(), std::ios_base::in | std::ios_base::binary);

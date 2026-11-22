@@ -1,5 +1,8 @@
 # Warden `rpc_message` RPC interface
 
+> [!NOTE]
+> The old Anope names (`anope.*`, e.g. `anope.listAccounts`) still work and map to the `warden.*` methods below; RPC tokens that list `anope.*` methods also keep working. They are deprecated and will be removed in a later release.
+
 ## `warden.messageNetwork`
 
 Sends a message to all users on the network.

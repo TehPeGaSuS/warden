@@ -100,7 +100,7 @@ public:
 
 		RPC::Request request(reply);
 
-		request.name = method;
+		request.name = RPC::CanonicalMethod(method);
 		delete method;
 
 		if (!tokens.empty())

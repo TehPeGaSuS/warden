@@ -189,7 +189,13 @@ private:
 		else
 		{
 			// We are reading a the name of the core database.
-			filename = Config->GetModule(this).Get<Warden::string>("database", "warden.json");
+			filename = Config->GetModule(this).Get<Warden::string>("database");
+			if (filename.empty())
+			{
+				// Default name: take over an Anope database if there is one.
+				filename = "warden.json";
+				Warden::MigrateFromAnope(Warden::ExpandData(filename), Warden::ExpandData("anope.json"));
+			}
 		}
 
 		return Warden::ExpandData(filename);

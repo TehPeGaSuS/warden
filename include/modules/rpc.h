@@ -177,6 +177,27 @@ public:
 
 #define RPC_EVENT "RPC::Event"
 
+namespace RPC
+{
+	/** Maps a deprecated Anope method name (anope.listUsers) to its Warden
+	 * name (warden.listUsers) so existing RPC clients keep working.
+	 */
+	inline Warden::string CanonicalMethod(const Warden::string &method)
+	{
+		if (method.compare(0, 6, "anope.", 6) == 0)
+			return "warden." + method.substr(6);
+		return method;
+	}
+
+	/** The other name of a method: warden.X <-> anope.X (empty if none). */
+	inline Warden::string LegacyMethod(const Warden::string &method)
+	{
+		if (method.compare(0, 7, "warden.", 7) == 0)
+			return "anope." + method.substr(7);
+		return "";
+	}
+}
+
 class RPC::Event
 	: public Service
 {
@@ -241,12 +262,17 @@ public:
 			if (!CompareToken(token, rawtoken))
 				continue; // No valid token.
 
+			// Tokens from an Anope config may still list anope.* methods.
+			const auto legacy = RPC::LegacyMethod(method);
+			const auto matches = [&method, &legacy](const Warden::string &g) {
+				return Warden::Match(method, g) || (!legacy.empty() && Warden::Match(legacy, g));
+			};
 			for (const auto &glob : token.methods)
 			{
-				if (glob[0] == '~' && Warden::Match(method, glob.substr(1)))
+				if (glob[0] == '~' && matches(glob.substr(1)))
 					return false; // Negative match.
 
-				if (Warden::Match(method, glob))
+				if (matches(glob))
 					return true; // Positive match.
 			}
 		}

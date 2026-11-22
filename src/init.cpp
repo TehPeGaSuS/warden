@@ -407,11 +407,13 @@ bool Warden::Init(int ac, char **av)
 			++Warden::Debug;
 	}
 
+	bool config_given = false;
 	if (GetCommandLineArgument("config", 'c', arg))
 	{
 		if (arg.empty())
 			throw CoreException("The --config option requires a file name");
 		ServicesConf = Configuration::File(arg, false);
+		config_given = true;
 	}
 
 	if (GetCommandLineArgument("confdir", 0, arg))
@@ -456,6 +458,13 @@ bool Warden::Init(int ac, char **av)
 	if (chdir(Warden::ServicesDir.c_str()) != 0)
 	{
 		throw CoreException("Unable to chdir to " + Warden::ServicesDir + ": " + Warden::LastError());
+	}
+
+	// Coming from Anope: use anope.conf if there is no warden.conf.
+	if (!config_given && !Warden::IsFile(Warden::ExpandConfig(ServicesConf.GetName())) && Warden::IsFile(Warden::ExpandConfig("anope.conf")))
+	{
+		ServicesConf = Configuration::File("anope.conf", false);
+		Log(LOG_TERMINAL) << "Warning: warden.conf not found, using anope.conf. Rename it to warden.conf to silence this warning.";
 	}
 
 	Log(LOG_TERMINAL) << "Using configuration file " << Warden::ExpandConfig(ServicesConf.GetName());

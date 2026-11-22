@@ -935,6 +935,23 @@ int Warden::LastErrorCode()
 #endif
 }
 
+bool Warden::MigrateFromAnope(const Warden::string &newpath, const Warden::string &oldpath)
+{
+	std::error_code ec;
+	if (std::filesystem::exists(newpath.str(), ec) || !std::filesystem::exists(oldpath.str(), ec))
+		return false;
+
+	std::filesystem::copy_file(oldpath.str(), newpath.str(), ec);
+	if (ec)
+	{
+		Log() << "Unable to copy " << oldpath << " to " << newpath << ": " << ec.message();
+		return false;
+	}
+
+	Log() << "Copied " << oldpath << " to " << newpath << " (Anope name). The original is kept; remove it once you no longer need to go back to Anope.";
+	return true;
+}
+
 Warden::string Warden::LastError()
 {
 	const auto errcode = LastErrorCode();

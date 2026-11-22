@@ -487,6 +487,15 @@ namespace Warden
 	 */
 	extern CoreExport string LastError();
 
+	/** Migrates a file from its Anope name to its Warden name. If newpath
+	 * does not exist but oldpath does, oldpath is copied to newpath (the
+	 * original is kept so a switch back to Anope stays possible).
+	 * @param newpath The Warden path, e.g. data/warden.json
+	 * @param oldpath The Anope path, e.g. data/anope.json
+	 * @return True if the file was copied.
+	 */
+	extern CoreExport bool MigrateFromAnope(const string &newpath, const string &oldpath);
+
 	/** Determines if a path is a file
 	 */
 	extern CoreExport bool IsFile(const Warden::string &file);
