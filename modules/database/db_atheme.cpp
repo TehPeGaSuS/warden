@@ -488,7 +488,7 @@ private:
 		// Atheme supports several password hashing methods. We can only import
 		// some of them currently.
 		//
-		// warden-enc-sha256  Converted to enc_sha256
+		// anope-enc-sha256  Converted to enc_sha256
 		// argon2            Converted to enc_argon2
 		// base64            Converted to the first encryption algorithm
 		// bcrypt            Converted to enc_bcrypt
@@ -498,7 +498,7 @@ private:
 		// crypt3-sha2-512   Converted to enc_posix
 		// ircservices       NO
 		// pbkdf2            NO
-		// pbkdf2v2          NO
+		// pbkdf2v2          Converted to enc_pbkdf2 (not MD5 PRFs)
 		// rawmd5            Converted to enc_md5
 		// rawsha1           Converted to enc_sha1
 		// rawsha2-256       Converted to enc_sha2
@@ -544,6 +544,9 @@ private:
 
 		else if (pass.compare(0, 4, "$2a$", 4) == 0 || pass.compare(0, 4, "$2b$", 4) == 0)
 			nc->pass = "bcrypt:" + pass;
+
+		else if (pass.compare(0, 3, "$z$", 3) == 0)
+			nc->pass = "pbkdf2:" + pass;
 
 		else
 		{
