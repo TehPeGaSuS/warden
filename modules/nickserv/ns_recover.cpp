@@ -33,14 +33,17 @@ class NSRecoverRequest final
 	Command *cmd;
 	Warden::string user;
 
-	// Log the user running the command in to the account, switching away from
-	// the account they are on now. Opers recovering by privilege alone only get
-	// logged in if they are not identified yet.
+	// Whether this is LOGIN rather than RECOVER.
+	bool login;
+
+	// Log the user running the command in to the account. LOGIN also switches
+	// away from the account they are on now; RECOVER, and opers using LOGIN by
+	// privilege alone, only log in users who are not identified yet.
 	void LogInAs(NickCore *nc)
 	{
 		auto *su = source.GetUser();
 		auto *old = su->Account();
-		if (!nc || old == nc || (old && !proven))
+		if (!nc || old == nc || (old && (!login || !proven)))
 			return;
 
 		if (old)
@@ -74,6 +77,7 @@ public:
 		, source(src)
 		, cmd(c)
 		, user(nick)
+		, login(c->name == "nickserv/login")
 	{
 	}
 
@@ -85,7 +89,7 @@ public:
 
 		Log(LOG_COMMAND, source, cmd) << "for " << na->nick;
 
-		/* Nobody is on the nick: release any hold, log in and take the nick. */
+		/* Nobody is on the nick: release any hold; LOGIN also logs in and takes the nick. */
 		if (!u)
 		{
 			if (na->HasExt("HELD"))
@@ -93,6 +97,11 @@ public:
 				NickServ::service->Release(na);
 				source.Reply(_("Services' hold on \002%s\002 has been released."), na->nick.c_str());
 			}
+			else if (!login)
+				source.Reply(_("No one is using your nick, and services are not holding it."));
+
+			if (!login)
+				return;
 
 			LogInAs(na->nc);
 
@@ -183,11 +192,11 @@ public:
 	}
 };
 
-class CommandNSRecover final
+class CommandNSRecover
 	: public Command
 {
 public:
-	CommandNSRecover(Module *creator) : Command(creator, "nickserv/recover", 1, 2)
+	CommandNSRecover(Module *creator, const Warden::string &sname = "nickserv/recover") : Command(creator, sname, 1, 2)
 	{
 		this->SetDesc(_("Regain control of your nick"));
 		this->SetSyntax(_("\037nickname\037 [\037password\037]"));
@@ -259,12 +268,35 @@ public:
 			"will be released. If another user is holding your nick "
 			"and is identified they will be killed (similar to the old "
 			"GHOST command). If they are not identified they will be "
-			"forced off of the nick. If nobody is using the nick you "
-			"are moved to it."
+			"forced off of the nick."
+		));
+		return true;
+	}
+};
+
+// LOGIN <nick> <password>: log out of the current account, log in to the
+// nick's account and take the nick, whether it is in use, held or free.
+class CommandNSLogin final
+	: public CommandNSRecover
+{
+public:
+	CommandNSLogin(Module *creator) : CommandNSRecover(creator, "nickserv/login")
+	{
+		this->SetDesc(_("Switch to another account and take its nick"));
+	}
+
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply(_(
+			"Logs you in to the account that owns \037nickname\037 and "
+			"changes your nick to it. If you are logged in to a different "
+			"account you are logged out of it first."
 			"\n\n"
-			"You are then logged in to the nick's account. If you were "
-			"logged in to a different account, you are logged out of it "
-			"first, so this also switches between accounts."
+			"If an identified user is on the nick they are killed, as "
+			"with \002RECOVER\002; an unidentified user is forced off "
+			"it. If services are holding the nick the hold is released."
 		));
 		return true;
 	}
@@ -274,12 +306,13 @@ class NSRecover final
 	: public Module
 {
 	CommandNSRecover commandnsrecover;
+	CommandNSLogin commandnslogin;
 	PrimitiveExtensibleItem<NSRecoverInfo> recover;
 	PrimitiveExtensibleItem<NSRecoverSvsnick> svsnick;
 
 public:
 	NSRecover(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
-		commandnsrecover(this), recover(this, "recover"), svsnick(this, "svsnick")
+		commandnsrecover(this), commandnslogin(this), recover(this, "recover"), svsnick(this, "svsnick")
 	{
 
 		if (Config->GetModule("nickserv").Get<bool>("nonicknameownership"))
