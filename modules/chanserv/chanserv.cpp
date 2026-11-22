@@ -340,6 +340,14 @@ public:
 
 	void OnChannelSync(Channel *c) override
 	{
+		// os_forbid kicked a user from a forbidden channel and asked us not to
+		// hold it, so the channel can empty and go away.
+		if (c->HasExt("FORBID_NOHOLD"))
+		{
+			c->Shrink<bool>("FORBID_NOHOLD");
+			return;
+		}
+
 		bool perm = c->HasMode("PERM") || (c->ci && persist && persist->HasExt(c->ci));
 		if (!perm && !c->botchannel && (c->users.empty() || (c->users.size() == 1 && c->users.begin()->second->user->server == Me)))
 		{

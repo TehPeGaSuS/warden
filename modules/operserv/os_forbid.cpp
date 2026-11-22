@@ -20,6 +20,33 @@
 #include "modules/nickserv/service.h"
 #include "modules/operserv/forbid.h"
 
+// By default users joining a forbidden channel are only kicked, so the channel
+// empties and goes away. With chanaction = "hold" the channel is also blocked
+// for chanserv:inhabit with a Q-line, or held by ChanServ where the IRCd can't
+// Q-line channels. Holding creates an entry for every channel name tried, so a
+// user can flood the Q-line list (anope/anope#387).
+static void HoldForbiddenChannel(Channel *c, const OperServ::ForbidData *d)
+{
+	if (!Config->GetModule("os_forbid").Get<const Warden::string>("chanaction", "kick").equals_ci("hold"))
+	{
+		// Tell ChanServ not to hold the channel once the kick empties it.
+		c->Extend<bool>("FORBID_NOHOLD");
+		return;
+	}
+
+	auto *OperServ = Config->GetClient("OperServ");
+	if (IRCD->CanSQLineChannel && OperServ)
+	{
+		time_t inhabit = Config->GetModule("chanserv").Get<time_t>("inhabit", "1m");
+		XLine x(c->name, OperServ->nick, Warden::CurTime + inhabit, d->reason);
+		IRCD->SendSQLine(NULL, &x);
+	}
+	else if (ChanServ::service)
+	{
+		ChanServ::service->Hold(c);
+	}
+}
+
 namespace
 {
 	Warden::string TypeToString(OperServ::ForbidType ft)
@@ -377,17 +404,7 @@ public:
 						if (d == NULL)
 							continue;
 
-						BotInfo *OperServ = Config->GetClient("OperServ");
-						if (IRCD->CanSQLineChannel && OperServ)
-						{
-							time_t inhabit = Config->GetModule("chanserv").Get<time_t>("inhabit", "1m");
-							XLine x(c->name, OperServ->nick, Warden::CurTime + inhabit, d->reason);
-							IRCD->SendSQLine(NULL, &x);
-						}
-						else if (ChanServ::service)
-						{
-							ChanServ::service->Hold(c);
-						}
+						HoldForbiddenChannel(c, d);
 
 						++chan_matches;
 
@@ -583,12 +600,14 @@ private:
 	ForbidDataTypeImpl forbiddata_type;
 	CommandOSForbid commandosforbid;
 	std::vector<OperServ::ForbidData *> fileforbids;
+	ExtensibleItem<bool> nohold;
 
 public:
 	OSForbid(const Warden::string &modname, const Warden::string &creator)
 		: Module(modname, creator, VENDOR)
 		, forbidService(this)
 		, commandosforbid(this)
+		, nohold(this, "FORBID_NOHOLD")
 	{
 	}
 
@@ -693,16 +712,7 @@ public:
 		auto *d = this->forbidService.FindForbid(c->name, OperServ::FT_CHAN);
 		if (d != NULL)
 		{
-			if (IRCD->CanSQLineChannel)
-			{
-				time_t inhabit = Config->GetModule("chanserv").Get<time_t>("inhabit", "1m");
-				XLine x(c->name, OperServ->nick, Warden::CurTime + inhabit, d->reason);
-				IRCD->SendSQLine(NULL, &x);
-			}
-			else if (ChanServ::service)
-			{
-				ChanServ::service->Hold(c);
-			}
+			HoldForbiddenChannel(c, d);
 
 			reason = Warden::Format(Language::Translate(u, _("This channel has been forbidden: %s")), d->reason.c_str());
 
