@@ -277,6 +277,8 @@ private:
 	{
 		const Warden::string &mask = params.size() > 1 ? params[1] : "";
 
+		unsigned matched = 0;
+		const auto listmax = Config->GetModule(this->owner).Get<unsigned>("listmax", "50");
 		if (!mask.empty() && isdigit(mask[0]) && mask.find_first_not_of("1234567890,-") == Warden::string::npos)
 		{
 			class ListCallback final
@@ -315,12 +317,17 @@ private:
 		}
 		else
 		{
+			// Without an entry range, show at most listmax entries so a large
+			// list doesn't flood the oper off the network.
 			for (unsigned i = 0, end = akills->GetCount(); i < end; ++i)
 			{
 				const XLine *x = akills->GetEntry(i);
 
 				if (mask.empty() || mask.equals_ci(x->mask) || mask == x->id || Warden::Match(x->mask, mask, false, true))
 				{
+					if (listmax && ++matched > listmax)
+						continue;
+
 					ListFormatter::ListEntry entry;
 					entry["Number"] = Warden::ToString(i + 1);
 					entry["Mask"] = x->mask;
@@ -340,7 +347,10 @@ private:
 		{
 			source.Reply(_("Current AKILL list:"));
 			list.SendTo(source);
-			source.Reply(_("End of AKILL list."));
+			if (listmax && matched > listmax)
+				source.Reply(_("End of AKILL list - showing %u of %u entries. Use \002%s \037from\037-\037to\037\002 to see the rest."), listmax, matched, params[0].upper().c_str());
+			else
+				source.Reply(_("End of AKILL list."));
 		}
 	}
 
