@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:18+0100\n"
+"POT-Creation-Date: 2026-11-23 15:26+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -203,6 +203,11 @@ msgstr "#%s# διαγράφηκε από την λίστα AKILL."
 #, c-format
 msgid "%s deleted from the host offer list."
 msgstr "Το %s διαγράφηκε από τη λίστα προσφορών host."
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "%s deleted from the notify list."
+msgstr "Το %s διαγράφηκε από τη λίστα notify."
 
 #: ../modules/chanserv/cs_access.cpp
 #, c-format
@@ -434,6 +439,11 @@ msgstr "#%s# δεν βρέθηκε στην λίστα AKILL."
 #, c-format
 msgid "%s not found on the host offer list."
 msgstr "Το %s δεν βρέθηκε στη λίστα προσφορών host."
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "%s not found on the notify list."
+msgstr "Το %s δεν βρέθηκε στη λίστα notify."
 
 #: ../modules/chanserv/cs_flags.cpp
 #, c-format
@@ -1433,6 +1443,11 @@ msgstr "Το %s είχε μη έγκυρο key και γι' αυτό αγνοή�
 msgid "%s has been locked on %s."
 msgstr "Το %s κλειδώθηκε στο %s."
 
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "%s has been removed from the matched Users list."
+msgstr "Ο %s αφαιρέθηκε από τη λίστα των χρηστών που ταιριάζουν."
+
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
 msgid "%s has been unlocked from %s."
@@ -1543,6 +1558,11 @@ msgstr "Το %s δεν είναι έγκυρη εντολή."
 #, c-format
 msgid "%s is not a valid logging method."
 msgstr "Το %s δεν είναι έγκυρη μέθοδος καταγραφής."
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "%s is not currently a matched User."
+msgstr "Ο %s δεν είναι αυτή τη στιγμή χρήστης που ταιριάζει."
 
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
@@ -1849,6 +1869,10 @@ msgstr "ADD [+λήξη] μάσκα όριο λόγος"
 msgid "ADD [nickname] channel [key]"
 msgstr "ADD [ψευδώνυμο] κανάλι [κλειδί]"
 
+#: ../modules/operserv/os_notify.cpp
+msgid "ADD [+expiry] flags mask [:]reason"
+msgstr "ADD [+λήξη] flags μάσκα [:]λόγος"
+
 #: ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
 msgid "ADD [+expiry] mask reason"
 msgstr "ADD [+λήξη] μάσκα λόγος"
@@ -2050,6 +2074,11 @@ msgstr "Προστέθηκε η IP %s στο %s."
 #, c-format
 msgid "Added a forbid on %s of type %s to expire on %s."
 msgstr "Προστέθηκε forbid στο %s τύπου %s που λήγει στις %s."
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "Added a notify on %s, matching %u user(s)."
+msgstr "Προστέθηκε notify στο %s, ταιριάζει με %u χρήστη(ες)."
 
 #: ../modules/operserv/os_info.cpp
 #, c-format
@@ -2922,7 +2951,7 @@ msgstr "Το bot δεν θα κάνει πλέον kick για flood."
 msgid "Bot won't kick for repeats anymore."
 msgstr "Το bot δεν θα κάνει πλέον kick για επαναλήψεις."
 
-#: ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/operserv/os_notify.cpp
 msgid "By"
 msgstr "Από"
 
@@ -3012,6 +3041,11 @@ msgstr "Αλλάζει τα user modes"
 #: ../modules/operserv/os_regset.cpp
 msgid "Change when a nick, account or channel was registered"
 msgstr "Αλλάζει πότε κατοχυρώθηκε ένα nick, λογαριασμός ή κανάλι"
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "Changed the notify on %s, matching %u user(s)."
+msgstr "Άλλαξε το notify στο %s, ταιριάζει με %u χρήστη(ες)."
 
 #: ../modules/operserv/os_mode.cpp
 #, c-format
@@ -3548,7 +3582,7 @@ msgstr "Αντιγράφει όλες τις ρυθμίσεις, την πρόσ
 msgid "Copy all settings from one channel to another"
 msgstr "Αντιγράφει όλες τις ρυθμίσεις από ένα κανάλι σε ένα άλλο."
 
-#: ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Created"
 msgstr "Δημιουργήθηκε"
 
@@ -3577,6 +3611,10 @@ msgstr "Τρέχουσα λίστα προσφερόμενων hosts:"
 msgid "Current module list:"
 msgstr "Τρέχουσα λίστα modules:"
 
+#: ../modules/operserv/os_notify.cpp
+msgid "Current notify list:"
+msgstr "Τρέχουσα λίστα notify:"
+
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Current number of %ss: %zu"
@@ -3586,6 +3624,10 @@ msgstr "Τρέχων αριθμός %s: %zu"
 #, c-format
 msgid "Current users: %zu (%zu ops)"
 msgstr "Τρέχοντες χρήστες: %zu (%zu ops)"
+
+#: ../modules/operserv/os_notify.cpp
+msgid "Currently matched online users:"
+msgstr "Online χρήστες που ταιριάζουν αυτή τη στιγμή:"
 
 #: ../modules/global/gl_queue.cpp
 msgid "DEL entry-num"
@@ -3619,7 +3661,7 @@ msgstr "DEL [ψευδώνυμο] αποτύπωμα"
 msgid "DEL {mask | entry-num | list | id}"
 msgstr "DEL {μάσκα | αριθμός-εγγραφής | λίστα | id}"
 
-#: ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
 msgid "DEL {mask | entry-num | list}"
 msgstr "DEL {μάσκα | αριθμός-εγγραφής | λίστα}"
 
@@ -3811,6 +3853,11 @@ msgstr "Το %s διαγράφηκε από τη λίστα AKILL."
 msgid "Deleted %s from the host offer list."
 msgstr "Το %s διαγράφηκε από τη λίστα προσφερόμενων hosts."
 
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "Deleted %u entries from the notify list."
+msgstr "Διαγράφηκαν %u εγγραφές από τη λίστα notify."
+
 #: ../modules/global/gl_queue.cpp
 #, c-format
 msgid "Deleted %u entry from your message queue."
@@ -3824,6 +3871,10 @@ msgid "Deleted %zu entry from the host offer list."
 msgid_plural "Deleted %zu entries from the host offer list."
 msgstr[0] "Διαγράφηκε %zu εγγραφή από τη λίστα προσφερόμενων hosts."
 msgstr[1] "Διαγράφηκαν %zu εγγραφές από τη λίστα προσφερόμενων hosts."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "Deleted 1 entry from the notify list."
+msgstr "Διαγράφηκε 1 εγγραφή από τη λίστα notify."
 
 #: ../modules/operserv/os_info.cpp
 #, c-format
@@ -4303,9 +4354,17 @@ msgstr "Τέλος λίστας - εμφανίζονται %zu/%zu, τα πλη�
 msgid "End of list."
 msgstr "Τέλος λίστας."
 
+#: ../modules/operserv/os_notify.cpp
+msgid "End of matched online users."
+msgstr "Τέλος online χρηστών που ταιριάζουν."
+
 #: ../modules/operserv/os_news.cpp
 msgid "End of news list."
 msgstr "Τέλος λίστας ειδήσεων."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "End of notify list."
+msgstr "Τέλος λίστας notify."
 
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "End of topic history list."
@@ -4418,7 +4477,7 @@ msgstr "Παραδείγματα:"
 msgid "Exception for %s has been updated to %d."
 msgstr "Exception για #%s# άλλαξε σε %d."
 
-#: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Expires"
 msgstr "Λήγει"
 
@@ -4497,7 +4556,7 @@ msgstr "Flag"
 msgid "Flag templates:"
 msgstr "Πρότυπα flags:"
 
-#: ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/operserv/os_notify.cpp
 msgid "Flags"
 msgstr "Flags"
 
@@ -4515,6 +4574,10 @@ msgstr "Τα flags του %s στο %s ορίστηκαν σε +%s (πρότ
 #, c-format
 msgid "Flags list for %s"
 msgstr "Λίστα πρόσβασης για #%s#:"
+
+#: ../modules/operserv/os_notify.cpp
+msgid "Flags/Nick"
+msgstr "Flags/Nick"
 
 #: ../modules/nickserv/ns_set_layout.cpp
 msgid "Flexible layout"
@@ -4725,6 +4788,10 @@ msgstr "Η λίστα ignore των υπηρεσιών είναι άδεια."
 msgid "Incorrect email address."
 msgstr "Λανθασμένη διεύθυνση email."
 
+#: ../modules/operserv/os_notify.cpp
+msgid "Incorrect flags character(s) given."
+msgstr "Δόθηκαν λανθασμένοι χαρακτήρες flags."
+
 #: ../modules/chanserv/cs_list.cpp ../modules/hostserv/hs_list.cpp ../modules/nickserv/ns_list.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_list.cpp
 msgid "Incorrect range specified. The correct syntax is from-to."
 msgstr "Λανθασμένο εύρος. Η σωστή σύνταξη είναι από-έως."
@@ -4862,6 +4929,10 @@ msgstr "LIST ψευδώνυμο"
 #: ../modules/operserv/os_session.cpp
 msgid "LIST threshold"
 msgstr "LIST όριο"
+
+#: ../modules/operserv/os_notify.cpp
+msgid "LIST [mask | entry-num | list]"
+msgstr "LIST [μάσκα | αριθμός-θέσης | λίστα]"
 
 #: ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
 msgid "LIST [mask | list | id]"
@@ -5512,9 +5583,13 @@ msgstr "Διαχείριση της λίστας προσφερόμενων host
 msgid "Manipulate the topic of the specified channel"
 msgstr "Αλλάζει το topic σε ένα κανάλι."
 
-#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Mask"
 msgstr "Μάσκα"
+
+#: ../modules/operserv/os_notify.cpp
+msgid "Mask must be at least user@host or have a # for channel masks."
+msgstr "Η μάσκα πρέπει να είναι τουλάχιστον user@host ή να έχει # για μάσκες καναλιών."
 
 #: ../include/language.h
 msgid "Mask must be in the form user@host."
@@ -5939,6 +6014,14 @@ msgstr "Δεν έχει οριστεί όριο στο %s."
 msgid "No matches for %s found."
 msgstr "Δεν βρέθηκαν αποτελέσματα για το %s."
 
+#: ../modules/operserv/os_notify.cpp
+msgid "No matching Users are currently online."
+msgstr "Κανένας χρήστης που ταιριάζει δεν είναι online αυτή τη στιγμή."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "No matching entries currently online."
+msgstr "Καμία εγγραφή που ταιριάζει δεν είναι online αυτή τη στιγμή."
+
 #: ../modules/global/gl_queue.cpp
 msgid "No matching entries in your message queue."
 msgstr "Καμία θέση στην ουρά μηνυμάτων σας δεν ταιριάζει."
@@ -5979,6 +6062,10 @@ msgstr "Δεν βρέθηκαν θέσεις στην λίστα AKILL."
 #: ../modules/hostserv/hs_offer.cpp
 msgid "No matching entries on the host offer list."
 msgstr "Καμία θέση στη λίστα προσφερόμενων hosts δεν ταιριάζει."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "No matching entries on the notify list."
+msgstr "Καμία εγγραφή που ταιριάζει στη λίστα notify."
 
 #: ../modules/memoserv/ms_cancel.cpp
 msgid "No memo was cancelable."
@@ -6032,6 +6119,11 @@ msgstr "Δεν υπάρχουν στατιστικά για το %s."
 #, c-format
 msgid "No such info \"%s\" on %s."
 msgstr "Δεν υπάρχει πληροφορία \"%s\" στο %s."
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "No user found by the nick of %s."
+msgstr "Δεν βρέθηκε χρήστης με το nick %s."
 
 #: ../modules/operserv/os_notinchan.cpp
 msgid "No users are outside every channel."
@@ -6087,7 +6179,7 @@ msgstr "Δεν άλλαξε τίποτα:"
 msgid "Now"
 msgstr "Τώρα"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr "Αριθμός"
 
@@ -6427,6 +6519,10 @@ msgstr "Βάζει AKILL σε κάθε ψευδώνυμο του δοσμένο�
 msgid "REGONLY enforced by %s"
 msgstr "REGONLY εφαρμόστηκε από τον %s"
 
+#: ../modules/operserv/os_notify.cpp
+msgid "REMOVE nick"
+msgstr "REMOVE nick"
+
 #: ../modules/chanserv/cs_enforce.cpp
 #, c-format
 msgid "RESTRICTED enforced by %s"
@@ -6467,7 +6563,7 @@ msgstr "Πραγματικό όνομα"
 msgid "Realname"
 msgstr "Realname"
 
-#: ../modules/chanserv/cs_akick.cpp ../modules/hostserv/hs_offer.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/cs_akick.cpp ../modules/hostserv/hs_offer.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Reason"
 msgstr "Λόγος"
 
@@ -6475,6 +6571,10 @@ msgstr "Λόγος"
 #, c-format
 msgid "Reason for %s updated."
 msgstr "Ο λόγος για το %s ενημερώθηκε."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "Reason/Online Since"
+msgstr "Λόγος/Online από"
 
 #: ../modules/nickserv/ns_recover.cpp
 msgid "Recovers your nick from another user or from services. If services are currently holding your nick, the hold will be released. If another user is holding your nick and is identified they will be killed (similar to the old GHOST command). If they are not identified they will be forced off of the nick."
@@ -6488,7 +6588,7 @@ msgstr "Επανακαθορίζει το νόημα των επιπέδων π�
 msgid "Regain control of your nick"
 msgstr "Ανάκτηση του ελέγχου του ψευδωνύμου σας"
 
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_sxline.cpp
 msgid "Regex is disabled."
 msgstr "Το regex είναι απενεργοποιημένο."
 
@@ -6501,6 +6601,11 @@ msgstr "Υποστηρίζονται επίσης regex με τη μηχανή %
 #, c-format
 msgid "Regex matches are also supported using the %s engine. Enclose your pattern in // if this is desired."
 msgstr "Υποστηρίζονται επίσης regex με τη μηχανή %s. Βάλτε το pattern σας μέσα σε // αν το θέλετε."
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "Regex matches are also supported using the %s engine. For user masks they are matched against user@host and nick!user@host#realname. Enclose your pattern in // if this is desired."
+msgstr "Υποστηρίζονται επίσης regex με τη μηχανή %s. Για μάσκες χρηστών ελέγχονται με το user@host και το nick!user@host#realname. Βάλτε το μοτίβο σας μέσα σε // αν το θέλετε."
 
 #: ../modules/chanserv/cs_register.cpp
 msgid "Register a channel"
@@ -8194,6 +8299,14 @@ msgstr "Το nick %s είναι ελεύθερο· χρησιμοποιήστ�
 msgid "The nick %s is now being changed to %s."
 msgstr "Tο nick #%s# άλλαξε σε #%s#."
 
+#: ../modules/operserv/os_notify.cpp
+msgid "The notify list has been cleared."
+msgstr "Η λίστα notify καθαρίστηκε."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "The notify list is empty."
+msgstr "Η λίστα notify είναι άδεια."
+
 #: ../modules/botserv/bs_bot.cpp
 msgid "The old information is the same as the new information specified."
 msgstr "Οι παλιές πληροφορίες είναι ίδιες με τις νέες που δώσατε."
@@ -8723,7 +8836,7 @@ msgstr "Γράψτε %sεπιλογή για περισσότερες πλ�
 msgid "Type %sregion to list timezones for a region."
 msgstr "Γράψτε %sπεριοχή για να εμφανίσετε τις ζώνες ώρας μιας περιοχής."
 
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_sxline.cpp
 #, c-format
 msgid "Unable to find regex engine %s."
 msgstr "Δεν βρέθηκε η μηχανή regex %s."
@@ -8989,6 +9102,10 @@ msgstr "VIEW host"
 msgid "VIEW nickname"
 msgstr "VIEW ψευδώνυμο"
 
+#: ../modules/operserv/os_notify.cpp
+msgid "VIEW [mask | entry-num | list]"
+msgstr "VIEW [μάσκα | αριθμός-θέσης | λίστα]"
+
 #: ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
 msgid "VIEW [mask | list | id]"
 msgstr "VIEW [μάσκα | λίστα | id]"
@@ -9038,9 +9155,44 @@ msgstr "Βλέπεις την λίστα με τα host sessions"
 msgid "Voices protection"
 msgstr "Προστασία στους Voices"
 
+#: ../modules/operserv/os_notify.cpp
+msgid "Watch what users matching a mask do"
+msgstr "Παρακολουθεί τι κάνουν οι χρήστες που ταιριάζουν με μια μάσκα"
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Watch your language!"
 msgstr "Πρόσεχε την γλώσσα σου!"
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid ""
+"Watches users who match a mask: what they do is logged (under notify/user, notify/channel and notify/commands, usually to a log channel) for operators to follow.\n"
+"\n"
+"ADD adds a mask. It can be nick!user@host#realname (at least user@host), or a #channel to watch everyone who joins a matching channel. If the mask has a realname, put a : before the reason. expiry is like 7d or 1h30m (a plain number is days, +0 never expires); without it the default of %s is used.\n"
+"\n"
+"flags choose what is logged, or * for everything:\n"
+"  c - connects       d - disconnects     n - nick changes\n"
+"  u - user modes     j - channel joins   p - channel parts\n"
+"  k - kicks          m - channel modes   t - topic changes\n"
+"  i - invites        s - services commands   S - services SET commands\n"
+"\n"
+"DEL removes entries by mask, number or list (e.g. 1-3,5). LIST and VIEW show them, VIEW in more detail. CLEAR removes all of them. SHOW lists the masks that match someone online, with those users. REMOVE stops watching one online user until they match again (e.g. after a silly nick change).\n"
+"\n"
+"Commands that take passwords or codes are logged without their parameters."
+msgstr ""
+"Παρακολουθεί χρήστες που ταιριάζουν με μια μάσκα: ό,τι κάνουν καταγράφεται (στα notify/user, notify/channel και notify/commands, συνήθως σε ένα κανάλι καταγραφής) ώστε να το παρακολουθούν οι operators.\n"
+"\n"
+"Το ADD προσθέτει μια μάσκα. Μπορεί να είναι nick!user@host#realname (τουλάχιστον user@host) ή ένα #κανάλι για να παρακολουθείτε όλους όσοι μπαίνουν σε κανάλι που ταιριάζει. Αν η μάσκα έχει realname, βάλτε ένα : πριν από τον λόγο. Η λήξη είναι π.χ. 7d ή 1h30m (σκέτος αριθμός σημαίνει ημέρες, το +0 δεν λήγει ποτέ)· χωρίς αυτήν χρησιμοποιείται η προεπιλογή %s.\n"
+"\n"
+"Τα flags επιλέγουν τι καταγράφεται, ή * για όλα:\n"
+"  c - συνδέσεις        d - αποσυνδέσεις      n - αλλαγές nick\n"
+"  u - modes χρήστη     j - είσοδοι σε κανάλια   p - έξοδοι από κανάλια\n"
+"  k - kicks            m - modes καναλιού    t - αλλαγές topic\n"
+"  i - προσκλήσεις      s - εντολές services   S - εντολές SET των services\n"
+"\n"
+"Το DEL αφαιρεί εγγραφές βάσει μάσκας, αριθμού ή λίστας (π.χ. 1-3,5). Τα LIST και VIEW τις εμφανίζουν, το VIEW με περισσότερες λεπτομέρειες. Το CLEAR τις αφαιρεί όλες. Το SHOW εμφανίζει τις μάσκες που ταιριάζουν με κάποιον online, μαζί με αυτούς τους χρήστες. Το REMOVE σταματά την παρακολούθηση ενός online χρήστη μέχρι να ταιριάξει ξανά (π.χ. μετά από μια ανόητη αλλαγή nick).\n"
+"\n"
+"Οι εντολές που δέχονται κωδικούς ή codes καταγράφονται χωρίς τις παραμέτρους τους."
 
 #: ../modules/chanserv/cs_list.cpp
 #, c-format

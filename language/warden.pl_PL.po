@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:18+0100\n"
+"POT-Creation-Date: 2026-11-23 15:26+0100\n"
 "PO-Revision-Date: 2024-02-22 16:42+0000\n"
 "Last-Translator: k4be <k4be@pirc.pl>\n"
 "Language-Team: Polish\n"
@@ -209,6 +209,11 @@ msgstr "%s usunięto z listy AKILL."
 #, c-format
 msgid "%s deleted from the host offer list."
 msgstr "%s usunięto z listy oferowanych hostów."
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "%s deleted from the notify list."
+msgstr "Usunięto %s z listy notify."
 
 #: ../modules/chanserv/cs_access.cpp
 #, c-format
@@ -440,6 +445,11 @@ msgstr "%s nie znaleziono na liście AKILL."
 #, c-format
 msgid "%s not found on the host offer list."
 msgstr "%s nie znaleziono na liście oferowanych hostów."
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "%s not found on the notify list."
+msgstr "Nie znaleziono %s na liście notify."
 
 #: ../modules/chanserv/cs_flags.cpp
 #, c-format
@@ -1448,6 +1458,11 @@ msgstr "%s posiadał podany błędny klucz, więc został zignorowany."
 msgid "%s has been locked on %s."
 msgstr "%s został zablokowany na %s."
 
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "%s has been removed from the matched Users list."
+msgstr "%s został usunięty z listy pasujących użytkowników."
+
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
 msgid "%s has been unlocked from %s."
@@ -1558,6 +1573,11 @@ msgstr "%s nie jest poprawnym poleceniem."
 #, c-format
 msgid "%s is not a valid logging method."
 msgstr "%s nie jest poprawną metodą logowania."
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "%s is not currently a matched User."
+msgstr "%s nie jest obecnie pasującym użytkownikiem."
 
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
@@ -1869,6 +1889,10 @@ msgstr "ADD [+czas] maska limit powód"
 msgid "ADD [nickname] channel [key]"
 msgstr "ADD [nick] kanał [klucz]"
 
+#: ../modules/operserv/os_notify.cpp
+msgid "ADD [+expiry] flags mask [:]reason"
+msgstr "ADD [+czas] flagi maska [:]powód"
+
 #: ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
 msgid "ADD [+expiry] mask reason"
 msgstr "ADD [+czas] maska powód"
@@ -2072,6 +2096,11 @@ msgstr "Dodano IP %s do %s."
 #, c-format
 msgid "Added a forbid on %s of type %s to expire on %s."
 msgstr "Dodano zakaz na %s typu %s, ważny do %s."
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "Added a notify on %s, matching %u user(s)."
+msgstr "Dodano notify na %s, pasuje do %u użytkownika(-ów)."
 
 #: ../modules/operserv/os_info.cpp
 #, c-format
@@ -2946,7 +2975,7 @@ msgstr "Bot nie będzie kopał za flood."
 msgid "Bot won't kick for repeats anymore."
 msgstr "Bot nie będzie kopał za powtórzenia."
 
-#: ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/operserv/os_notify.cpp
 msgid "By"
 msgstr "Przez"
 
@@ -3036,6 +3065,11 @@ msgstr "Zmienia flagi użytkownika"
 #: ../modules/operserv/os_regset.cpp
 msgid "Change when a nick, account or channel was registered"
 msgstr "Zmienia czas rejestracji nicka, konta lub kanału"
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "Changed the notify on %s, matching %u user(s)."
+msgstr "Zmieniono notify na %s, pasuje do %u użytkownika(-ów)."
 
 #: ../modules/operserv/os_mode.cpp
 #, c-format
@@ -3568,7 +3602,7 @@ msgstr "Kopiuje wszystkie ustawienia, listy dostępu, AKICK itp z kanału na k
 msgid "Copy all settings from one channel to another"
 msgstr "Kopiuje wszystkie ustawienia z jednego kanału na inny"
 
-#: ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Created"
 msgstr "Utworzony"
 
@@ -3597,6 +3631,10 @@ msgstr "Bieżąca lista oferowanych hostów:"
 msgid "Current module list:"
 msgstr "Aktualna lista modułów:"
 
+#: ../modules/operserv/os_notify.cpp
+msgid "Current notify list:"
+msgstr "Bieżąca lista notify:"
+
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Current number of %ss: %zu"
@@ -3606,6 +3644,10 @@ msgstr "Bieżąca liczba %s: %zu"
 #, c-format
 msgid "Current users: %zu (%zu ops)"
 msgstr "Bieżący użytkownicy: %zu (%zu opów)"
+
+#: ../modules/operserv/os_notify.cpp
+msgid "Currently matched online users:"
+msgstr "Obecnie pasujący użytkownicy online:"
 
 #: ../modules/global/gl_queue.cpp
 msgid "DEL entry-num"
@@ -3639,7 +3681,7 @@ msgstr "DEL [nick] odcisk-palca"
 msgid "DEL {mask | entry-num | list | id}"
 msgstr "DEL {maska | numer-wpisu | lista | id}"
 
-#: ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
 msgid "DEL {mask | entry-num | list}"
 msgstr "DEL {maska | numer-wpisu | lista}"
 
@@ -3836,6 +3878,11 @@ msgstr "Usunięto %s z listy AKILL."
 msgid "Deleted %s from the host offer list."
 msgstr "Usunięto %s z listy oferowanych vhostów."
 
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "Deleted %u entries from the notify list."
+msgstr "Usunięto %u wpisów z listy notify."
+
 #: ../modules/global/gl_queue.cpp
 #, c-format
 msgid "Deleted %u entry from your message queue."
@@ -3851,6 +3898,10 @@ msgid_plural "Deleted %zu entries from the host offer list."
 msgstr[0] "Usunięto %zu wpis z listy oferowanych vhostów."
 msgstr[1] "Usunięto %zu wpisy z listy oferowanych vhostów."
 msgstr[2] "Usunięto %zu wpisów z listy oferowanych vhostów."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "Deleted 1 entry from the notify list."
+msgstr "Usunięto 1 wpis z listy notify."
 
 #: ../modules/operserv/os_info.cpp
 #, c-format
@@ -4330,9 +4381,17 @@ msgstr "Koniec listy - pokazano %zu/%zu, najbliższe najpierw."
 msgid "End of list."
 msgstr "Koniec listy."
 
+#: ../modules/operserv/os_notify.cpp
+msgid "End of matched online users."
+msgstr "Koniec pasujących użytkowników online."
+
 #: ../modules/operserv/os_news.cpp
 msgid "End of news list."
 msgstr "Koniec listy wiadomości."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "End of notify list."
+msgstr "Koniec listy notify."
 
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "End of topic history list."
@@ -4445,7 +4504,7 @@ msgstr "Przykłady:"
 msgid "Exception for %s has been updated to %d."
 msgstr "Wyjątek dla %s został zaktualizowany do %d."
 
-#: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Expires"
 msgstr "Wygasa"
 
@@ -4524,7 +4583,7 @@ msgstr "Flaga"
 msgid "Flag templates:"
 msgstr "Szablony flag:"
 
-#: ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/operserv/os_notify.cpp
 msgid "Flags"
 msgstr "Flagi"
 
@@ -4542,6 +4601,10 @@ msgstr "Flagi dla %s na %s ustawiono na +%s (szablon %s)"
 #, c-format
 msgid "Flags list for %s"
 msgstr "Lista flag dla %s"
+
+#: ../modules/operserv/os_notify.cpp
+msgid "Flags/Nick"
+msgstr "Flagi/Nick"
 
 #: ../modules/nickserv/ns_set_layout.cpp
 msgid "Flexible layout"
@@ -4752,6 +4815,10 @@ msgstr "Lista ignorowanych jest pusta."
 msgid "Incorrect email address."
 msgstr "Błędny adres e-mail."
 
+#: ../modules/operserv/os_notify.cpp
+msgid "Incorrect flags character(s) given."
+msgstr "Podano nieprawidłowe znaki flag."
+
 #: ../modules/chanserv/cs_list.cpp ../modules/hostserv/hs_list.cpp ../modules/nickserv/ns_list.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_list.cpp
 msgid "Incorrect range specified. The correct syntax is from-to."
 msgstr "Podano nieprawidłowy zakres. Prawidłowa składnia to od-do."
@@ -4889,6 +4956,10 @@ msgstr "LIST nick"
 #: ../modules/operserv/os_session.cpp
 msgid "LIST threshold"
 msgstr "LIST wartość-progowa"
+
+#: ../modules/operserv/os_notify.cpp
+msgid "LIST [mask | entry-num | list]"
+msgstr "LIST [maska | numer-wpisu | lista]"
 
 #: ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
 msgid "LIST [mask | list | id]"
@@ -5541,9 +5612,13 @@ msgstr "Zarządza listą oferowanych vhostów"
 msgid "Manipulate the topic of the specified channel"
 msgstr "Zmienia temat podanego kanału"
 
-#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Mask"
 msgstr "Maska"
+
+#: ../modules/operserv/os_notify.cpp
+msgid "Mask must be at least user@host or have a # for channel masks."
+msgstr "Maska musi mieć co najmniej postać user@host lub zawierać # dla masek kanałów."
 
 #: ../include/language.h
 msgid "Mask must be in the form user@host."
@@ -5968,6 +6043,14 @@ msgstr "Brak ustawionego limitu dla %s."
 msgid "No matches for %s found."
 msgstr "Nie znaleziono dopasowań do %s."
 
+#: ../modules/operserv/os_notify.cpp
+msgid "No matching Users are currently online."
+msgstr "Żaden pasujący użytkownik nie jest obecnie online."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "No matching entries currently online."
+msgstr "Brak pasujących wpisów obecnie online."
+
 #: ../modules/global/gl_queue.cpp
 msgid "No matching entries in your message queue."
 msgstr "Brak pasujących wpisów w Twojej kolejce wiadomości."
@@ -6008,6 +6091,10 @@ msgstr "Nie znaleziono pasujących wpisów na liście AKILL."
 #: ../modules/hostserv/hs_offer.cpp
 msgid "No matching entries on the host offer list."
 msgstr "Brak pasujących wpisów na liście oferowanych vhostów."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "No matching entries on the notify list."
+msgstr "Brak pasujących wpisów na liście notify."
 
 #: ../modules/memoserv/ms_cancel.cpp
 msgid "No memo was cancelable."
@@ -6061,6 +6148,11 @@ msgstr "Brak statystyk dla %s."
 #, c-format
 msgid "No such info \"%s\" on %s."
 msgstr "Nie ma informacji \"%s\" dla %s."
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "No user found by the nick of %s."
+msgstr "Nie znaleziono użytkownika o nicku %s."
 
 #: ../modules/operserv/os_notinchan.cpp
 msgid "No users are outside every channel."
@@ -6116,7 +6208,7 @@ msgstr "Nic nie zostało zmienione:"
 msgid "Now"
 msgstr "Teraz"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr "Liczba"
 
@@ -6456,6 +6548,10 @@ msgstr "Zakłada AKILLa na każdy nick na wskazanym kanale. Na listę zostają d
 msgid "REGONLY enforced by %s"
 msgstr "REGONLY wymuszony przez %s"
 
+#: ../modules/operserv/os_notify.cpp
+msgid "REMOVE nick"
+msgstr "REMOVE nick"
+
 #: ../modules/chanserv/cs_enforce.cpp
 #, c-format
 msgid "RESTRICTED enforced by %s"
@@ -6496,7 +6592,7 @@ msgstr "Nazwa"
 msgid "Realname"
 msgstr "Nazwa"
 
-#: ../modules/chanserv/cs_akick.cpp ../modules/hostserv/hs_offer.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/cs_akick.cpp ../modules/hostserv/hs_offer.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Reason"
 msgstr "Powód"
 
@@ -6504,6 +6600,10 @@ msgstr "Powód"
 #, c-format
 msgid "Reason for %s updated."
 msgstr "Zaktualizowano powód dla %s."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "Reason/Online Since"
+msgstr "Powód/Online od"
 
 #: ../modules/nickserv/ns_recover.cpp
 msgid "Recovers your nick from another user or from services. If services are currently holding your nick, the hold will be released. If another user is holding your nick and is identified they will be killed (similar to the old GHOST command). If they are not identified they will be forced off of the nick."
@@ -6517,7 +6617,7 @@ msgstr "Zarządza poziomami dostępu"
 msgid "Regain control of your nick"
 msgstr "Odzyskuje kontrolę nad Twoim nickiem"
 
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_sxline.cpp
 msgid "Regex is disabled."
 msgstr "Regex wyłączony."
 
@@ -6530,6 +6630,11 @@ msgstr "Wyrażenia regularne są obsługiwane także za pomocą silnika %s. Umie
 #, c-format
 msgid "Regex matches are also supported using the %s engine. Enclose your pattern in // if this is desired."
 msgstr "Wyrażenia regularne są obsługiwane także za pomocą silnika %s. Aby z tego skorzystać, umieść swoje wyrażenie wewnątrz znaków //"
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid "Regex matches are also supported using the %s engine. For user masks they are matched against user@host and nick!user@host#realname. Enclose your pattern in // if this is desired."
+msgstr "Wyrażenia regularne są obsługiwane także za pomocą silnika %s. Dla masek użytkowników są porównywane z user@host i nick!user@host#realname. Umieść swój wzorzec wewnątrz znaków //, jeśli tego chcesz."
 
 #: ../modules/chanserv/cs_register.cpp
 msgid "Register a channel"
@@ -8223,6 +8328,14 @@ msgstr "Nick %s jest wolny; użyj /NICK %s, aby go przejąć."
 msgid "The nick %s is now being changed to %s."
 msgstr "Nick %s zostaje zmieniony na %s."
 
+#: ../modules/operserv/os_notify.cpp
+msgid "The notify list has been cleared."
+msgstr "Lista notify została wyczyszczona."
+
+#: ../modules/operserv/os_notify.cpp
+msgid "The notify list is empty."
+msgstr "Lista notify jest pusta."
+
 #: ../modules/botserv/bs_bot.cpp
 msgid "The old information is the same as the new information specified."
 msgstr "Stara dana jest taka sama jak nowa."
@@ -8753,7 +8866,7 @@ msgstr "Wpisz %sopcja, aby uzyskać więcej informacji o danej opcji. Opcje
 msgid "Type %sregion to list timezones for a region."
 msgstr "Wpisz %sregion, aby wyświetlić strefy czasowe dla regionu."
 
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_sxline.cpp
 #, c-format
 msgid "Unable to find regex engine %s."
 msgstr "Nie można odnaleźć silnika regex %s"
@@ -9019,6 +9132,10 @@ msgstr "VIEW host"
 msgid "VIEW nickname"
 msgstr "VIEW nick"
 
+#: ../modules/operserv/os_notify.cpp
+msgid "VIEW [mask | entry-num | list]"
+msgstr "VIEW [maska | numer-wpisu | lista]"
+
 #: ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
 msgid "VIEW [mask | list | id]"
 msgstr "VIEW [maska | lista | id]"
@@ -9068,9 +9185,44 @@ msgstr "Wyświetla listę sesji"
 msgid "Voices protection"
 msgstr "DONTKICKVOICES"
 
+#: ../modules/operserv/os_notify.cpp
+msgid "Watch what users matching a mask do"
+msgstr "Obserwuj, co robią użytkownicy pasujący do maski"
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Watch your language!"
 msgstr "Uważaj co piszesz!"
+
+#: ../modules/operserv/os_notify.cpp
+#, c-format
+msgid ""
+"Watches users who match a mask: what they do is logged (under notify/user, notify/channel and notify/commands, usually to a log channel) for operators to follow.\n"
+"\n"
+"ADD adds a mask. It can be nick!user@host#realname (at least user@host), or a #channel to watch everyone who joins a matching channel. If the mask has a realname, put a : before the reason. expiry is like 7d or 1h30m (a plain number is days, +0 never expires); without it the default of %s is used.\n"
+"\n"
+"flags choose what is logged, or * for everything:\n"
+"  c - connects       d - disconnects     n - nick changes\n"
+"  u - user modes     j - channel joins   p - channel parts\n"
+"  k - kicks          m - channel modes   t - topic changes\n"
+"  i - invites        s - services commands   S - services SET commands\n"
+"\n"
+"DEL removes entries by mask, number or list (e.g. 1-3,5). LIST and VIEW show them, VIEW in more detail. CLEAR removes all of them. SHOW lists the masks that match someone online, with those users. REMOVE stops watching one online user until they match again (e.g. after a silly nick change).\n"
+"\n"
+"Commands that take passwords or codes are logged without their parameters."
+msgstr ""
+"Obserwuje użytkowników pasujących do maski: ich działania są logowane (pod notify/user, notify/channel i notify/commands, zwykle na kanał logów), aby operatorzy mogli je śledzić.\n"
+"\n"
+"ADD dodaje maskę. Może to być nick!user@host#realname (co najmniej user@host) lub #kanał, aby obserwować każdego, kto wejdzie na pasujący kanał. Jeśli maska zawiera realname, wstaw : przed powodem. czas ma postać np. 7d lub 1h30m (sama liczba to dni, +0 nigdy nie wygasa); bez niego używana jest domyślna wartość %s.\n"
+"\n"
+"flagi wybierają, co jest logowane, lub * dla wszystkiego:\n"
+"  c - połączenia      d - rozłączenia      n - zmiany nicka\n"
+"  u - tryby użytkownika   j - wejścia na kanały   p - wyjścia z kanałów\n"
+"  k - kicki           m - tryby kanału     t - zmiany tematu\n"
+"  i - zaproszenia     s - polecenia serwisów   S - polecenia SET serwisów\n"
+"\n"
+"DEL usuwa wpisy według maski, numeru lub listy (np. 1-3,5). LIST i VIEW je wyświetlają, VIEW bardziej szczegółowo. CLEAR usuwa wszystkie. SHOW wyświetla maski pasujące do kogoś online, wraz z tymi użytkownikami. REMOVE przestaje obserwować użytkownika online, dopóki znów nie będzie pasował (np. po głupiej zmianie nicka).\n"
+"\n"
+"Polecenia przyjmujące hasła lub kody są logowane bez parametrów."
 
 #: ../modules/chanserv/cs_list.cpp
 #, c-format
