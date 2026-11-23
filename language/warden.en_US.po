@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 09:42+0100\n"
+"POT-Creation-Date: 2026-11-23 10:12+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -3888,7 +3888,22 @@ msgstr ""
 
 #: ../modules/operserv/os_list.cpp
 #, c-format
-msgid "End of channel list. %u channels shown."
+msgid "End of channel list - %zu/%zu channels shown (%zu-%zu)."
+msgstr ""
+
+#: ../modules/operserv/os_list.cpp
+#, c-format
+msgid "End of channel list - %zu/%zu channels shown (%zu-%zu). Give a range such as %zu-%zu to see more."
+msgstr ""
+
+#: ../modules/operserv/os_list.cpp
+#, c-format
+msgid "End of channel list - the range is past the last of the %zu channels."
+msgstr ""
+
+#: ../modules/operserv/os_list.cpp
+#, c-format
+msgid "End of channel list. %zu channels shown."
 msgstr ""
 
 #: ../modules/operserv/os_config.cpp
@@ -3928,7 +3943,22 @@ msgstr ""
 
 #: ../modules/operserv/os_list.cpp
 #, c-format
-msgid "End of users list. %u users shown."
+msgid "End of users list - %zu/%zu users shown (%zu-%zu)."
+msgstr ""
+
+#: ../modules/operserv/os_list.cpp
+#, c-format
+msgid "End of users list - %zu/%zu users shown (%zu-%zu). Give a range such as %zu-%zu to see more."
+msgstr ""
+
+#: ../modules/operserv/os_list.cpp
+#, c-format
+msgid "End of users list - the range is past the last of the %zu users."
+msgstr ""
+
+#: ../modules/operserv/os_list.cpp
+#, c-format
+msgid "End of users list. %zu users shown."
 msgstr ""
 
 #: ../modules/chanserv/cs_enforce.cpp
@@ -4279,7 +4309,7 @@ msgstr ""
 msgid "Incorrect range specified. The correct syntax is #from-to."
 msgstr ""
 
-#: ../modules/operserv/os_forbid.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_list.cpp
 msgid "Incorrect range specified. The correct syntax is from-to."
 msgstr ""
 
@@ -4620,7 +4650,9 @@ msgstr ""
 msgid ""
 "Lists all channels currently in use on the IRC network, whether they are registered or not.\n"
 "\n"
-"If pattern is given, lists only channels that match it. If a nickname is given, lists only the channels the user using it is on. If SECRET is specified, lists only channels matching pattern that have the +s or +p mode."
+"If pattern is given, lists only channels that match it. If a nickname is given, lists only the channels the user using it is on. If SECRET is specified, lists only channels matching pattern that have the +s or +p mode.\n"
+"\n"
+"Long lists are cut short; give a range such as 51-100 to see more."
 msgstr ""
 
 #: ../modules/nickserv/ns_alist.cpp
@@ -4696,7 +4728,9 @@ msgstr ""
 msgid ""
 "Lists all users currently online on the IRC network, whether their nick is registered or not.\n"
 "\n"
-"If pattern is given, lists only users that match it (it must be in the format nick!user@host[#realname]). If channel is given, lists only users that are on the given channel. If INVISIBLE is specified, only users with the +i flag will be listed."
+"If pattern is given, lists only users that match it (it must be in the format nick!user@host[#realname]). If channel is given, lists only users that are on the given channel. If INVISIBLE is specified, only users with the +i flag will be listed.\n"
+"\n"
+"Long lists are cut short; give a range such as 51-100 to see more."
 msgstr ""
 
 #: ../modules/memoserv/ms_list.cpp
@@ -8912,11 +8946,11 @@ msgid "[Suspended]"
 msgstr ""
 
 #: ../modules/operserv/os_list.cpp
-msgid "[{pattern | channel} [INVISIBLE]]"
+msgid "[{pattern | channel}] [INVISIBLE] [from-to]"
 msgstr ""
 
 #: ../modules/operserv/os_list.cpp
-msgid "[{pattern | nick} [SECRET]]"
+msgid "[{pattern | nick}] [SECRET] [from-to]"
 msgstr ""
 
 #: ../modules/greet.cpp

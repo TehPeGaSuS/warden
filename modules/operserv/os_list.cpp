@@ -15,34 +15,105 @@
 
 #include "module.h"
 
+namespace
+{
+	// Shared argument parsing and paging for CHANLIST and USERLIST
+	// (anope/anope#423): without a range only the first listmax entries are
+	// shown, so a big network doesn't flood the oper off with SendQ.
+	struct ListArgs final
+	{
+		Warden::string pattern;
+		bool flag = false;
+		unsigned from = 0, to = 0;
+
+		bool Parse(CommandSource &source, const std::vector<Warden::string> &params, const char *flagname)
+		{
+			for (const auto &param : params)
+			{
+				if (param.equals_ci(flagname))
+				{
+					flag = true;
+					continue;
+				}
+
+				auto dash = param.find('-');
+				if (dash != Warden::string::npos && dash && isdigit(param[0]))
+				{
+					auto n1 = Warden::TryConvert<unsigned>(param.substr(0, dash));
+					auto n2 = Warden::TryConvert<unsigned>(param.substr(dash + 1));
+					if (!n1.has_value() || !n2.has_value() || !n1.value() || n1.value() > n2.value())
+					{
+						source.Reply(_("Incorrect range specified. The correct syntax is \037from\037-\037to\037."));
+						return false;
+					}
+					from = n1.value();
+					to = n2.value();
+					continue;
+				}
+
+				if (pattern.empty())
+					pattern = param;
+			}
+			return true;
+		}
+	};
+
+	struct Pager final
+	{
+		unsigned from, to, cap;
+		size_t matched = 0, shown = 0, shown_from = 0, shown_to = 0;
+
+		Pager(const ListArgs &args, Module *owner)
+			: from(args.from)
+			, to(args.to)
+			// An explicit range is the oper's own paging, so it isn't capped.
+			, cap(args.from ? 0 : Config->GetModule(owner).Get<unsigned>("listmax", "50"))
+		{
+		}
+
+		// Counts a matching entry and returns whether to show it.
+		bool Want()
+		{
+			++matched;
+			if (from && (matched < from || matched > to))
+				return false;
+			if (cap && shown >= cap)
+				return false;
+			if (!shown)
+				shown_from = matched;
+			shown_to = matched;
+			++shown;
+			return true;
+		}
+	};
+}
+
 class CommandOSChanList final
 	: public Command
 {
 public:
-	CommandOSChanList(Module *creator) : Command(creator, "operserv/chanlist", 0, 2)
+	CommandOSChanList(Module *creator) : Command(creator, "operserv/chanlist", 0, 3)
 	{
 		this->SetDesc(_("List all channel records"));
-		this->SetSyntax(_("[{\037pattern\037 | \037nick\037} [\037SECRET\037]]"));
+		this->SetSyntax(_("[{\037pattern\037 | \037nick\037}] [\037SECRET\037] [\037from\037-\037to\037]"));
 	}
 
 	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Warden::string &pattern = !params.empty() ? params[0] : "";
-		const Warden::string &opt = params.size() > 1 ? params[1] : "";
-		std::set<Warden::string> modes;
+		ListArgs args;
+		if (!args.Parse(source, params, "SECRET"))
+			return;
+		const auto &pattern = args.pattern;
 		User *u2;
-		unsigned int count = 0;
+		Pager pager(args, this->owner);
 
 		if (!pattern.empty())
 			Log(LOG_ADMIN, source, this) << "for " << pattern;
 		else
 			Log(LOG_ADMIN, source, this);
 
-		if (!opt.empty() && opt.equals_ci("SECRET"))
-		{
-			modes.insert("SECRET");
-			modes.insert("PRIVATE");
-		}
+		// SECRET lists channels that are +s or +p.
+		auto hidden = [&args](Channel *ch) { return !args.flag || ch->HasMode("SECRET") || ch->HasMode("PRIVATE"); };
 
 		ListFormatter list(source.GetAccount());
 		list.AddColumn(_("Name")).AddColumn(_("Users")).AddColumn(_("Modes")).AddColumn(_("Topic"));
@@ -60,14 +131,8 @@ public:
 
 			for (const auto &[_, cc]: u2->chans)
 			{
-				if (!modes.empty())
-				{
-					for (const auto &mode : modes)
-					{
-						if (!cc->chan->HasMode(mode))
-							continue;
-					}
-				}
+				if (!hidden(cc->chan) || !pager.Want())
+					continue;
 
 				ListFormatter::ListEntry entry;
 				entry["Name"] = cc->chan->name;
@@ -75,26 +140,23 @@ public:
 				entry["Modes"] = cc->chan->GetModes(true, true);
 				entry["Topic"] = cc->chan->topic;
 				list.AddEntry(entry);
-
-				++count;
 			}
 		}
 		else
 		{
+			// Sorted, so pages stay stable between calls.
+			Warden::map<Channel *> ordered_map;
+			for (const auto &[name, chan] : ChannelList)
+				ordered_map[name] = chan;
+
 			source.Reply(_("Channel list:"));
 
-			for (const auto &[_, c] : ChannelList)
+			for (const auto &[_, c] : ordered_map)
 			{
 				if (!pattern.empty() && !Warden::Match(c->name, pattern, false, true))
 					continue;
-				if (!modes.empty())
-				{
-					for (const auto &mode : modes)
-					{
-						if (!c->HasMode(mode))
-							continue;
-					}
-				}
+				if (!hidden(c) || !pager.Want())
+					continue;
 
 				ListFormatter::ListEntry entry;
 				entry["Name"] = c->name;
@@ -102,13 +164,18 @@ public:
 				entry["Modes"] = c->GetModes(true, true);
 				entry["Topic"] = c->topic;
 				list.AddEntry(entry);
-
-				++count;
 			}
 		}
 
 		list.SendTo(source);
-		source.Reply(_("End of channel list. \002%u\002 channels shown."), count);
+		if (pager.shown >= pager.matched)
+			source.Reply(_("End of channel list. \002%zu\002 channels shown."), pager.shown);
+		else if (!pager.shown)
+			source.Reply(_("End of channel list - the range is past the last of the %zu channels."), pager.matched);
+		else if (pager.shown_to >= pager.matched)
+			source.Reply(_("End of channel list - %zu/%zu channels shown (%zu-%zu)."), pager.shown, pager.matched, pager.shown_from, pager.shown_to);
+		else
+			source.Reply(_("End of channel list - %zu/%zu channels shown (%zu-%zu). Give a range such as %zu-%zu to see more."), pager.shown, pager.matched, pager.shown_from, pager.shown_to, pager.shown_to + 1, pager.shown_to + pager.shown);
 	}
 
 	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
@@ -123,6 +190,9 @@ public:
 			"is given, lists only the channels the user using it is on. If SECRET is "
 			"specified, lists only channels matching \002pattern\002 that have the +s or "
 			"+p mode."
+			"\n\n"
+			"Long lists are cut short; give a range such as \00251-100\002 to see "
+			"more."
 		));
 
 		const Warden::string &regexengine = Config->GetBlock("options").Get<const Warden::string>("regexengine");
@@ -144,27 +214,25 @@ class CommandOSUserList final
 	: public Command
 {
 public:
-	CommandOSUserList(Module *creator) : Command(creator, "operserv/userlist", 0, 2)
+	CommandOSUserList(Module *creator) : Command(creator, "operserv/userlist", 0, 3)
 	{
 		this->SetDesc(_("List all user records"));
-		this->SetSyntax(_("[{\037pattern\037 | \037channel\037} [\037INVISIBLE\037]]"));
+		this->SetSyntax(_("[{\037pattern\037 | \037channel\037}] [\037INVISIBLE\037] [\037from\037-\037to\037]"));
 	}
 
 	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Warden::string &pattern = !params.empty() ? params[0] : "";
-		const Warden::string &opt = params.size() > 1 ? params[1] : "";
+		ListArgs args;
+		if (!args.Parse(source, params, "INVISIBLE"))
+			return;
+		const auto &pattern = args.pattern;
 		Channel *c;
-		std::set<Warden::string> modes;
-		unsigned int count = 0;
+		Pager pager(args, this->owner);
 
 		if (!pattern.empty())
 			Log(LOG_ADMIN, source, this) << "for " << pattern;
 		else
 			Log(LOG_ADMIN, source, this);
-
-		if (!opt.empty() && opt.equals_ci("INVISIBLE"))
-			modes.insert("INVIS");
 
 		ListFormatter list(source.GetAccount());
 		list.AddColumn(_("Name")).AddColumn(_("Mask")).AddColumn(_("Realname"));
@@ -176,22 +244,14 @@ public:
 
 			for (const auto &[_, uc] : c->users)
 			{
-				if (!modes.empty())
-				{
-					for (const auto &mode : modes)
-					{
-						if (!uc->user->HasMode(mode))
-							continue;
-					}
-				}
+				if ((args.flag && !uc->user->HasMode("INVIS")) || !pager.Want())
+					continue;
 
 				ListFormatter::ListEntry entry;
 				entry["Name"] = uc->user->nick;
 				entry["Mask"] = uc->user->GetIdent() + "@" + uc->user->GetDisplayedHost();
 				entry["Realname"] = uc->user->realname;
 				list.AddEntry(entry);
-
-				++count;
 			}
 		}
 		else
@@ -229,29 +289,28 @@ public:
 
 					if (!match)
 						continue;
-
-					if (!modes.empty())
-					{
-						for (const auto &mode : modes)
-						{
-							if (!u2->HasMode(mode))
-								continue;
-						}
-					}
 				}
+
+				if ((args.flag && !u2->HasMode("INVIS")) || !pager.Want())
+					continue;
 
 				ListFormatter::ListEntry entry;
 				entry["Name"] = u2->nick;
 				entry["Mask"] = u2->GetIdent() + "@" + u2->GetDisplayedHost();
 				entry["Realname"] = u2->realname;
 				list.AddEntry(entry);
-
-				++count;
 			}
 		}
 
 		list.SendTo(source);
-		source.Reply(_("End of users list. \002%u\002 users shown."), count);
+		if (pager.shown >= pager.matched)
+			source.Reply(_("End of users list. \002%zu\002 users shown."), pager.shown);
+		else if (!pager.shown)
+			source.Reply(_("End of users list - the range is past the last of the %zu users."), pager.matched);
+		else if (pager.shown_to >= pager.matched)
+			source.Reply(_("End of users list - %zu/%zu users shown (%zu-%zu)."), pager.shown, pager.matched, pager.shown_from, pager.shown_to);
+		else
+			source.Reply(_("End of users list - %zu/%zu users shown (%zu-%zu). Give a range such as %zu-%zu to see more."), pager.shown, pager.matched, pager.shown_from, pager.shown_to, pager.shown_to + 1, pager.shown_to + pager.shown);
 	}
 
 	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
@@ -266,6 +325,9 @@ public:
 			"the format nick!user@host[#realname]). If \002channel\002 is given, lists "
 			"only users that are on the given channel. If INVISIBLE is specified, only users "
 			"with the +i flag will be listed."
+			"\n\n"
+			"Long lists are cut short; give a range such as \00251-100\002 to see "
+			"more."
 		));
 
 		const Warden::string &regexengine = Config->GetBlock("options").Get<const Warden::string>("regexengine");
