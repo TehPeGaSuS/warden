@@ -989,11 +989,11 @@ public:
 		{
 			// For the history mode, the part after the ':' is a duration and it
 			// can be in the user friendly "1d3h20m" format, make sure we accept that
-			return Warden::DoTime(rest) <= 0;
+			return Warden::DoTime(rest) > 0;
 		}
 		else
 		{
-			return Warden::Convert(rest, 0) <= 0;
+			return Warden::Convert(rest, 0) > 0;
 		}
 	}
 };
@@ -1009,7 +1009,7 @@ public:
 		if (value.empty())
 			return false; // empty param is never valid
 
-		return Warden::Convert<int>(value, 0) <= 0;
+		return Warden::Convert<int>(value, 0) > 0;
 	}
 };
 
@@ -1021,10 +1021,26 @@ public:
 
 	bool IsValid(Warden::string &value) const override
 	{
-		// The parameter of this mode is a bit different, it may begin with a '*',
-		// ignore it if that's the case
+		if (value.empty())
+			return false;
+
+		// InspIRCd 4: {ban|block|mute|kick|kickban}:<messages>:<period>
+		if (isalpha(value[0]))
+		{
+			std::vector<Warden::string> parts;
+			sepstream(value, ':').GetTokens(parts);
+			if (parts.size() != 3)
+				return false;
+
+			static const std::set<Warden::string, ci::less> actions = { "ban", "block", "mute", "kick", "kickban" };
+			return actions.count(parts[0])
+				&& Warden::Convert<unsigned>(parts[1], 0) >= 2
+				&& Warden::DoTime(parts[2]) >= 1;
+		}
+
+		// InspIRCd 3: [*]<lines>:<seconds>
 		Warden::string v = value[0] == '*' ? value.substr(1) : value;
-		return ((!value.empty()) && (ColonDelimitedParamMode::IsValid(v)));
+		return ColonDelimitedParamMode::IsValid(v);
 	}
 };
 
