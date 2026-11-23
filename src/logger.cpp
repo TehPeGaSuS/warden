@@ -313,7 +313,7 @@ void LogInfo::OpenLogFiles()
 		if (target.empty() || target[0] == '#' || target == "globops" || target.find(":") != Warden::string::npos)
 			continue;
 
-		auto *lf = new LogFile(CreateLogName(target));
+		auto *lf = new LogFile(this->rotate ? CreateLogName(target) : Warden::ExpandLog(target));
 		if (!lf->stream.is_open())
 		{
 			Log() << "Unable to open logfile " << lf->GetName();
@@ -387,12 +387,13 @@ void LogInfo::ProcessMessage(const Log *l)
 	}
 
 	tm *tm = localtime(&Warden::CurTime);
-	if (tm->tm_mday != this->last_day)
+	// Without rotation the file is opened once, on the first message.
+	if (tm->tm_mday != this->last_day && (this->rotate || !this->last_day))
 	{
 		this->last_day = tm->tm_mday;
 		this->OpenLogFiles();
 
-		if (this->log_age)
+		if (this->rotate && this->log_age)
 		{
 			for (const auto &target : this->targets)
 			{

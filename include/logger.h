@@ -122,6 +122,8 @@ public:
 	int last_day = 0;
 	std::vector<Warden::string> sources;
 	int log_age;
+	/* Whether to append the date to log file names and switch files daily. */
+	bool rotate = true;
 	std::vector<Warden::string> admin;
 	std::vector<Warden::string> override;
 	std::vector<Warden::string> commands;

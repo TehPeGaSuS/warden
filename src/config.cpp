@@ -425,6 +425,7 @@ Configuration::Conf::Conf() : Configuration::Block("")
 		bool debug = log.Get<bool>("debug");
 
 		LogInfo l(logage, rawio, debug);
+		l.rotate = log.Get<bool>("rotate", "yes");
 
 		l.bot = BotInfo::Find(log.Get<const Warden::string>("bot", "Global"), true);
 		spacesepstream(log.Get<const Warden::string>("target")).GetTokens(l.targets);
