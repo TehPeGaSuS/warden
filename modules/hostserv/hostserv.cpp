@@ -92,8 +92,23 @@ public:
 
 	void OnUserModeUnset(const MessageSource &setter, User *u, const Warden::string &mname) override
 	{
-		if (mname == "OPER" && Config->GetModule(this).Get<bool>("activate_on_deoper", "yes"))
+		if (mname != "OPER" || !Config->GetModule(this).Get<bool>("activate_on_deoper", "yes"))
+			return;
+
+		const NickAlias *na = u->Account() ? NickAlias::Find(u->nick) : nullptr;
+		if (!na || na->nc != u->Account() || !na->HasVHost())
+			na = u->AccountNick();
+
+		if (na && na->HasVHost())
 			this->OnUserLogin(u);
+		else if (!u->vhost.empty() && IRCD->CanSetVHost)
+		{
+			// No HostServ vhost to go back to, so drop the oper vhost and
+			// let the user's cloak (or real host) show again (anope/anope#462).
+			IRCD->SendVHostDel(u);
+			u->vhost.clear();
+			u->UpdateHost();
+		}
 	}
 
 	EventReturn OnPreHelp(CommandSource &source, const std::vector<Warden::string> &params) override
