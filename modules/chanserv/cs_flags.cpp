@@ -98,8 +98,15 @@ FlagsAccessProvider *FlagsAccessProvider::ap;
 class CommandCSFlags final
 	: public Command
 {
-	void DoModify(CommandSource &source, ChannelInfo *ci, Warden::string mask, const Warden::string &flags, Warden::string description)
+	enum class ModifyMode { MODIFY, ADD, DEL };
+
+	void DoModify(CommandSource &source, ChannelInfo *ci, Warden::string mask, const Warden::string &flags, Warden::string description, ModifyMode mode = ModifyMode::MODIFY)
 	{
+		// A description of "-" clears it (anope/anope#627).
+		const auto nodesc = description == "-";
+		if (nodesc)
+			description.clear();
+
 		if (flags.empty())
 		{
 			this->OnSyntaxError(source, "");
@@ -171,7 +178,7 @@ class CommandCSFlags final
 					}
 
 					mask = targnc->display;
-					if (description.empty())
+					if (description.empty() && !nodesc)
 						description = targ->nick;
 				}
 				else
@@ -221,9 +228,15 @@ class CommandCSFlags final
 			}
 		}
 
+		if (mode == ModifyMode::ADD && current)
+		{
+			source.Reply(_("\002%s\002 is already on the %s access list; use \002MODIFY\002 to change it."), mask.c_str(), ci->name.c_str());
+			return;
+		}
+
 		const auto access_count = ci->GetDeepAccessCount();
 		const auto access_max = Config->GetModule("chanserv").Get<unsigned>("accessmax", "1000");
-		if (access_max && access_count >= access_max)
+		if (!current && access_max && access_count >= access_max)
 		{
 			if (access_count == ci->GetAccessCount())
 				source.Reply(access_max, CHAN_ACCESS_LIMIT, access_max);
@@ -320,7 +333,7 @@ class CommandCSFlags final
 		auto *access = warden_dynamic_static_cast<FlagsChanAccess *>(provider->Create());
 		access->SetMask(mask, ci);
 		access->creator = source.GetNick();
-		access->description = current && description.empty() ? current->description : description;
+		access->description = current && description.empty() && !nodesc ? current->description : description;
 		access->last_seen = current ? current->last_seen : 0;
 		access->created = Warden::CurTime;
 		access->flags = current_flags;
@@ -542,6 +555,8 @@ public:
 	{
 		this->SetDesc(_("Modify the list of privileged users"));
 		this->SetSyntax(_("\037channel\037 [MODIFY] \037mask\037 \037changes\037 [\037description\037]"));
+		this->SetSyntax(_("\037channel\037 ADD \037mask\037 \037changes\037 [\037description\037]"));
+		this->SetSyntax(_("\037channel\037 DEL \037mask\037"));
 		this->SetSyntax(_("\037channel\037 LIST [\037mask\037 | +\037flags\037] [ALL]"));
 		this->SetSyntax(_("\037channel\037 MIGRATE [\037mask\037]"));
 		this->SetSyntax(_("\037channel\037 CLEAR"));
@@ -583,7 +598,21 @@ public:
 		else
 		{
 			Warden::string mask, flags, description;
-			if (cmd.equals_ci("MODIFY"))
+			auto mode = ModifyMode::MODIFY;
+			if (cmd.equals_ci("ADD") || cmd.equals_ci("DEL"))
+			{
+				// ADD and DEL, like ACCESS and XOP (anope/anope#628).
+				mode = cmd.equals_ci("ADD") ? ModifyMode::ADD : ModifyMode::DEL;
+				mask = params.size() > 2 ? params[2] : "";
+				if (mode == ModifyMode::DEL)
+					flags = mask.empty() ? "" : "-*";
+				else
+				{
+					flags = params.size() > 3 ? params[3] : "";
+					description = params.size() > 4 ? params[4] : "";
+				}
+			}
+			else if (cmd.equals_ci("MODIFY"))
 			{
 				mask = params.size() > 2 ? params[2] : "";
 				flags = params.size() > 3 ? params[3] : "";
@@ -596,7 +625,7 @@ public:
 				description = params.size() > 3 ? params[3] : "";
 			}
 
-			this->DoModify(source, ci, mask, flags, description);
+			this->DoModify(source, ci, mask, flags, description, mode);
 		}
 	}
 
@@ -614,6 +643,10 @@ public:
 				"Additionally, you may use +* or -* to add or remove all flags, respectively. You are "
 				"only able to modify the access list if you have the proper permission on the channel, "
 				"and even then you can only give other people access to the equivalent of what your access is."
+				"\n\n"
+				"\002ADD\002 does the same but only for a mask that is not on the access list yet, and "
+				"\002DEL\002 removes a mask (the same as \002-*\002). A description of \002-\002 "
+				"removes the entry's description."
 				"\n\n"
 				"The \002LIST\002 command allows you to list existing entries on the channel access list. "
 				"If a mask is given, the mask is wildcard matched against all existing entries on the "

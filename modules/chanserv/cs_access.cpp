@@ -142,6 +142,10 @@ private:
 	{
 		Warden::string mask = params[2];
 		Warden::string description = params.size() > 4 ? params[4] : "";
+		// "-" means no description (anope/anope#627).
+		const auto nodesc = description == "-";
+		if (nodesc)
+			description.clear();
 		Privilege *p = NULL;
 		int level = ACCESS_INVALID;
 
@@ -247,7 +251,7 @@ private:
 					}
 
 					mask = targnc->display;
-					if (description.empty())
+					if (description.empty() && !nodesc)
 						description = targ->nick;
 				}
 				else
