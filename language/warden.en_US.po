@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 13:08+0100\n"
+"POT-Creation-Date: 2026-11-23 13:12+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -3844,7 +3844,7 @@ msgstr ""
 msgid ""
 "Enables or disables signed kicks for a channel. When SIGNKICK is set, kicks issued with the KICK command will have the nick that used the command in their reason.\n"
 "\n"
-"If you use LEVEL, those who have a level that is superior or equal to the SIGNKICK level on the channel won't have their kicks signed."
+"If you use LEVEL, kicks are signed unless the user has the SIGNKICK privilege (by default only QOPs have it)."
 msgstr ""
 
 #: ../modules/chanserv/cs_set.cpp
@@ -6925,7 +6925,7 @@ msgstr ""
 
 #: ../modules/chanserv/cs_set.cpp
 #, c-format
-msgid "Signed kick option for %s is now on, but depends of the level of the user that is using the command."
+msgid "Signed kick option for %s is now on, except for users with the SIGNKICK privilege."
 msgstr ""
 
 #: ../modules/chanserv/cs_set.cpp
@@ -7724,6 +7724,11 @@ msgstr ""
 #: ../modules/nickserv/ns_set_timezone.cpp
 #, c-format
 msgid "Timezone for %s changed to %s."
+msgstr ""
+
+#: ../modules/chanserv/cs_set.cpp
+#, c-format
+msgid "To choose who kicks unsigned, give that privilege to everyone at or above a level, e.g. %s channel SET SIGNKICK 5 for AOPs and up, or to one user, e.g. %s channel nick +K (K is the default SIGNKICK flag). Everyone else's kicks stay signed."
 msgstr ""
 
 #: ../modules/memoserv/ms_read.cpp

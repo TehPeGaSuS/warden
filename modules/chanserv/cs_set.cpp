@@ -889,7 +889,7 @@ public:
 		{
 			ci->Extend<bool>("SIGNKICK_LEVEL");
 			ci->Shrink<bool>("SIGNKICK");
-			source.Reply(_("Signed kick option for %s is now \002on\002, but depends of the level of the user that is using the command."),
+			source.Reply(_("Signed kick option for %s is now \002on\002, except for users with the \002SIGNKICK\002 privilege."),
 				ci->name.c_str());
 			Log(source.AccessFor(ci).HasPriv("SET") ? LOG_COMMAND : LOG_OVERRIDE, source, this, ci) << "to enable sign kick level";
 		}
@@ -914,10 +914,18 @@ public:
 			"the \002KICK\002 command will have the nick that used the "
 			"command in their reason."
 			"\n\n"
-			"If you use \002LEVEL\002, those who have a level that is superior "
-			"or equal to the SIGNKICK level on the channel won't have their "
-			"kicks signed."
+			"If you use \002LEVEL\002, kicks are signed unless the user has the "
+			"\002SIGNKICK\002 privilege (by default only QOPs have it)."
 		));
+		source.Reply(" ");
+		source.Reply(_(
+				"To choose who kicks unsigned, give that privilege to everyone at or "
+				"above a level, e.g. \002%s \037channel\037 SET SIGNKICK 5\002 for "
+				"AOPs and up, or to one user, e.g. \002%s \037channel\037 \037nick\037 +K\002 "
+				"(K is the default SIGNKICK flag). Everyone else's kicks stay signed."
+			),
+			source.service->GetQueryCommand("chanserv/levels").c_str(),
+			source.service->GetQueryCommand("chanserv/flags").c_str());
 		return true;
 	}
 };
