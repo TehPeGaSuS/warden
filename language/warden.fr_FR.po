@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:05+0100\n"
+"POT-Creation-Date: 2026-11-23 15:10+0100\n"
 "PO-Revision-Date: 2024-11-25 01:32+0000\n"
 "Last-Translator: Val Lorentz <progval+git@progval.net>\n"
 "Language-Team: French\n"
@@ -326,6 +326,11 @@ msgstr "%s n'est pas une empreinte de certificat valide."
 msgid "%s is not a valid email address."
 msgstr "%s n'est pas une adresse email valide."
 
+#: ../modules/operserv/os_expiring.cpp
+#, c-format
+msgid "%s is not a valid time, e.g. 30d or 2w."
+msgstr "%s n'est pas une durée valide, par ex. 30d ou 2w."
+
 #: ../modules/operserv/os_regset.cpp
 #, c-format
 msgid "%s is not a valid time. Give a Unix timestamp or a date such as 2019-05-01 (UTC), not in the future."
@@ -579,6 +584,10 @@ msgstr "{name} = {level}"
 #: ../modules/operserv/os_config.cpp
 msgid "{name} = {value}"
 msgstr "{name} = {value}"
+
+#: ../modules/operserv/os_expiring.cpp
+msgid "{name} expires {expires}"
+msgstr "{name} expire {expires}"
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "{name}: defaults to {default} ({description})"
@@ -3255,6 +3264,11 @@ msgstr "Liste des canaux :"
 msgid "Channel stats for %s on %s:"
 msgstr "Statistiques de canal pour %s sur %s :"
 
+#: ../modules/operserv/os_expiring.cpp
+#, c-format
+msgid "Channels expiring within %s:"
+msgstr "Canaux expirant dans les %s :"
+
 #: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
 msgid "Channels may not be on access lists."
 msgstr "Les canaux ne peuvent pas ajoutés aux listes d'accès."
@@ -4265,6 +4279,11 @@ msgstr "Fin de la liste - %d canaux affichés."
 msgid "End of list - %d/%d matches shown."
 msgstr "Fin de la liste - %d/%d correspondances affichées."
 
+#: ../modules/operserv/os_expiring.cpp
+#, c-format
+msgid "End of list - %zu/%zu shown, soonest first."
+msgstr "Fin de la liste - %zu/%zu affichés, les plus proches en premier."
+
 #: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_mode.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/memoserv/ms_ignore.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_dns.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp
 msgid "End of list."
 msgstr "Fin de la liste."
@@ -4384,7 +4403,7 @@ msgstr "Exemples :"
 msgid "Exception for %s has been updated to %d."
 msgstr "L'exception pour %s a été changée pour %d sessions."
 
-#: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Expires"
 msgstr "Expire"
 
@@ -4942,6 +4961,10 @@ msgstr "Liste les informations à propos d'un canal enregistré"
 msgid "List loaded modules"
 msgstr "Liste les modules chargés"
 
+#: ../modules/operserv/os_expiring.cpp
+msgid "List nicks and channels that will expire soon"
+msgstr "Liste les pseudos et canaux qui vont bientôt expirer"
+
 #: ../modules/chanserv/cs_list.cpp ../modules/nickserv/ns_list.cpp
 #, c-format
 msgid "List of entries matching %s:"
@@ -5196,6 +5219,20 @@ msgstr "Liste les informations concernant un canal enregistré, notamment son/sa
 #: ../modules/memoserv/ms_list.cpp
 msgid "Lists memos numbered 2 through 5 and 7 through 9."
 msgstr "Liste les mémos numérotés de 2 à 5 et de 7 à 9."
+
+#: ../modules/operserv/os_expiring.cpp
+msgid ""
+"Lists the registered nicks and channels that will expire within time, soonest first, so you can see what is about to go. NICK or CHAN limits it to one of them.\n"
+"\n"
+"time is a duration such as 30d, 2w or 1d12h; a plain number means days. Without it, a quarter of the configured expiry time is used.\n"
+"\n"
+"Nicks and channels that can't expire (NOEXPIRE, suspended, or a nick that is online and identified) are not listed."
+msgstr ""
+"Liste les pseudos et canaux enregistrés qui vont expirer dans la durée, les plus proches en premier, pour voir ce qui est sur le point de disparaître. NICK ou CHAN limite la liste à l'un des deux.\n"
+"\n"
+"durée est une durée comme 30d, 2w ou 1d12h ; un nombre seul signifie des jours. Sans elle, un quart de la durée d'expiration configurée est utilisé.\n"
+"\n"
+"Les pseudos et canaux qui ne peuvent pas expirer (NOEXPIRE, suspendus, ou un pseudo connecté et identifié) ne sont pas listés."
 
 #: ../modules/operserv/os_module.cpp
 msgid "Load a module"
@@ -5646,7 +5683,7 @@ msgstr "Plusieurs fuseaux horaires correspondent à %s. Soyez plus précis(e).
 msgid "NOTICE: In order to register a channel, you must have first registered your nickname."
 msgstr "Note : pour enregistrer un canal, vous devez d'abord enregistrer votre pseudo."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_list.cpp ../modules/operserv/os_config.cpp ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_list.cpp ../modules/operserv/os_config.cpp ../modules/operserv/os_expiring.cpp ../modules/operserv/os_list.cpp
 msgid "Name"
 msgstr "Nom"
 
@@ -5810,6 +5847,11 @@ msgstr "Le pseudo %s ne peut pas être enregistré."
 msgid "Nickname %s registered."
 msgstr "Le pseudo %s est maintenant enregistré."
 
+#: ../modules/operserv/os_expiring.cpp
+#, c-format
+msgid "Nicks expiring within %s:"
+msgstr "Pseudos expirant dans les %s :"
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Pas d'auto-op"
@@ -5822,6 +5864,11 @@ msgstr "Pas de bot"
 #, c-format
 msgid "No bots match %s."
 msgstr "Aucun bot ne correspond à %s."
+
+#: ../modules/operserv/os_expiring.cpp
+#, c-format
+msgid "No channels will expire within %s."
+msgstr "Aucun canal n'expirera dans les %s."
 
 #: ../modules/botserv/bs_bot.cpp
 #, c-format
@@ -5907,6 +5954,11 @@ msgstr "Aucun mémo à afficher."
 msgid "No modules currently loaded matching that criteria."
 msgstr "Aucun module actuellement chargé ne correspond à ce critère."
 
+#: ../modules/operserv/os_expiring.cpp
+#, c-format
+msgid "No nicks will expire within %s."
+msgstr "Aucun pseudo n'expirera dans les %s."
+
 #: ../modules/nickserv/ns_recover.cpp
 msgid "No one is using your nick, and services are not holding it."
 msgstr "Personne n'utilise votre pseudo et les services ne l'ont pas suspendu."
@@ -5976,6 +6028,10 @@ msgstr "Notez que tout canal non utilisé pendant %s (c'est-à-dire où aucun(e)
 #, c-format
 msgid "Note, however, if the successor already has too many channels registered (%u), they will not be able to become the new founder and it will be as if the channel had no successor set."
 msgstr "Cependant, si le/la successeur(e) a déjà trop de canaux enregistrés (%u), iel ne pourra pas devenir le/la nouvelle fondateurice et ce sera comme si le canal n'avait pas de successeur(e) défini(e)."
+
+#: ../modules/operserv/os_expiring.cpp
+msgid "Note: services are running with expiry turned off, so nothing will actually expire until that changes."
+msgstr "Remarque : les services tournent avec l'expiration désactivée, donc rien n'expirera réellement tant que cela ne change pas."
 
 #: ../modules/chanserv/cs_mode.cpp
 msgid "Nothing to do."
@@ -8649,7 +8705,7 @@ msgstr "Retire le bot d'un canal. Si vous utilisez cette commande, le bot ne joi
 msgid "Unassigns a previously assigned bot from #opers."
 msgstr "Retire un bot précédemment assigné de #opers."
 
-#: ../modules/nickserv/ns_list.cpp
+#: ../modules/nickserv/ns_list.cpp ../modules/operserv/os_expiring.cpp
 msgid "Unconfirmed"
 msgstr "[Non confirmé]"
 
@@ -9834,6 +9890,10 @@ msgstr "[+joursd] [+limitel] modèle"
 #: ../modules/operserv/os_chankill.cpp
 msgid "[+expiry] channel reason"
 msgstr "[+expiration] canal raison"
+
+#: ../modules/operserv/os_expiring.cpp
+msgid "[NICK | CHAN] [time]"
+msgstr "[NICK | CHAN] [durée]"
 
 #: ../modules/chanserv/cs_list.cpp
 msgid "[Suspended]"
