@@ -1,0 +1,43 @@
+{INCLUDE layout/header.html}
+			<div class="row">
+				<div class="col-lg-offset-4 col-lg-4">
+					{INCLUDE layout/brand.html}
+
+					{IF EXISTS ERROR}
+					<h1 class="form-signin-heading">Confirmation</h1>
+					<div class="alert alert-danger">
+						{ERROR}
+					</div>
+					<a href="/" class="btn btn-lg btn-default btn-block">Continue</a>
+					{ELSE}
+					<h1 class="form-signin-heading">{HEADING}</h1>
+
+					{IF EXISTS DONE}
+					<div class="alert alert-success">
+						{IF EXISTS MESSAGES}{MESSAGES}{ELSE}Confirmation succeeded!{END IF}
+					</div>
+					<a href="/" class="btn btn-lg btn-default btn-block">Continue</a>
+					{ELSE}
+					{IF EXISTS MESSAGES}
+					<div class="alert alert-danger">
+						{MESSAGES}
+					</div>
+					{END IF}
+
+					<p>{ACTION}</p>
+
+					<form class="form-horizontal form-signin" action="/verify" method="post">
+						<input type="hidden" name="token" value="{TOKEN}">
+						{IF EXISTS RESETPASS}
+						<input type="password" name="password" class="form-control" placeholder="New password" required="required" autofocus
+							style="margin-bottom: -1px; border-bottom-left-radius: 0; border-bottom-right-radius: 0;">
+						<input type="password" name="password2" class="form-control" placeholder="New password again" required="required"
+							style="margin-bottom: 10px; border-top-left-radius: 0; border-top-right-radius: 0;">
+						{END IF}
+						<button class="btn btn-lg btn-primary btn-block" type="submit">Confirm</button>
+					</form>
+					{END IF}
+					{END IF}
+				</div>
+			</div>
+{INCLUDE layout/footer.html}

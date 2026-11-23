@@ -5,7 +5,9 @@ You have requested to change the email address associated with the account {acco
 Please use the following command on IRC to confirm your change of email address:
 
 > /msg NickServ CONFIRM EMAIL {code}
-
+{?link}
+Or click here to confirm: {link}
+{/link}
 If not confirmed your change of email address will automatically expire in {expiry}
 
 If you don't know why this email was sent to you, please ignore it silently.

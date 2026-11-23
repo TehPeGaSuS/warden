@@ -188,7 +188,7 @@ public:
 #include "pages/logout.h"
 #include "pages/register.h"
 #include "pages/confirm.h"
-#include "pages/confirm_email.h"
+#include "pages/verify.h"
 
 #include "pages/chanserv/chanserv.h"
 #include "pages/hostserv/hostserv.h"

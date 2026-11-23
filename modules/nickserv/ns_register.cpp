@@ -15,6 +15,7 @@
 
 #include "module.h"
 #include "modules/nickserv/service.h"
+#include "modules/weblink.h"
 
 namespace
 {
@@ -524,6 +525,7 @@ static bool SendRegmail(User *u, const NickAlias *na, BotInfo *bi, Module *owner
 		{ "network", Config->GetBlock("networkinfo").Get<const Warden::string>("networkname") },
 		{ "code",    *code                                                                   },
 		{ "expiry",  Warden::Duration(GetExpiry(owner), na->nc)                               },
+		{ "link",    WebLink::Create(WebLink::Type::REGISTER, na, *code, GetExpiry(owner))   },
 	};
 
 	return regemail.Send(u, nc, bi, vars);

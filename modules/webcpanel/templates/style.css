@@ -1,8 +1,6 @@
-@import url(//fonts.googleapis.com/css?family=Open+Sans:300,400);
-@import url(//fonts.googleapis.com/css?family=Port+Lligat+Slab);
 
 *, html, body, h1, h2, h3, h4, div, p, span, a, button {
-	font-family: 'Open Sans', sans-serif;
+	font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 body {
 	background-color: #eee;
@@ -141,7 +139,8 @@ h4 {
 	font-size: 25px;
 }
 .navbar-brand, .navbar-brand small {
-	font-family: 'Port Lligat Slab', serif;
+	color: #1f3f8a !important;
+	font-weight: 600;
 }
 
 .navbar-default .nav {
@@ -163,4 +162,32 @@ h4 {
 	background-color: transparent;
 	background-color: rgba(66, 139, 202, 0.1);
 	border-bottom-color: transparent;
+}
+
+/* Brand: the Warden shield followed by the panel title (webcpanel:title). */
+.warden-brand {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	margin: 10px 0 20px;
+	color: #1f3f8a;
+	font-size: 26px;
+	font-weight: 600;
+	text-decoration: none;
+}
+.warden-brand:hover, .warden-brand:focus {
+	color: #1f3f8a;
+	text-decoration: none;
+}
+.warden-brand img {
+	width: 56px;
+	height: 56px;
+}
+.warden-navbrand img {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	margin-top: -3px;
+	margin-right: 6px;
 }

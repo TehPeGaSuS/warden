@@ -107,6 +107,8 @@ namespace Warden
 	extern CoreExport Warden::string ReplaceUnsafe(const Warden::string &text);
 
 	/** Replaces template variables within a string with values from a map.
+	 * {name} is replaced with the value of name, {?name}...{/name} is only
+	 * kept if name has a non-empty value and {!name}...{/name} only if not.
 	 * @param str The string to template from.
 	 * @param vars The variables to replace within the string.
 	 * @return The specified string with all variables replaced within it.

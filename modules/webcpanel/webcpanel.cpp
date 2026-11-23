@@ -27,13 +27,15 @@ class ModuleWebCPanel final
 	PrimitiveExtensibleItem<Warden::string> id, ip;
 	PrimitiveExtensibleItem<time_t> last_login;
 
-	StaticFileServer style_css, logo_png, cubes_png, favicon_ico;
+	StaticFileServer style_css, logo_svg, cubes_png, favicon_ico, bootstrap_css, bootstrap_js, jquery_js;
 
 	WebCPanel::Index index;
 	WebCPanel::Logout logout;
 	WebCPanel::Register _register;
 	WebCPanel::Confirm confirm;
-	WebCPanel::ConfirmEmail confirm_email;
+	WebCPanel::Verify verify;
+	WebCPanel::WebTokenType webtokentype;
+	WebCPanel::WebLinkService weblinkservice;
 
 	WebCPanel::NickServ::Info nickserv_info;
 	WebCPanel::NickServ::Cert nickserv_cert;
@@ -58,8 +60,9 @@ public:
 		provider(HTTP_PROVIDER),
 		panel(this, "webcpanel"),
 		id(this, "webcpanel_id"), ip(this, "webcpanel_ip"), last_login(this, "webcpanel_last_login"),
-		style_css("style.css", "/static/style.css", "text/css"), logo_png("logo.png", "/static/logo.png", "image/png"), cubes_png("cubes.png", "/static/cubes.png", "image/png"), favicon_ico("favicon.ico", "/favicon.ico", "image/x-icon"),
-		index("/"), logout("/logout"), _register("/register"), confirm("/confirm"), confirm_email("/confirm_email"),
+		style_css("style.css", "/static/style.css", "text/css"), logo_svg("logo.svg", "/static/logo.svg", "image/svg+xml"), cubes_png("cubes.png", "/static/cubes.png", "image/png"), favicon_ico("favicon.ico", "/favicon.ico", "image/x-icon"),
+		bootstrap_css("bootstrap.min.css", "/static/bootstrap.min.css", "text/css"), bootstrap_js("bootstrap.min.js", "/static/bootstrap.min.js", "text/javascript"), jquery_js("jquery.min.js", "/static/jquery.min.js", "text/javascript"),
+		index("/"), logout("/logout"), _register("/register"), confirm("/confirm"), verify("/verify"), weblinkservice(this),
 		nickserv_info("NickServ", "/nickserv/info"), nickserv_cert("NickServ", "/nickserv/cert"), nickserv_alist("NickServ", "/nickserv/alist"),
 		chanserv_info("ChanServ", "/chanserv/info"), chanserv_set("ChanServ", "/chanserv/set"), chanserv_access("ChanServ", "/chanserv/access"), chanserv_akick("ChanServ", "/chanserv/akick"),
 		chanserv_modes("ChanServ", "/chanserv/modes"), chanserv_drop("ChanServ", "/chanserv/drop"), memoserv_memos("MemoServ", "/memoserv/memos"), hostserv_request("HostServ", "/hostserv/request"),
@@ -78,7 +81,10 @@ public:
 			throw ModuleException("Unable to find HTTPD provider. Is httpd loaded?");
 
 		provider->RegisterPage(&this->style_css);
-		provider->RegisterPage(&this->logo_png);
+		provider->RegisterPage(&this->logo_svg);
+		provider->RegisterPage(&this->bootstrap_css);
+		provider->RegisterPage(&this->bootstrap_js);
+		provider->RegisterPage(&this->jquery_js);
 		provider->RegisterPage(&this->cubes_png);
 		provider->RegisterPage(&this->favicon_ico);
 
@@ -86,7 +92,7 @@ public:
 		provider->RegisterPage(&this->logout);
 		provider->RegisterPage(&this->_register);
 		provider->RegisterPage(&this->confirm);
-		provider->RegisterPage(&this->confirm_email);
+		provider->RegisterPage(&this->verify);
 
 		BotInfo *NickServ = Config->GetClient("NickServ");
 		if (NickServ)
@@ -207,7 +213,10 @@ public:
 		if (provider)
 		{
 			provider->UnregisterPage(&this->style_css);
-			provider->UnregisterPage(&this->logo_png);
+			provider->UnregisterPage(&this->logo_svg);
+			provider->UnregisterPage(&this->bootstrap_css);
+			provider->UnregisterPage(&this->bootstrap_js);
+			provider->UnregisterPage(&this->jquery_js);
 			provider->UnregisterPage(&this->cubes_png);
 			provider->UnregisterPage(&this->favicon_ico);
 
@@ -215,7 +224,7 @@ public:
 			provider->UnregisterPage(&this->logout);
 			provider->UnregisterPage(&this->_register);
 			provider->UnregisterPage(&this->confirm);
-			provider->UnregisterPage(&this->confirm_email);
+			provider->UnregisterPage(&this->verify);
 
 			provider->UnregisterPage(&this->nickserv_info);
 			provider->UnregisterPage(&this->nickserv_cert);
@@ -234,6 +243,11 @@ public:
 
 			provider->UnregisterPage(&this->operserv_akill);
 		}
+	}
+
+	void OnExpireTick() override
+	{
+		WebCPanel::WebLinkService::Expire();
 	}
 };
 

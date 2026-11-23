@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Warden">
+	<!-- A shield with a keyhole: services that guard nicks and channels. -->
+	<defs>
+		<linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" stop-color="#3b6fd8"/>
+			<stop offset="1" stop-color="#1f3f8a"/>
+		</linearGradient>
+	</defs>
+	<path d="M32 3 L57 12 V30 C57 45 46.5 55.5 32 61 C17.5 55.5 7 45 7 30 V12 Z" fill="url(#g)"/>
+	<path d="M32 9 L51 16 V30 C51 41.5 43.5 50 32 54.6 C20.5 50 13 41.5 13 30 V16 Z" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="2"/>
+	<circle cx="32" cy="27" r="7" fill="#ffffff"/>
+	<path d="M28.2 31 H35.8 L34.2 44 H29.8 Z" fill="#ffffff"/>
+</svg>

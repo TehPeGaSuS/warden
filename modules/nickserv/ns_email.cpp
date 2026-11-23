@@ -14,6 +14,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "module.h"
+#include "modules/weblink.h"
 
 namespace
 {
@@ -263,6 +264,7 @@ class CommandNSSetEmail
 			{ "network",   Config->GetBlock("networkinfo").Get<const Warden::string>("networkname") },
 			{ "code",      nse->code                                                               },
 			{ "expiry",    Warden::Duration(GetExpiry(owner), nc)                                   },
+			{ "link",      WebLink::Create(WebLink::Type::EMAIL, NickAlias::Find(nc->display), nse->code, GetExpiry(owner)) },
 		};
 
 		Warden::string old = nc->email;

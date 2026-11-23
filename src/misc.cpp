@@ -1314,6 +1314,25 @@ Warden::string Warden::Template(const Warden::string &str, const Warden::map<War
 				}
 
 				auto varname = str.substr(idx + 1, endidx - idx - 1).trim();
+				if (varname.length() > 1 && (varname[0] == '?' || varname[0] == '!'))
+				{
+					// {?foo}...{/foo} is only kept if foo is set and not empty,
+					// {!foo}...{/foo} only if it is not.
+					const auto want = varname[0] == '?';
+					const auto name = varname.substr(1);
+					const auto endtag = "{/" + name + "}";
+					auto close = str.find(endtag, endidx + 1);
+					if (close == Warden::string::npos)
+						close = str.length();
+
+					auto cond = vars.find(name);
+					if ((cond != vars.end() && !cond->second.empty()) == want)
+						out.append(Warden::Template(str.substr(endidx + 1, close - endidx - 1), vars));
+
+					idx = close == str.length() ? close : close + endtag.length() - 1;
+					break;
+				}
+
 				auto var = vars.find(varname);
 				if (var != vars.end())
 				{

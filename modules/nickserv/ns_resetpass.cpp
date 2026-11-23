@@ -14,6 +14,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "module.h"
+#include "modules/weblink.h"
 
 namespace
 {
@@ -207,6 +208,7 @@ static bool SendResetEmail(User *u, const NickAlias *na, BotInfo *bi, Module* ow
 		{ "network", Config->GetBlock("networkinfo").Get<const Warden::string>("networkname") },
 		{ "code",    ri->code                                                                },
 		{ "expiry",  Warden::Duration(GetExpiry(owner), na->nc)                               },
+		{ "link",    WebLink::Create(WebLink::Type::RESETPASS, na, ri->code, GetExpiry(owner)) },
 	};
 
 	return resetemail.Send(u, na->nc, bi, vars);
