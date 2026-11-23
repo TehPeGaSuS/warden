@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:10+0100\n"
+"POT-Creation-Date: 2026-11-23 15:18+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -600,6 +600,10 @@ msgstr "{nick} (cont: {account})"
 #: ../modules/botserv/bs_botlist.cpp
 msgid "{nick} ({mask}) [{real_name}]"
 msgstr "{nick} ({mask}) [{real_name}]"
+
+#: ../modules/operserv/os_notinchan.cpp
+msgid "{nick} ({mask}) {realname}"
+msgstr "{nick} ({mask}) {realname}"
 
 #: ../modules/nickserv/ns_list.cpp
 msgid "{nick} -- {status} (account: {account})"
@@ -1891,6 +1895,10 @@ msgstr "AKILL toți utilizatorii dintr-un canal anume"
 msgid "AKILL list is empty."
 msgstr "Lista de AKILL este goală."
 
+#: ../modules/operserv/os_notinchan.cpp
+msgid "AKILLs are not available (is os_akill loaded?)."
+msgstr "AKILL-urile nu sunt disponibile (este os_akill încărcat?)."
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "AMSG kicker"
 msgstr "Izgonire la AMSG"
@@ -2028,6 +2036,11 @@ msgstr "Adaugă un pseudonim la un cont"
 #: ../modules/operserv/os_info.cpp
 msgid "Add or delete oper information for a given nick or channel. This will show to opers in the respective info command for the nick or channel."
 msgstr "Adaugă sau șterge informații de operator pentru un anumit pseudonim ori canal. Acestea vor fi afișate operatorilor în comanda info privind pseudonimul ori canalul cercetat."
+
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid "Added %zu AKILL(s) for %zu user(s)."
+msgstr "Au fost adăugate %zu AKILL-uri pentru %zu utilizator(i)."
 
 #: ../modules/operserv/os_dns.cpp
 #, c-format
@@ -4271,6 +4284,11 @@ msgstr "Sfârșitul listei - %d canale afișate."
 msgid "End of list - %d/%d matches shown."
 msgstr "Sfârșitul listei - %d/%d corespunderi afișate."
 
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid "End of list - %zu user(s)."
+msgstr "Sfârșitul listei - %zu utilizator(i)."
+
 #: ../modules/operserv/os_expiring.cpp
 #, c-format
 msgid "End of list - %zu/%zu shown, soonest first."
@@ -4431,6 +4449,17 @@ msgstr "Modul fantezie este acum activat în canalul %s."
 #: ../modules/chanserv/cs_status.cpp
 msgid "Find a user's status on a channel"
 msgstr "Află starea unui utilizator într-un canal"
+
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid ""
+"Finds users who are in no channel, which is often a sign of idle bots or drones. IRC operators, services and users who connected less than %s ago are never included.\n"
+"\n"
+"LIST (the default) shows them. JOIN makes them all join %s. KILL disconnects them. AKILL adds an AKILL on each of their hosts for %s, except hosts that other users share."
+msgstr ""
+"Găsește utilizatorii care nu sunt în niciun canal, ceea ce este adesea semnul unor boți sau drone inactive. Operatorii IRC, serviciile și utilizatorii conectați de mai puțin de %s nu sunt incluși niciodată.\n"
+"\n"
+"LIST (implicit) îi afișează. JOIN îi face pe toți să intre în %s. KILL îi deconectează. AKILL adaugă un AKILL pe fiecare dintre hosturile lor pentru %s, cu excepția hosturilor partajate de alți utilizatori."
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Fingerprint"
@@ -4753,6 +4782,11 @@ msgstr "Vă invitați într-un canal pe dumneavoastră, sau pe un pseudonim spec
 msgid "Italics kicker"
 msgstr "Izgonire la înclinări"
 
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid "Joined %zu user(s) to %s."
+msgstr "%zu utilizator(i) intrat(i) în %s."
+
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "Keep a history of earlier topics"
 msgstr "Păstrează un istoric al subiectelor anterioare"
@@ -4800,6 +4834,11 @@ msgstr "Izgonește un utilizator specificat dintr-un canal. Fondatorii de canal 
 #: ../modules/operserv/os_kill.cpp
 msgid "Kill a user"
 msgstr "Deconectează un utilizator"
+
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid "Killed %zu user(s)."
+msgstr "%zu utilizator(i) deconectat(i) (kill)."
 
 #: ../modules/chanserv/cs_enforce.cpp
 #, c-format
@@ -5007,6 +5046,10 @@ msgstr "Listează opțiunile"
 #: ../modules/memoserv/ms_list.cpp
 msgid "List your memos"
 msgstr "Listează misivele dumneavoastră"
+
+#: ../modules/operserv/os_notinchan.cpp
+msgid "List, join, kill or AKILL users who are in no channel"
+msgstr "Listează, face să intre, deconectează sau aplică AKILL utilizatorilor care nu sunt în niciun canal"
 
 #: ../modules/operserv/os_akill.cpp
 msgid "Lists AKILL entries numbered 2 through 5 and 7 through 9."
@@ -5462,7 +5505,7 @@ msgstr "Manipulează lista de oferte pentru gazde"
 msgid "Manipulate the topic of the specified channel"
 msgstr "Manipulează subiectul canalului specificat"
 
-#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Mask"
 msgstr "Mască"
 
@@ -5694,7 +5737,7 @@ msgstr "Niciodată"
 msgid "Never op"
 msgstr "Niciodată operator"
 
-#: ../modules/botserv/bs_botlist.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_group.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/botserv/bs_botlist.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_group.cpp ../modules/nickserv/ns_list.cpp ../modules/operserv/os_notinchan.cpp
 msgid "Nick"
 msgstr "Pseudonim"
 
@@ -5982,6 +6025,10 @@ msgstr "Nu există nicio statistică pentru %s."
 #, c-format
 msgid "No such info \"%s\" on %s."
 msgstr "Nu există astfel de informații \"%s\" în %s."
+
+#: ../modules/operserv/os_notinchan.cpp
+msgid "No users are outside every channel."
+msgstr "Nu există utilizatori în afara tuturor canalelor."
 
 #: ../modules/chanserv/cs_ban.cpp ../modules/chanserv/cs_kick.cpp
 #, c-format
@@ -6409,7 +6456,7 @@ msgstr "Afișează o misivă sau mai multe"
 msgid "Real name"
 msgstr "Nume real"
 
-#: ../modules/operserv/os_list.cpp
+#: ../modules/operserv/os_list.cpp ../modules/operserv/os_notinchan.cpp
 msgid "Realname"
 msgstr "Nume real"
 
@@ -7545,6 +7592,11 @@ msgstr "Opțiunea de izgoniri semnate pentru %s este acum activată."
 #: ../modules/chanserv/cs_set.cpp
 msgid "Signed kicks"
 msgstr "Izgoniri semnate"
+
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid "Skipped %zu host(s) that other users share; use KILL or AKILL those users by hand."
+msgstr "Au fost omise %zu host(uri) partajate de alți utilizatori; folosiți KILL sau aplicați manual AKILL acelor utilizatori."
 
 #: ../modules/operserv/os_dns.cpp
 msgid "State"
@@ -8863,6 +8915,10 @@ msgstr "Utilizatori (pseudonim): %lu intrări, %lu compartimente, cel mai lung l
 msgid "Users (uid): %lu entries, %lu buckets, longest chain is %zu"
 msgstr "Utilizatori (uid): %lu intrări, %lu compartimente, cel mai lung lanț este %zu"
 
+#: ../modules/operserv/os_notinchan.cpp
+msgid "Users in no channel:"
+msgstr "Utilizatori în niciun canal:"
+
 #: ../modules/operserv/os_list.cpp
 msgid "Users list:"
 msgstr "Listă de utilizatori este după cum urmează:"
@@ -9516,7 +9572,7 @@ msgstr "Veți fi notificat(ă) despre misive doar atunci când vă sunt trimise.
 msgid "You will only be notified of memos when you log on or when you unset /AWAY."
 msgstr "Veți fi notificat(ă) despre misive doar atunci când vă identificați sau când dezactivați /AWAY."
 
-#: ../modules/operserv/os_svs.cpp
+#: ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_svs.cpp
 msgid "Your IRCd does not support SVSJOIN."
 msgstr "Serverul dumneavoastră de IRCd nu acceptă SVSJOIN."
 
@@ -9872,6 +9928,10 @@ msgstr "[+ziled] [+limităl] model"
 #: ../modules/operserv/os_chankill.cpp
 msgid "[+expiry] channel reason"
 msgstr "[+expirare] canal motiv"
+
+#: ../modules/operserv/os_notinchan.cpp
+msgid "[LIST | JOIN | KILL [reason] | AKILL [reason]]"
+msgstr "[LIST | JOIN | KILL [motiv] | AKILL [motiv]]"
 
 #: ../modules/operserv/os_expiring.cpp
 msgid "[NICK | CHAN] [time]"

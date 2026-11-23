@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:10+0100\n"
+"POT-Creation-Date: 2026-11-23 15:18+0100\n"
 "PO-Revision-Date: 2024-02-22 16:38+0000\n"
 "Last-Translator: Dragone2 <dragone2@risposteinformatiche.it>\n"
 "Language-Team: Italian\n"
@@ -600,6 +600,10 @@ msgstr "{nick} (account: {account})"
 #: ../modules/botserv/bs_botlist.cpp
 msgid "{nick} ({mask}) [{real_name}]"
 msgstr "{nick} ({mask}) [{real_name}]"
+
+#: ../modules/operserv/os_notinchan.cpp
+msgid "{nick} ({mask}) {realname}"
+msgstr "{nick} ({mask}) {realname}"
 
 #: ../modules/nickserv/ns_list.cpp
 msgid "{nick} -- {status} (account: {account})"
@@ -1891,6 +1895,10 @@ msgstr "AKILL su tutti gli utenti presenti in un canale specifico"
 msgid "AKILL list is empty."
 msgstr "La lista AKILL è vuota."
 
+#: ../modules/operserv/os_notinchan.cpp
+msgid "AKILLs are not available (is os_akill loaded?)."
+msgstr "Gli AKILL non sono disponibili (os_akill è caricato?)."
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "AMSG kicker"
 msgstr "Espulsione per AMSG"
@@ -2028,6 +2036,11 @@ msgstr "Aggiunge un nick a un account"
 #: ../modules/operserv/os_info.cpp
 msgid "Add or delete oper information for a given nick or channel. This will show to opers in the respective info command for the nick or channel."
 msgstr "Aggiunge o rimuove le informazioni operatore per il nick o il canale specificato. Queste informazioni saranno mostrate agli operatori quando viene usato il comando INFO per un nick o per un canale."
+
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid "Added %zu AKILL(s) for %zu user(s)."
+msgstr "Aggiunti %zu AKILL per %zu utente/i."
 
 #: ../modules/operserv/os_dns.cpp
 #, c-format
@@ -4273,6 +4286,11 @@ msgstr "Fine della lista - %d canali mostrati."
 msgid "End of list - %d/%d matches shown."
 msgstr "Fine della lista - %d/%d risultati mostrati."
 
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid "End of list - %zu user(s)."
+msgstr "Fine della lista - %zu utente/i."
+
 #: ../modules/operserv/os_expiring.cpp
 #, c-format
 msgid "End of list - %zu/%zu shown, soonest first."
@@ -4433,6 +4451,17 @@ msgstr "La modalità fantasia ora è ATTIVA sul canale %s."
 #: ../modules/chanserv/cs_status.cpp
 msgid "Find a user's status on a channel"
 msgstr "Trova lo status di un utente in un canale"
+
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid ""
+"Finds users who are in no channel, which is often a sign of idle bots or drones. IRC operators, services and users who connected less than %s ago are never included.\n"
+"\n"
+"LIST (the default) shows them. JOIN makes them all join %s. KILL disconnects them. AKILL adds an AKILL on each of their hosts for %s, except hosts that other users share."
+msgstr ""
+"Trova gli utenti che non sono in nessun canale, spesso segno di bot o drone inattivi. Gli operatori IRC, i servizi e gli utenti connessi da meno di %s non vengono mai inclusi.\n"
+"\n"
+"LIST (predefinito) li mostra. JOIN li fa entrare tutti in %s. KILL li disconnette. AKILL aggiunge un AKILL su ciascuno dei loro host per %s, tranne gli host condivisi da altri utenti."
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Fingerprint"
@@ -4755,6 +4784,11 @@ msgstr "Invita te stesso oppure il nick specificato in un canale"
 msgid "Italics kicker"
 msgstr "Espulsione per corsivo"
 
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid "Joined %zu user(s) to %s."
+msgstr "%zu utente/i fatto/i entrare in %s."
+
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "Keep a history of earlier topics"
 msgstr "Conserva una cronologia dei topic precedenti"
@@ -4802,6 +4836,11 @@ msgstr "Espelle il nick specificato da un canale. I fondatori del canale possono
 #: ../modules/operserv/os_kill.cpp
 msgid "Kill a user"
 msgstr "Disconnette un utente"
+
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid "Killed %zu user(s)."
+msgstr "%zu utente/i disconnesso/i."
 
 #: ../modules/chanserv/cs_enforce.cpp
 #, c-format
@@ -5011,6 +5050,10 @@ msgstr "Mostra le opzioni"
 #: ../modules/memoserv/ms_list.cpp
 msgid "List your memos"
 msgstr "Mostra la lista dei propri memo"
+
+#: ../modules/operserv/os_notinchan.cpp
+msgid "List, join, kill or AKILL users who are in no channel"
+msgstr "Elenca, fa entrare, disconnette o applica AKILL agli utenti che non sono in nessun canale"
 
 #: ../modules/operserv/os_akill.cpp
 msgid "Lists AKILL entries numbered 2 through 5 and 7 through 9."
@@ -5466,7 +5509,7 @@ msgstr "Gestisce la lista dei vHost offerti"
 msgid "Manipulate the topic of the specified channel"
 msgstr "Gestisce il topic del canale specificato"
 
-#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Mask"
 msgstr "Maschera"
 
@@ -5698,7 +5741,7 @@ msgstr "Mai"
 msgid "Never op"
 msgstr "Mai op"
 
-#: ../modules/botserv/bs_botlist.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_group.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/botserv/bs_botlist.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_group.cpp ../modules/nickserv/ns_list.cpp ../modules/operserv/os_notinchan.cpp
 msgid "Nick"
 msgstr "Nick"
 
@@ -5986,6 +6029,10 @@ msgstr "Non ci sono statistiche per %s."
 #, c-format
 msgid "No such info \"%s\" on %s."
 msgstr "Nessuna informazione \"%s\" su %s."
+
+#: ../modules/operserv/os_notinchan.cpp
+msgid "No users are outside every channel."
+msgstr "Nessun utente è fuori da tutti i canali."
 
 #: ../modules/chanserv/cs_ban.cpp ../modules/chanserv/cs_kick.cpp
 #, c-format
@@ -6413,7 +6460,7 @@ msgstr "Legge uno o più memo"
 msgid "Real name"
 msgstr "Nome reale"
 
-#: ../modules/operserv/os_list.cpp
+#: ../modules/operserv/os_list.cpp ../modules/operserv/os_notinchan.cpp
 msgid "Realname"
 msgstr "Realname"
 
@@ -7549,6 +7596,11 @@ msgstr "L'opzione kick firmato per %s è ora attiva."
 #: ../modules/chanserv/cs_set.cpp
 msgid "Signed kicks"
 msgstr "Kick firmati"
+
+#: ../modules/operserv/os_notinchan.cpp
+#, c-format
+msgid "Skipped %zu host(s) that other users share; use KILL or AKILL those users by hand."
+msgstr "Saltati %zu host condivisi da altri utenti; usa KILL o applica l'AKILL a quegli utenti a mano."
 
 #: ../modules/operserv/os_dns.cpp
 msgid "State"
@@ -8867,6 +8919,10 @@ msgstr "Utenti (nick): %lu voci, %lu bucket, la catena più lunga è %zu"
 msgid "Users (uid): %lu entries, %lu buckets, longest chain is %zu"
 msgstr "Utenti (uid): %lu voci, %lu bucket, la catena più lunga è %zu"
 
+#: ../modules/operserv/os_notinchan.cpp
+msgid "Users in no channel:"
+msgstr "Utenti in nessun canale:"
+
 #: ../modules/operserv/os_list.cpp
 msgid "Users list:"
 msgstr "Lista utenti:"
@@ -9520,7 +9576,7 @@ msgstr "Sarai informato dei memo solo quando li ricevi."
 msgid "You will only be notified of memos when you log on or when you unset /AWAY."
 msgstr "Sarai informato dei memo solo quando ti connetti o quando rimuovi l'/AWAY."
 
-#: ../modules/operserv/os_svs.cpp
+#: ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_svs.cpp
 msgid "Your IRCd does not support SVSJOIN."
 msgstr "Il tuo IRCd non supporta SVSJOIN."
 
@@ -9876,6 +9932,10 @@ msgstr "[+giornid] [+limitel] pattern"
 #: ../modules/operserv/os_chankill.cpp
 msgid "[+expiry] channel reason"
 msgstr "[+scadenza] canale motivo"
+
+#: ../modules/operserv/os_notinchan.cpp
+msgid "[LIST | JOIN | KILL [reason] | AKILL [reason]]"
+msgstr "[LIST | JOIN | KILL [motivo] | AKILL [motivo]]"
 
 #: ../modules/operserv/os_expiring.cpp
 msgid "[NICK | CHAN] [time]"
