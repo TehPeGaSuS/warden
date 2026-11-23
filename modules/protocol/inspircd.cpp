@@ -284,6 +284,11 @@ public:
 		IRCDProto::SendQuit(u, buf, operbuf);
 	}
 
+	void SendPing(const Warden::string &servname, const Warden::string &who) override
+	{
+		Uplink::Send("PING", who);
+	}
+
 	void SendPong(const Warden::string &servname, const Warden::string &who) override
 	{
 		Server *serv = servname.empty() ? NULL : Server::Find(servname);

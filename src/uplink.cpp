@@ -44,6 +44,54 @@ public:
 	}
 };
 
+// Notices an uplink that went silent without closing the connection
+// (anope/anope#410): ping it after pingfreq of silence and drop the link if
+// nothing arrives within pingtimeout.
+static unsigned uplink_generation = 0;
+
+class UplinkPingTimer final
+	: public Timer
+{
+	unsigned generation;
+
+public:
+	UplinkPingTimer(unsigned gen)
+		: Timer(5)
+		, generation(gen)
+	{
+	}
+
+	bool Tick() override
+	{
+		if (!UplinkSock || generation != uplink_generation)
+			return false;
+		if (!UplinkSock->flags[SF_CONNECTED])
+			return true;
+
+		const auto &block = Config->GetBlock("options");
+		const auto freq = block.Get<time_t>("pingfreq", "2m");
+		const auto timeout = block.Get<time_t>("pingtimeout", "1m");
+		if (!freq)
+			return true;
+
+		const auto idle = Warden::CurTime - UplinkSock->last_read;
+		if (idle >= freq + timeout)
+		{
+			UplinkSock->OnError("Ping timeout: " + Warden::ToString(idle) + " seconds");
+			delete UplinkSock;
+			return false;
+		}
+
+		auto *uplink = Servers::GetUplink();
+		if (idle >= freq && !UplinkSock->pinged && uplink && IRCD)
+		{
+			UplinkSock->pinged = true;
+			IRCD->SendPing(Me->GetName(), uplink->GetSID());
+		}
+		return true;
+	}
+};
+
 void Uplink::Connect()
 {
 	if (Config->Uplinks.empty())
@@ -117,8 +165,10 @@ void Uplink::SendInternal(const Warden::map<Warden::string> &tags, const Message
 }
 
 UplinkSocket::UplinkSocket() : Socket(-1, Config->Uplinks[Warden::CurrentUplink].protocol), ConnectionSocket(), BufferedSocket()
+	, last_read(Warden::CurTime)
 {
 	UplinkSock = this;
+	new UplinkPingTimer(++uplink_generation);
 }
 
 UplinkSocket::~UplinkSocket()
@@ -196,6 +246,8 @@ UplinkSocket::~UplinkSocket()
 bool UplinkSocket::ProcessRead()
 {
 	bool b = BufferedSocket::ProcessRead();
+	this->last_read = Warden::CurTime;
+	this->pinged = false;
 	for (Warden::string buf; !(buf = this->GetLine()).empty();)
 	{
 		Warden::Process(buf);
@@ -207,6 +259,7 @@ bool UplinkSocket::ProcessRead()
 
 void UplinkSocket::OnConnect()
 {
+	this->last_read = Warden::CurTime;
 	Log(LOG_TERMINAL) << "Successfully connected to uplink #" << (Warden::CurrentUplink + 1) << " " << Config->Uplinks[Warden::CurrentUplink].str();
 	IRCD->SendConnect();
 	FOREACH_MOD(OnServerConnect, ());

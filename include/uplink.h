@@ -58,6 +58,9 @@ public:
 	bool error = false;
 	size_t recv_msgs = 0;
 	size_t sent_msgs = 0;
+	/* When we last received data from the uplink, and whether we pinged it since. */
+	time_t last_read;
+	bool pinged = false;
 	UplinkSocket();
 	~UplinkSocket();
 	bool ProcessRead() override;
