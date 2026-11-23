@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:26+0100\n"
+"POT-Creation-Date: 2026-11-23 15:32+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -786,6 +786,14 @@ msgstr "κανάλι LOCK {ADD|DEL|SET|LIST} [τι]"
 msgid "channel MIGRATE [mask]"
 msgstr "κανάλι MIGRATE [μάσκα]"
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel OFF"
+msgstr "κανάλι OFF"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel ON [joins [time [duration]]]"
+msgstr "κανάλι ON [εισόδους [χρόνος [διάρκεια]]]"
+
 #: ../modules/chanserv/cs_topic.cpp
 msgid "channel PREPEND topic"
 msgstr "κανάλι PREPEND θέμα"
@@ -805,6 +813,10 @@ msgstr "κανάλι SET modes"
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel SET type level"
 msgstr "κανάλι SET τύπος επίπεδο"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel SHOW"
+msgstr "κανάλι SHOW"
 
 #: ../modules/chanserv/cs_flags.cpp
 msgid "channel TEMPLATES"
@@ -4660,6 +4672,10 @@ msgstr "Ο ιδρυτής του %s άλλαξε σε %s."
 msgid "Ghost with your nick has been killed."
 msgstr "Το ψευδώνυμο σου έγινε kill μέσω ghost εντολής."
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Give at least 2 joins, and times such as 10s or 2m."
+msgstr "Δώστε τουλάχιστον 2 εισόδους, και χρόνους όπως 10s ή 2m."
+
 #: ../modules/hostserv/hs_nethost.cpp
 msgid "Give every account its default vhost"
 msgstr "Δώσε σε κάθε λογαριασμό το προεπιλεγμένο vhost του"
@@ -4853,6 +4869,30 @@ msgstr "Πρόσκληση εσάς ή ενός προαιρετικού ψευ�
 #: ../modules/botserv/bs_kick.cpp
 msgid "Italics kicker"
 msgstr "Kicker πλαγίων"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Join flood protection"
+msgstr "Προστασία από flood εισόδων"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in %s is now off."
+msgstr "Η προστασία από flood εισόδων στο %s είναι τώρα ανενεργή."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in %s is now on: %u joins within %s make it registered-only for %s."
+msgstr "Η προστασία από flood εισόδων στο %s είναι τώρα ενεργή: %u είσοδοι μέσα σε %s το κάνουν μόνο για εγγεγραμμένους για %s."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in %s: %u joins within %s make it registered-only for %s."
+msgstr "Προστασία από flood εισόδων στο %s: %u είσοδοι μέσα σε %s το κάνουν μόνο για εγγεγραμμένους για %s."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection is not enabled for %s."
+msgstr "Η προστασία από flood εισόδων δεν είναι ενεργή για το %s."
 
 #: ../modules/operserv/os_notinchan.cpp
 #, c-format
@@ -5533,6 +5573,10 @@ msgstr "Κάνει το bot να εκτελέσει το ισοδύναμο μι
 #: ../modules/botserv/bs_control.cpp
 msgid "Make the bot say the specified text on the specified channel"
 msgstr "Κάνει το bot να πει το κείμενο στο κανάλι"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Make the channel registered-only during a join flood"
+msgstr "Κάνει το κανάλι μόνο για εγγεγραμμένους κατά τη διάρκεια flood εισόδων"
 
 #: ../modules/botserv/bs_control.cpp
 msgid "Makes the bot do the equivalent of a \"/me\" command on the specified channel using the specified text."
@@ -6509,6 +6553,16 @@ msgstr "Η προστασία είναι τώρα ενεργή μετά από
 #, c-format
 msgid "Protection is now on for %s."
 msgstr "Η προστασία #ενεργοποιήθηκε# για το #%s#."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid ""
+"Protects the channel from join floods by unidentified users. When joins of them join within time, the channel is made registered-users-only for duration, and the ops are told. If the IRCd has no such mode, unidentified users who join during that time are banned and kicked instead, and the bans are lifted afterwards.\n"
+"\n"
+"The defaults are 3 joins within 10 seconds, for 60 seconds. Times can be given as seconds or like 10s, 2m or 1h. SHOW shows the current settings."
+msgstr ""
+"Προστατεύει το κανάλι από flood εισόδων από μη ταυτοποιημένους χρήστες. Όταν εισόδους από αυτούς μπαίνουν μέσα σε χρόνος, το κανάλι γίνεται μόνο για εγγεγραμμένους χρήστες για διάρκεια, και ειδοποιούνται οι operators. Αν ο IRCd δεν έχει τέτοιο mode, οι μη ταυτοποιημένοι χρήστες που μπαίνουν σε αυτό το διάστημα παίρνουν ban και kick, και τα bans αφαιρούνται μετά.\n"
+"\n"
+"Οι προεπιλογές είναι 3 είσοδοι μέσα σε 10 δευτερόλεπτα, για 60 δευτερόλεπτα. Οι χρόνοι μπορούν να δοθούν σε δευτερόλεπτα ή όπως 10s, 2m ή 1h. Το SHOW δείχνει τις τρέχουσες ρυθμίσεις."
 
 #: ../modules/operserv/os_chankill.cpp
 msgid "Puts an AKILL for every nick on the specified channel. It uses the entire real ident@host for every nick, and then enforces the AKILL."

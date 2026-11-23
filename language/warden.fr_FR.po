@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:26+0100\n"
+"POT-Creation-Date: 2026-11-23 15:32+0100\n"
 "PO-Revision-Date: 2024-11-25 01:32+0000\n"
 "Last-Translator: Val Lorentz <progval+git@progval.net>\n"
 "Language-Team: French\n"
@@ -787,6 +787,14 @@ msgstr "canal LOCK {ADD|DEL|SET|LIST} [quoi]"
 msgid "channel MIGRATE [mask]"
 msgstr "canal MIGRATE [masque]"
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel OFF"
+msgstr "canal OFF"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel ON [joins [time [duration]]]"
+msgstr "canal ON [entrées [temps [durée]]]"
+
 #: ../modules/chanserv/cs_topic.cpp
 msgid "channel PREPEND topic"
 msgstr "canal PREPEND sujet"
@@ -806,6 +814,10 @@ msgstr "canal SET modes"
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel SET type level"
 msgstr "canal SET type niveau"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel SHOW"
+msgstr "canal SHOW"
 
 #: ../modules/chanserv/cs_flags.cpp
 msgid "channel TEMPLATES"
@@ -4663,6 +4675,10 @@ msgstr "Le/la fondateurice de %s est maintenant %s."
 msgid "Ghost with your nick has been killed."
 msgstr "L'utilisateurice fantôme utilisant votre pseudo a été déconnecté."
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Give at least 2 joins, and times such as 10s or 2m."
+msgstr "Indiquez au moins 2 entrées, et des durées comme 10s ou 2m."
+
 #: ../modules/hostserv/hs_nethost.cpp
 msgid "Give every account its default vhost"
 msgstr "Donner à chaque compte son vhost par défaut"
@@ -4856,6 +4872,30 @@ msgstr "Vous invite, ou invite un pseudo indiqué, sur un canal"
 #: ../modules/botserv/bs_kick.cpp
 msgid "Italics kicker"
 msgstr "Kicker d'italique"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Join flood protection"
+msgstr "Protection contre le flood d'entrées"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in %s is now off."
+msgstr "La protection contre le flood d'entrées sur %s est maintenant désactivée."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in %s is now on: %u joins within %s make it registered-only for %s."
+msgstr "La protection contre le flood d'entrées sur %s est maintenant activée : %u entrées en %s le réservent aux utilisateurices enregistré·es pendant %s."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in %s: %u joins within %s make it registered-only for %s."
+msgstr "Protection contre le flood d'entrées sur %s : %u entrées en %s le réservent aux utilisateurices enregistré·es pendant %s."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection is not enabled for %s."
+msgstr "La protection contre le flood d'entrées n'est pas activée pour %s."
 
 #: ../modules/operserv/os_notinchan.cpp
 #, c-format
@@ -5536,6 +5576,10 @@ msgstr "Fait faire au bot l'équivalent de la commande \"/me\""
 #: ../modules/botserv/bs_control.cpp
 msgid "Make the bot say the specified text on the specified channel"
 msgstr "Fait dire au bot le texte donné sur un canal"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Make the channel registered-only during a join flood"
+msgstr "Réserve le canal aux utilisateurices enregistré·es pendant un flood d'entrées"
 
 #: ../modules/botserv/bs_control.cpp
 msgid "Makes the bot do the equivalent of a \"/me\" command on the specified channel using the specified text."
@@ -6514,6 +6558,16 @@ msgstr "La protection est maintenant ACTIVE après %lu secondes pour %s."
 #, c-format
 msgid "Protection is now on for %s."
 msgstr "La protection est maintenant ACTIVE pour %s."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid ""
+"Protects the channel from join floods by unidentified users. When joins of them join within time, the channel is made registered-users-only for duration, and the ops are told. If the IRCd has no such mode, unidentified users who join during that time are banned and kicked instead, and the bans are lifted afterwards.\n"
+"\n"
+"The defaults are 3 joins within 10 seconds, for 60 seconds. Times can be given as seconds or like 10s, 2m or 1h. SHOW shows the current settings."
+msgstr ""
+"Protège le canal contre les floods d'entrées d'utilisateurices non identifié·es. Quand entrées d'entre elleux rejoignent en temps, le canal est réservé aux utilisateurices enregistré·es pendant durée, et les opérateurices sont prévenu·es. Si l'IRCd n'a pas ce mode, les utilisateurices non identifié·es qui rejoignent pendant ce temps sont banni·es et kické·es à la place, et les bans sont levés ensuite.\n"
+"\n"
+"Par défaut : 3 entrées en 10 secondes, pendant 60 secondes. Les durées peuvent être données en secondes ou comme 10s, 2m ou 1h. SHOW affiche les réglages actuels."
 
 #: ../modules/operserv/os_chankill.cpp
 msgid "Puts an AKILL for every nick on the specified channel. It uses the entire real ident@host for every nick, and then enforces the AKILL."
