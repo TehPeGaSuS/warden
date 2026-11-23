@@ -1227,9 +1227,17 @@ public:
 	{
 		if (c->ci && keep_modes.HasExt(c->ci))
 		{
+			// Modes the IRCd has disabled can be listed in norestore, as there
+			// is no way to learn them from the IRCd (anope/anope#457).
+			const auto norestore = Config->GetModule(this).Get<const Warden::string>("norestore");
 			Channel::ModeList ml = c->ci->last_modes;
 			for (const auto &[last_mode, last_data] : ml)
+			{
+				auto *cm = ModeManager::FindChannelModeByName(last_mode);
+				if (cm && norestore.find(cm->mchar) != Warden::string::npos)
+					continue;
 				c->SetMode(c->ci->WhoSends(), last_mode, last_data);
+			}
 		}
 	}
 
