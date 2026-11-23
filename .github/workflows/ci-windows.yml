@@ -88,11 +88,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release upload ${{ github.event.release.tag_name }} $(Get-ChildItem anope-*.exe)
+          gh release upload ${{ github.event.release.tag_name }} $(Get-ChildItem warden-*.exe)
 
       - name: Upload artifact
         if: github.event_name != 'release'
         uses: actions/upload-artifact@v7
         with:
           name: windows-installer
-          path: ${{ github.workspace }}\build\\anope-*.exe
+          path: ${{ github.workspace }}\build\\warden-*.exe
