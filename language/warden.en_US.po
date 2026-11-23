@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 11:42+0100\n"
+"POT-Creation-Date: 2026-11-23 11:49+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -1277,6 +1277,16 @@ msgstr ""
 msgid "%s added to %s's auto join list."
 msgstr ""
 
+#: ../modules/chanserv/cs_accessnotify.cpp
+#, c-format
+msgid "%s added you to the access list of %s (%s) by your nick; register it to keep that access safe."
+msgstr ""
+
+#: ../modules/chanserv/cs_accessnotify.cpp
+#, c-format
+msgid "%s added you to the access list of %s (%s). If you don't want this, remove yourself with ACCESS DEL, XOP DEL or FLAGS."
+msgstr ""
+
 #: ../src/xline.cpp
 #, c-format
 msgid "%s already exists."
@@ -1515,6 +1525,16 @@ msgstr ""
 #: ../modules/operserv/os_sxline.cpp
 #, c-format
 msgid "%s list is empty."
+msgstr ""
+
+#: ../modules/chanserv/cs_accessnotify.cpp
+#, c-format
+msgid "%s made you the founder of %s."
+msgstr ""
+
+#: ../modules/chanserv/cs_accessnotify.cpp
+#, c-format
+msgid "%s made you the successor of %s. If you don't want this, ask a channel founder to change it."
 msgstr ""
 
 #: ../modules/chanserv/cs_fantasy_stats.cpp
