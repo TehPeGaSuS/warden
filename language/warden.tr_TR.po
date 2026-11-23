@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:13+0100\n"
+"POT-Creation-Date: 2026-11-23 17:37+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -230,6 +230,11 @@ msgstr "%s kanal erişim listelerine eklenmek istemiyor (NEVEROP açık)."
 msgid "%s does not wish to be added to channel access lists."
 msgstr "%s kanal erişim listelerine eklenmek istemiyor."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s has NOFIX set."
+msgstr "%s için NOFIX ayarlı."
+
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "%s has already been invited to %s."
@@ -410,6 +415,11 @@ msgstr "%s, %s memo yoksayılanlar listesinde değil."
 msgid "%s is on the auto kick list of %s (%s)."
 msgstr "%s, %s (%s) oto-at listesinde."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is registered, so ChanFix leaves it to ChanServ."
+msgstr "%s kayıtlı, bu yüzden ChanFix onu ChanServ'e bırakıyor."
+
 #: ../modules/chanserv/cs_status.cpp
 #, c-format
 msgid "%s is the founder of %s."
@@ -524,6 +534,11 @@ msgstr "%s (%s) artık kapalı."
 #, c-format
 msgid "%s of %s is now on."
 msgstr "%s (%s) artık açık."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s remembers who usually has ops in unregistered channels, and can give them back when a channel loses its ops or is taken over."
+msgstr "%s, kayıtsız kanallarda genellikle kimin op'u olduğunu hatırlar ve bir kanal op'larını kaybettiğinde veya ele geçirildiğinde bunları geri verebilir."
 
 #: ../modules/chanserv/cs_flags.cpp
 #, c-format
@@ -754,7 +769,7 @@ msgstr "adres"
 msgid "botname {ON|OFF}"
 msgstr "bot_adı {ON|OFF}"
 
-#: ../modules/botserv/bs_assign.cpp ../modules/chanserv/cs_fantasy_top.cpp ../modules/chanserv/cs_getkey.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_suspend.cpp ../modules/chanserv/cs_sync.cpp
+#: ../modules/botserv/bs_assign.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_fantasy_top.cpp ../modules/chanserv/cs_getkey.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_suspend.cpp ../modules/chanserv/cs_sync.cpp
 msgid "channel"
 msgstr "kanal"
 
@@ -947,6 +962,10 @@ msgstr "kanal [%s]"
 msgid "channel [code]"
 msgstr "kanall [kod]"
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "channel [count]"
+msgstr "kanal [sayı]"
+
 #: ../modules/chanserv/cs_register.cpp ../modules/chanserv/cs_set.cpp
 msgid "channel [description]"
 msgstr "kanal [açıklama]"
@@ -1010,6 +1029,10 @@ msgstr "kanal {ON|OFF} [ttb]"
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel {DIS | DISABLE} type"
 msgstr "kanal {DIS | DISABLE} tip"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "channel {ON reason | OFF}"
+msgstr "kanal {ON sebep | OFF}"
 
 #: ../modules/chanserv/cs_set.cpp
 msgid "channel {ON | LEVEL | OFF}"
@@ -1678,6 +1701,11 @@ msgstr "%s devredışı"
 msgid "%s is enabled"
 msgstr "%s etkin"
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is no longer set on %s."
+msgstr "%s artık %s üzerinde ayarlı değil."
+
 #: ../modules/operserv/os_dns.cpp
 #, c-format
 msgid "%s is not a valid IP address."
@@ -1708,6 +1736,11 @@ msgstr "%s, %s üzerinde kilitli değil."
 msgid "%s is not notified of new memos."
 msgstr "%s yeni memolardan haberdar edilmiyor."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is not set on %s."
+msgstr "%s, %s üzerinde ayarlı değil."
+
 #: ../modules/memoserv/ms_info.cpp
 #, c-format
 msgid "%s is notified of new memos at logon and when they arrive."
@@ -1722,6 +1755,11 @@ msgstr "Oturum açma sırasında yeni memolar %s'e bildirilir."
 #, c-format
 msgid "%s is notified when new memos arrive."
 msgstr "Yeni memolar geldiğinde %s bilgilendirilir."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is now set on %s."
+msgstr "%s artık %s üzerinde ayarlı."
 
 #: ../modules/chanserv/cs_xop.cpp
 #, c-format
@@ -2119,6 +2157,10 @@ msgstr "%s hesabı zaten maksimum eşzamanlı oturum açma sayısına (%u) ula
 #: ../modules/nickserv/ns_info.cpp
 msgid "Account registered"
 msgstr "Hesap kaydedildi"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Account/Mask"
+msgstr "Hesap/Maske"
 
 #: ../modules/nickserv/nickserv.cpp
 #, c-format
@@ -2921,6 +2963,10 @@ msgstr "Belirli bir rumuzu veya maskeyi bir kanalda banlar. Servislerin belirli 
 msgid "Bans enforced on %s."
 msgstr "%s için uygulanan banlar."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Being fixed"
+msgstr "Düzeltiliyor"
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Bolds kicker"
 msgstr "Kalın yazı atma"
@@ -3177,6 +3223,11 @@ msgstr "Komutu gönderdiğiniz anda Servislerin tüm veritabanı dosyalarını g
 msgid "Certificate list for %s:"
 msgstr "%s için sertifika listesi:"
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "ChanFix information about %s:"
+msgstr "%s hakkında ChanFix bilgisi:"
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "ChanServ is required to enable persist on this network."
 msgstr "Bu ağda kalıcılığı etkinleştirmek için ChanServ gereklidir."
@@ -3375,7 +3426,7 @@ msgstr "Kullanıcı modlarınız %s olarak değiştiriliyor"
 msgid "Changing your vhost to %s"
 msgstr "Vhostunuz %s olarak değiştiriliyor"
 
-#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
 msgid "Channel"
 msgstr "Kanal"
 
@@ -3769,7 +3820,7 @@ msgstr "Tüm ayarları, erişimi, oto-at'ları vb. mevcut kanaldan hedef kan
 msgid "Copy all settings from one channel to another"
 msgstr "Tüm ayarları bir kanaldan diğerine kopyalayın"
 
-#: ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Created"
 msgstr "Oluşturulma"
 
@@ -3806,6 +3857,10 @@ msgstr "Mevcut notify listesi:"
 #, c-format
 msgid "Current number of %ss: %zu"
 msgstr "Geçerli %s sayısı: %zu"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Current threshold"
+msgstr "Geçerli eşik"
 
 #: ../modules/operserv/os_stats.cpp
 #, c-format
@@ -4555,7 +4610,7 @@ msgstr "Liste sonu - %d kanal gösterildi."
 msgid "End of list - %d/%d matches shown."
 msgstr "Liste sonu - %d/%d eşleşme gösterildi."
 
-#: ../modules/groupserv/groupserv.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "End of list - %u/%u shown."
 msgstr "Liste sonu - %u/%u gösterildi."
@@ -4585,6 +4640,11 @@ msgstr "Haber listesi sonu."
 #: ../modules/operserv/os_notify.cpp
 msgid "End of notify list."
 msgstr "Notify listesi sonu."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "End of scores for %s."
+msgstr "%s için puanların sonu."
 
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "End of topic history list."
@@ -4768,6 +4828,15 @@ msgstr "%s parmak izi beklemede. Onaylamak için o sertifikayla bağlanın ve 
 msgid "Fixed layout"
 msgstr "Sabit şablon"
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Fixes an unregistered channel that has lost its ops or been taken over. The channel's timestamp is lowered, which makes the IRCd remove everyone's ops and modes; then the people who usually had ops there (the highest scores) get them back, starting with the best and lowering the bar over time until someone is opped."
+msgstr "Op'larını kaybetmiş veya ele geçirilmiş kayıtsız bir kanalı düzeltir. Kanalın zaman damgası düşürülür, bu da IRCd'nin herkesin op'larını ve modlarını kaldırmasına yol açar; ardından orada genellikle op'u olan kişiler (en yüksek puanlar) en iyiden başlayarak op'larını geri alır ve biri op alana kadar çıta zamanla düşürülür."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Fixing %s: everyone's ops and modes have been removed, and its usual ops will get theirs back over the next %s."
+msgstr "%s düzeltiliyor: herkesin op'ları ve modları kaldırıldı, olağan op'lar sonraki %s içinde kendilerininkini geri alacak."
+
 #: ../modules/chanserv/cs_flags.cpp
 msgid "Flag"
 msgstr "Bayrak"
@@ -4880,6 +4949,10 @@ msgstr "%s kanalının kurucusu %s olarak değiştirildi."
 msgid "Ghost with your nick has been killed."
 msgstr "Rumuzunuzu taşıyan ghost killendi."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Give a channel's usual ops back"
+msgstr "Bir kanalın olağan op'larını geri ver"
+
 #: ../modules/chanserv/cs_set_joinflood.cpp
 msgid "Give at least 2 joins, and times such as 10s or 2m."
 msgstr "En az 2 giriş ve 10s ya da 2m gibi süreler verin."
@@ -4964,6 +5037,10 @@ msgstr "Rumuz bilgilerinin belirli parçalarını gizleyin"
 #: ../modules/chanserv/cs_list.cpp
 msgid "Hide channel from the LIST command"
 msgstr "Kanalı LIST komutundan gizle"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Highest score"
+msgstr "En yüksek puan"
 
 #: ../modules/chanserv/cs_topichistory.cpp
 #, c-format
@@ -5313,6 +5390,14 @@ msgstr "%s için düzen artık esnek."
 msgid "Layout is now monospace for %s."
 msgstr "%s için düzen artık eş aralıklı."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Leave a note on a channel for staff"
+msgstr "Personel için bir kanala not bırak"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Leaves a note on the channel that other staff see in INFO and LIST."
+msgstr "Kanala, diğer personelin INFO ve LIST içinde gördüğü bir not bırakır."
+
 #: ../modules/chanserv/cs_access.cpp
 msgid "Level"
 msgstr "Seviye"
@@ -5433,6 +5518,10 @@ msgstr ""
 "  {regepoch} - Rumuzunuzun kaydedildiği UNIX zamanı.\n"
 "\n"
 "%sTAKE ile teklif edilen bir vhost uygulanır. Kullanmak istediğiniz teklif edilen vhostun şablonunu veya girdi numarasını belirtmeniz gerekir. Bir vhost alındıktan sonra %s boyunca başka birini alamazsınız."
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "List the channels ChanFix tracks"
+msgstr "ChanFix'in izlediği kanalları listele"
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "List the channels a group has access to"
@@ -5655,6 +5744,10 @@ msgstr "2'den 5'e ve 7'den 9'a kadar numaralandırılmış memoları listeler."
 #: ../modules/groupserv/groupserv.cpp
 msgid "Lists the channel access lists the group is on, and with what access (needs +c)."
 msgstr "Grubun bulunduğu kanal erişim listelerini ve erişim düzeyini listeler (+c gerekir)."
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Lists the channels ChanFix has scores for, matching a pattern."
+msgstr "ChanFix'in puanı olan ve bir desenle eşleşen kanalları listeler."
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Lists the public groups matching a pattern (all groups for services operators)."
@@ -5916,6 +6009,10 @@ msgstr "Host teklif listesini düzenle"
 msgid "Manipulate the topic of the specified channel"
 msgstr "Belirtilen kanalın başlığını değiştirin"
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Marked"
+msgstr "İşaretli"
+
 #: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Mask"
 msgstr "Maske"
@@ -6146,6 +6243,10 @@ msgstr "Birden fazla dil eşleşti: %s. Lütfen daha spesifik olun."
 msgid "Multiple timezones matched %s. Please be more specific."
 msgstr "Birden fazla saat dilimi eşleşti: %s. Lütfen daha spesifik olun."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "NOFIX"
+msgstr "NOFIX"
+
 #: ../modules/chanserv/cs_register.cpp
 msgid "NOTICE: In order to register a channel, you must have first registered your nickname."
 msgstr "DİKKAT: Bir kanalı kaydetmek için, ilk önce rumuzunuzu kaydetmelisiniz."
@@ -6157,6 +6258,10 @@ msgstr "Adı"
 #: ../modules/operserv/os_oper.cpp
 msgid "Name     Type"
 msgstr "Adı     Tipi"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Needs fixing"
+msgstr "Düzeltilmesi gerekiyor"
 
 #: ../modules/chanserv/cs_fantasy_stats.cpp
 #, c-format
@@ -6318,6 +6423,10 @@ msgstr "%s rumuzu kayıtlı."
 #, c-format
 msgid "Nicks expiring within %s:"
 msgstr "%s içinde sona erecek rumuzlar:"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "No"
+msgstr "Hayır"
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "No access list limit"
@@ -6481,6 +6590,11 @@ msgstr "%s için istatistik yok."
 msgid "No such info \"%s\" on %s."
 msgstr "\"%s\" bilgisi yok (%s'de)."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "No tracked channels match %s."
+msgstr "%s ile eşleşen izlenen kanal yok."
+
 #: ../modules/operserv/os_notify.cpp
 #, c-format
 msgid "No user found by the nick of %s."
@@ -6537,6 +6651,10 @@ msgstr "Ancak, vekilin zaten çok fazla kayıtlı kanalı (%u) varsa, yeni kuruc
 msgid "Note: services are running with expiry turned off, so nothing will actually expire until that changes."
 msgstr "Not: servisler sona erme kapalı olarak çalışıyor, bu yüzden bu değişene kadar hiçbir şey gerçekten sona ermeyecek."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Notes"
+msgstr "Notlar"
+
 #: ../modules/chanserv/cs_mode.cpp
 msgid "Nothing to do."
 msgstr "Yapacak bir şey yok."
@@ -6549,7 +6667,7 @@ msgstr "Hiçbir şey değiştirilmedi:"
 msgid "Now"
 msgstr "Şimdi"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr "Numara"
 
@@ -6686,6 +6804,10 @@ msgstr "%s oper türü tanımlandıktan sonra %s modlarını alır."
 #: ../modules/botserv/bs_kick.cpp
 msgid "Ops protection"
 msgstr "Opları koruma"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Ops tracked"
+msgstr "İzlenen op'lar"
 
 #: ../modules/botserv/bs_info.cpp ../src/misc.cpp
 msgid "Options"
@@ -7358,6 +7480,10 @@ msgstr "SSLONLY uygulayan: %s"
 #: ../modules/operserv/os_shutdown.cpp
 msgid "Save databases and restart services"
 msgstr "Veritabanlarını kaydedin ve Servisleri yeniden başlatın"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Score"
+msgstr "Puan"
 
 #: ../modules/operserv/os_logsearch.cpp
 msgid "Search logs for a matching pattern"
@@ -8067,6 +8193,14 @@ msgstr "Super Admin  ayarı ON veya OFF olmalıdır."
 msgid "Should services automatically give status to users"
 msgstr "Servisler kullanıcılara otomatik olarak durum vermeli mi"
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Show ChanFix information about a channel"
+msgstr "Bir kanal hakkında ChanFix bilgisini göster"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Show a channel's op scores"
+msgstr "Bir kanalın op puanlarını göster"
+
 #: ../modules/groupserv/groupserv.cpp
 msgid "Show information about a group"
 msgstr "Bir grup hakkında bilgi göster"
@@ -8123,6 +8257,14 @@ msgstr ""
 msgid "Shows the current server configuration."
 msgstr "Mevcut sunucu yapılandırmasını gösterir."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Shows the highest op scores in a channel (20 by default). A score grows every few minutes someone has ops there, counts 1.5 times as much for identified users, and slowly fades."
+msgstr "Bir kanaldaki en yüksek op puanlarını gösterir (varsayılan 20). Puan, birinin orada op'u olduğu her birkaç dakikada artar, tanımlanmış kullanıcılar için 1,5 kat sayılır ve yavaşça azalır."
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Shows what ChanFix knows about a channel: its highest score, whether it needs or is getting a fix, and any MARK or NOFIX."
+msgstr "ChanFix'in bir kanal hakkında bildiklerini gösterir: en yüksek puanı, düzeltme gerekip gerekmediği veya düzeltilip düzeltilmediği ve varsa MARK veya NOFIX."
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "Sign kicks that are done with the KICK command"
 msgstr "KICK komutuyla yapılan atmaları işaretleme"
@@ -8171,6 +8313,10 @@ msgstr "Durum"
 msgid "Status updated (memos, vhost, chmodes, flags)."
 msgstr "Durum güncellendi (memolar, vhost, kanal modları, bayraklar)."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Stop ChanFix from fixing a channel"
+msgstr "ChanFix'in bir kanalı düzeltmesini engelle"
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Stop flooding!"
 msgstr "Flooda son verin!"
@@ -8178,6 +8324,10 @@ msgstr "Flooda son verin!"
 #: ../modules/botserv/bs_kick.cpp
 msgid "Stop repeating yourself!"
 msgstr "Kendini tekrarlamayı bırak!"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Stops ChanFix from fixing the channel, with a reason other staff can see in INFO."
+msgstr "ChanFix'in kanalı düzeltmesini, diğer personelin INFO içinde görebileceği bir sebeple engeller."
 
 #: ../modules/chanserv/cs_set.cpp
 msgid "Stricter control of channel founder status"
@@ -8856,6 +9006,11 @@ msgstr "%s için belirttiğiniz kayıt onay kodu hatalı."
 msgid "The registration of %s can only be confirmed by an administrator."
 msgstr "%s kaydı yalnızca bir yönetici tarafından onaylanabilir."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "The scores for %s are too low (under %u) for a fix."
+msgstr "%s için puanlar düzeltme için çok düşük (%u altında)."
+
 #: ../modules/nickserv/ns_info.cpp
 #, c-format
 msgid "The services access status of %s will now be hidden from %s INFO displays."
@@ -8896,6 +9051,11 @@ msgstr "Hiç bayrak şablonu yok."
 msgid "There are no forbids of type %s."
 msgstr "%s türünde forbid (yasak) yoktur."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "There are no scores for %s."
+msgstr "%s için puan yok."
+
 #: ../modules/nickserv/ns_group.cpp
 msgid "There are too many nicks in your account."
 msgstr "Hesabınızda çok fazla rumuz var."
@@ -8916,6 +9076,11 @@ msgstr[1] "%zu memo (%s kanalında) var."
 #, c-format
 msgid "There is a new memo on channel %s. Type %s%s%zu to read it."
 msgstr "%s kanalında yeni bir memo var. Okumak için %s%s%zu yazın."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "There is no ChanFix record for %s (yet)."
+msgstr "%s için (henüz) ChanFix kaydı yok."
 
 #: ../modules/botserv/bs_assign.cpp
 #, c-format
@@ -9177,6 +9342,11 @@ msgstr "%s için çok fazla sonuç var."
 msgid "Top %i of %s"
 msgstr "Top %i (%s arasında)"
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Top %u scores for %s:"
+msgstr "En iyi %u puan, %s:"
+
 #: ../modules/chanserv/cs_topichistory.cpp ../modules/operserv/os_list.cpp
 msgid "Topic"
 msgstr "Başlık"
@@ -9256,6 +9426,11 @@ msgstr "%s için başlığı tutma seçeneği artık on (açık)."
 #: ../modules/chanserv/cs_topic.cpp
 msgid "Topic set by"
 msgstr "Başlığı ayarlayan"
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Tracked channels matching %s:"
+msgstr "%s ile eşleşen izlenen kanallar:"
 
 #: ../modules/botserv/bs_kick.cpp
 msgid "Turn caps lock OFF!"
@@ -9543,7 +9718,7 @@ msgstr "%s için kullanıcı sınırı kaldırıldı."
 msgid "User limit for %s set to %d."
 msgstr "%s için kullanıcı sınırı %d olarak ayarlandı."
 
-#: ../modules/operserv/os_list.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/operserv/os_list.cpp
 msgid "Users"
 msgstr "Kullanıcılar"
 
@@ -9833,6 +10008,10 @@ msgstr "Kelime"
 #: ../modules/chanserv/cs_xop.cpp
 msgid "XOP"
 msgstr "XOP"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Yes"
+msgstr "Evet"
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -10321,6 +10500,11 @@ msgstr "Memolar size gönderildiğinde size bildirimde bulunulacaktır."
 msgid "You will only be notified of memos when you log on or when you unset /AWAY."
 msgstr "Memolar hakkında yalnızca oturum açtığınızda veya /AWAY ayarını kaldırdığınızda bildirim alacaksınız."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Your ChanFix score is too low to register %s; ask one of its usual ops to do it."
+msgstr "ChanFix puanın %s kanalını kaydetmek için çok düşük; olağan op'larından birinden bunu yapmasını iste."
+
 #: ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_svs.cpp
 msgid "Your IRCd does not support SVSJOIN."
 msgstr "IRCd'niz SVSJOIN'i desteklemiyor."
@@ -10667,7 +10851,7 @@ msgstr "[rumuz] kod"
 msgid "[parameter]"
 msgstr "[parametre]"
 
-#: ../modules/groupserv/groupserv.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
 msgid "[pattern]"
 msgstr "[şablon]"
 
@@ -10710,6 +10894,11 @@ msgstr "[{şablon | rumuz}] [SECRET] [başlangıç-bitiş]"
 #: ../modules/greet.cpp
 msgid "alien I come in peace"
 msgstr "uzaylı barış için geldim"
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "by %s on %s: %s"
+msgstr "%s tarafından, %s: %s"
 
 #: ../include/language.h
 msgid "does not expire"

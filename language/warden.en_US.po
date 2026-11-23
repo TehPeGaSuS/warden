@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:13+0100\n"
+"POT-Creation-Date: 2026-11-23 17:37+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -231,6 +231,11 @@ msgstr ""
 msgid "%s does not wish to be added to channel access lists."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s has NOFIX set."
+msgstr ""
+
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "%s has already been invited to %s."
@@ -409,6 +414,11 @@ msgstr ""
 msgid "%s is on the auto kick list of %s (%s)."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is registered, so ChanFix leaves it to ChanServ."
+msgstr ""
+
 #: ../modules/chanserv/cs_status.cpp
 #, c-format
 msgid "%s is the founder of %s."
@@ -522,6 +532,11 @@ msgstr ""
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "%s of %s is now on."
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s remembers who usually has ops in unregistered channels, and can give them back when a channel loses its ops or is taken over."
 msgstr ""
 
 #: ../modules/chanserv/cs_flags.cpp
@@ -753,10 +768,10 @@ msgstr ""
 msgid "botname {ON|OFF}"
 msgstr ""
 
-#: ../modules/botserv/bs_assign.cpp ../modules/chanserv/cs_fantasy_top.cpp
-#: ../modules/chanserv/cs_getkey.cpp ../modules/chanserv/cs_info.cpp
-#: ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_suspend.cpp
-#: ../modules/chanserv/cs_sync.cpp
+#: ../modules/botserv/bs_assign.cpp ../modules/chanfix/chanfix.cpp
+#: ../modules/chanserv/cs_fantasy_top.cpp ../modules/chanserv/cs_getkey.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_log.cpp
+#: ../modules/chanserv/cs_suspend.cpp ../modules/chanserv/cs_sync.cpp
 msgid "channel"
 msgstr ""
 
@@ -953,6 +968,10 @@ msgstr ""
 msgid "channel [code]"
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "channel [count]"
+msgstr ""
+
 #: ../modules/chanserv/cs_register.cpp ../modules/chanserv/cs_set.cpp
 msgid "channel [description]"
 msgstr ""
@@ -1016,6 +1035,10 @@ msgstr ""
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel {DIS | DISABLE} type"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "channel {ON reason | OFF}"
 msgstr ""
 
 #: ../modules/chanserv/cs_set.cpp
@@ -1680,6 +1703,11 @@ msgstr ""
 msgid "%s is enabled"
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is no longer set on %s."
+msgstr ""
+
 #: ../modules/operserv/os_dns.cpp
 #, c-format
 msgid "%s is not a valid IP address."
@@ -1710,6 +1738,11 @@ msgstr ""
 msgid "%s is not notified of new memos."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is not set on %s."
+msgstr ""
+
 #: ../modules/memoserv/ms_info.cpp
 #, c-format
 msgid "%s is notified of new memos at logon and when they arrive."
@@ -1723,6 +1756,11 @@ msgstr ""
 #: ../modules/memoserv/ms_info.cpp
 #, c-format
 msgid "%s is notified when new memos arrive."
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is now set on %s."
 msgstr ""
 
 #: ../modules/chanserv/cs_xop.cpp
@@ -2121,6 +2159,10 @@ msgstr ""
 
 #: ../modules/nickserv/ns_info.cpp
 msgid "Account registered"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Account/Mask"
 msgstr ""
 
 #: ../modules/nickserv/nickserv.cpp
@@ -2806,6 +2848,10 @@ msgstr ""
 msgid "Bans enforced on %s."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Being fixed"
+msgstr ""
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Bolds kicker"
 msgstr ""
@@ -3062,6 +3108,11 @@ msgstr ""
 msgid "Certificate list for %s:"
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "ChanFix information about %s:"
+msgstr ""
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "ChanServ is required to enable persist on this network."
 msgstr ""
@@ -3205,8 +3256,8 @@ msgstr ""
 msgid "Changing your vhost to %s"
 msgstr ""
 
-#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_ajoin.cpp
-#: ../modules/nickserv/ns_alist.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
+#: ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
 msgid "Channel"
 msgstr ""
 
@@ -3567,13 +3618,14 @@ msgstr ""
 msgid "Copy all settings from one channel to another"
 msgstr ""
 
-#: ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_akick.cpp
-#: ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp
-#: ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp
-#: ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp
-#: ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp
-#: ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp
-#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/chanfix/chanfix.cpp
+#: ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp
+#: ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp
+#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Created"
 msgstr ""
 
@@ -3615,6 +3667,10 @@ msgstr ""
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Current number of %ss: %zu"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Current threshold"
 msgstr ""
 
 #: ../modules/operserv/os_stats.cpp
@@ -4320,7 +4376,7 @@ msgstr ""
 msgid "End of list - %d/%d matches shown."
 msgstr ""
 
-#: ../modules/groupserv/groupserv.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "End of list - %u/%u shown."
 msgstr ""
@@ -4354,6 +4410,11 @@ msgstr ""
 
 #: ../modules/operserv/os_notify.cpp
 msgid "End of notify list."
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "End of scores for %s."
 msgstr ""
 
 #: ../modules/chanserv/cs_topichistory.cpp
@@ -4537,6 +4598,15 @@ msgstr ""
 msgid "Fixed layout"
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Fixes an unregistered channel that has lost its ops or been taken over. The channel's timestamp is lowered, which makes the IRCd remove everyone's ops and modes; then the people who usually had ops there (the highest scores) get them back, starting with the best and lowering the bar over time until someone is opped."
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Fixing %s: everyone's ops and modes have been removed, and its usual ops will get theirs back over the next %s."
+msgstr ""
+
 #: ../modules/chanserv/cs_flags.cpp
 msgid "Flag"
 msgstr ""
@@ -4648,6 +4718,10 @@ msgstr ""
 msgid "Ghost with your nick has been killed."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Give a channel's usual ops back"
+msgstr ""
+
 #: ../modules/chanserv/cs_set_joinflood.cpp
 msgid "Give at least 2 joins, and times such as 10s or 2m."
 msgstr ""
@@ -4732,6 +4806,10 @@ msgstr ""
 
 #: ../modules/chanserv/cs_list.cpp
 msgid "Hide channel from the LIST command"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Highest score"
 msgstr ""
 
 #: ../modules/chanserv/cs_topichistory.cpp
@@ -5084,6 +5162,14 @@ msgstr ""
 msgid "Layout is now monospace for %s."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Leave a note on a channel for staff"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Leaves a note on the channel that other staff see in INFO and LIST."
+msgstr ""
+
 #: ../modules/chanserv/cs_access.cpp
 msgid "Level"
 msgstr ""
@@ -5192,6 +5278,10 @@ msgid ""
 "  {regepoch} - The UNIX time at which your nick was registered.\n"
 "\n"
 "With %sTAKE an offered vhost will be applied. You must specify the offered template variable or the entry number for the offered vhost you want to use. Once a vhost is taken you can not take another one for %s."
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "List the channels ChanFix tracks"
 msgstr ""
 
 #: ../modules/groupserv/groupserv.cpp
@@ -5364,6 +5454,10 @@ msgstr ""
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Lists the channel access lists the group is on, and with what access (needs +c)."
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Lists the channels ChanFix has scores for, matching a pattern."
 msgstr ""
 
 #: ../modules/groupserv/groupserv.cpp
@@ -5582,6 +5676,10 @@ msgstr ""
 
 #: ../modules/chanserv/cs_topic.cpp
 msgid "Manipulate the topic of the specified channel"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Marked"
 msgstr ""
 
 #: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp
@@ -5822,6 +5920,10 @@ msgstr ""
 msgid "Multiple timezones matched %s. Please be more specific."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "NOFIX"
+msgstr ""
+
 #: ../modules/chanserv/cs_register.cpp
 msgid "NOTICE: In order to register a channel, you must have first registered your nickname."
 msgstr ""
@@ -5834,6 +5936,10 @@ msgstr ""
 
 #: ../modules/operserv/os_oper.cpp
 msgid "Name     Type"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Needs fixing"
 msgstr ""
 
 #: ../modules/chanserv/cs_fantasy_stats.cpp
@@ -5997,6 +6103,10 @@ msgstr ""
 #: ../modules/operserv/os_expiring.cpp
 #, c-format
 msgid "Nicks expiring within %s:"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "No"
 msgstr ""
 
 #: ../modules/groupserv/groupserv.cpp
@@ -6163,6 +6273,11 @@ msgstr ""
 msgid "No such info \"%s\" on %s."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "No tracked channels match %s."
+msgstr ""
+
 #: ../modules/operserv/os_notify.cpp
 #, c-format
 msgid "No user found by the nick of %s."
@@ -6219,6 +6334,10 @@ msgstr ""
 msgid "Note: services are running with expiry turned off, so nothing will actually expire until that changes."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Notes"
+msgstr ""
+
 #: ../modules/chanserv/cs_mode.cpp
 msgid "Nothing to do."
 msgstr ""
@@ -6231,17 +6350,17 @@ msgstr ""
 msgid "Now"
 msgstr ""
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp
-#: ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp
-#: ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp
-#: ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp
-#: ../modules/global/gl_queue.cpp ../modules/groupserv/groupserv.cpp
-#: ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp
-#: ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp
-#: ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp
-#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
-#: ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanfix/chanfix.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp
+#: ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_list.cpp
+#: ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp
+#: ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr ""
 
@@ -6362,6 +6481,10 @@ msgstr ""
 
 #: ../modules/botserv/bs_kick.cpp
 msgid "Ops protection"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Ops tracked"
 msgstr ""
 
 #: ../modules/botserv/bs_info.cpp ../src/misc.cpp
@@ -7010,6 +7133,10 @@ msgstr ""
 msgid "Save databases and restart services"
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Score"
+msgstr ""
+
 #: ../modules/operserv/os_logsearch.cpp
 msgid "Search logs for a matching pattern"
 msgstr ""
@@ -7641,6 +7768,14 @@ msgstr ""
 msgid "Should services automatically give status to users"
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Show ChanFix information about a channel"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Show a channel's op scores"
+msgstr ""
+
 #: ../modules/groupserv/groupserv.cpp
 msgid "Show information about a group"
 msgstr ""
@@ -7678,6 +7813,14 @@ msgstr ""
 
 #: ../modules/operserv/os_config.cpp
 msgid "Shows the current server configuration."
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Shows the highest op scores in a channel (20 by default). A score grows every few minutes someone has ops there, counts 1.5 times as much for identified users, and slowly fades."
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Shows what ChanFix knows about a channel: its highest score, whether it needs or is getting a fix, and any MARK or NOFIX."
 msgstr ""
 
 #: ../modules/chanserv/cs_set.cpp
@@ -7728,12 +7871,20 @@ msgstr ""
 msgid "Status updated (memos, vhost, chmodes, flags)."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Stop ChanFix from fixing a channel"
+msgstr ""
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Stop flooding!"
 msgstr ""
 
 #: ../modules/botserv/bs_kick.cpp
 msgid "Stop repeating yourself!"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Stops ChanFix from fixing the channel, with a reason other staff can see in INFO."
 msgstr ""
 
 #: ../modules/chanserv/cs_set.cpp
@@ -8321,6 +8472,11 @@ msgstr ""
 msgid "The registration of %s can only be confirmed by an administrator."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "The scores for %s are too low (under %u) for a fix."
+msgstr ""
+
 #: ../modules/nickserv/ns_info.cpp
 #, c-format
 msgid "The services access status of %s will now be hidden from %s INFO displays."
@@ -8361,6 +8517,11 @@ msgstr ""
 msgid "There are no forbids of type %s."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "There are no scores for %s."
+msgstr ""
+
 #: ../modules/nickserv/ns_group.cpp
 msgid "There are too many nicks in your account."
 msgstr ""
@@ -8380,6 +8541,11 @@ msgstr[1] ""
 #: ../include/language.h
 #, c-format
 msgid "There is a new memo on channel %s. Type %s%s%zu to read it."
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "There is no ChanFix record for %s (yet)."
 msgstr ""
 
 #: ../modules/botserv/bs_assign.cpp
@@ -8620,6 +8786,11 @@ msgstr ""
 msgid "Top %i of %s"
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Top %u scores for %s:"
+msgstr ""
+
 #: ../modules/chanserv/cs_topichistory.cpp ../modules/operserv/os_list.cpp
 msgid "Topic"
 msgstr ""
@@ -8698,6 +8869,11 @@ msgstr ""
 
 #: ../modules/chanserv/cs_topic.cpp
 msgid "Topic set by"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Tracked channels matching %s:"
 msgstr ""
 
 #: ../modules/botserv/bs_kick.cpp
@@ -8985,7 +9161,7 @@ msgstr ""
 msgid "User limit for %s set to %d."
 msgstr ""
 
-#: ../modules/operserv/os_list.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/operserv/os_list.cpp
 msgid "Users"
 msgstr ""
 
@@ -9222,6 +9398,10 @@ msgstr ""
 
 #: ../modules/chanserv/cs_xop.cpp
 msgid "XOP"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Yes"
 msgstr ""
 
 #: ../modules/groupserv/groupserv.cpp
@@ -9712,6 +9892,11 @@ msgstr ""
 msgid "You will only be notified of memos when you log on or when you unset /AWAY."
 msgstr ""
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Your ChanFix score is too low to register %s; ask one of its usual ops to do it."
+msgstr ""
+
 #: ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_svs.cpp
 msgid "Your IRCd does not support SVSJOIN."
 msgstr ""
@@ -10059,7 +10244,7 @@ msgstr ""
 msgid "[parameter]"
 msgstr ""
 
-#: ../modules/groupserv/groupserv.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
 msgid "[pattern]"
 msgstr ""
 
@@ -10101,6 +10286,11 @@ msgstr ""
 
 #: ../modules/greet.cpp
 msgid "alien I come in peace"
+msgstr ""
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "by %s on %s: %s"
 msgstr ""
 
 #: ../include/language.h

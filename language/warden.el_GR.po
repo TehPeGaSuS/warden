@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:13+0100\n"
+"POT-Creation-Date: 2026-11-23 17:37+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -229,6 +229,11 @@ msgstr "Ο/η %s δεν επιθυμεί να προστίθεται σε λί
 msgid "%s does not wish to be added to channel access lists."
 msgstr "Ο/η %s δεν επιθυμεί να προστίθεται σε λίστες πρόσβασης καναλιών."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s has NOFIX set."
+msgstr "Το %s έχει ενεργό NOFIX."
+
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "%s has already been invited to %s."
@@ -410,6 +415,11 @@ msgstr "Ο/η %s δεν είναι στη λίστα αγνόησης memo τ�
 msgid "%s is on the auto kick list of %s (%s)."
 msgstr "Ο/η %s είναι στη λίστα auto kick του %s (%s)."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is registered, so ChanFix leaves it to ChanServ."
+msgstr "Το %s είναι κατοχυρωμένο, οπότε το ChanFix το αφήνει στο ChanServ."
+
 #: ../modules/chanserv/cs_status.cpp
 #, c-format
 msgid "%s is the founder of %s."
@@ -524,6 +534,11 @@ msgstr "Το %s του %s είναι τώρα ανενεργό."
 #, c-format
 msgid "%s of %s is now on."
 msgstr "Το %s του %s είναι τώρα ενεργό."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s remembers who usually has ops in unregistered channels, and can give them back when a channel loses its ops or is taken over."
+msgstr "Το %s θυμάται ποιος έχει συνήθως ops σε μη κατοχυρωμένα κανάλια και μπορεί να τα επιστρέψει όταν ένα κανάλι χάσει τους ops του ή καταληφθεί."
 
 #: ../modules/chanserv/cs_flags.cpp
 #, c-format
@@ -754,7 +769,7 @@ msgstr "διεύθυνση"
 msgid "botname {ON|OFF}"
 msgstr "όνομα-bot {ON|OFF}"
 
-#: ../modules/botserv/bs_assign.cpp ../modules/chanserv/cs_fantasy_top.cpp ../modules/chanserv/cs_getkey.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_suspend.cpp ../modules/chanserv/cs_sync.cpp
+#: ../modules/botserv/bs_assign.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_fantasy_top.cpp ../modules/chanserv/cs_getkey.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_suspend.cpp ../modules/chanserv/cs_sync.cpp
 msgid "channel"
 msgstr "DROP #channel#"
 
@@ -947,6 +962,10 @@ msgstr "κανάλι [%s]"
 msgid "channel [code]"
 msgstr "κανάλι [κωδικός-επιβεβαίωσης]"
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "channel [count]"
+msgstr "κανάλι [πλήθος]"
+
 #: ../modules/chanserv/cs_register.cpp ../modules/chanserv/cs_set.cpp
 msgid "channel [description]"
 msgstr "Αλλάζει την περιγραφή του καναλιού"
@@ -1010,6 +1029,10 @@ msgstr "κανάλι {ON|OFF} [ttb]"
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel {DIS | DISABLE} type"
 msgstr "κανάλι {DIS | DISABLE} τύπος"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "channel {ON reason | OFF}"
+msgstr "κανάλι {ON λόγος | OFF}"
 
 #: ../modules/chanserv/cs_set.cpp
 msgid "channel {ON | LEVEL | OFF}"
@@ -1678,6 +1701,11 @@ msgstr "%s έχει απενεργοποιηθεί."
 msgid "%s is enabled"
 msgstr "%s έχει απενεργοποιηθεί."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is no longer set on %s."
+msgstr "Το %s δεν είναι πλέον ενεργό στο %s."
+
 #: ../modules/operserv/os_dns.cpp
 #, c-format
 msgid "%s is not a valid IP address."
@@ -1708,6 +1736,11 @@ msgstr "Το %s δεν είναι κλειδωμένο στο %s."
 msgid "%s is not notified of new memos."
 msgstr "%s δεν θα ειδοποιηθεί για νέα μηνύματα."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is not set on %s."
+msgstr "Το %s δεν είναι ενεργό στο %s."
+
 #: ../modules/memoserv/ms_info.cpp
 #, c-format
 msgid "%s is notified of new memos at logon and when they arrive."
@@ -1722,6 +1755,11 @@ msgstr "%s θα παρατηρηθεί για νέα μηνύματα στο log
 #, c-format
 msgid "%s is notified when new memos arrive."
 msgstr "%s θα παρατηρηθεί όταν τα νέα μηνύματα θα φτάσουν."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is now set on %s."
+msgstr "Το %s είναι πλέον ενεργό στο %s."
 
 #: ../modules/chanserv/cs_xop.cpp
 #, c-format
@@ -2119,6 +2157,10 @@ msgstr "Ο λογαριασμός %s έχει ήδη φτάσει τον μέ�
 #: ../modules/nickserv/ns_info.cpp
 msgid "Account registered"
 msgstr "Ο λογαριασμός κατοχυρώθηκε"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Account/Mask"
+msgstr "Λογαριασμός/Μάσκα"
 
 #: ../modules/nickserv/nickserv.cpp
 #, c-format
@@ -2914,6 +2956,10 @@ msgstr "Κάνει ban ένα δοσμένο ψευδώνυμο ή μάσκα σ
 msgid "Bans enforced on %s."
 msgstr "Τα bans εφαρμόστηκαν στο %s."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Being fixed"
+msgstr "Υπό διόρθωση"
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Bolds kicker"
 msgstr "Kicker για έντονους χαρακτήρες"
@@ -3170,6 +3216,11 @@ msgstr "Τα services ενημερώνουν όλα τα αρχεία βάσεω
 msgid "Certificate list for %s:"
 msgstr "Λίστα πιστοποιητικών για %s:"
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "ChanFix information about %s:"
+msgstr "Πληροφορίες ChanFix για το %s:"
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "ChanServ is required to enable persist on this network."
 msgstr "Ο ChanServ απαιτείται για να ενεργοποιηθεί το persist σε αυτό το δίκτυο."
@@ -3372,7 +3423,7 @@ msgstr "Αλλαγή των user modes σας σε %s"
 msgid "Changing your vhost to %s"
 msgstr "Αλλαγή της vhost σας σε %s"
 
-#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
 msgid "Channel"
 msgstr "Κανάλι"
 
@@ -3766,7 +3817,7 @@ msgstr "Αντιγράφει όλες τις ρυθμίσεις, την πρόσ
 msgid "Copy all settings from one channel to another"
 msgstr "Αντιγράφει όλες τις ρυθμίσεις από ένα κανάλι σε ένα άλλο."
 
-#: ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Created"
 msgstr "Δημιουργήθηκε"
 
@@ -3803,6 +3854,10 @@ msgstr "Τρέχουσα λίστα notify:"
 #, c-format
 msgid "Current number of %ss: %zu"
 msgstr "Τρέχων αριθμός %s: %zu"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Current threshold"
+msgstr "Τρέχον όριο"
 
 #: ../modules/operserv/os_stats.cpp
 #, c-format
@@ -4554,7 +4609,7 @@ msgstr "Τέλος λίστας - εμφανίστηκαν %d κανάλια."
 msgid "End of list - %d/%d matches shown."
 msgstr "Τέλος της λίστας - %d/%d βρέθηκαν και εμφανίστηκαν."
 
-#: ../modules/groupserv/groupserv.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "End of list - %u/%u shown."
 msgstr "Τέλος λίστας - εμφανίζονται %u/%u."
@@ -4584,6 +4639,11 @@ msgstr "Τέλος λίστας ειδήσεων."
 #: ../modules/operserv/os_notify.cpp
 msgid "End of notify list."
 msgstr "Τέλος λίστας notify."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "End of scores for %s."
+msgstr "Τέλος βαθμολογιών για το %s."
 
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "End of topic history list."
@@ -4767,6 +4827,15 @@ msgstr "Το αποτύπωμα %s εκκρεμεί. Για να το επιβ
 msgid "Fixed layout"
 msgstr "Σταθερή διάταξη"
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Fixes an unregistered channel that has lost its ops or been taken over. The channel's timestamp is lowered, which makes the IRCd remove everyone's ops and modes; then the people who usually had ops there (the highest scores) get them back, starting with the best and lowering the bar over time until someone is opped."
+msgstr "Διορθώνει ένα μη κατοχυρωμένο κανάλι που έχασε τους ops του ή καταλήφθηκε. Το timestamp του καναλιού μειώνεται, κάτι που κάνει τον IRCd να αφαιρέσει τα ops και τα modes όλων· έπειτα όσοι είχαν συνήθως ops εκεί (οι υψηλότερες βαθμολογίες) τα παίρνουν πίσω, ξεκινώντας από τους καλύτερους και χαμηλώνοντας τον πήχη με τον χρόνο μέχρι κάποιος να πάρει op."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Fixing %s: everyone's ops and modes have been removed, and its usual ops will get theirs back over the next %s."
+msgstr "Διόρθωση του %s: τα ops και τα modes όλων αφαιρέθηκαν, και οι συνήθεις ops θα πάρουν πίσω τα δικά τους μέσα στα επόμενα %s."
+
 #: ../modules/chanserv/cs_flags.cpp
 msgid "Flag"
 msgstr "Flag"
@@ -4879,6 +4948,10 @@ msgstr "Ο ιδρυτής του %s άλλαξε σε %s."
 msgid "Ghost with your nick has been killed."
 msgstr "Το ψευδώνυμο σου έγινε kill μέσω ghost εντολής."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Give a channel's usual ops back"
+msgstr "Επιστροφή των συνήθων ops ενός καναλιού"
+
 #: ../modules/chanserv/cs_set_joinflood.cpp
 msgid "Give at least 2 joins, and times such as 10s or 2m."
 msgstr "Δώστε τουλάχιστον 2 εισόδους, και χρόνους όπως 10s ή 2m."
@@ -4963,6 +5036,10 @@ msgstr "Αποκρύπτει συγκεκριμένα τμήματα πληρο�
 #: ../modules/chanserv/cs_list.cpp
 msgid "Hide channel from the LIST command"
 msgstr "Απόκρυψη του καναλιού από την εντολή LIST"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Highest score"
+msgstr "Υψηλότερη βαθμολογία"
 
 #: ../modules/chanserv/cs_topichistory.cpp
 #, c-format
@@ -5312,6 +5389,14 @@ msgstr "Η διάταξη είναι τώρα ευέλικτη για το %s
 msgid "Layout is now monospace for %s."
 msgstr "Η διάταξη είναι τώρα monospace για το %s."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Leave a note on a channel for staff"
+msgstr "Άφησε μια σημείωση σε κανάλι για το προσωπικό"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Leaves a note on the channel that other staff see in INFO and LIST."
+msgstr "Αφήνει μια σημείωση στο κανάλι που βλέπει το υπόλοιπο προσωπικό στα INFO και LIST."
+
 #: ../modules/chanserv/cs_access.cpp
 msgid "Level"
 msgstr "Επίπεδο"
@@ -5432,6 +5517,10 @@ msgstr ""
 "  {regepoch} - Ο χρόνος UNIX κατοχύρωσης του ψευδωνύμου σας.\n"
 "\n"
 "Με το %sTAKE εφαρμόζεται ένα προσφερόμενο vhost. Πρέπει να δώσετε τη μεταβλητή προτύπου ή τον αριθμό θέσης του vhost που θέλετε. Αφού πάρετε ένα vhost δεν μπορείτε να πάρετε άλλο για %s."
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "List the channels ChanFix tracks"
+msgstr "Λίστα των καναλιών που παρακολουθεί το ChanFix"
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "List the channels a group has access to"
@@ -5654,6 +5743,10 @@ msgstr "Εμφανίζει τα μηνύματα με αριθμούς 2 έως 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Lists the channel access lists the group is on, and with what access (needs +c)."
 msgstr "Εμφανίζει τις λίστες πρόσβασης καναλιών στις οποίες είναι η ομάδα, και με ποια πρόσβαση (χρειάζεται +c)."
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Lists the channels ChanFix has scores for, matching a pattern."
+msgstr "Εμφανίζει τα κανάλια για τα οποία το ChanFix έχει βαθμολογίες και ταιριάζουν με ένα μοτίβο."
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Lists the public groups matching a pattern (all groups for services operators)."
@@ -5915,6 +6008,10 @@ msgstr "Διαχείριση της λίστας προσφερόμενων host
 msgid "Manipulate the topic of the specified channel"
 msgstr "Αλλάζει το topic σε ένα κανάλι."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Marked"
+msgstr "Σημειωμένο"
+
 #: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Mask"
 msgstr "Μάσκα"
@@ -6145,6 +6242,10 @@ msgstr "Πολλές γλώσσες ταιριάζουν με το %s. Παρ�
 msgid "Multiple timezones matched %s. Please be more specific."
 msgstr "Πολλές ζώνες ώρας ταιριάζουν με το %s. Παρακαλώ γίνετε πιο συγκεκριμένοι."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "NOFIX"
+msgstr "NOFIX"
+
 #: ../modules/chanserv/cs_register.cpp
 msgid "NOTICE: In order to register a channel, you must have first registered your nickname."
 msgstr "ΣΗΜΕΙΩΣΗ: Για να κατοχυρώσετε ένα κανάλι, πρέπει πρώτα να έχετε κατοχυρώσει το ψευδώνυμό σας."
@@ -6156,6 +6257,10 @@ msgstr "Όνομα"
 #: ../modules/operserv/os_oper.cpp
 msgid "Name     Type"
 msgstr "Όνομα    Τύπος"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Needs fixing"
+msgstr "Χρειάζεται διόρθωση"
 
 #: ../modules/chanserv/cs_fantasy_stats.cpp
 #, c-format
@@ -6317,6 +6422,10 @@ msgstr "Το κανάλι #%s# δεν μπορεί να κατοχυρωθεί."
 #, c-format
 msgid "Nicks expiring within %s:"
 msgstr "Ψευδώνυμα που λήγουν εντός %s:"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "No"
+msgstr "Όχι"
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "No access list limit"
@@ -6480,6 +6589,11 @@ msgstr "Δεν υπάρχουν στατιστικά για το %s."
 msgid "No such info \"%s\" on %s."
 msgstr "Δεν υπάρχει πληροφορία \"%s\" στο %s."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "No tracked channels match %s."
+msgstr "Κανένα παρακολουθούμενο κανάλι δεν ταιριάζει με %s."
+
 #: ../modules/operserv/os_notify.cpp
 #, c-format
 msgid "No user found by the nick of %s."
@@ -6536,6 +6650,10 @@ msgstr "Σημειώστε όμως ότι αν ο successor έχει ήδη κ�
 msgid "Note: services are running with expiry turned off, so nothing will actually expire until that changes."
 msgstr "Σημείωση: οι υπηρεσίες λειτουργούν με απενεργοποιημένη τη λήξη, οπότε τίποτα δεν θα λήξει στην πράξη μέχρι να αλλάξει αυτό."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Notes"
+msgstr "Σημειώσεις"
+
 #: ../modules/chanserv/cs_mode.cpp
 msgid "Nothing to do."
 msgstr "Δεν υπάρχει τίποτα να γίνει."
@@ -6548,7 +6666,7 @@ msgstr "Δεν άλλαξε τίποτα:"
 msgid "Now"
 msgstr "Τώρα"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr "Αριθμός"
 
@@ -6685,6 +6803,10 @@ msgstr "Ο opertype %s παίρνει τα modes %s μόλις αναγνω�
 #: ../modules/botserv/bs_kick.cpp
 msgid "Ops protection"
 msgstr "Προστασία στους Ops"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Ops tracked"
+msgstr "Παρακολουθούμενοι ops"
 
 #: ../modules/botserv/bs_info.cpp ../src/misc.cpp
 msgid "Options"
@@ -7357,6 +7479,10 @@ msgstr "Το SSLONLY επιβλήθηκε από %s"
 #: ../modules/operserv/os_shutdown.cpp
 msgid "Save databases and restart services"
 msgstr "Αποθηκεύει τις βάσεις δεδομένων και επανεκκινεί τα services"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Score"
+msgstr "Βαθμολογία"
 
 #: ../modules/operserv/os_logsearch.cpp
 msgid "Search logs for a matching pattern"
@@ -8071,6 +8197,14 @@ msgstr "Η ρύθμιση για super admin πρέπει να είναι ON �
 msgid "Should services automatically give status to users"
 msgstr "Αν τα services θα δίνουν αυτόματα status στους χρήστες"
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Show ChanFix information about a channel"
+msgstr "Εμφάνιση πληροφοριών ChanFix για ένα κανάλι"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Show a channel's op scores"
+msgstr "Εμφάνιση των βαθμολογιών op ενός καναλιού"
+
 #: ../modules/groupserv/groupserv.cpp
 msgid "Show information about a group"
 msgstr "Εμφάνιση πληροφοριών για μια ομάδα"
@@ -8127,6 +8261,14 @@ msgstr ""
 msgid "Shows the current server configuration."
 msgstr "Εμφανίζει τις τρέχουσες ρυθμίσεις του server."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Shows the highest op scores in a channel (20 by default). A score grows every few minutes someone has ops there, counts 1.5 times as much for identified users, and slowly fades."
+msgstr "Εμφανίζει τις υψηλότερες βαθμολογίες op σε ένα κανάλι (20 από προεπιλογή). Μια βαθμολογία αυξάνεται κάθε λίγα λεπτά που κάποιος έχει ops εκεί, μετράει 1,5 φορές περισσότερο για ταυτοποιημένους χρήστες και σβήνει σιγά σιγά."
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Shows what ChanFix knows about a channel: its highest score, whether it needs or is getting a fix, and any MARK or NOFIX."
+msgstr "Εμφανίζει τι γνωρίζει το ChanFix για ένα κανάλι: την υψηλότερη βαθμολογία του, αν χρειάζεται ή δέχεται διόρθωση, και τυχόν MARK ή NOFIX."
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "Sign kicks that are done with the KICK command"
 msgstr "Υπογραφή των kicks που γίνονται με την εντολή KICK"
@@ -8175,6 +8317,10 @@ msgstr "Κατάσταση"
 msgid "Status updated (memos, vhost, chmodes, flags)."
 msgstr "Το Status έγινε update (memos, vhost, chmodes, flags)."
 
+#: ../modules/chanfix/chanfix.cpp
+msgid "Stop ChanFix from fixing a channel"
+msgstr "Αποτροπή του ChanFix από τη διόρθωση ενός καναλιού"
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Stop flooding!"
 msgstr "Μην επαναλαμβάνεις σε πολλές σειρές!"
@@ -8182,6 +8328,10 @@ msgstr "Μην επαναλαμβάνεις σε πολλές σειρές!"
 #: ../modules/botserv/bs_kick.cpp
 msgid "Stop repeating yourself!"
 msgstr "Μην επαναλαμβάνεις τα ίδια!"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Stops ChanFix from fixing the channel, with a reason other staff can see in INFO."
+msgstr "Αποτρέπει το ChanFix από τη διόρθωση του καναλιού, με έναν λόγο που μπορεί να δει το υπόλοιπο προσωπικό στο INFO."
 
 #: ../modules/chanserv/cs_set.cpp
 msgid "Stricter control of channel founder status"
@@ -8857,6 +9007,11 @@ msgstr "Ο κωδικός επιβεβαίωσης κατοχύρωσης που
 msgid "The registration of %s can only be confirmed by an administrator."
 msgstr "Η κατοχύρωση του %s μπορεί να επιβεβαιωθεί μόνο από διαχειριστή."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "The scores for %s are too low (under %u) for a fix."
+msgstr "Οι βαθμολογίες για το %s είναι πολύ χαμηλές (κάτω από %u) για διόρθωση."
+
 #: ../modules/nickserv/ns_info.cpp
 #, c-format
 msgid "The services access status of %s will now be hidden from %s INFO displays."
@@ -8897,6 +9052,11 @@ msgstr "Δεν υπάρχουν πρότυπα flags."
 msgid "There are no forbids of type %s."
 msgstr "Δεν υπάρχουν forbids τύπου %s."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "There are no scores for %s."
+msgstr "Δεν υπάρχουν βαθμολογίες για το %s."
+
 #: ../modules/nickserv/ns_group.cpp
 msgid "There are too many nicks in your account."
 msgstr "Υπάρχουν πάρα πολλά nicks στον λογαριασμό σας."
@@ -8917,6 +9077,11 @@ msgstr[1] "Υπάρχουν %zu memos στο κανάλι %s."
 #, c-format
 msgid "There is a new memo on channel %s. Type %s%s%zu to read it."
 msgstr "Υπάρχει νέο memo στο κανάλι %s. Γράψτε %s%s%zu για να το διαβάσετε."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "There is no ChanFix record for %s (yet)."
+msgstr "Δεν υπάρχει (ακόμα) εγγραφή ChanFix για το %s."
 
 #: ../modules/botserv/bs_assign.cpp
 #, c-format
@@ -9178,6 +9343,11 @@ msgstr "Πάρα πολλά αποτελέσματα για %s."
 msgid "Top %i of %s"
 msgstr "Top %i του %s"
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Top %u scores for %s:"
+msgstr "Κορυφαίες %u βαθμολογίες για το %s:"
+
 #: ../modules/chanserv/cs_topichistory.cpp ../modules/operserv/os_list.cpp
 msgid "Topic"
 msgstr "Topic"
@@ -9257,6 +9427,11 @@ msgstr "Η διατήρηση του topic για το %s είναι τώρα #O
 #: ../modules/chanserv/cs_topic.cpp
 msgid "Topic set by"
 msgstr "Topic ορίστηκε από"
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Tracked channels matching %s:"
+msgstr "Παρακολουθούμενα κανάλια που ταιριάζουν με %s:"
 
 #: ../modules/botserv/bs_kick.cpp
 msgid "Turn caps lock OFF!"
@@ -9544,7 +9719,7 @@ msgstr "Το όριο χρηστών για το %s αφαιρέθηκε."
 msgid "User limit for %s set to %d."
 msgstr "Το όριο χρηστών για το %s ορίστηκε σε %d."
 
-#: ../modules/operserv/os_list.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/operserv/os_list.cpp
 msgid "Users"
 msgstr "Χρήστες"
 
@@ -9834,6 +10009,10 @@ msgstr "Λέξη"
 #: ../modules/chanserv/cs_xop.cpp
 msgid "XOP"
 msgstr "XOP"
+
+#: ../modules/chanfix/chanfix.cpp
+msgid "Yes"
+msgstr "Ναι"
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -10322,6 +10501,11 @@ msgstr "Θα ειδοποιείστε για memos μόνο όταν σας απ
 msgid "You will only be notified of memos when you log on or when you unset /AWAY."
 msgstr "Θα ειδοποιείστε για memos μόνο όταν συνδέεστε ή όταν αναιρείτε το /AWAY."
 
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "Your ChanFix score is too low to register %s; ask one of its usual ops to do it."
+msgstr "Η βαθμολογία σου στο ChanFix είναι πολύ χαμηλή για να κατοχυρώσεις το %s· ζήτα από έναν από τους συνήθεις ops του να το κάνει."
+
 #: ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_svs.cpp
 msgid "Your IRCd does not support SVSJOIN."
 msgstr "Ο IRCd σας δεν υποστηρίζει SVSJOIN."
@@ -10668,7 +10852,7 @@ msgstr "[ψευδώνυμο] κωδικός"
 msgid "[parameter]"
 msgstr "[παράμετρος]"
 
-#: ../modules/groupserv/groupserv.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
 msgid "[pattern]"
 msgstr "[μοτίβο]"
 
@@ -10711,6 +10895,11 @@ msgstr "[{μοτίβο | ψευδώνυμο}] [SECRET] [από-έως]
 #: ../modules/greet.cpp
 msgid "alien I come in peace"
 msgstr "εξωγήινος έρχομαι με ειρηνικούς σκοπούς"
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "by %s on %s: %s"
+msgstr "από %s στις %s: %s"
 
 #: ../include/language.h
 msgid "does not expire"
