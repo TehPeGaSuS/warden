@@ -659,6 +659,11 @@ public:
 				"may be a numerical level or the name of a privilege (eg AUTOOP). "
 				"When a user joins the channel the access they receive is from the "
 				"highest level entry in the access list."
+				"\n\n"
+				"A negative level (e.g. \002-1\002) keeps that user from holding any "
+				"status in the channel: if anyone gives them voice, op or similar, "
+				"it is removed straight away. This only applies if no other access "
+				"entry gives them a higher level."
 			),
 			source.service->nick.c_str(),
 			source.command.nobreak().c_str());
@@ -960,6 +965,44 @@ public:
 	{
 		this->SetPermanent(true);
 
+	}
+
+	// Whether u is held back from any status on c because the highest access
+	// entry they match is a negative ACCESS level (anope/anope#549).
+	bool NoStatus(Channel *c, User *u)
+	{
+		if (!c->ci || u->HasPriv("chanserv/administration") || u->IsProtected())
+			return false;
+
+		auto group = c->ci->AccessFor(u, false);
+		if (group.founder || group.super_admin)
+			return false;
+
+		const auto *highest = group.Highest();
+		return highest && highest->provider == &accessprovider
+			&& warden_dynamic_static_cast<const AccessChanAccess *>(highest)->level < 0;
+	}
+
+	EventReturn OnChannelModeSet(Channel *c, MessageSource &setter, ChannelMode *mode, const ModeData &data) override
+	{
+		if (mode->type != MODE_STATUS || !c->ci)
+			return EVENT_CONTINUE;
+
+		auto *u = User::Find(data.value);
+		if (u && NoStatus(c, u))
+			c->RemoveMode(c->ci->WhoSends(), mode, u->GetUID());
+		return EVENT_CONTINUE;
+	}
+
+	void OnJoinChannel(User *u, Channel *c) override
+	{
+		auto *memb = c->FindUser(u);
+		if (!memb || memb->status.Empty() || !NoStatus(c, u))
+			return;
+
+		for (auto *cm : ModeManager::GetStatusChannelModesByRank())
+			if (memb->status.HasMode(cm))
+				c->RemoveMode(c->ci->WhoSends(), cm, u->GetUID());
 	}
 
 	void OnReload(Configuration::Conf &conf) override
