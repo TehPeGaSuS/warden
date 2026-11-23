@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:39+0100\n"
+"POT-Creation-Date: 2026-11-23 14:48+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -4527,10 +4527,18 @@ msgstr "%s kanalının kurucusu %s olarak değiştirildi."
 msgid "Ghost with your nick has been killed."
 msgstr "Rumuzunuzu taşıyan ghost killendi."
 
+#: ../modules/hostserv/hs_nethost.cpp
+msgid "Give every account its default vhost"
+msgstr "Her hesaba varsayılan vhost'unu ver"
+
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
 msgid "Gives %s status to the selected nicks on a channel. If nick is not given, it will %s you."
 msgstr "Bir kanalda seçilen rumuza %s durumunu verir. Eğer rumuz belirtilmezse, size %s durumunu verir."
+
+#: ../modules/hostserv/hs_nethost.cpp
+msgid "Gives every account its default vhost, made from its name. Accounts that already have a vhost set some other way (requested, or set by an operator) are skipped unless ALL is given. Services operators and unconfirmed accounts are always skipped."
+msgstr "Her hesaba, adından oluşturulan varsayılan vhost'unu verir. Başka bir yolla ayarlanmış (istenmiş ya da bir operatör tarafından ayarlanmış) vhost'u olan hesaplar, ALL belirtilmedikçe atlanır. Servis operatörleri ve onaylanmamış hesaplar her zaman atlanır."
 
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
@@ -7083,6 +7091,11 @@ msgstr "Kanalı kalıcı olarak ayarla"
 #: ../modules/chanserv/cs_set.cpp
 msgid "Set the channel description"
 msgstr "Kanal açıklamasını ayarlayın"
+
+#: ../modules/hostserv/hs_nethost.cpp
+#, c-format
+msgid "Set the default vhost on %zu account(s)."
+msgstr "%zu hesaba varsayılan vhost ayarlandı."
 
 #: ../modules/nickserv/ns_group.cpp
 msgid "Set the display nickname for your account"
@@ -10148,9 +10161,6 @@ msgstr "{number}: {topic} -- {by} tarafından {set} tarihinde ayarlandı"
 
 #~ msgid "Passwords can not be changed right now. Please try again later."
 #~ msgstr "Şifreler şu anda değiştirilemez. Lütfen daha sonra tekrar deneyiniz."
-
-#~ msgid "Set the vhost for all nicks in an account"
-#~ msgstr "Bir hesaptaki tüm rumuzların vhostunu ayarlayın"
 
 #~ msgid ""
 #~ "Sets the vhost for all nicks in the same account as that of the given nick. If your IRCD supports vidents, then using SETALL <nick> <ident>@<hostmask> will set idents for users as well as vhosts.\n"

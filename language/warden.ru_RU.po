@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:39+0100\n"
+"POT-Creation-Date: 2026-11-23 14:48+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -4486,10 +4486,18 @@ msgstr "Основатель %s изменен на %s."
 msgid "Ghost with your nick has been killed."
 msgstr "Призрак с вашим ником был убит."
 
+#: ../modules/hostserv/hs_nethost.cpp
+msgid "Give every account its default vhost"
+msgstr "Выдать каждой учётной записи vhost по умолчанию"
+
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
 msgid "Gives %s status to the selected nicks on a channel. If nick is not given, it will %s you."
 msgstr "Присваивает статус %s выбранным никам на канале. Если nick не указан, он %s вас."
+
+#: ../modules/hostserv/hs_nethost.cpp
+msgid "Gives every account its default vhost, made from its name. Accounts that already have a vhost set some other way (requested, or set by an operator) are skipped unless ALL is given. Services operators and unconfirmed accounts are always skipped."
+msgstr "Выдаёт каждой учётной записи vhost по умолчанию, составленный из её имени. Учётные записи, у которых уже есть vhost, установленный иначе (запрошенный или установленный оператором), пропускаются, если не указано ALL. Операторы сервисов и неподтверждённые учётные записи всегда пропускаются."
 
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
@@ -7013,6 +7021,11 @@ msgstr "Установить канал как постоянный"
 #: ../modules/chanserv/cs_set.cpp
 msgid "Set the channel description"
 msgstr "Установить описание канала"
+
+#: ../modules/hostserv/hs_nethost.cpp
+#, c-format
+msgid "Set the default vhost on %zu account(s)."
+msgstr "vhost по умолчанию установлен для %zu учётных записей."
 
 #: ../modules/nickserv/ns_group.cpp
 msgid "Set the display nickname for your account"

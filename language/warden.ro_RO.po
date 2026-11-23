@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:39+0100\n"
+"POT-Creation-Date: 2026-11-23 14:48+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -4521,10 +4521,18 @@ msgstr "Fondatorul %s a fost schimbat în %s."
 msgid "Ghost with your nick has been killed."
 msgstr "Utilizatorul fantomă folosind pseudonimul dumneavoastră a fost deconectat."
 
+#: ../modules/hostserv/hs_nethost.cpp
+msgid "Give every account its default vhost"
+msgstr "Oferă fiecărui cont gazda virtuală implicită"
+
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
 msgid "Gives %s status to the selected nicks on a channel. If nick is not given, it will %s you."
 msgstr "Oferă starea de %s pseudonimului selectat într-un canal. Dacă pseudonimul nu este precizat, atunci veți primi dumneavoastră starea de %s."
+
+#: ../modules/hostserv/hs_nethost.cpp
+msgid "Gives every account its default vhost, made from its name. Accounts that already have a vhost set some other way (requested, or set by an operator) are skipped unless ALL is given. Services operators and unconfirmed accounts are always skipped."
+msgstr "Oferă fiecărui cont gazda virtuală implicită, creată din numele său. Conturile care au deja o gazdă virtuală setată în alt mod (cerută sau setată de un operator) sunt omise, cu excepția cazului în care este precizat ALL. Operatorii de servicii și conturile neconfirmate sunt omise întotdeauna."
 
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
@@ -7075,6 +7083,11 @@ msgstr "Setează canalul ca persistent"
 #: ../modules/chanserv/cs_set.cpp
 msgid "Set the channel description"
 msgstr "Setează descrierea canalului"
+
+#: ../modules/hostserv/hs_nethost.cpp
+#, c-format
+msgid "Set the default vhost on %zu account(s)."
+msgstr "Gazda virtuală implicită a fost setată pentru %zu cont(uri)."
 
 #: ../modules/nickserv/ns_group.cpp
 msgid "Set the display nickname for your account"

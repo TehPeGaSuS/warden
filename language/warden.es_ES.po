@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:39+0100\n"
+"POT-Creation-Date: 2026-11-23 14:48+0100\n"
 "PO-Revision-Date: 2014-02-24 20:45+0100\n"
 "Last-Translator: Isaac Fontal <i_fontal@hotmail.com>\n"
 "Language-Team: Spanish\n"
@@ -4528,10 +4528,18 @@ msgstr "Fundador de %s cambiado a %s."
 msgid "Ghost with your nick has been killed."
 msgstr "El fantasma con tu nick ha sido killeado."
 
+#: ../modules/hostserv/hs_nethost.cpp
+msgid "Give every account its default vhost"
+msgstr "Dar a cada cuenta su vhost predeterminado"
+
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
 msgid "Gives %s status to the selected nicks on a channel. If nick is not given, it will %s you."
 msgstr "Da status de %s a los nicks seleccionados en un canal. Si no se proporciona nick, te dará %s a ti."
+
+#: ../modules/hostserv/hs_nethost.cpp
+msgid "Gives every account its default vhost, made from its name. Accounts that already have a vhost set some other way (requested, or set by an operator) are skipped unless ALL is given. Services operators and unconfirmed accounts are always skipped."
+msgstr "Da a cada cuenta su vhost predeterminado, creado a partir de su nombre. Las cuentas que ya tienen un vhost establecido de otra forma (solicitado o puesto por un operador) se omiten salvo que se indique ALL. Los operadores de servicios y las cuentas sin confirmar siempre se omiten."
 
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
@@ -7084,6 +7092,11 @@ msgstr "Establece el canal como permanente"
 #: ../modules/chanserv/cs_set.cpp
 msgid "Set the channel description"
 msgstr "Establece la descripción del canal"
+
+#: ../modules/hostserv/hs_nethost.cpp
+#, c-format
+msgid "Set the default vhost on %zu account(s)."
+msgstr "Vhost predeterminado establecido en %zu cuenta(s)."
 
 #: ../modules/nickserv/ns_group.cpp
 msgid "Set the display nickname for your account"
