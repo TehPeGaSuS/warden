@@ -198,7 +198,9 @@ public:
 			help.AddEntry("READONLY", _("Set read-only or read-write mode"));
 			help.AddEntry("DEBUG", _("Activate or deactivate debug mode"));
 			help.AddEntry("NOEXPIRE", _("Activate or deactivate no expire mode"));
-			help.AddEntry("SUPERADMIN", _("Activate or deactivate super admin mode"));
+			// Only when it can be used (anope/anope#624).
+			if (Config->GetModule(this->owner).Get<bool>("superadmin"))
+				help.AddEntry("SUPERADMIN", _("Activate or deactivate super admin mode"));
 			help.AddEntry("LIST", _("List the options"));
 
 			source.Reply(" ");
@@ -254,7 +256,7 @@ public:
 				"This option is equivalent to the command-line option "
 				"\002--noexpire\002."
 			));
-		else if (subcommand.equals_ci("SUPERADMIN"))
+		else if (subcommand.equals_ci("SUPERADMIN") && Config->GetModule(this->owner).Get<bool>("superadmin"))
 		{
 			source.Reply(_(
 				"Syntax: \002SUPERADMIN {ON | OFF}\002"
