@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:48+0100\n"
+"POT-Creation-Date: 2026-11-23 15:05+0100\n"
 "PO-Revision-Date: 2024-02-22 16:38+0000\n"
 "Last-Translator: Dragone2 <dragone2@risposteinformatiche.it>\n"
 "Language-Team: Italian\n"
@@ -325,6 +325,11 @@ msgstr "%s non è un'impronta di certificato valida."
 #, c-format
 msgid "%s is not a valid email address."
 msgstr "%s non è un indirizzo e-mail valido."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "%s is not a valid time. Give a Unix timestamp or a date such as 2019-05-01 (UTC), not in the future."
+msgstr "%s non è un orario valido. Indica un timestamp Unix o una data come 2019-05-01 (UTC), non nel futuro."
 
 #: ../include/language.h
 #, c-format
@@ -2983,6 +2988,10 @@ msgstr "Cambia il metodo di comunicazione usato dai Services"
 msgid "Change user modes"
 msgstr "Cambia le modalità utente"
 
+#: ../modules/operserv/os_regset.cpp
+msgid "Change when a nick, account or channel was registered"
+msgstr "Cambia quando un nick, account o canale è stato registrato"
+
 #: ../modules/operserv/os_mode.cpp
 #, c-format
 msgid "Changed user modes of %s to %s."
@@ -3079,6 +3088,20 @@ msgstr "Cambia il fuso orario utilizzato dai services per inviare messaggi all'u
 #: ../modules/nickserv/ns_set_timezone.cpp
 msgid "Changes the timezone services uses when sending messages to you (for example, when responding to a command you send). If timezone is not specified the default (UTC) will be used. Otherwise, timezone should be chosen from an entry in one of the supported timezone regions:"
 msgstr "Cambia il fuso orario utilizzato dai services per inviarti messaggi (ad esempio per rispondere a un comando che invii). Se fuso-orario non è specificato sarà usato quello predefinito (UTC). Altrimenti, fuso-orario deve essere scelto tra le voci di una delle regioni di fusi orari supportate:"
+
+#: ../modules/operserv/os_regset.cpp
+msgid ""
+"Changes when a nick, account or channel was registered, e.g. after moving it from another network.\n"
+"\n"
+"NICK changes one nick. ACCOUNT changes the account and every nick grouped to it. CHAN changes a channel.\n"
+"\n"
+"time is a Unix timestamp or a UTC date such as 2019-05-01 or 2019-05-01 14:30. It can't be in the future."
+msgstr ""
+"Cambia quando un nick, account o canale è stato registrato, ad esempio dopo averlo spostato da un'altra rete.\n"
+"\n"
+"NICK cambia un nick. ACCOUNT cambia l'account e tutti i nick raggruppati in esso. CHAN cambia un canale.\n"
+"\n"
+"orario è un timestamp Unix o una data UTC come 2019-05-01 o 2019-05-01 14:30. Non può essere nel futuro."
 
 #: ../modules/memoserv/ms_set.cpp
 msgid "Changes when you will be notified about new memos (only for nicknames)"
@@ -6434,6 +6457,21 @@ msgstr ""
 #: ../modules/nickserv/ns_register.cpp
 msgid "Registration is currently disabled."
 msgstr "Spiacente, la registrazione è temporaneamente disabilitata."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of account %s and its %zu nick(s) set to %s."
+msgstr "Orario di registrazione dell'account %s e dei suoi %zu nick impostato a %s."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of channel %s set to %s."
+msgstr "Orario di registrazione del canale %s impostato a %s."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of nick %s set to %s."
+msgstr "Orario di registrazione del nick %s impostato a %s."
 
 #: ../modules/chanserv/cs_set.cpp
 msgid "Regulate the use of critical commands"
@@ -9844,6 +9882,10 @@ msgstr "{nick | canale}"
 #: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 msgid "{nick | channel} memo-text"
 msgstr "{nick | canale} testo-memo"
+
+#: ../modules/operserv/os_regset.cpp
+msgid "{NICK|ACCOUNT|CHAN} name time"
+msgstr "{NICK|ACCOUNT|CHAN} nome orario"
 
 #: ../modules/nickserv/ns_set_protect.cpp
 msgid "{ON | delay | OFF}"

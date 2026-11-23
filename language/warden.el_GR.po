@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:48+0100\n"
+"POT-Creation-Date: 2026-11-23 15:05+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -324,6 +324,11 @@ msgstr "Το %s δεν είναι έγκυρο αποτύπωμα πιστοπ
 #, c-format
 msgid "%s is not a valid email address."
 msgstr "Το %s δεν είναι έγκυρη διεύθυνση email."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "%s is not a valid time. Give a Unix timestamp or a date such as 2019-05-01 (UTC), not in the future."
+msgstr "%s δεν είναι έγκυρη ώρα. Δώσε ένα Unix timestamp ή μια ημερομηνία όπως 2019-05-01 (UTC), όχι στο μέλλον."
 
 #: ../include/language.h
 #, c-format
@@ -2982,6 +2987,10 @@ msgstr "Αλλάζει τη μέθοδο επικοινωνίας των service
 msgid "Change user modes"
 msgstr "Αλλάζει τα user modes"
 
+#: ../modules/operserv/os_regset.cpp
+msgid "Change when a nick, account or channel was registered"
+msgstr "Αλλάζει πότε κατοχυρώθηκε ένα nick, λογαριασμός ή κανάλι"
+
 #: ../modules/operserv/os_mode.cpp
 #, c-format
 msgid "Changed user modes of %s to %s."
@@ -3080,6 +3089,20 @@ msgstr "Αλλάζει τη ζώνη ώρας που χρησιμοποιούν 
 #: ../modules/nickserv/ns_set_timezone.cpp
 msgid "Changes the timezone services uses when sending messages to you (for example, when responding to a command you send). If timezone is not specified the default (UTC) will be used. Otherwise, timezone should be chosen from an entry in one of the supported timezone regions:"
 msgstr "Αλλάζει τη ζώνη ώρας που χρησιμοποιούν τα services όταν σας στέλνουν μηνύματα (για παράδειγμα, όταν απαντούν σε εντολή που στέλνετε). Αν δεν δοθεί ζώνη ώρας, θα χρησιμοποιηθεί η προεπιλογή (UTC). Διαφορετικά, η ζώνη ώρας πρέπει να επιλεγεί από μια καταχώριση σε μία από τις υποστηριζόμενες περιοχές ζωνών ώρας:"
+
+#: ../modules/operserv/os_regset.cpp
+msgid ""
+"Changes when a nick, account or channel was registered, e.g. after moving it from another network.\n"
+"\n"
+"NICK changes one nick. ACCOUNT changes the account and every nick grouped to it. CHAN changes a channel.\n"
+"\n"
+"time is a Unix timestamp or a UTC date such as 2019-05-01 or 2019-05-01 14:30. It can't be in the future."
+msgstr ""
+"Αλλάζει πότε κατοχυρώθηκε ένα nick, λογαριασμός ή κανάλι, π.χ. μετά τη μεταφορά του από άλλο δίκτυο.\n"
+"\n"
+"Το NICK αλλάζει ένα nick. Το ACCOUNT αλλάζει τον λογαριασμό και όλα τα nick που είναι ομαδοποιημένα σε αυτόν. Το CHAN αλλάζει ένα κανάλι.\n"
+"\n"
+"Το ώρα είναι ένα Unix timestamp ή μια ημερομηνία UTC όπως 2019-05-01 ή 2019-05-01 14:30. Δεν μπορεί να είναι στο μέλλον."
 
 #: ../modules/memoserv/ms_set.cpp
 msgid "Changes when you will be notified about new memos (only for nicknames)"
@@ -6437,6 +6460,21 @@ msgstr ""
 #: ../modules/nickserv/ns_register.cpp
 msgid "Registration is currently disabled."
 msgstr "Η κατοχύρωση είναι προς το παρόν απενεργοποιημένη."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of account %s and its %zu nick(s) set to %s."
+msgstr "Η ώρα κατοχύρωσης του λογαριασμού %s και των %zu nick του ορίστηκε σε %s."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of channel %s set to %s."
+msgstr "Η ώρα κατοχύρωσης του καναλιού %s ορίστηκε σε %s."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of nick %s set to %s."
+msgstr "Η ώρα κατοχύρωσης του nick %s ορίστηκε σε %s."
 
 #: ../modules/chanserv/cs_set.cpp
 msgid "Regulate the use of critical commands"
@@ -9854,6 +9892,10 @@ msgstr "{ψευδώνυμο | κανάλι}"
 #: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 msgid "{nick | channel} memo-text"
 msgstr "{ψευδώνυμο | κανάλι} κείμενο-memo"
+
+#: ../modules/operserv/os_regset.cpp
+msgid "{NICK|ACCOUNT|CHAN} name time"
+msgstr "{NICK|ACCOUNT|CHAN} όνομα ώρα"
 
 #: ../modules/nickserv/ns_set_protect.cpp
 msgid "{ON | delay | OFF}"

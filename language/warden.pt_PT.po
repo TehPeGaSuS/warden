@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:48+0100\n"
+"POT-Creation-Date: 2026-11-23 15:05+0100\n"
 "PO-Revision-Date: 2026-08-15 19:55+0200\n"
 "Last-Translator: PeGaSuS <25697531+TehPeGaSuS@users.noreply.github.com>\n"
 "Language-Team: Portuguese (Portugal)\n"
@@ -325,6 +325,11 @@ msgstr "%s não é uma impressão digital de certificado válida."
 #, c-format
 msgid "%s is not a valid email address."
 msgstr "%s não é um endereço de email válido."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "%s is not a valid time. Give a Unix timestamp or a date such as 2019-05-01 (UTC), not in the future."
+msgstr "%s não é uma hora válida. Indica um timestamp Unix ou uma data como 2019-05-01 (UTC), que não seja no futuro."
 
 #: ../include/language.h
 #, c-format
@@ -2983,6 +2988,10 @@ msgstr "Alterar o método de comunicação dos serviços"
 msgid "Change user modes"
 msgstr "Alterar modos de utilizador"
 
+#: ../modules/operserv/os_regset.cpp
+msgid "Change when a nick, account or channel was registered"
+msgstr "Altera quando um nick, conta ou canal foi registado"
+
 #: ../modules/operserv/os_mode.cpp
 #, c-format
 msgid "Changed user modes of %s to %s."
@@ -3077,6 +3086,20 @@ msgstr "Altera o fuso horário que os serviços usam ao enviar mensagens para o 
 #: ../modules/nickserv/ns_set_timezone.cpp
 msgid "Changes the timezone services uses when sending messages to you (for example, when responding to a command you send). If timezone is not specified the default (UTC) will be used. Otherwise, timezone should be chosen from an entry in one of the supported timezone regions:"
 msgstr "Altera o fuso horário que os serviços usam ao enviar mensagens para ti (por exemplo, ao responder a um comando que envias). Se fuso_horário não for especificado, o padrão (UTC) será usado. Caso contrário, fuso_horário deve ser escolhido a partir de uma entrada numa das regiões de fuso horário suportadas:"
+
+#: ../modules/operserv/os_regset.cpp
+msgid ""
+"Changes when a nick, account or channel was registered, e.g. after moving it from another network.\n"
+"\n"
+"NICK changes one nick. ACCOUNT changes the account and every nick grouped to it. CHAN changes a channel.\n"
+"\n"
+"time is a Unix timestamp or a UTC date such as 2019-05-01 or 2019-05-01 14:30. It can't be in the future."
+msgstr ""
+"Altera quando um nick, conta ou canal foi registado, por exemplo depois de o mover de outra rede.\n"
+"\n"
+"NICK altera um nick. ACCOUNT altera a conta e todos os nicks agrupados nela. CHAN altera um canal.\n"
+"\n"
+"hora é um timestamp Unix ou uma data UTC como 2019-05-01 ou 2019-05-01 14:30. Não pode ser no futuro."
 
 #: ../modules/memoserv/ms_set.cpp
 msgid "Changes when you will be notified about new memos (only for nicknames)"
@@ -6432,6 +6455,21 @@ msgstr ""
 #: ../modules/nickserv/ns_register.cpp
 msgid "Registration is currently disabled."
 msgstr "O registo está atualmente desativado."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of account %s and its %zu nick(s) set to %s."
+msgstr "Hora de registo da conta %s e dos seus %zu nick(s) definida para %s."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of channel %s set to %s."
+msgstr "Hora de registo do canal %s definida para %s."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of nick %s set to %s."
+msgstr "Hora de registo do nick %s definida para %s."
 
 #: ../modules/chanserv/cs_set.cpp
 msgid "Regulate the use of critical commands"
@@ -9842,6 +9880,10 @@ msgstr "{nick | canal}"
 #: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 msgid "{nick | channel} memo-text"
 msgstr "{nick | canal} texto-memo"
+
+#: ../modules/operserv/os_regset.cpp
+msgid "{NICK|ACCOUNT|CHAN} name time"
+msgstr "{NICK|ACCOUNT|CHAN} nome hora"
 
 #: ../modules/nickserv/ns_set_protect.cpp
 msgid "{ON | delay | OFF}"

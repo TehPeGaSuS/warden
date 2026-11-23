@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:48+0100\n"
+"POT-Creation-Date: 2026-11-23 15:05+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -325,6 +325,11 @@ msgstr "%s nu este o amprentă digitală de certificat validă."
 #, c-format
 msgid "%s is not a valid email address."
 msgstr "%s nu este o adresă de email validă."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "%s is not a valid time. Give a Unix timestamp or a date such as 2019-05-01 (UTC), not in the future."
+msgstr "%s nu este o oră validă. Indică un timestamp Unix sau o dată precum 2019-05-01 (UTC), care să nu fie în viitor."
 
 #: ../include/language.h
 #, c-format
@@ -2983,6 +2988,10 @@ msgstr "Schimbă metoda de comunicare a serviciilor"
 msgid "Change user modes"
 msgstr "Schimbă modurile de utilizator"
 
+#: ../modules/operserv/os_regset.cpp
+msgid "Change when a nick, account or channel was registered"
+msgstr "Modifică momentul înregistrării unui nick, cont sau canal"
+
 #: ../modules/operserv/os_mode.cpp
 #, c-format
 msgid "Changed user modes of %s to %s."
@@ -3077,6 +3086,20 @@ msgstr "Schimbă fusul orar pe care îl folosesc serviciile atunci când trimit 
 #: ../modules/nickserv/ns_set_timezone.cpp
 msgid "Changes the timezone services uses when sending messages to you (for example, when responding to a command you send). If timezone is not specified the default (UTC) will be used. Otherwise, timezone should be chosen from an entry in one of the supported timezone regions:"
 msgstr "Schimbă fusul orar pe care îl folosesc serviciile atunci când vă trimit mesaje dumneavoastră (de exemplu, când vi se răspunde la o comandă). Dacă nu este specificat un fus orar, se va utiliza ora implicită (UTC). În caz contrar, fusul orar trebuie ales dintr-una dintre regiunile de fus orar acceptate după cum urmează:"
+
+#: ../modules/operserv/os_regset.cpp
+msgid ""
+"Changes when a nick, account or channel was registered, e.g. after moving it from another network.\n"
+"\n"
+"NICK changes one nick. ACCOUNT changes the account and every nick grouped to it. CHAN changes a channel.\n"
+"\n"
+"time is a Unix timestamp or a UTC date such as 2019-05-01 or 2019-05-01 14:30. It can't be in the future."
+msgstr ""
+"Modifică momentul înregistrării unui nick, cont sau canal, de ex. după mutarea lui din altă rețea.\n"
+"\n"
+"NICK modifică un nick. ACCOUNT modifică contul și toate nickurile grupate în el. CHAN modifică un canal.\n"
+"\n"
+"oră este un timestamp Unix sau o dată UTC precum 2019-05-01 sau 2019-05-01 14:30. Nu poate fi în viitor."
 
 #: ../modules/memoserv/ms_set.cpp
 msgid "Changes when you will be notified about new memos (only for nicknames)"
@@ -6430,6 +6453,21 @@ msgstr ""
 #: ../modules/nickserv/ns_register.cpp
 msgid "Registration is currently disabled."
 msgstr "Înregistrarea este momentan dezactivată."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of account %s and its %zu nick(s) set to %s."
+msgstr "Ora înregistrării contului %s și a celor %zu nick(uri) ale sale a fost setată la %s."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of channel %s set to %s."
+msgstr "Ora înregistrării canalului %s a fost setată la %s."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of nick %s set to %s."
+msgstr "Ora înregistrării nickului %s a fost setată la %s."
 
 #: ../modules/chanserv/cs_set.cpp
 msgid "Regulate the use of critical commands"
@@ -9840,6 +9878,10 @@ msgstr "{pseudonim | canal}"
 #: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 msgid "{nick | channel} memo-text"
 msgstr "{pseudonim | canal} text-misivă"
+
+#: ../modules/operserv/os_regset.cpp
+msgid "{NICK|ACCOUNT|CHAN} name time"
+msgstr "{NICK|ACCOUNT|CHAN} nume oră"
 
 #: ../modules/nickserv/ns_set_protect.cpp
 msgid "{ON | delay | OFF}"

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:48+0100\n"
+"POT-Creation-Date: 2026-11-23 15:05+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -324,6 +324,11 @@ msgstr "%s geçerli bir sertifika parmak izi değil."
 #, c-format
 msgid "%s is not a valid email address."
 msgstr "%s geçerli bir e-posta adresi değil."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "%s is not a valid time. Give a Unix timestamp or a date such as 2019-05-01 (UTC), not in the future."
+msgstr "%s geçerli bir zaman değil. Bir Unix zaman damgası veya 2019-05-01 (UTC) gibi gelecekte olmayan bir tarih girin."
 
 #: ../include/language.h
 #, c-format
@@ -2989,6 +2994,10 @@ msgstr "Servislerin iletişim yöntemini değiştirme"
 msgid "Change user modes"
 msgstr "Kullanıcı modlarını değiştir"
 
+#: ../modules/operserv/os_regset.cpp
+msgid "Change when a nick, account or channel was registered"
+msgstr "Bir rumuzun, hesabın veya kanalın kayıt zamanını değiştirir"
+
 #: ../modules/operserv/os_mode.cpp
 #, c-format
 msgid "Changed user modes of %s to %s."
@@ -3083,6 +3092,20 @@ msgstr "Belirli bir kullanıcıya mesaj gönderirken (örneğin, gönderdikleri 
 #: ../modules/nickserv/ns_set_timezone.cpp
 msgid "Changes the timezone services uses when sending messages to you (for example, when responding to a command you send). If timezone is not specified the default (UTC) will be used. Otherwise, timezone should be chosen from an entry in one of the supported timezone regions:"
 msgstr "Size mesaj gönderirken (örneğin, gönderdiğiniz bir komuta yanıt verirken) servislerin kullandığı saat dilimini değiştirir. saat-dilimi belirtilmezse varsayılan (UTC) kullanılır. Aksi halde saat-dilimi, desteklenen saat dilimi bölgelerinden birindeki bir girdiden seçilmelidir:"
+
+#: ../modules/operserv/os_regset.cpp
+msgid ""
+"Changes when a nick, account or channel was registered, e.g. after moving it from another network.\n"
+"\n"
+"NICK changes one nick. ACCOUNT changes the account and every nick grouped to it. CHAN changes a channel.\n"
+"\n"
+"time is a Unix timestamp or a UTC date such as 2019-05-01 or 2019-05-01 14:30. It can't be in the future."
+msgstr ""
+"Bir rumuzun, hesabın veya kanalın kayıt zamanını değiştirir; örneğin başka bir ağdan taşındıktan sonra.\n"
+"\n"
+"NICK tek bir rumuzu değiştirir. ACCOUNT hesabı ve ona gruplanmış tüm rumuzları değiştirir. CHAN bir kanalı değiştirir.\n"
+"\n"
+"zaman bir Unix zaman damgası veya 2019-05-01 ya da 2019-05-01 14:30 gibi bir UTC tarihidir. Gelecekte olamaz."
 
 #: ../modules/memoserv/ms_set.cpp
 msgid "Changes when you will be notified about new memos (only for nicknames)"
@@ -6438,6 +6461,21 @@ msgstr ""
 #: ../modules/nickserv/ns_register.cpp
 msgid "Registration is currently disabled."
 msgstr "Kayıt şu anda devre dışı."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of account %s and its %zu nick(s) set to %s."
+msgstr "Hesap %s ve %zu rumuzunun kayıt zamanı %s olarak ayarlandı."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of channel %s set to %s."
+msgstr "Kanal %s kayıt zamanı %s olarak ayarlandı."
+
+#: ../modules/operserv/os_regset.cpp
+#, c-format
+msgid "Registration time of nick %s set to %s."
+msgstr "Rumuz %s kayıt zamanı %s olarak ayarlandı."
 
 #: ../modules/chanserv/cs_set.cpp
 msgid "Regulate the use of critical commands"
@@ -9853,6 +9891,10 @@ msgstr "{rumuz | kanal}"
 #: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 msgid "{nick | channel} memo-text"
 msgstr "{rumuz | kanal} memo-metni"
+
+#: ../modules/operserv/os_regset.cpp
+msgid "{NICK|ACCOUNT|CHAN} name time"
+msgstr "{NICK|ACCOUNT|CHAN} ad zaman"
 
 #: ../modules/nickserv/ns_set_protect.cpp
 msgid "{ON | delay | OFF}"
