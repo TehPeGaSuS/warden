@@ -1,3 +1,95 @@
+Warden 1.0.0
+============
+
+Warden 1.0.0 is the first release of Warden, a fork of Anope 2.1.28. It keeps
+everything Anope 2.1 does and adds GroupServ, ChanFix, single-use confirmation
+links, many built-in versions of popular third-party modules and fixes for
+long-standing Anope issues.
+
+IMPORTANT: Warden reads your Anope 2.1 configuration and database as they are,
+but read [Coming from Anope](https://github.com/TehPeGaSuS/warden/wiki/Coming-from-Anope) before switching.
+Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
+
+### Enhancements:
+* [GroupServ](https://github.com/TehPeGaSuS/warden/wiki/GroupServ): groups of accounts such as `!staff`, with
+  per-member flags.
+  * Groups can be put on channel access lists (`ACCESS`, `FLAGS`, `XOP`).
+  * `MemoServ SEND !group` sends a memo to every member.
+  * Groups can have a vhost that members can take.
+* [ChanFix](https://github.com/TehPeGaSuS/warden/wiki/ChanFix) (optional): remembers who usually has ops in
+  unregistered channels and can give them back, like Atheme's chanfix.
+* Confirmation links: set `mail::weburl` and registration, email change and
+  password reset emails get an "Or click here" link to webcpanel.
+  * The link holds a random single-use token, nothing else.
+  * Opening it only shows a **Confirm** button (password resets ask for the
+    new password), so mail scanners that follow links can't confirm anything.
+  * Mail templates can use `{?link}...{/link}` and `{!link}...{/link}`.
+* `ChanServ FLAGS` has `ADD` and `DEL`, Atheme-style templates
+  (`FLAGS #chan nick AOP`) and can clear an entry's description.
+* `NickServ MSET` and `ChanServ MSET` run several `SET`s at once.
+* `NickServ LOGIN <nick> <password>` switches accounts, and `RECOVER` can take
+  free or held nicks.
+* Built-in versions of popular third-party modules: `cs_set_joinflood`,
+  `cs_topichistory`, `hs_nethost`, `os_expiring`, `os_notify`,
+  `os_notinchan` and `os_regset`.
+* New modules: `cs_accessnotify`, `ns_expirenotice`, `cs_expirenotice`,
+  `enc_pbkdf2` (reads Atheme's pbkdf2v2 hashes) and `xlinetoakill` (InspIRCd).
+* `registermessage` in `ns_register` and `cs_register`.
+* `uplink::spkifp` pins the uplink's TLS key (`ssl_openssl`, `ssl_gnutls`).
+* `ChanServ SET KEEPMODES` has `norestore`.
+* Log blocks have a `rotate` option.
+* `BotServ BOT DEL` takes masks.
+* `NickServ CERT` can add a fingerprint as pending.
+* An OpenRC service script.
+
+### Changes:
+* OperServ session exceptions now set the limit for their mask, higher or
+  lower than `defaultsessionlimit`. With `defaultsessionlimit = 0` only hosts
+  with an exception are limited.
+* Every `LIST` takes `from-to` ranges without `#`, stops at `listmax` without
+  a range, and ends with an end-of-list line. `CHANLIST`, `USERLIST` and
+  `FORBID LIST` are paged.
+* AKICKs are re-checked when a user changes nick, account or host.
+* Negative `ACCESS` levels keep users from holding status.
+* Users are told when they gain or lose channel access. Opers are told when a
+  certfp or host mismatch keeps their services oper access off.
+* `os_forbid` only kicks from forbidden channels by default, and reloading a
+  large forbid file is fast.
+* A silent uplink is pinged and dropped on timeout.
+* `_` is allowed in vhosts by default.
+* webcpanel bundles Bootstrap 3.4.1 and jQuery 3.7.1 (was 3.0.0 and 1.10.2
+  from CDNs) and no longer loads Google Fonts. It shows the Warden logo
+  followed by its `title`, so `title = "PTirc IRC Services"` brands it.
+* Every translation covers all messages.
+* Removed: ircd-ratbox support, `regex_tre` (use `regex_pcre2`), `xmlrpc`
+  (use `jsonrpc`), the old `/confirm_email` webcpanel page and the Anope 2.0
+  command aliases in the example configuration.
+
+### Fixes:
+* AKILL and SNLINE did not reach Solanum.
+* InspIRCd `+f`, `+H` and `+d` parameters were checked wrongly.
+* SNLINE cut reasons and masks at the first space.
+* The cloak was not restored on deoper without a HostServ vhost, and opers
+  lost their vhost to their HostServ one.
+* The HostServ vhost stayed after `NickServ LOGOUT`.
+* Every persistent channel was treated as still syncing when the uplink
+  synced.
+* Topic setters sent as a full mask were cut down to a nick.
+
+### Upgrading from Anope:
+* The binary is `warden`, the configuration `warden.conf` and the database
+  `warden.json`. If they don't exist, `anope.conf`, `anope.json` and
+  `anope.db` are used.
+* `db_sql` renames Anope's `anope21_` tables to `warden21_` on first start.
+* JSON-RPC still accepts the `anope.*` method names.
+* Importing an Anope 2.0 flatfile database with `db_flatfile` was tested on a
+  real network's database.
+
+### Developers and protocol:
+* The `Anope::` namespace is now `Warden::`.
+* CI builds on Ubuntu, Alpine and Windows (non-blocking) and runs irctest
+  against UnrealIRCd, InspIRCd and Solanum.
+
 # Anope Change Log
 
 ## Anope 2.1.28 (2026-11-21)
