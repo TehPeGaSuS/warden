@@ -38,6 +38,7 @@ public:
 		else
 		{
 			u->vhost.clear();
+			u->Shrink<Warden::string>("hostserv_vhost");
 			IRCD->SendVHostDel(u);
 			u->UpdateHost();
 			Log(LOG_COMMAND, source, this) << "to disable their vhost";

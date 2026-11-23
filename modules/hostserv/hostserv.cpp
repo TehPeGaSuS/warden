@@ -19,8 +19,33 @@ class HostServCore final
 	: public Module
 {
 	Reference<BotInfo> HostServ;
+
+	// The vhost HostServ last applied to a user, so it can be removed again
+	// when they log out without touching a vhost from anywhere else
+	// (anope/anope#570). HS ON and HS OFF set and clear it by name.
+	PrimitiveExtensibleItem<Warden::string> applied;
+
+	void Apply(User *u, const NickAlias *na)
+	{
+		IRCD->SendVHost(u, na->GetVHostIdent(), na->GetVHostHost());
+
+		u->vhost = na->GetVHostHost();
+		u->UpdateHost();
+
+		if (IRCD->CanSetVIdent && !na->GetVHostIdent().empty())
+			u->SetVIdent(na->GetVHostIdent());
+		applied.Set(u, na->GetVHostHost());
+
+		if (HostServ)
+		{
+			u->SendMessage(HostServ, _("Your vhost of \002%s\002 is now activated."),
+				na->GetVHostMask().c_str());
+		}
+	}
+
 public:
 	HostServCore(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, PSEUDOCLIENT | VENDOR)
+		, applied(this, "hostserv_vhost")
 	{
 		if (!IRCD || !IRCD->CanSetVHost)
 			throw ModuleException("Your IRCd does not support vhosts");
@@ -60,20 +85,26 @@ public:
 			if (u->HasMode("OPER") && !u->vhost.empty() && Config->GetModule(this).Get<bool>("keep_oper_vhost", "yes"))
 				return;
 
-			IRCD->SendVHost(u, na->GetVHostIdent(), na->GetVHostHost());
-
-			u->vhost = na->GetVHostHost();
-			u->UpdateHost();
-
-			if (IRCD->CanSetVIdent && !na->GetVHostIdent().empty())
-				u->SetVIdent(na->GetVHostIdent());
-
-			if (HostServ)
-			{
-				u->SendMessage(HostServ, _("Your vhost of \002%s\002 is now activated."),
-					na->GetVHostMask().c_str());
-			}
+			this->Apply(u, na);
 		}
+		else
+			applied.Set(u, na->GetVHostHost()); // Already set, e.g. after a services restart.
+	}
+
+	void OnNickLogout(User *u) override
+	{
+		const auto *vhost = applied.Get(u);
+		if (!vhost)
+			return;
+
+		const auto matches = u->vhost.equals_cs(*vhost);
+		applied.Unset(u);
+		if (!matches)
+			return; // Something else changed it since; leave it alone.
+
+		u->vhost.clear();
+		IRCD->SendVHostDel(u);
+		u->UpdateHost();
 	}
 
 	void OnNickDrop(CommandSource &source, NickAlias *na) override
@@ -126,21 +157,7 @@ public:
 			User *u = User::Find(na->nick);
 
 			if (u && u->Account() == na->nc)
-			{
-				IRCD->SendVHost(u, na->GetVHostIdent(), na->GetVHostHost());
-
-				u->vhost = na->GetVHostHost();
-				u->UpdateHost();
-
-				if (IRCD->CanSetVIdent && !na->GetVHostIdent().empty())
-					u->SetVIdent(na->GetVHostIdent());
-
-				if (HostServ)
-				{
-					u->SendMessage(HostServ, _("Your vhost of \002%s\002 is now activated."),
-						na->GetVHostMask().c_str());
-				}
-			}
+				this->Apply(u, na);
 		}
 	}
 
@@ -151,7 +168,10 @@ public:
 			User *u = User::Find(na->nick);
 
 			if (u && u->Account() == na->nc)
+			{
 				IRCD->SendVHostDel(u);
+				applied.Unset(u);
+			}
 		}
 	}
 };

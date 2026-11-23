@@ -40,6 +40,7 @@ public:
 			Log(LOG_COMMAND, source, this) << "to enable their vhost of " << na->GetVHostMask();
 			IRCD->SendVHost(u, na->GetVHostIdent(), na->GetVHostHost());
 			u->vhost = na->GetVHostHost();
+			u->Extend<Warden::string>("hostserv_vhost", na->GetVHostHost());
 			if (IRCD->CanSetVIdent && !na->GetVHostIdent().empty())
 				u->SetVIdent(na->GetVHostIdent());
 			u->UpdateHost();
