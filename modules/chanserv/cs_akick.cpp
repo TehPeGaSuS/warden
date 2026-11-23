@@ -762,8 +762,14 @@ public:
 
 	EventReturn OnCheckKick(User *u, Channel *c, Warden::string &mask, Warden::string &reason) override
 	{
+		return Matches(u, c, mask, reason) ? EVENT_STOP : EVENT_CONTINUE;
+	}
+
+	// Whether u matches an AKICK on c; fills in the ban mask and reason.
+	bool Matches(User *u, Channel *c, Warden::string &mask, Warden::string &reason)
+	{
 		if (!c->ci || c->MatchesList(u, "EXCEPT"))
-			return EVENT_CONTINUE;
+			return false;
 
 
 		for (unsigned j = 0, end = ChanServ::akick_service->GetAKickCount(c->ci); j < end; ++j)
@@ -798,11 +804,59 @@ public:
 				}
 				if (reason.empty())
 					reason = Language::Translate(u, _("User has been banned from the channel"));
-				return EVENT_STOP;
+				return true;
 			}
 		}
 
-		return EVENT_CONTINUE;
+		return false;
+	}
+
+	// Re-checks the AKICKs of every channel u is on, so a user can't get
+	// around one by joining first and then changing nick, account or host
+	// (anope/anope#496).
+	void Recheck(User *u, bool burst = false)
+	{
+		// During the burst everyone is checked once at OnUplinkSync instead.
+		if ((!burst && (!Me || !Me->IsSynced())) || u->super_admin || u->IsProtected() || !Config->GetModule(this).Get<bool>("recheck", "yes"))
+			return;
+
+		// Kicking removes the channel from u->chans, so advance first.
+		for (auto it = u->chans.begin(); it != u->chans.end(); )
+		{
+			Channel *c = (it++)->second->chan;
+			Warden::string mask, reason;
+			if (!Matches(u, c, mask, reason))
+				continue;
+
+			if (mask.empty())
+				mask = c->ci->GetIdealBan(u);
+			Log(LOG_DEBUG) << "Autokicking " << u->nick << " (" << mask << ") from " << c->name << " after a change";
+			c->SetMode(nullptr, "BAN", mask);
+			c->Kick(nullptr, u, reason);
+		}
+	}
+
+	void OnUserNickChange(User *u, const Warden::string &) override { Recheck(u); }
+	void OnUserLogin(User *u) override { Recheck(u); }
+	void OnNickLogout(User *u) override { Recheck(u); }
+	void OnNickGroup(User *u, NickAlias *) override { Recheck(u); }
+	void OnSetDisplayedHost(User *u) override { Recheck(u); }
+
+	// Catch anyone who matched an AKICK while services were away.
+	void OnUplinkSync(Server *) override
+	{
+		if (!Config->GetModule(this).Get<bool>("recheck", "yes"))
+			return;
+
+		std::vector<User *> users;
+		for (const auto &[_, c] : ChannelList)
+			if (c->ci)
+				for (const auto &[__, uc] : c->users)
+					users.push_back(uc->user);
+		std::sort(users.begin(), users.end());
+		users.erase(std::unique(users.begin(), users.end()), users.end());
+		for (auto *u : users)
+			Recheck(u, true);
 	}
 };
 
