@@ -20,6 +20,10 @@
 #include <iomanip>
 #include <sstream>
 
+#ifdef _WIN32
+# define timegm _mkgmtime
+#endif
+
 class CommandOSRegSet final
 	: public Command
 {
