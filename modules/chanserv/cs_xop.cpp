@@ -505,6 +505,7 @@ private:
 		{
 			source.Reply(_("%s list for %s"), source.command.nobreak().c_str(), ci->name.c_str());
 			list.SendTo(source);
+			source.Reply(_("End of list."));
 		}
 	}
 

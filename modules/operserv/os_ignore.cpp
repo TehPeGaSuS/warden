@@ -316,6 +316,7 @@ private:
 
 			source.Reply(_("Services ignore list:"));
 			list.SendTo(source);
+			source.Reply(_("End of list."));
 		}
 	}
 

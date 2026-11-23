@@ -158,6 +158,7 @@ public:
 
 				source.Reply(_("Log list for %s:"), ci->name.c_str());
 				list.SendTo(source);
+				source.Reply(_("End of list."));
 			}
 		}
 		else if (params.size() > 2)

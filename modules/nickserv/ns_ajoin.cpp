@@ -107,6 +107,7 @@ class CommandNSAJoin final
 
 			source.Reply(_("%s's auto join list:"), nc->display.c_str());
 			list.SendTo(source);
+			source.Reply(_("End of list."));
 		}
 	}
 

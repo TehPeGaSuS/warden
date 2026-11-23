@@ -395,6 +395,7 @@ class CommandCSMode final
 
 				source.Reply(_("Mode locks for %s:"), ci->name.c_str());
 				list.SendTo(source);
+				source.Reply(_("End of list."));
 			}
 		}
 		else

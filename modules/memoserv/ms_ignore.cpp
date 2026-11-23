@@ -92,6 +92,7 @@ public:
 
 				source.Reply(_("Memo ignore list of \002%s\002:"), channel.c_str());
 				list.SendTo(source);
+				source.Reply(_("End of list."));
 			}
 		}
 		else

@@ -307,6 +307,7 @@ class CommandOSDNS final
 				lf2.AddEntry(entry);
 			}
 			lf2.SendTo(source);
+			source.Reply(_("End of list."));
 		}
 	}
 

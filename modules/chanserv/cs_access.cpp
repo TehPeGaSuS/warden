@@ -821,6 +821,7 @@ class CommandCSLevels final
 		}
 
 		list.SendTo(source);
+		source.Reply(_("End of list."));
 	}
 
 	void DoReset(CommandSource &source, ChannelInfo *ci)
@@ -906,6 +907,7 @@ public:
 			}
 
 			list.SendTo(source);
+			source.Reply(_("End of list."));
 		}
 		else
 		{

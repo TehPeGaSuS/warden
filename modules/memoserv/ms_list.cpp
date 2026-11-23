@@ -133,6 +133,7 @@ public:
 
 			source.Reply(_("Memos for %s:"), ci ? ci->name.c_str() : source.GetNick().c_str());
 			list.SendTo(source);
+			source.Reply(_("End of list."));
 		}
 	}
 

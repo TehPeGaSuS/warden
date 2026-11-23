@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 12:09+0100\n"
+"POT-Creation-Date: 2026-11-23 12:14+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -3890,6 +3890,11 @@ msgstr ""
 msgid "End of %s list - showing %u of %u entries. Use %s from-to to see the rest."
 msgstr ""
 
+#: ../modules/operserv/os_sxline.cpp
+#, c-format
+msgid "End of %s list."
+msgstr ""
+
 #: ../modules/operserv/os_akill.cpp
 #, c-format
 msgid "End of AKILL list - showing %u of %u entries. Use %s from-to to see the rest."
@@ -3969,6 +3974,15 @@ msgstr ""
 #: ../modules/chanserv/cs_list.cpp ../modules/nickserv/ns_list.cpp
 #, c-format
 msgid "End of list - %d/%d matches shown."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_log.cpp
+#: ../modules/chanserv/cs_mode.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/global/gl_queue.cpp ../modules/memoserv/ms_ignore.cpp
+#: ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp
+#: ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_dns.cpp
+#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp
+msgid "End of list."
 msgstr ""
 
 #: ../modules/operserv/os_news.cpp

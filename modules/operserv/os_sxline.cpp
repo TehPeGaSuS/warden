@@ -203,6 +203,8 @@ private:
 			list.SendTo(source);
 			if (listmax && matched > listmax)
 				source.Reply(_("End of %s list - showing %u of %u entries. Use \002%s \037from\037-\037to\037\002 to see the rest."), source.command.nobreak().c_str(), listmax, matched, params[0].upper().c_str());
+			else
+				source.Reply(_("End of %s list."), source.command.nobreak().c_str());
 		}
 	}
 

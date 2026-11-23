@@ -523,6 +523,7 @@ private:
 		source.Reply(_("Certificate list for %s:"), nc->display.c_str());
 		list.SendTo(source);
 		this->SendPending(source, pending);
+		source.Reply(_("End of list."));
 	}
 
 	void SendPending(CommandSource &source, const std::vector<const PendingCert *> &pending)

@@ -125,6 +125,7 @@ private:
 			list.AddEntry(entry);
 		}
 		list.SendTo(source);
+		source.Reply(_("End of list."));
 	}
 
 public:

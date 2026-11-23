@@ -262,6 +262,7 @@ private:
 
 			source.Reply(_("Hosts with at least \002%d\002 sessions:"), mincount);
 			list.SendTo(source);
+			source.Reply(_("End of list."));
 		}
 	}
 
@@ -535,6 +536,7 @@ private:
 		{
 			source.Reply(_("Current Session Limit Exception list:"));
 			list.SendTo(source);
+			source.Reply(_("End of list."));
 		}
 	}
 
