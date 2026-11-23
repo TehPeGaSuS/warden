@@ -141,7 +141,7 @@ Key                   | Type           | Description
 }
 ```
 
-## `warden.commands`
+## `warden.command`
 
 Executes the specified command.
 
@@ -149,21 +149,21 @@ Executes the specified command.
 
 Index | Description
 ----- | -----------
-0     | If non-empty then the account to execute the command as.
+0     | If non-empty then the nick (or account id) to execute the command as. A valid nick that is not registered runs the command as that nick without an account, as for an unidentified user (e.g. to use `NickServ REGISTER`).
 1     | The service which the command exists on.
-2...n | The the command to execute and any parameters to pass to it.
+2...n | The command to execute and any parameters to pass to it.
 
 ### Errors
 
 Code   | Description
 ------ | -----------
--32099 | The specified account does not exist.
+-32099 | The specified account does not exist (and is not a valid nick).
 -32098 | The specified service does not exist.
 -32097 | The specified command does not exist.
 
 ### Result
 
-Returns an array of messages returned by the command.
+Returns an array of messages returned by the command, including when it refuses to run (e.g. "You must be logged into an account to use that command.").
 
 #### Example
 

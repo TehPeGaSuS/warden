@@ -239,7 +239,7 @@ private:
 
 		void SendMessage(BotInfo *source, const Warden::string &msg) override
 		{
-			root.Reply(Warden::RemoveFormatting(msg.replace_all_cs("\x1A", "\x20")));
+			root.Reply(Warden::RemoveFormatting(msg.replace_all_cs("\x1B", "\x20")));
 		};
 	};
 
@@ -254,12 +254,22 @@ public:
 	bool Run(RPC::ServiceInterface *iface, HTTP::Client *client, RPC::Request &request) override
 	{
 		NickAlias *na = nullptr;
+		Warden::string sourcenick = "RPC";
 		if (!request.data[0].empty())
 		{
 			na = request.data[0].is_pos_number_only()
 				? NickAlias::FindId(Warden::Convert(request.data[0], 0))
 				: NickAlias::Find(request.data[0]);
-			if (!na)
+			if (na)
+				sourcenick = na->nick;
+			else if (!request.data[0].is_pos_number_only() && IRCD->IsNickValid(request.data[0]))
+			{
+				// An unregistered nick: run the command as that nick without
+				// an account, like an unidentified user, so e.g. NickServ
+				// REGISTER can be used over RPC (anope/anope#615).
+				sourcenick = request.data[0];
+			}
+			else
 			{
 				request.Error(ERR_INVALID_ACCOUNT, "No such account");
 				return true;
@@ -300,10 +310,26 @@ public:
 		}
 
 		RPCCommandReply reply(request.Root<RPC::Array>());
-		CommandSource source(na ? na->nick : "RPC", u, na ? *na->nc : nullptr, &reply, bi, request.id);
+		CommandSource source(sourcenick, u, na ? *na->nc : nullptr, &reply, bi, request.id);
 
-		if (!Command::Run(source, command))
+		// Command::Run also returns false when the command refuses (e.g. it
+		// needs an account), so only call it unknown if no prefix of the
+		// words is a command; otherwise return its replies.
+		std::vector<Warden::string> words;
+		spacesepstream(command).GetTokens(words);
+		auto exists = false;
+		for (auto max = words.size(); !exists && max > 0; --max)
+		{
+			Warden::string name;
+			for (size_t i = 0; i < max; ++i)
+				name += (i ? " " : "") + words[i];
+			exists = bi->commands.count(name);
+		}
+
+		if (!exists)
 			request.Error(ERR_INVALID_COMMAND, "No such command");
+		else
+			Command::Run(source, command);
 
 		return true;
 	}
