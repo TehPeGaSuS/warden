@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:37+0100\n"
+"POT-Creation-Date: 2026-11-23 20:03+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -2634,7 +2634,7 @@ msgstr ""
 #: ../modules/operserv/os_session.cpp
 #, c-format
 msgid ""
-"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time. Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
+"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time, or capping a host below the default (even when there is no default limit). Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
 "\n"
 "%sADD adds the given host mask to the exception list. Note that nick!user@host and user@host masks are invalid! Only real host masks, such as box.host.dom and *.host.dom, are allowed because sessions limiting does not take nick or user names into account. limit must be a number greater than or equal to zero. This determines how many sessions this host may carry at a time. A value of zero means the host has an unlimited session limit. See the AKILL help for details about the format of the optional expiry parameter. \n"
 "\n"
@@ -2644,7 +2644,7 @@ msgid ""
 "\n"
 "Note that a connecting client will \"use\" the first exception their host matches."
 msgstr ""
-"Επιτρέπει στους Services Operators να διαχειρίζονται τη λίστα των hosts που έχουν συγκεκριμένα όρια sessions - επιτρέποντας σε ορισμένα μηχανήματα, όπως shell servers, να έχουν περισσότερους clients ταυτόχρονα από τον προεπιλεγμένο αριθμό. Μόλις ένα host φτάσει το όριο sessions του, όλοι οι clients που προσπαθούν να συνδεθούν από αυτό θα γίνονται kill. Πριν γίνει kill ο χρήστης, ενημερώνεται για μια πηγή βοήθειας σχετικά με το όριο sessions. Το περιεχόμενο αυτής της ειδοποίησης είναι ρύθμιση του configuration.\n"
+"Επιτρέπει στους Services Operators να διαχειρίζονται τη λίστα των hosts που έχουν συγκεκριμένα όρια sessions - επιτρέποντας σε ορισμένα μηχανήματα, όπως shell servers, να έχουν περισσότερους clients ταυτόχρονα από τον προεπιλεγμένο αριθμό, ή περιορίζοντας ένα host κάτω από το προεπιλεγμένο (ακόμη και όταν δεν υπάρχει προεπιλεγμένο όριο). Μόλις ένα host φτάσει το όριο sessions του, όλοι οι clients που προσπαθούν να συνδεθούν από αυτό θα γίνονται kill. Πριν γίνει kill ο χρήστης, ενημερώνεται για μια πηγή βοήθειας σχετικά με το όριο sessions. Το περιεχόμενο αυτής της ειδοποίησης είναι ρύθμιση του configuration.\n"
 "\n"
 "Το %sADD προσθέτει τη δοσμένη μάσκα host στη λίστα εξαιρέσεων. Σημειώστε ότι οι μάσκες nick!user@host και user@host δεν είναι έγκυρες! Επιτρέπονται μόνο πραγματικές μάσκες host, όπως box.host.dom και *.host.dom, γιατί το όριο sessions δεν λαμβάνει υπόψη ψευδώνυμα ή usernames. Το όριο πρέπει να είναι αριθμός μεγαλύτερος ή ίσος του μηδενός. Αυτό καθορίζει πόσα sessions μπορεί να έχει ταυτόχρονα το host. Η τιμή μηδέν σημαίνει ότι το host δεν έχει όριο sessions. Δείτε τη βοήθεια του AKILL για λεπτομέρειες σχετικά με τη μορφή της προαιρετικής παραμέτρου λήξη. \n"
 "\n"
@@ -7840,10 +7840,6 @@ msgstr "Session"
 msgid "Session limit for %s set to %d."
 msgstr "Session limit για τον #%s# ρυθμίστηκε σε #%d#."
 
-#: ../modules/operserv/os_session.cpp
-msgid "Session limiting is disabled."
-msgstr "Η Session limiting  εντολή είναι απενεργοποιημένη."
-
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
@@ -11637,6 +11633,9 @@ msgstr "{number}: {topic} -- ορίστηκε από {by} στις {set}"
 
 #~ msgid "Services are in read-only mode!"
 #~ msgstr "Τα Services είναι τώρα #μόνο ανάγνωσης#."
+
+#~ msgid "Session limiting is disabled."
+#~ msgstr "Η Session limiting  εντολή είναι απενεργοποιημένη."
 
 #~ msgid "Set options, including kill protection"
 #~ msgstr "Αλλαγή επιλογών, συμπεριλαμβάνεται η προστασία με αποσύνδεση"

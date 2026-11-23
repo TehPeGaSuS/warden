@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:37+0100\n"
+"POT-Creation-Date: 2026-11-23 20:03+0100\n"
 "PO-Revision-Date: 2024-11-25 01:32+0000\n"
 "Last-Translator: Val Lorentz <progval+git@progval.net>\n"
 "Language-Team: French\n"
@@ -2635,7 +2635,7 @@ msgstr ""
 #: ../modules/operserv/os_session.cpp
 #, c-format
 msgid ""
-"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time. Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
+"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time, or capping a host below the default (even when there is no default limit). Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
 "\n"
 "%sADD adds the given host mask to the exception list. Note that nick!user@host and user@host masks are invalid! Only real host masks, such as box.host.dom and *.host.dom, are allowed because sessions limiting does not take nick or user names into account. limit must be a number greater than or equal to zero. This determines how many sessions this host may carry at a time. A value of zero means the host has an unlimited session limit. See the AKILL help for details about the format of the optional expiry parameter. \n"
 "\n"
@@ -2645,7 +2645,7 @@ msgid ""
 "\n"
 "Note that a connecting client will \"use\" the first exception their host matches."
 msgstr ""
-"Permet aux Opérateurices des Services de manipuler la liste des hôtes ayant des limites de sessions spécifiques - permettant à certaines machines, comme des serveurs shell, d'avoir plus que le nombre de clients par défaut en même temps. Une fois qu'un hôte atteint sa limite de sessions, tous les clients tentant de se connecter depuis cet hôte seront tués. Avant d'être tué(e), l'utilisateurice est informé(e) d'une source d'aide concernant la limitation de sessions. Le contenu de cette notice est un paramètre de configuration.\n"
+"Permet aux Opérateurices des Services de manipuler la liste des hôtes ayant des limites de sessions spécifiques - permettant à certaines machines, comme des serveurs shell, d'avoir plus que le nombre de clients par défaut en même temps, ou de limiter un hôte en dessous de la valeur par défaut (même lorsqu'il n'y a pas de limite par défaut). Une fois qu'un hôte atteint sa limite de sessions, tous les clients tentant de se connecter depuis cet hôte seront tués. Avant d'être tué(e), l'utilisateurice est informé(e) d'une source d'aide concernant la limitation de sessions. Le contenu de cette notice est un paramètre de configuration.\n"
 "\n"
 "%sADD ajoute le masque d'hôte donné à la liste des exceptions. Notez que les masques pseudo!user@hôte et user@hôte sont invalides ! Seuls de vrais masques d'hôte, comme box.host.dom et *.host.dom, sont permis, car la limitation de sessions ne tient pas compte des pseudos ni des noms d'utilisateurice. limite doit être un nombre supérieur ou égal à zéro. Il détermine combien de sessions cet hôte peut avoir en même temps. Une valeur de zéro signifie que l'hôte n'a pas de limite de sessions. Consultez l'aide d'AKILL pour les détails sur le format du paramètre optionnel expiration. \n"
 "\n"
@@ -7841,10 +7841,6 @@ msgstr "Session"
 msgid "Session limit for %s set to %d."
 msgstr "La limite de sessions de %s est maintenant de %d."
 
-#: ../modules/operserv/os_session.cpp
-msgid "Session limiting is disabled."
-msgstr "La limitation de sessions est désactivée."
-
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
@@ -11527,6 +11523,9 @@ msgstr "{number} : {topic} -- défini par {by} le {set}"
 #, c-format
 #~ msgid "Registered nick groups: %zu entries, %zu buckets, longest chain is %zu"
 #~ msgstr "Groupe de pseudos enregistrés : %zu entrées, %zu paniers, plus longue chaîne : %zu"
+
+#~ msgid "Session limiting is disabled."
+#~ msgstr "La limitation de sessions est désactivée."
 
 #~ msgid "Set the vhost for all nicks in a group"
 #~ msgstr "Configure le vhost pour tous les pseudos d'un groupe"

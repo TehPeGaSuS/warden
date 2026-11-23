@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:37+0100\n"
+"POT-Creation-Date: 2026-11-23 20:03+0100\n"
 "PO-Revision-Date: 2026-08-15 19:55+0200\n"
 "Last-Translator: PeGaSuS <25697531+TehPeGaSuS@users.noreply.github.com>\n"
 "Language-Team: Portuguese (Portugal)\n"
@@ -2635,7 +2635,7 @@ msgstr ""
 #: ../modules/operserv/os_session.cpp
 #, c-format
 msgid ""
-"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time. Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
+"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time, or capping a host below the default (even when there is no default limit). Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
 "\n"
 "%sADD adds the given host mask to the exception list. Note that nick!user@host and user@host masks are invalid! Only real host masks, such as box.host.dom and *.host.dom, are allowed because sessions limiting does not take nick or user names into account. limit must be a number greater than or equal to zero. This determines how many sessions this host may carry at a time. A value of zero means the host has an unlimited session limit. See the AKILL help for details about the format of the optional expiry parameter. \n"
 "\n"
@@ -2645,7 +2645,7 @@ msgid ""
 "\n"
 "Note that a connecting client will \"use\" the first exception their host matches."
 msgstr ""
-"Permite que Operadores de Serviços manipulem a lista de hosts que têm limites de sessão específicos - permitindo que certas máquinas, como servidores shell, suportem mais do que o número padrão de clientes de cada vez. Quando um host atinge o seu limite de sessão, todos os clientes a tentar conectar-se desse host serão mortos. Antes de o utilizador ser morto, é notificado sobre uma fonte de ajuda relativa à limitação de sessão. O conteúdo deste aviso é uma definição de configuração.\n"
+"Permite que Operadores de Serviços manipulem a lista de hosts que têm limites de sessão específicos - permitindo que certas máquinas, como servidores shell, suportem mais do que o número padrão de clientes de cada vez, ou limitando um host abaixo do padrão (mesmo quando não há limite padrão). Quando um host atinge o seu limite de sessão, todos os clientes a tentar conectar-se desse host serão mortos. Antes de o utilizador ser morto, é notificado sobre uma fonte de ajuda relativa à limitação de sessão. O conteúdo deste aviso é uma definição de configuração.\n"
 "\n"
 "%sADD adiciona a máscara de host fornecida à lista de exceções. Nota que as máscaras nick!user@host e user@host são inválidas! Apenas máscaras de host reais, como box.host.dom e *.host.dom, são permitidas porque a limitação de sessões não tem em conta nomes de nick ou user. limite deve ser um número maior ou igual a zero. Isto determina quantas sessões este host pode suportar de cada vez. Um valor de zero significa que o host tem um limite de sessão ilimitado. Consulta a ajuda do AKILL para detalhes sobre o formato do parâmetro opcional expira. \n"
 "\n"
@@ -7831,10 +7831,6 @@ msgstr "Sessão"
 msgid "Session limit for %s set to %d."
 msgstr "Limite de sessão para %s definido para %d."
 
-#: ../modules/operserv/os_session.cpp
-msgid "Session limiting is disabled."
-msgstr "A limitação de sessão está desativada."
-
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
@@ -11107,6 +11103,9 @@ msgstr "{number}: {topic} -- definido por {by} em {set}"
 
 #~ msgid "Password accepted."
 #~ msgstr "Palavra-passe aceite."
+
+#~ msgid "Session limiting is disabled."
+#~ msgstr "A limitação de sessão está desativada."
 
 #~ msgid "To search for channels starting with #, search for the channel name without the #-sign prepended (warden instead of #warden)."
 #~ msgstr "Para procurar canais que começam com #, procura o nome do canal sem o sinal # no início (warden em vez de #warden)."

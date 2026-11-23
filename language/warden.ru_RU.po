@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:37+0100\n"
+"POT-Creation-Date: 2026-11-23 20:03+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -2624,7 +2624,7 @@ msgstr ""
 #: ../modules/operserv/os_session.cpp
 #, c-format
 msgid ""
-"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time. Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
+"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time, or capping a host below the default (even when there is no default limit). Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
 "\n"
 "%sADD adds the given host mask to the exception list. Note that nick!user@host and user@host masks are invalid! Only real host masks, such as box.host.dom and *.host.dom, are allowed because sessions limiting does not take nick or user names into account. limit must be a number greater than or equal to zero. This determines how many sessions this host may carry at a time. A value of zero means the host has an unlimited session limit. See the AKILL help for details about the format of the optional expiry parameter. \n"
 "\n"
@@ -2634,13 +2634,13 @@ msgid ""
 "\n"
 "Note that a connecting client will \"use\" the first exception their host matches."
 msgstr ""
-"Позволяет операторам сервисов управлять списком хостов, имеющих определенные лимиты сессий, — позволяя таким машинам, как shell-серверы, одновременно поддерживать больше клиентов, чем по умолчанию. Как только хост достигает своего лимита сессий, все клиенты, пытающиеся подключиться с этого хоста, будут убиты (KILL). Прежде чем пользователь будет убит, ему сообщают об источнике помощи в отношении ограничения сессий. Содержание этого уведомления задается в конфигурации.\n"
+"Позволяет операторам сервисов управлять списком хостов, имеющих определенные лимиты сессий, — позволяя таким машинам, как shell-серверы, одновременно поддерживать больше клиентов, чем по умолчанию, или ограничивая хост ниже значения по умолчанию (даже когда лимита по умолчанию нет). Как только хост достигает своего лимита сессий, все клиенты, пытающиеся подключиться с этого хоста, будут убиты (KILL). Прежде чем пользователь будет убит, ему сообщают об источнике помощи в отношении ограничения сессий. Содержание этого уведомления задается в конфигурации.\n"
 "\n"
-"%sADD добавляет указанную маску хоста в список исключений. Обратите внимание, что маски ник!пользователь@хост и пользователь@хост недействительны! Разрешены только реальные маски хостов, такие как box.host.dom и *.host.dom, потому что ограничение сессий не учитывает ники или имена пользователей. limit должен быть числом больше или равным нулю. Это определяет, сколько сессий этот хост может поддерживать одновременно. Значение ноль означает, что у хоста нет ограничений на количество сессий. См. справку по AKILL для получения подробной информации о формате необязательного параметра expiry. \n"
+"%sADD добавляет указанную маску хоста в список исключений. Обратите внимание, что маски ник!пользователь@хост и пользователь@хост недействительны! Разрешены только реальные маски хостов, такие как box.host.dom и *.host.dom, потому что ограничение сессий не учитывает ники или имена пользователей. limit должен быть числом больше или равным нулю. Это определяет, сколько сессий этот хост может поддерживать одновременно. Значение ноль означает, что у хоста нет ограничений на количество сессий. См. справку по AKILL для получения подробной информации о формате необязательного параметра expiry. \n"
 "\n"
-"%sDEL удаляет указанную маску из списка исключений.\n"
+"%sDEL удаляет указанную маску из списка исключений.\n"
 "\n"
-"%sLIST и %sVIEW показывают все текущие сессии. Если указана необязательная маска, список ограничивается сессиями, соответствующими этой маске. Разница в том, что %sVIEW более подробный: он отображает имя человека, добавившего исключение, лимит его сессий, причину, маску хоста, а также дату и время истечения срока. \n"
+"%sLIST и %sVIEW показывают все текущие сессии. Если указана необязательная маска, список ограничивается сессиями, соответствующими этой маске. Разница в том, что %sVIEW более подробный: он отображает имя человека, добавившего исключение, лимит его сессий, причину, маску хоста, а также дату и время истечения срока. \n"
 "\n"
 "Обратите внимание, что подключающийся клиент будет «использовать» первое исключение, которому соответствует его хост."
 
@@ -7767,10 +7767,6 @@ msgstr "Сессия"
 msgid "Session limit for %s set to %d."
 msgstr "Лимит сессий для %s установлен в %d."
 
-#: ../modules/operserv/os_session.cpp
-msgid "Session limiting is disabled."
-msgstr "Ограничение сессий отключено."
-
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
@@ -11036,6 +11032,9 @@ msgstr "{number}: {topic} -- установил(а) {by} в {set}"
 
 #~ msgid "Forbid allows you to forbid usage of certain nicknames, channels, and email addresses. Wildcards are accepted for all entries."
 #~ msgstr "Forbid позволяет запретить использование определенных ников, каналов и адресов электронной почты. Для всех записей принимаются подстановочные знаки."
+
+#~ msgid "Session limiting is disabled."
+#~ msgstr "Ограничение сессий отключено."
 
 #~ msgid "To search for channels starting with #, search for the channel name without the #-sign prepended (warden instead of #warden)."
 #~ msgstr "Чтобы искать каналы, начинающиеся с #, ищите имя канала без предшествующего знака # (warden вместо #warden)."

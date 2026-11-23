@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:37+0100\n"
+"POT-Creation-Date: 2026-11-23 20:03+0100\n"
 "PO-Revision-Date: 2025-02-23 03:23+0100\n"
 "Last-Translator: Robby <robby@chatbelgie.be>\n"
 "Language-Team: Dutch\n"
@@ -2634,7 +2634,7 @@ msgstr ""
 #: ../modules/operserv/os_session.cpp
 #, c-format
 msgid ""
-"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time. Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
+"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time, or capping a host below the default (even when there is no default limit). Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
 "\n"
 "%sADD adds the given host mask to the exception list. Note that nick!user@host and user@host masks are invalid! Only real host masks, such as box.host.dom and *.host.dom, are allowed because sessions limiting does not take nick or user names into account. limit must be a number greater than or equal to zero. This determines how many sessions this host may carry at a time. A value of zero means the host has an unlimited session limit. See the AKILL help for details about the format of the optional expiry parameter. \n"
 "\n"
@@ -2644,7 +2644,7 @@ msgid ""
 "\n"
 "Note that a connecting client will \"use\" the first exception their host matches."
 msgstr ""
-"Stelt Services Operators in staat de lijst te beheren van hosts met specifieke sessielimieten - zodat bepaalde machines, zoals shellservers, meer dan het standaard aantal clients tegelijk kunnen hebben. Zodra een host zijn sessielimiet bereikt, worden alle clients die vanaf die host proberen te verbinden gekilld. Voordat de gebruiker gekilld wordt, krijgt hij een melding met een bron van hulp over sessielimitering. De inhoud van deze melding is een configuratie-instelling.\n"
+"Stelt Services Operators in staat de lijst te beheren van hosts met specifieke sessielimieten - zodat bepaalde machines, zoals shellservers, meer dan het standaard aantal clients tegelijk kunnen hebben, of een host onder de standaard te begrenzen (zelfs als er geen standaardlimiet is). Zodra een host zijn sessielimiet bereikt, worden alle clients die vanaf die host proberen te verbinden gekilld. Voordat de gebruiker gekilld wordt, krijgt hij een melding met een bron van hulp over sessielimitering. De inhoud van deze melding is een configuratie-instelling.\n"
 "\n"
 "%sADD voegt het gegeven hostmasker toe aan de uitzonderingenlijst. Let op: nick!ident@host en ident@host maskers zijn ongeldig! Alleen echte hostmaskers, zoals box.host.dom en *.host.dom, zijn toegestaan omdat sessielimitering geen rekening houdt met nicks of idents. limiet moet een getal groter dan of gelijk aan nul zijn. Dit bepaalt hoeveel sessies deze host tegelijk mag hebben. Een waarde van nul betekent dat de host een ongelimiteerde sessielimiet heeft. Bekijk de AKILL help voor details over het formaat van de optionele verlooptijd parameter. \n"
 "\n"
@@ -7832,10 +7832,6 @@ msgstr "Sessie"
 msgid "Session limit for %s set to %d."
 msgstr "Sessielimiet voor %s veranderd naar %d."
 
-#: ../modules/operserv/os_session.cpp
-msgid "Session limiting is disabled."
-msgstr "Sessielimitering is uitgeschakeld."
-
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
@@ -11502,6 +11498,9 @@ msgstr "{number}: {topic} -- ingesteld door {by} op {set}"
 #, c-format
 #~ msgid "Registered nick groups: %zu entries, %zu buckets, longest chain is %zu"
 #~ msgstr "Geregistreerde nickgroepen: %zu vermeldingen, %zu emmers, langste ketting is %zu"
+
+#~ msgid "Session limiting is disabled."
+#~ msgstr "Sessielimitering is uitgeschakeld."
 
 #~ msgid "Set the vhost for all nicks in a group"
 #~ msgstr "Stel de vhost voor alle nicks in een groep in"

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:37+0100\n"
+"POT-Creation-Date: 2026-11-23 20:03+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -2635,7 +2635,7 @@ msgstr ""
 #: ../modules/operserv/os_session.cpp
 #, c-format
 msgid ""
-"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time. Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
+"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time, or capping a host below the default (even when there is no default limit). Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
 "\n"
 "%sADD adds the given host mask to the exception list. Note that nick!user@host and user@host masks are invalid! Only real host masks, such as box.host.dom and *.host.dom, are allowed because sessions limiting does not take nick or user names into account. limit must be a number greater than or equal to zero. This determines how many sessions this host may carry at a time. A value of zero means the host has an unlimited session limit. See the AKILL help for details about the format of the optional expiry parameter. \n"
 "\n"
@@ -2645,7 +2645,7 @@ msgid ""
 "\n"
 "Note that a connecting client will \"use\" the first exception their host matches."
 msgstr ""
-"Permite Operatorilor de Servicii să manipuleze lista de gazde cu limite specifice de sesiune - permițând anumitor mașini, cum ar fi serverele shell, să țină simultan mai mulți clienți decât numărul implicit. Odată ce o gazdă atinge limita de sesiuni, toți clienții care încearcă să se conecteze de pe acea gazdă vor fi deconectați. Înainte ca utilizatorul să fie deconectat, acesta este notificat despre o sursă de ajutor privind limitarea sesiunilor. Conținutul acestei notificări este o setare în configurare.\n"
+"Permite Operatorilor de Servicii să manipuleze lista de gazde cu limite specifice de sesiune - permițând anumitor mașini, cum ar fi serverele shell, să țină simultan mai mulți clienți decât numărul implicit, sau limitând o gazdă sub valoarea implicită (chiar și atunci când nu există o limită implicită). Odată ce o gazdă atinge limita de sesiuni, toți clienții care încearcă să se conecteze de pe acea gazdă vor fi deconectați. Înainte ca utilizatorul să fie deconectat, acesta este notificat despre o sursă de ajutor privind limitarea sesiunilor. Conținutul acestei notificări este o setare în configurare.\n"
 "\n"
 "%sADD adaugă masca gazdă precizată la lista de excepții. Rețineți că măștile pseudonim!utilizator@gazdă și utilizator@gazdă sunt invalide! Sunt permise doar măști de gazdă reale, cum ar fi subdomeniu.domeniu.tld și *.domeniu.tld, deoarece limitarea de sesiuni nu ia în considerare pseudonimul și numele de utilizator. limita trebuie să fie un număr mai mare sau egal cu zero. Aceasta determină câte sesiuni poate gestiona simultan această gazdă. O valoare zero înseamnă că gazda are o limită nelimitată de sesiuni. Consultați ajutorul AKILL pentru detalii despre formatul parametrului de expirare opțional.\n"
 "\n"
@@ -7829,10 +7829,6 @@ msgstr "Sesiune"
 msgid "Session limit for %s set to %d."
 msgstr "Limita de sesiuni pentru %s a fost setată la %d."
 
-#: ../modules/operserv/os_session.cpp
-msgid "Session limiting is disabled."
-msgstr "Limitarea de sesiuni este dezactivată."
-
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
@@ -11102,6 +11098,9 @@ msgstr "{number}: {topic} -- setat de {by} la {set}"
 
 #~ msgid "Forbid allows you to forbid usage of certain nicknames, channels, and email addresses. Wildcards are accepted for all entries."
 #~ msgstr "Forbid vă permite să interziceți utilizarea anumitor pseudonime, canale și adrese de email. Se acceptă caractere wildcard pentru toate intrările."
+
+#~ msgid "Session limiting is disabled."
+#~ msgstr "Limitarea de sesiuni este dezactivată."
 
 #~ msgid "To search for channels starting with #, search for the channel name without the #-sign prepended (warden instead of #warden)."
 #~ msgstr "Pentru a căuta canale care încep cu #, căutați numele canalului fără semnul # adăugat înaintea acestuia (warden în loc de #warden)."

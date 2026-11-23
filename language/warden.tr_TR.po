@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:37+0100\n"
+"POT-Creation-Date: 2026-11-23 20:03+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -2639,7 +2639,7 @@ msgstr ""
 #: ../modules/operserv/os_session.cpp
 #, c-format
 msgid ""
-"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time. Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
+"Allows Services Operators to manipulate the list of hosts that have specific session limits - allowing certain machines, such as shell servers, to carry more than the default number of clients at a time, or capping a host below the default (even when there is no default limit). Once a host reaches its session limit, all clients attempting to connect from that host will be killed. Before the user is killed, they are notified, of a source of help regarding session limiting. The content of this notice is a config setting.\n"
 "\n"
 "%sADD adds the given host mask to the exception list. Note that nick!user@host and user@host masks are invalid! Only real host masks, such as box.host.dom and *.host.dom, are allowed because sessions limiting does not take nick or user names into account. limit must be a number greater than or equal to zero. This determines how many sessions this host may carry at a time. A value of zero means the host has an unlimited session limit. See the AKILL help for details about the format of the optional expiry parameter. \n"
 "\n"
@@ -2649,7 +2649,7 @@ msgid ""
 "\n"
 "Note that a connecting client will \"use\" the first exception their host matches."
 msgstr ""
-"Servis Operatörlerinin; belirli oturum sınırlarına sahip ana makineler (shell sunucuları gibi belirli makinelerin bir seferde varsayılan istemci sayısından daha fazlasını taşımasına) listesini değiştirmesine  izin verir. Bir ana makine oturum sınırına ulaştığında, o ana makineden bağlanmaya çalışan tüm istemciler killenir. Kullanıcı killenmeden önce, oturum sınırlamasıyla ilgili bir yardım kaynağı hakkında bilgilendirilir. Bu bildirimin içeriği bir yapılandırma ayarıdır.\n"
+"Servis Operatörlerinin; belirli oturum sınırlarına sahip ana makineler (shell sunucuları gibi belirli makinelerin bir seferde varsayılan istemci sayısından daha fazlasını taşımasına veya bir ana makineyi varsayılanın altında sınırlamaya (varsayılan bir sınır olmasa bile)) listesini değiştirmesine  izin verir. Bir ana makine oturum sınırına ulaştığında, o ana makineden bağlanmaya çalışan tüm istemciler killenir. Kullanıcı killenmeden önce, oturum sınırlamasıyla ilgili bir yardım kaynağı hakkında bilgilendirilir. Bu bildirimin içeriği bir yapılandırma ayarıdır.\n"
 "\n"
 "%sADD, belirtilen host maskesini istisna listesine ekler. rumuz!ident@host ve ident@host maskelerinin geçersiz olduğunu unutmayın! Yalnızca box.host.dom ve *.host.dom gibi gerçek host maskelerine izin verilir çünkü oturum sınırlamasında rumuz veya kullanıcı adları dikkate alınmaz. limit sıfırdan büyük veya sıfıra eşit bir sayı olmalıdır. Bu, bu hostun aynı anda kaç oturum taşıyabileceğini belirler. Sıfır değeri, hostun sınırsız oturum sınırına sahip olduğu anlamına gelir. İsteğe bağlı sona-erme parametresinin formatıyla ilgili ayrıntılar için AKILL yardımına bakın. \n"
 "\n"
@@ -7837,10 +7837,6 @@ msgstr "Oturum"
 msgid "Session limit for %s set to %d."
 msgstr "%s için oturum sınırı %d olarak ayarlandı."
 
-#: ../modules/operserv/os_session.cpp
-msgid "Session limiting is disabled."
-msgstr "Oturum limitleme devre dışı."
-
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
@@ -11261,6 +11257,9 @@ msgstr "{number}: {topic} -- {by} tarafından {set} tarihinde ayarlandı"
 
 #~ msgid "Passwords can not be changed right now. Please try again later."
 #~ msgstr "Şifreler şu anda değiştirilemez. Lütfen daha sonra tekrar deneyiniz."
+
+#~ msgid "Session limiting is disabled."
+#~ msgstr "Oturum limitleme devre dışı."
 
 #~ msgid ""
 #~ "Sets the vhost for all nicks in the same account as that of the given nick. If your IRCD supports vidents, then using SETALL <nick> <ident>@<hostmask> will set idents for users as well as vhosts.\n"

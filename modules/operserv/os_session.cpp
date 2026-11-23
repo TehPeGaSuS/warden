@@ -276,10 +276,8 @@ private:
 		unsigned limit = session_limit;
 		if (exception)
 		{
-			if (!exception->limit)
-				limit = 0;
-			else if (exception->limit > limit)
-				limit = exception->limit;
+			// An exception sets the limit for its mask; 0 means none.
+			limit = exception->limit;
 			entry = exception->mask;
 		}
 
@@ -302,9 +300,7 @@ public:
 
 		Log(LOG_ADMIN, source, this) << cmd << " " << params[1];
 
-		if (!session_limit)
-			source.Reply(_("Session limiting is disabled."));
-		else if (cmd.equals_ci("LIST"))
+		if (cmd.equals_ci("LIST"))
 			return this->DoList(source, params);
 		else if (cmd.equals_ci("VIEW"))
 			return this->DoView(source, params);
@@ -572,9 +568,7 @@ public:
 	{
 		const Warden::string &cmd = params[0];
 
-		if (!session_limit)
-			source.Reply(_("Session limiting is disabled."));
-		else if (cmd.equals_ci("ADD"))
+		if (cmd.equals_ci("ADD"))
 			return this->DoAdd(source, params);
 		else if (cmd.equals_ci("DEL"))
 			return this->DoDel(source, params);
@@ -594,7 +588,8 @@ public:
 				"Allows Services Operators to manipulate the list of hosts that "
 				"have specific session limits - allowing certain machines, "
 				"such as shell servers, to carry more than the default number "
-				"of clients at a time. Once a host reaches its session limit, "
+				"of clients at a time, or capping a host below the default "
+				"(even when there is no default limit). Once a host reaches its session limit, "
 				"all clients attempting to connect from that host will be "
 				"killed. Before the user is killed, they are notified, of a "
 				"source of help regarding session limiting. The content of "
@@ -678,7 +673,9 @@ public:
 
 	void OnUserConnect(User *u, bool &exempt) override
 	{
-		if (u->Quitting() || !session_limit || exempt || !u->server || u->server->IsULined())
+		// Sessions are counted even with no default limit, so exceptions
+		// can still cap single hosts.
+		if (u->Quitting() || exempt || !u->server || u->server->IsULined())
 			return;
 
 		cidr u_ip(u->ip, u->ip.ipv6() ? ipv6_cidr : ipv4_cidr);
@@ -689,18 +686,12 @@ public:
 
 		if (session)
 		{
-			bool kill = false;
-			if (session->count >= session_limit)
-			{
-				kill = true;
-				auto *exception = this->ss.FindException(u);
-				if (exception)
-				{
-					kill = false;
-					if (exception->limit && session->count >= exception->limit)
-						kill = true;
-				}
-			}
+			// An exception sets the limit for its mask (raising or lowering
+			// the default); 0 means no limit.
+			auto limit = session_limit;
+			if (auto *exception = this->ss.FindException(u))
+				limit = exception->limit;
+			const auto kill = limit && session->count >= limit;
 
 			/* Previously on IRCds that send a QUIT (InspIRCD) when a user is killed, the session for a host was
 			 * decremented in do_quit, which caused problems and fixed here
@@ -751,7 +742,7 @@ public:
 
 	void OnUserQuit(User *u, const Warden::string &msg) override
 	{
-		if (!session_limit || !u->server || u->server->IsULined())
+		if (!u->server || u->server->IsULined())
 			return;
 
 		auto &sessions = this->ss.GetSessions();
