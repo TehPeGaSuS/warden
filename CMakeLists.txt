@@ -148,7 +148,7 @@ endif()
 if(INSTDIR)
   set(CMAKE_INSTALL_PREFIX "${INSTDIR}")
 elseif(NOT CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/warden-${VERSION_MAJOR}-${VERSION_MINOR}")
+  set(CMAKE_INSTALL_PREFIX "$ENV{HOME}/warden")
 endif()
 
 function(configure_path VARIABLE DEFAULT)

@@ -79,7 +79,7 @@ Run_Build_System () {
 # Init values
 ###########################################################################
 
-INSTDIR="${HOME}/warden-${VERSION_MAJOR}.${VERSION_MINOR}"
+INSTDIR="${HOME}/warden"
 RUNGROUP=
 UMASK=
 DEBUG="no"

@@ -11,7 +11,7 @@ set(version_BINARY "$<TARGET_FILE:version-bin>")
 # and all of the source files in the main build
 add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/version.h ${CMAKE_CURRENT_BINARY_DIR}/build.h
   COMMAND ${version_BINARY} ${Warden_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR}/version.h ${CMAKE_CURRENT_BINARY_DIR}/build.h
-  DEPENDS ${version_BINARY} ${SRC_SRCS}
+  DEPENDS ${version_BINARY} ${SRC_SRCS} ${Warden_SOURCE_DIR}/src/version.sh
 )
 
 # Add a custom target to the above file
