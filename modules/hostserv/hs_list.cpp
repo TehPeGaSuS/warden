@@ -19,23 +19,28 @@ class CommandHSList final
 	: public Command
 {
 public:
-	CommandHSList(Module *creator) : Command(creator, "hostserv/list", 0, 1)
+	CommandHSList(Module *creator) : Command(creator, "hostserv/list", 0, 2)
 	{
 		this->SetDesc(_("Display one or more vhost entries"));
-		this->SetSyntax(_("[\037key\037|\037#X-Y\037]"));
+		this->SetSyntax(_("[\037key\037] [\037#X-Y\037]"));
 	}
 
 	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		const Warden::string &key = !params.empty() ? params[0] : "";
-		int from = 0, to = 0, counter = 1;
-
-		/**
-		 * Do a check for a range here, then in the next loop
-		 * we'll only display what has been requested..
-		 **/
-		if (!key.empty() && key[0] == '#')
+		// LIST [key] [#X-Y]: a pattern, a range, or both.
+		Warden::string key, range;
+		for (const auto &param : params)
 		{
+			if (param[0] == '#')
+				range = param;
+			else
+				key = param;
+		}
+		int from = 0, to = 0;
+
+		if (!range.empty())
+		{
+			const auto &key = range;
 			size_t tmp = key.find('-');
 			if (tmp == Warden::string::npos || tmp == key.length() || tmp == 1)
 			{
@@ -55,70 +60,66 @@ public:
 			}
 		}
 
-		unsigned display_counter = 0, listmax = Config->GetModule(this->owner).Get<unsigned>("listmax", "50");
+		// Without a range only listmax entries are shown; a range is the
+		// oper's own paging, so it isn't capped (anope/anope#498).
+		const unsigned listmax = Config->GetModule(this->owner).Get<unsigned>("listmax", "50");
+		const bool pattern = !key.empty();
+		const unsigned cap = from ? 0 : listmax;
+		unsigned matched = 0, shown = 0, shown_from = 0, shown_to = 0;
 
 		ListFormatter list(source.GetAccount());
 		list.AddColumn(_("Number")).AddColumn(_("Nick")).AddColumn(_("VHost")).AddColumn(_("Creator")).AddColumn(_("Created"));
 		list.SetFlexible(_("{number}: \002{nick}\002 = {vhost} -- created by {creator} at {created}"));
 
+		// Sorted by nick, so pages stay stable between calls.
+		std::vector<NickAlias *> vhosts;
 		for (const auto &[_, na] : *NickAliasList)
+			if (na->HasVHost())
+				vhosts.push_back(na);
+		std::sort(vhosts.begin(), vhosts.end(), [](const NickAlias *a, const NickAlias *b) { return ci::less()(a->nick, b->nick); });
+
+		for (auto *na : vhosts)
 		{
-			if (!na->HasVHost())
+			if (pattern && !Warden::Match(na->nick, key) && !Warden::Match(na->GetVHostHost(), key))
 				continue;
 
-			if (!key.empty() && key[0] != '#')
-			{
-				if ((Warden::Match(na->nick, key) || Warden::Match(na->GetVHostHost(), key)) && display_counter < listmax)
-				{
-					++display_counter;
+			++matched;
+			if (from && (matched < static_cast<unsigned>(from) || matched > static_cast<unsigned>(to)))
+				continue;
+			if (cap && shown >= cap)
+				continue;
 
-					ListFormatter::ListEntry entry;
-					entry["Number"] = Warden::ToString(display_counter);
-					entry["Nick"] = na->nick;
-					entry["VHost"] = na->GetVHostMask();
-					entry["Creator"] = na->GetVHostCreator();
-					entry["Created"] = Warden::strftime(na->GetVHostCreated(), NULL, true);
-					list.AddEntry(entry);
-				}
-			}
-			else
-			{
-				/**
-				 * List the host if its in the display range, and not more
-				 * than NSListMax records have been displayed...
-				 **/
-				if (((counter >= from && counter <= to) || (!from && !to)) && display_counter < listmax)
-				{
-					++display_counter;
-					ListFormatter::ListEntry entry;
-					entry["Number"] = Warden::ToString(display_counter);
-					entry["Nick"] = na->nick;
-					entry["VHost"] = na->GetVHostMask();
-					entry["Creator"] = na->GetVHostCreator();
-					entry["Created"] = Warden::strftime(na->GetVHostCreated(), NULL, true);
-					list.AddEntry(entry);
-				}
-			}
-			++counter;
+			if (!shown)
+				shown_from = matched;
+			shown_to = matched;
+			++shown;
+
+			ListFormatter::ListEntry entry;
+			entry["Number"] = Warden::ToString(matched);
+			entry["Nick"] = na->nick;
+			entry["VHost"] = na->GetVHostMask();
+			entry["Creator"] = na->GetVHostCreator();
+			entry["Created"] = Warden::strftime(na->GetVHostCreated(), NULL, true);
+			list.AddEntry(entry);
 		}
 
-		if (!display_counter)
+		if (!shown)
 		{
-			source.Reply(_("No records to display."));
+			if (matched)
+				source.Reply(_("The range is past the last of the %u vhosts."), matched);
+			else
+				source.Reply(_("No records to display."));
 			return;
 		}
 
-		if (!key.empty())
-			source.Reply(_("Displayed records matching key \002%s\002 (count: \002%d\002)."), key.c_str(), display_counter);
-		else
-		{
-			if (from)
-				source.Reply(_("Displayed records from \002%d\002 to \002%d\002."), from, to);
-			else
-				source.Reply(_("Displayed all records (count: \002%d\002)."), display_counter);
-		}
-
 		list.SendTo(source);
+
+		if (shown >= matched)
+			source.Reply(_("End of vhost list - %u vhosts shown."), shown);
+		else if (shown_to >= matched)
+			source.Reply(_("End of vhost list - %u/%u vhosts shown (%u-%u)."), shown, matched, shown_from, shown_to);
+		else
+			source.Reply(_("End of vhost list - %u/%u vhosts shown (%u-%u). Give a range such as \002#%u-%u\002 to see more."), shown, matched, shown_from, shown_to, shown_to + 1, shown_to + shown);
 	}
 
 	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
@@ -132,7 +133,9 @@ public:
 			"entries beginning with \"Rob\". "
 			"If a \037#X-Y\037 style is used, only entries between the range of \002X\002 "
 			"and \002Y\002 will be displayed, e.g. \002#1-3\002 will display the first 3 "
-			"nick/vhost entries."
+			"nick/vhost entries. Both can be given together, e.g. \002Rob* #51-100\002. Without a range, long lists are cut short; the "
+			"last line says how many vhosts there are and which range to ask "
+			"for next."
 		));
 		return true;
 	}
