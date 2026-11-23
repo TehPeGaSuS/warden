@@ -370,6 +370,7 @@ void User::Identify(NickAlias *na)
 
 	FOREACH_MOD(OnNickIdentify, (this));
 
+	this->CheckServicesOperMismatch();
 	if (this->IsServicesOper())
 	{
 		if (!this->nc->o->ot->modes.empty())
@@ -494,6 +495,44 @@ bool User::IsServicesOper()
 	return MOD_RESULT != EVENT_STOP;
 }
 
+bool User::CheckServicesOperMismatch(bool password_ok)
+{
+	if (!this->nc || !this->nc->IsServicesOper())
+		return false;
+
+	const auto *oper = this->nc->o;
+	if (oper->require_oper && !this->HasMode("OPER"))
+		return false; // Don't tell non-opers anything about the oper block.
+	if (!oper->password.empty() && !password_ok)
+		return false; // Wait until they have proven they know the password.
+
+	if (!oper->certfp.empty() && std::find(oper->certfp.begin(), oper->certfp.end(), this->fingerprint) == oper->certfp.end())
+	{
+		if (this->fingerprint.empty())
+			this->SendMessage(NULL, _("Your services operator access is not active: your oper block requires a TLS client certificate, but you are not using one."));
+		else
+			this->SendMessage(NULL, _("Your services operator access is not active: your TLS client certificate fingerprint does not match your oper block."));
+		Log(LOG_ADMIN) << "Services operator access for " << this->GetMask() << " (" << this->nc->display << ") not active: TLS fingerprint "
+			<< (this->fingerprint.empty() ? "(none)" : this->fingerprint) << " does not match the oper block";
+		return true;
+	}
+
+	if (!oper->hosts.empty())
+	{
+		const auto match_host = this->GetIdent() + "@" + this->host;
+		const auto match_ip = this->GetIdent() + "@" + this->ip.addr();
+		for (const auto &userhost : oper->hosts)
+			if (Warden::Match(match_host, userhost) || Warden::Match(match_ip, userhost))
+				return false;
+
+		this->SendMessage(NULL, _("Your services operator access is not active: your user@host does not match your oper block."));
+		Log(LOG_ADMIN) << "Services operator access for " << this->GetMask() << " (" << this->nc->display << ") not active: "
+			<< match_host << " / " << match_ip << " does not match the oper block's hosts";
+		return true;
+	}
+	return false;
+}
+
 bool User::HasCommand(const Warden::string &command)
 {
 	if (this->IsServicesOper())
@@ -552,6 +591,7 @@ void User::SetModeInternal(const MessageSource &source, UserMode *um, const Mode
 	{
 		++OperCount;
 
+		this->CheckServicesOperMismatch();
 		if (this->IsServicesOper())
 		{
 			if (!this->nc->o->ot->modes.empty())

@@ -246,6 +246,15 @@ public:
 	 */
 	bool IsServicesOper();
 
+	/** If the user would be a services oper but their TLS fingerprint or
+	 * user@host doesn't match their oper block, tells them so and logs the
+	 * details (anope/anope#556). Says nothing unless require_oper is met.
+	 * @param password_ok True if they have just logged in with the oper
+	 * block's password; otherwise blocks with a password stay silent.
+	 * @return True if a mismatch was reported.
+	 */
+	bool CheckServicesOperMismatch(bool password_ok = false);
+
 	/** Check whether this user has access to run the given command string.
 	  * @param cmdstr The string to check, e.g. botserv/set/private.
 	  * @return True if this user may run the specified command, false otherwise.

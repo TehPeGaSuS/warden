@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 12:21+0100\n"
+"POT-Creation-Date: 2026-11-23 13:08+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -8879,6 +8879,18 @@ msgstr ""
 
 #: ../modules/hostserv/hs_request.cpp
 msgid "Your requested vhost has been validated via DNS."
+msgstr ""
+
+#: ../src/users.cpp
+msgid "Your services operator access is not active: your TLS client certificate fingerprint does not match your oper block."
+msgstr ""
+
+#: ../src/users.cpp
+msgid "Your services operator access is not active: your oper block requires a TLS client certificate, but you are not using one."
+msgstr ""
+
+#: ../src/users.cpp
+msgid "Your services operator access is not active: your user@host does not match your oper block."
 msgstr ""
 
 #: ../modules/hostserv/hs_offer.cpp

@@ -59,7 +59,8 @@ public:
 		{
 			Log(LOG_ADMIN, source, this) << "and successfully identified to " << source.service->nick;
 			u->Extend<bool>("os_login");
-			source.Reply(_("You are now a Services Operator."));
+			if (!u->CheckServicesOperMismatch(true))
+				source.Reply(_("You are now a Services Operator."));
 		}
 	}
 
