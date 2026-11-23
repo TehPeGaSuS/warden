@@ -1,7 +1,7 @@
-Instructions d'installation d'Warden
+Instructions d'installation de Warden
 -----------------------------------
 
-1) Installation d'Warden
+1) Installation de Warden
 2) Mettre à jour Warden
 3) Configuration de l'IRCd
 4) Mettre en route Warden
@@ -9,7 +9,7 @@ Instructions d'installation d'Warden
 
 Note : Vous devrez également lire les fichiers README et FAQ !
 
-1) Installation d'Warden
+1) Installation de Warden
 
     NOTE IMPORTANTE : il est déconseillé d'utiliser (et même d'installer)
                       Warden en tant que root. Utilisez un utilisateur non
@@ -122,7 +122,7 @@ Note : Vous devrez également lire les fichiers README et FAQ !
     est toujours en cours d'exécution et de le redémarrer s'il n'est pas.
 
     D'abord renommez le script cron.example.sh qui est dans les dossiers
-    d'Warden (par défaut, ~/warden/conf) en cron.sh et modifiez-le.
+    de Warden (par défaut, ~/warden/conf) en cron.sh et modifiez-le.
     Vous aurez besoin de modifier la partie CONFIGURATION du fichier.
     Assurez-vous ensuite que le fichier est marqué comme exécutable en
     tapant chmod +x cron.sh et essayez de lancer le script pour voir

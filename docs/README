@@ -166,14 +166,24 @@ Table of Contents
           (virtual hosts) instead of their real IP address; this only works
           on daemons supporting ip cloaking, such as UnrealIRCd.
 
+        * GroupServ, which lets users form groups of accounts (like !staff)
+          with per-member flags, that can be put on channel access lists,
+          sent memos and given a shared vhost.
+
+        * ChanFix (optional), which remembers who usually has ops in
+          unregistered channels and can give them back after a split or
+          takeover.
+
     Warden currently works with:
 
-        * InspIRCd 4 or later
-        * ircd-hybrid 8.2.34 or later
-        * ngIRCd 19.2 or later
-        * Plexus 3 or later
-        * Solanum (all versions)
-        * UnrealIRCd 6 or later
+        * UnrealIRCd 6 or later (tested for every release)
+        * InspIRCd 4 or later (best effort)
+        * Solanum (best effort)
+        * ircd-hybrid 8.2.34 or later (best effort)
+        * ngIRCd 19.2 or later (best effort)
+
+    The plexus protocol module is still included but untested. See
+    https://github.com/TehPeGaSuS/warden/wiki/Supported-IRCds for details.
 
     Warden could also work with some of the daemons derived by the ones listed
     above, but there's no support for them if they work or don't work.
@@ -186,7 +196,7 @@ Table of Contents
 
 4) Command Line Options
 
-    Normally, Warden can be run simply by invoking the "services" executable.
+    Normally, Warden can be run simply by invoking the "warden" executable.
     Any of the following command-line options can be specified to change
     the behavior of Warden:
 
@@ -251,7 +261,7 @@ Table of Contents
     The more precise you are the sooner you'll be likely to get an answer.
 
     If you think you found a bug, add it to the bug tracking system
-    (https://github.com/anope/anope/issues) and - again - be as precise as possible.
+    (https://github.com/TehPeGaSuS/warden/issues) and - again - be as precise as possible.
     Also say whether the bug happens always or under what circumstances, and anything
     that could be useful to track your bug down. If you wrote a patch, send
     it over. :)
