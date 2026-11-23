@@ -5,7 +5,7 @@ install(FILES ${DATA}
   DESTINATION ${CONF_DIR}
 )
 
-set(EMAILS "email_change" "memo" "password_reset" "registration")
+set(EMAILS "chan_expired" "chan_expiring" "email_change" "memo" "nick_expired" "nick_expiring" "password_reset" "registration")
 foreach(EMAIL IN LISTS EMAILS)
   install(
     FILES "email/${EMAIL}.example.html" "email/${EMAIL}.example.txt"
@@ -15,9 +15,12 @@ foreach(EMAIL IN LISTS EMAILS)
   set(EMAIL_LANGS "es_ES" "pt_PT" "ro_RO")
   foreach(EMAIL_LANG IN LISTS EMAIL_LANGS)
     set(EMAIL_DIR "email/${EMAIL_LANG}")
-    install(
-      FILES "${EMAIL_DIR}/${EMAIL}.example.html" "${EMAIL_DIR}/${EMAIL}.example.txt"
-      DESTINATION "${CONF_DIR}/${EMAIL_DIR}"
-    )
+    # Not every email is translated into every language.
+    if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${EMAIL_DIR}/${EMAIL}.example.txt")
+      install(
+        FILES "${EMAIL_DIR}/${EMAIL}.example.html" "${EMAIL_DIR}/${EMAIL}.example.txt"
+        DESTINATION "${CONF_DIR}/${EMAIL_DIR}"
+      )
+    endif()
   endforeach()
 endforeach()

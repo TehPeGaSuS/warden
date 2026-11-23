@@ -1,0 +1,9 @@
+Hello,
+
+Your nickname {nick} on {network} was not used for a long time and has expired. Anyone can now register it.
+
+If you still want it, you can register it again if it is free.
+
+Regards,
+
+{network}

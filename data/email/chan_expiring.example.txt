@@ -1,0 +1,11 @@
+Hello,
+
+Your channel {channel} on {network} has not been used for a while and will expire on {expires}.
+
+To keep it, join {channel} while identified to an account on its access list before then.
+
+If you no longer need it, you can ignore this email.
+
+Regards,
+
+{network}

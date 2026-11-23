@@ -1,0 +1,7 @@
+Olá,
+
+O teu canal {channel} na {network} não foi usado durante muito tempo e o seu registo expirou. Qualquer pessoa pode agora registá-lo.
+
+Cumprimentos,
+
+{network}

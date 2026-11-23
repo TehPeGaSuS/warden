@@ -1,0 +1,11 @@
+Olá,
+
+O teu canal {channel} na {network} não é usado há algum tempo e vai expirar em {expires}.
+
+Para o manteres, entra em {channel} identificado(a) numa conta da lista de acesso antes dessa data.
+
+Se já não precisares dele, podes ignorar este e-mail.
+
+Cumprimentos,
+
+{network}

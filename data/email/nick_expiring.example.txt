@@ -1,0 +1,13 @@
+Hello,
+
+Your nickname {nick} on {network} has not been used for a while and will expire on {expires}.
+
+To keep it, connect to {network} and identify to NickServ before then:
+
+> /msg NickServ IDENTIFY {nick} yourpassword
+
+If you no longer need it, you can ignore this email.
+
+Regards,
+
+{network}

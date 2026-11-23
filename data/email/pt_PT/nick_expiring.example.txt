@@ -1,0 +1,13 @@
+Olá,
+
+O teu nick {nick} na {network} não é usado há algum tempo e vai expirar em {expires}.
+
+Para o manteres, liga-te à {network} e identifica-te no NickServ antes dessa data:
+
+> /msg NickServ IDENTIFY {nick} atuapalavrapasse
+
+Se já não precisares dele, podes ignorar este e-mail.
+
+Cumprimentos,
+
+{network}

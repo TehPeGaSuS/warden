@@ -1,0 +1,7 @@
+Hello,
+
+Your channel {channel} on {network} was not used for a long time and its registration has expired. Anyone can now register it.
+
+Regards,
+
+{network}
