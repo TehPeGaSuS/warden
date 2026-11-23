@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:32+0100\n"
+"POT-Creation-Date: 2026-11-23 15:57+0100\n"
 "PO-Revision-Date: 2023-04-21 22:04+0200\n"
 "Last-Translator: henk\n"
 "Language-Team: German\n"
@@ -160,6 +160,11 @@ msgstr "%s hat Deine Usermodi zu %s geändert."
 msgid "%s channel list:"
 msgstr "%s Raum-Liste:"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s contains an unknown flag. See %s for the flags."
+msgstr "%s enthält ein unbekanntes Flag. Siehe %s für die Flags."
+
 #: ../modules/chanserv/cs_xop.cpp
 #, c-format
 msgid "%s deleted from %s %s list."
@@ -217,12 +222,22 @@ msgstr "%s wurde aus der Notify-Liste entfernt."
 msgid "%s disabled on channel %s."
 msgstr "%s wurde deaktiviert im Raum %s."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s does not wish to be added to channel access lists (NEVEROP is on)."
+msgstr "%s möchte nicht zu Channel-Access-Listen hinzugefügt werden (NEVEROP ist an)."
+
 #: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_xop.cpp
 #, c-format
 msgid "%s does not wish to be added to channel access lists."
 msgstr "%s möchte nicht zu Channel-Access-Listen hinzugefügt werden."
 
-#: ../modules/chanserv/cs_invite.cpp
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s has already been invited to %s."
+msgstr "%s wurde bereits nach %s eingeladen."
+
+#: ../modules/chanserv/cs_invite.cpp ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "%s has been invited to %s."
 msgstr "%s wurde nach %s eingeladen."
@@ -240,6 +255,11 @@ msgstr "%s wurde in das Zugriffssystem %s migriert."
 #: ../modules/operserv/os_svs.cpp
 #, c-format
 msgid "%s has been parted from %s."
+msgstr "%s wurde aus %s entfernt."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s has been removed from %s."
 msgstr "%s wurde aus %s entfernt."
 
 #: ../modules/chanserv/cs_unban.cpp
@@ -262,6 +282,16 @@ msgstr "%s wurde nach %s eingeladen."
 msgid "%s has too many channels registered."
 msgstr "%s hat zu viele Räume auf seinen Nicknamen registriert."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s has too many open invitations; wait until some are used."
+msgstr "%s hat zu viele offene Einladungen; warte, bis einige genutzt wurden."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s in %s"
+msgstr "%s in %s"
+
 #: ../modules/chanserv/cs_status.cpp
 #, c-format
 msgid "%s is a super administrator."
@@ -277,6 +307,11 @@ msgstr ""
 "%s ist eine Einrichtung, die es erlaubt, dass sich IRC User untereinander kurze Textnachrichten senden, egal ob die Empfänger zu dem Zeitpunkt online sind oder nicht. Als Empfänger können auch Chaträume angegeben werden (*).\n"
 "\n"
 "Sowohl der Nickname des Senders als auch Empfängers müssen registriert sein, um eine Memo versenden zu können. %s's Befehle beinhalten:"
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s is already a member of %s."
+msgstr "%s ist bereits Mitglied von %s."
 
 #: ../modules/chanserv/cs_invite.cpp
 #, c-format
@@ -302,6 +337,11 @@ msgstr "%s ist bereits auf der Memo-Ignore-Liste von %s."
 #, c-format
 msgid "%s is already suspended."
 msgstr "%s ist bereits suspendiert."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s is not a channel."
+msgstr "%s ist kein Channel."
 
 #: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 #, c-format
@@ -332,6 +372,11 @@ msgstr "%s ist kein gültiger Zertifikat-Fingerabdruck."
 #, c-format
 msgid "%s is not a valid email address."
 msgstr "%s ist keine gültige E-Mail-Adresse."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s is not a valid group name. It must start with ! and be up to 32 letters, digits, '-', '_' or '.'."
+msgstr "%s ist kein gültiger Gruppenname. Er muss mit ! beginnen und darf bis zu 32 Buchstaben, Ziffern, '-', '_' oder '.' enthalten."
 
 #: ../modules/operserv/os_expiring.cpp
 #, c-format
@@ -367,6 +412,11 @@ msgstr "%s ist auf der AutoKick-Liste von %s (%s)."
 #, c-format
 msgid "%s is the founder of %s."
 msgstr "%s ist der Gründer von %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s manages groups of accounts named like !staff. Members get flags that say what they can do in the group."
+msgstr "%s verwaltet Gruppen von Konten mit Namen wie !staff. Mitglieder erhalten Flags, die festlegen, was sie in der Gruppe tun dürfen."
 
 #: ../modules/chanserv/cs_status.cpp
 #, c-format
@@ -449,6 +499,31 @@ msgstr "%s wurde nicht auf der Host-Angebotsliste gefunden."
 #, c-format
 msgid "%s not found on the notify list."
 msgstr "%s wurde in der Notify-Liste nicht gefunden."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s now has flags +%s on %s."
+msgstr "%s hat jetzt die Flags +%s in %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s of %s has been cleared."
+msgstr "%s von %s wurde gelöscht."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s of %s is now %s."
+msgstr "%s von %s ist jetzt %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s of %s is now off."
+msgstr "%s von %s ist jetzt aus."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s of %s is now on."
+msgstr "%s von %s ist jetzt an."
 
 #: ../modules/chanserv/cs_flags.cpp
 #, c-format
@@ -547,6 +622,10 @@ msgstr "{fingerprint} -- erstellt von {creator} am {created}"
 msgid "{fingerprint} -- created by {creator} at {created} ({description})"
 msgstr "{fingerprint} -- erstellt von {creator} am {created} ({description})"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "{group} ({founder}) {description}"
+msgstr "{group} ({founder}) {description}"
+
 #: ../modules/operserv/os_session.cpp
 msgid "{host}: {session} sessions"
 msgstr "{host}: {session} Sessions"
@@ -638,6 +717,30 @@ msgstr "{template} = +{flags}"
 #: ../modules/operserv/os_config.cpp
 msgid "{}{module_name}}:{name} = {value}"
 msgstr "{}{module_name}}:{name} = {value}"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group"
+msgstr "!group"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group account"
+msgstr "!group Konto"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group account changes"
+msgstr "!group Konto Änderungen"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group option [value]"
+msgstr "!group Option [Wert]"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group [account [changes]]"
+msgstr "!group [Konto [Änderungen]]"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group [key]"
+msgstr "!group [Schlüssel]"
 
 #: ../modules/nickserv/ns_group.cpp
 msgid "[target] [password]"
@@ -1485,6 +1588,16 @@ msgstr "%s hat keine Memos."
 msgid "%s has no new memos."
 msgstr "%s hat keine neuen Memos."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s invited you to the group %s. To join it, type %s."
+msgstr "%s hat Dich in die Gruppe %s eingeladen. Um beizutreten, tippe %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s invited you to the group %s. To join it, type %s."
+msgstr "%s hat Dich in die Gruppe %s eingeladen. Um beizutreten, tippe %s."
+
 #: ../modules/nickserv/ns_info.cpp
 #, c-format
 msgid "%s is a Services Operator of type %s."
@@ -1980,12 +2093,17 @@ msgstr "Zugriffslevel für %s wurden auf Standardwerte zurückgesetzt."
 msgid "Access list for %s:"
 msgstr "Zugriffs-Liste von %s:"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Access list of %s:"
+msgstr "Access-Liste von %s:"
+
 #: ../modules/help.cpp
 #, c-format
 msgid "Access to this command requires the permission %s to be present in your opertype."
 msgstr "Um Zugriff auf diesen Befehl zu haben benötigst Du die Berechtigung %s in Deinem Oper Type."
 
-#: ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_list.cpp
 msgid "Account"
 msgstr "Konto"
 
@@ -2076,6 +2194,10 @@ msgstr "Einen Nick zu einem Konto hinzufügen"
 #: ../modules/operserv/os_info.cpp
 msgid "Add or delete oper information for a given nick or channel. This will show to opers in the respective info command for the nick or channel."
 msgstr "Oper Informationen für einen angegebenen Nickname oder Kanal hinzufügen oder entfernen. Diese Informationen werden Operatoren im info Befehl für einen Nickname oder Kanal angezeigt."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Added"
+msgstr "Hinzugefügt"
 
 #: ../modules/operserv/os_notinchan.cpp
 #, c-format
@@ -3043,6 +3165,14 @@ msgstr "Zertifikat-Liste von %s:"
 msgid "ChanServ is required to enable persist on this network."
 msgstr "ChanServ ist notwendig, um 'persist' auf diesem Netzwerk einzuschalten."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Change a group's settings"
+msgstr "Einstellungen einer Gruppe ändern"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Change anyone's flags in any group"
+msgstr "Flags von jedem in jeder Gruppe ändern"
+
 #: ../modules/operserv/os_mode.cpp
 msgid "Change channel modes"
 msgstr "Ändert die Raum Modi"
@@ -3068,6 +3198,30 @@ msgstr "Notify auf %s geändert, trifft auf %u Benutzer zu."
 #, c-format
 msgid "Changed user modes of %s to %s."
 msgstr "Benutzermodi von %s auf %s geändert."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid ""
+"Changes a group's settings. These need +s:\n"
+"  DESCRIPTION, URL, EMAIL, CHANNEL [value] - set or clear them\n"
+"  JOINFLAGS [flags|OFF] - flags given to people who JOIN\n"
+"  PUBLIC {ON|OFF} - show founders and members to everyone\n"
+"These need +F:\n"
+"  OPEN {ON|OFF} - let anyone JOIN without an invitation\n"
+"  GROUPNAME !newname - rename the group\n"
+"These are for services operators:\n"
+"  ACSNOLIMIT {ON|OFF} - no limit on the access list size\n"
+"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit"
+msgstr ""
+"Ändert die Einstellungen einer Gruppe. Diese brauchen +s:\n"
+"  DESCRIPTION, URL, EMAIL, CHANNEL [Wert] - setzen oder löschen\n"
+"  JOINFLAGS [Flags|OFF] - Flags für alle, die per JOIN beitreten\n"
+"  PUBLIC {ON|OFF} - Gründer und Mitglieder allen zeigen\n"
+"Diese brauchen +F:\n"
+"  OPEN {ON|OFF} - jeden ohne Einladung per JOIN beitreten lassen\n"
+"  GROUPNAME !newname - die Gruppe umbenennen\n"
+"Diese sind für Services-Operatoren:\n"
+"  ACSNOLIMIT {ON|OFF} - keine Begrenzung der Access-Listen-Größe\n"
+"  REGNOLIMIT {ON|OFF} - nicht auf das Limit ihrer Gründer anrechnen"
 
 #: ../modules/botserv/bs_bot.cpp
 msgid ""
@@ -3203,7 +3357,7 @@ msgstr "Deine Benutzermodi werden auf %s geändert"
 msgid "Changing your vhost to %s"
 msgstr "Dein vHost wird auf %s geändert"
 
-#: ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
 msgid "Channel"
 msgstr "Channel"
 
@@ -3975,7 +4129,7 @@ msgstr "Löscht Deine letzte Memo."
 msgid "Depooled %s."
 msgstr "%s aus dem Pool entfernt."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_xop.cpp ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_xop.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_cert.cpp
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -4113,6 +4267,22 @@ msgstr "Benutze nicht das Wort %s in diesem Channel!"
 msgid "Don't use underlines on this channel!"
 msgstr "Keine Unterstreichungen in diesem Channel benutzen!"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Drop a group"
+msgstr "Eine Gruppe löschen"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Drop any group"
+msgstr "Eine beliebige Gruppe löschen"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Drops a group you founded. You are first given a key to confirm it with."
+msgstr "Löscht eine von Dir gegründete Gruppe. Du erhältst zuerst einen Schlüssel, um es zu bestätigen."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Drops any group, without a key. For services operators."
+msgstr "Löscht eine beliebige Gruppe ohne Schlüssel. Für Services-Operatoren."
+
 #: ../modules/nickserv/ns_drop.cpp
 msgid "Drops the given nick from the database. Once your nickname is dropped you may lose all of your access and channels that you may own. Any other user will be able to gain control of this nick."
 msgstr "Entfernt den angegebenen Nicknamen aus der Datenbank. Sobald der Nickname entfernt wird, gehen dir alle Zugriffsrechte und Kanäle, die du besitzt, verloren. Andere Benutzer können diesen Nickname übernehmen."
@@ -4130,6 +4300,10 @@ msgstr "Bearbeitet oder zeigt die Liste der Oper-News. Wenn ein User Oper wird (
 #: ../modules/operserv/os_news.cpp
 msgid "Edits or displays the list of random news messages. When a user connects to the network, one (and only one) of the random news will be randomly chosen and sent to them."
 msgstr "Bearbeitet oder zeigt die Liste der RandomNews. Wenn ein User sich mit dem Netzwerk verbindet, wird eine (und nur eine) dieser News zufällig ausgewählt und ihm gesendet."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Email"
+msgstr "E-Mail"
 
 #: ../modules/nickserv/ns_info.cpp
 msgid "Email address"
@@ -4258,6 +4432,11 @@ msgstr ""
 "\n"
 "Hat Dein IRCd einen permanenten (persistenten) Channel-Modus und wird dieser gesetzt oder entfernt (aus beliebigem Grund, auch durch MODE LOCK), wird Persist für den Channel automatisch ebenfalls gesetzt bzw. entfernt. Außerdem setzen bzw. entfernen die Services diesen Modus, wenn Du Persist an- oder ausschaltest."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "End of %s access list."
+msgstr "Ende der Access-Liste von %s."
+
 #: ../modules/operserv/os_sxline.cpp
 #, c-format
 msgid "End of %s list - showing %u of %u entries. Use %s from-to to see the rest."
@@ -4343,6 +4522,11 @@ msgstr "Ende der FORBID-Liste."
 msgid "End of host offer list."
 msgstr "Ende der Host-Angebotsliste."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "End of list - %s is on %u channel access list(s)."
+msgstr "Ende der Liste - %s steht auf %u Channel-Access-Liste(n)."
+
 #: ../modules/nickserv/ns_alist.cpp
 #, c-format
 msgid "End of list - %d channels shown."
@@ -4352,6 +4536,11 @@ msgstr "Ende der Liste - %d Channels angezeigt."
 #, c-format
 msgid "End of list - %d/%d matches shown."
 msgstr "Ende der Liste - %d/%d Treffer angezeigt."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "End of list - %u/%u shown."
+msgstr "Ende der Liste - %u/%u angezeigt."
 
 #: ../modules/operserv/os_notinchan.cpp
 #, c-format
@@ -4569,7 +4758,7 @@ msgstr "Flag"
 msgid "Flag templates:"
 msgstr "Flag-Vorlagen:"
 
-#: ../modules/chanserv/cs_flags.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/groupserv/groupserv.cpp ../modules/operserv/os_notify.cpp
 msgid "Flags"
 msgstr "Flags"
 
@@ -4660,7 +4849,7 @@ msgstr "Lässt einen User zwangsweise einen Channel verlassen"
 msgid "Forcefully part a user from a channel."
 msgstr "Lässt einen User zwangsweise einen Channel verlassen."
 
-#: ../modules/chanserv/cs_info.cpp ../modules/nickserv/ns_alist.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_alist.cpp
 msgid "Founder"
 msgstr "Gründer"
 
@@ -4722,6 +4911,24 @@ msgstr "Begrüssungsnachrichten sind jetzt im %s DEAKTIVIERT."
 #, c-format
 msgid "Greet mode is now on on channel %s."
 msgstr "Begrüssungsnachrichten sind jetzt im %s AKTIVIERT."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Group"
+msgstr "Gruppe"
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Group %s access for %s is unchanged."
+msgstr "Der Zugang der Gruppe %s für %s ist unverändert."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Groups"
+msgstr "Gruppen"
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Groups matching %s:"
+msgstr "Gruppen, die auf %s passen:"
 
 #: ../modules/nickserv/ns_info.cpp
 msgid "Hide certain pieces of nickname information"
@@ -4827,6 +5034,11 @@ msgstr "Informationen über den Bot %s:"
 msgid "Information about channel %s:"
 msgstr "Informationen über den Channel %s:"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Information about group %s:"
+msgstr "Informationen über die Gruppe %s:"
+
 #: ../modules/nickserv/ns_info.cpp
 #, c-format
 msgid "Information about nick %s:"
@@ -4844,6 +5056,11 @@ msgstr "Ungültige Ablaufzeit."
 #: ../modules/operserv/os_session.cpp
 msgid "Invalid hostmask. Only real hostmasks are valid, as exceptions are not matched against nicks or usernames."
 msgstr "Ungültige Hostmask. Nur echte Hostmasken sind gültig, da auf Nicknames oder Idents nicht geprüft wird."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Invalid key for dropping %s."
+msgstr "Ungültiger Schlüssel zum Löschen von %s."
 
 #: ../modules/operserv/os_logsearch.cpp
 #, c-format
@@ -4865,13 +5082,33 @@ msgstr "Ungültiger Wert. Es muss eine gültige grade Zahl sein, die grösser al
 msgid "Invalid value for LIMIT. Must be numerical."
 msgstr "Ungültiger Wert für LIMIT: muss numerisch sein."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Invite an account to a group"
+msgstr "Ein Konto in eine Gruppe einladen"
+
 #: ../modules/chanserv/cs_invite.cpp
 msgid "Invite you or an optionally specified nick into a channel"
 msgstr "Lädt Dich oder einen optional angegebenen Nicknamen in einen Channel ein"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Invites an account to the group (needs +i). They are told, or sent a memo if they are offline, and can then JOIN even if the group isn't open."
+msgstr "Lädt ein Konto in die Gruppe ein (braucht +i). Es wird benachrichtigt, oder erhält ein Memo, falls offline, und kann dann per JOIN beitreten, auch wenn die Gruppe nicht offen ist."
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Italics kicker"
 msgstr "Italics kicker : %s"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Join an open group, or one you were invited to"
+msgstr "Einer offenen Gruppe beitreten oder einer, in die Du eingeladen wurdest"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Join flags"
+msgstr "Beitritts-Flags"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Join flags must be flags to add, without F or b, e.g. +Ac."
+msgstr "Beitritts-Flags müssen hinzuzufügende Flags sein, ohne F oder b, z. B. +Ac."
 
 #: ../modules/chanserv/cs_set_joinflood.cpp
 msgid "Join flood protection"
@@ -4901,6 +5138,10 @@ msgstr "Der Join-Flood-Schutz ist für %s nicht aktiviert."
 #, c-format
 msgid "Joined %zu user(s) to %s."
 msgstr "%zu User in %s gejoint."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Joins a group that is open (SET OPEN) or that you were invited to with INVITE. You get the group's join flags."
+msgstr "Tritt einer Gruppe bei, die offen ist (SET OPEN) oder in die Du mit INVITE eingeladen wurdest. Du erhältst die Beitritts-Flags der Gruppe."
 
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "Keep a history of earlier topics"
@@ -5066,6 +5307,10 @@ msgstr "Level für %s in Chatrauml %s zu \"founder only\" geändert."
 msgid "Level must be between %d and %d inclusive."
 msgstr "Der Level kann nur zwischen %d und einschliesslich %d liegen."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Like FLAGS, for services operators: changes anyone's flags in any group, without the usual checks."
+msgstr "Wie FLAGS, für Services-Operatoren: ändert die Flags von jedem in jeder Gruppe, ohne die üblichen Prüfungen."
+
 #: ../modules/operserv/os_dns.cpp ../modules/operserv/os_session.cpp
 msgid "Limit"
 msgstr "Limit"
@@ -5102,6 +5347,10 @@ msgstr "Listet Chaträume zu denen Du Zugang hast"
 #, c-format
 msgid "List for modes %s is full."
 msgstr "Die Liste für die Modi %s ist voll."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "List groups"
+msgstr "Gruppen auflisten"
 
 #: ../modules/chanserv/cs_info.cpp
 msgid "List information about the specified registered channel"
@@ -5159,6 +5408,10 @@ msgstr ""
 "  {regepoch} - Die UNIX-Zeit, zu der Dein Nick registriert wurde.\n"
 "\n"
 "Mit %sTAKE wird ein angebotener vHost übernommen. Du musst die angebotene Template-Variable oder die Eintragsnummer des gewünschten vHosts angeben. Sobald ein vHost übernommen wurde, kannst Du für %s keinen weiteren übernehmen."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "List the channels a group has access to"
+msgstr "Die Channels auflisten, auf die eine Gruppe Zugang hat"
 
 #: ../modules/operserv/os_set.cpp
 msgid "List the options"
@@ -5373,6 +5626,14 @@ msgstr "Zeigt Informationen über den angegebenen registrierten Channel an, eins
 #: ../modules/memoserv/ms_list.cpp
 msgid "Lists memos numbered 2 through 5 and 7 through 9."
 msgstr "Listet die Memos Nummer 2 bis 5 und 7 bis 9 auf."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Lists the channel access lists the group is on, and with what access (needs +c)."
+msgstr "Listet die Channel-Access-Listen auf, auf denen die Gruppe steht, und mit welchem Zugang (braucht +c)."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Lists the public groups matching a pattern (all groups for services operators)."
+msgstr "Listet die öffentlichen Gruppen auf, die auf ein Muster passen (für Services-Operatoren alle Gruppen)."
 
 #: ../modules/operserv/os_expiring.cpp
 msgid ""
@@ -5659,6 +5920,10 @@ msgstr "Treffer für %s:"
 #, c-format
 msgid "Maximum users: %zu (%s)"
 msgstr "Maximale Benutzer: %zu (%s)"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Members"
+msgstr "Mitglieder"
 
 #: ../modules/memoserv/ms_read.cpp
 #, c-format
@@ -6014,6 +6279,10 @@ msgstr "Nickname %s registriert."
 msgid "Nicks expiring within %s:"
 msgstr "Nicks, die innerhalb von %s ablaufen:"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "No access list limit"
+msgstr "Keine Begrenzung der Access-Liste"
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Kein Auto-Op"
@@ -6040,6 +6309,11 @@ msgstr "Keine löschbaren Bots passen auf %s (%u Konfigurations-Bots überspru
 #: ../modules/chanserv/cs_set.cpp ../modules/nickserv/ns_set.cpp
 msgid "No expiry"
 msgstr "Kein Ablauf"
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "No groups match %s."
+msgstr "Keine Gruppen passen auf %s."
 
 #: ../modules/help.cpp
 #, c-format
@@ -6202,6 +6476,10 @@ msgstr "Nicht-Status Modi von %s wurden zurückgesetzt."
 msgid "None"
 msgstr "Keine"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Not counted towards the founders' group limit"
+msgstr "Nicht auf das Gruppenlimit der Gründer angerechnet"
+
 #: ../modules/chanserv/chanserv.cpp
 #, c-format
 msgid "Note that any channel which is not used for %s (i.e. which no user on the channel's access list enters for that period of time) will be automatically dropped."
@@ -6228,7 +6506,7 @@ msgstr "Nichts wurde geändert:"
 msgid "Now"
 msgstr "Jetzt"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr "Nummer"
 
@@ -6274,6 +6552,22 @@ msgstr "Angebotener vHost"
 #: ../modules/nickserv/ns_info.cpp
 msgid "Online from"
 msgstr "Online von"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Only a founder can make someone a founder."
+msgstr "Nur ein Gründer kann jemanden zum Gründer machen."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Only a founder can remove a founder."
+msgstr "Nur ein Gründer kann einen Gründer entfernen."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Open"
+msgstr "Offen"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Open groups have been disabled by the network."
+msgstr "Offene Gruppen wurden vom Netzwerk deaktiviert."
 
 #: ../modules/operserv/os_oper.cpp
 #, c-format
@@ -6569,6 +6863,10 @@ msgstr ""
 "\n"
 "Standardmäßig sind es 3 Joins innerhalb von 10 Sekunden, für 60 Sekunden. Zeiten können in Sekunden oder als 10s, 2m oder 1h angegeben werden. SHOW zeigt die aktuellen Einstellungen."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Public"
+msgstr "Öffentlich"
+
 #: ../modules/operserv/os_chankill.cpp
 msgid "Puts an AKILL for every nick on the specified channel. It uses the entire real ident@host for every nick, and then enforces the AKILL."
 msgstr "Setzt einen AKILL für jeden Nick im angegebenen Channel. Es wird der gesamte echte ident@host jedes Nicks verwendet und der AKILL anschließend durchgesetzt."
@@ -6670,11 +6968,15 @@ msgstr "Regex-Treffer werden ebenfalls mit der %s-Engine unterstützt. Bei Benut
 msgid "Register a channel"
 msgstr "Einen Channel registrieren"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Register a group"
+msgstr "Eine Gruppe registrieren"
+
 #: ../modules/nickserv/ns_register.cpp
 msgid "Register a nickname"
 msgstr "Einen Nicknamen registrieren"
 
-#: ../modules/chanserv/cs_info.cpp ../modules/nickserv/ns_group.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_group.cpp
 msgid "Registered"
 msgstr "Registriert"
 
@@ -6708,6 +7010,11 @@ msgstr ""
 "Registriert einen Channel in der %s-Datenbank. Um diesen Befehl zu benutzen, musst Du zuerst Channel-Operator in dem Channel sein, den Du registrieren willst. Die optionale Beschreibung ist eine allgemeine Beschreibung des Zwecks des Channels. \n"
 "\n"
 "Wenn Du einen Channel registrierst, wirst Du als \"Founder\" des Channels eingetragen. Der Founder darf alle Einstellungen des Channels ändern; %s gibt dem Founder außerdem automatisch Channel-Operator-Rechte, wenn er den Channel betritt."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Registers a group, with you as its founder. Group names start with !, e.g. !staff. You can own up to %u groups."
+msgstr "Registriert eine Gruppe mit Dir als Gründer. Gruppennamen beginnen mit !, z. B. !staff. Du kannst bis zu %u Gruppen besitzen."
 
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
@@ -7693,6 +8000,10 @@ msgstr "Die Einstellung für Super-Admin muss ON oder OFF sein."
 msgid "Should services automatically give status to users"
 msgstr "Sollen Services Benutzern automatisch Status geben"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Show information about a group"
+msgstr "Informationen über eine Gruppe anzeigen"
+
 #: ../modules/operserv/os_stats.cpp
 msgid "Show status of services and network"
 msgstr "Status der Services und des Netzwerks anzeigen"
@@ -7716,6 +8027,10 @@ msgstr ""
 "LIST zeigt sie an, nummeriert ab dem neuesten. SET macht eines davon wieder zum Topic, auch wenn TOPICLOCK aktiv ist. CLEAR löscht alle.\n"
 "\n"
 "Dafür ist das Privileg TOPIC im Kanal erforderlich."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Shows information about a group. Its founders and member count are only shown to members, unless the group is public (SET PUBLIC)."
+msgstr "Zeigt Informationen über eine Gruppe. Ihre Gründer und die Mitgliederzahl werden nur Mitgliedern angezeigt, außer die Gruppe ist öffentlich (SET PUBLIC)."
 
 #: ../modules/botserv/bs_info.cpp
 msgid ""
@@ -8194,6 +8509,11 @@ msgstr "Die AKILL-Liste wurde geleert."
 msgid "The Defcon level is now at: %d"
 msgstr "Das DefCon-Level ist jetzt: %d"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The access list of %s is full."
+msgstr "Die Access-Liste von %s ist voll."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "The confirmation code for %s has been re-sent to %s."
@@ -8248,10 +8568,55 @@ msgstr "Folgende Funktionsnamen sind verfügbar:"
 msgid "The given mask may also be a channel, which will use the access list from the other channel up to the given level."
 msgstr "Die angegebene Maske kann auch ein Channel sein; dann wird die Access-Liste des anderen Channels bis zum angegebenen Level verwendet."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s already exists."
+msgstr "Die Gruppe %s existiert bereits."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s does not exist."
+msgstr "Die Gruppe %s existiert nicht."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s has been dropped."
+msgstr "Die Gruppe %s wurde gelöscht."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s has been registered to %s."
+msgstr "Die Gruppe %s wurde für %s registriert."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s has been renamed to %s."
+msgstr "Die Gruppe %s wurde in %s umbenannt."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s is not open to anyone joining."
+msgstr "Die Gruppe %s ist nicht für jeden zum Beitritt offen."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s is on no channel access list."
+msgstr "Die Gruppe %s steht auf keiner Channel-Access-Liste."
+
 #: ../modules/operserv/os_session.cpp
 #, c-format
 msgid "The host %s currently has %d sessions with a limit of %d because it matches entry: %s."
 msgstr "Der Host %s hat derzeit %d Sessions bei einem Limit von %d, da er folgendem Eintrag entspricht: %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The join flags of %s are now +%s."
+msgstr "Die Beitritts-Flags von %s sind jetzt +%s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The join flags of %s have been cleared."
+msgstr "Die Beitritts-Flags von %s wurden gelöscht."
 
 #: ../modules/memoserv/ms_check.cpp
 #, c-format
@@ -8675,6 +9040,11 @@ msgstr "Diese Option macht einen Channel nicht zuweisbar. Wenn bereits ein Bot d
 msgid "This option prevents a bot from being assigned to a channel by users that aren't Services Operators."
 msgstr "Diese Option verhindert, dass ein Bot einem Channel von Benutzern zugewiesen wird, die keine Services-Operatoren sind."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "This will drop the group %s and all its members' access. To confirm, type %s."
+msgstr "Dies löscht die Gruppe %s und den Zugang aller ihrer Mitglieder. Zum Bestätigen tippe %s."
+
 #: ../modules/nickserv/ns_set_timezone.cpp
 #, c-format
 msgid "Timezone changed to %s."
@@ -8887,6 +9257,10 @@ msgstr "Tippe %sOption für weitere Informationen zu einer bestimmten Optio
 #, c-format
 msgid "Type %sregion to list timezones for a region."
 msgstr "Tippe %sRegion, um die Zeitzonen einer Region aufzulisten."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "URL"
+msgstr "URL"
 
 #: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_sxline.cpp
 #, c-format
@@ -9199,6 +9573,10 @@ msgstr "\"Service Operators\" ansehen und ändern."
 msgid "View and change configuration file settings"
 msgstr "Einstellungen der Konfigurationsdatei anzeigen und ändern"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "View or change who is in a group and what they can do"
+msgstr "Anzeigen oder ändern, wer in einer Gruppe ist und was er tun darf"
+
 #: ../modules/operserv/os_session.cpp
 msgid "View the list of host sessions"
 msgstr "Liste der Host-Sessions anzeigen"
@@ -9289,6 +9667,38 @@ msgstr ""
 "\n"
 "Mit einem Parameter geschieht dasselbe für den angegebenen Nick. Gibst Du zusätzlich REVALIDATE an, fordern die Services den angegebenen Nick auf, sich erneut zu identifizieren. Dies ist auf Services-Operatoren beschränkt."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid ""
+"Without an account, lists the group's members and their flags (needs +A). With one, changes that account's flags (needs +f); a member who loses all flags leaves the group, and you can always leave a group yourself with -*.\n"
+"\n"
+"The flags are:\n"
+"  F - founder: everything, including SET OPEN/GROUPNAME and DROP\n"
+"  f - change members' flags\n"
+"  A - view the member list\n"
+"  m - read memos sent to the group\n"
+"  c - get the group's channel access\n"
+"  v - take vhosts offered to the group\n"
+"  s - use SET on the group\n"
+"  i - invite accounts to the group\n"
+"  b - banned: can't JOIN the group\n"
+"\n"
+"* means all of them except F and b. Only a founder can add or remove F, and the last founder can't be removed."
+msgstr ""
+"Ohne Konto listet es die Mitglieder der Gruppe und ihre Flags auf (braucht +A). Mit einem ändert es die Flags dieses Kontos (braucht +f); ein Mitglied, das alle Flags verliert, verlässt die Gruppe, und Du kannst eine Gruppe jederzeit selbst mit -* verlassen.\n"
+"\n"
+"Die Flags sind:\n"
+"  F - Gründer: alles, einschließlich SET OPEN/GROUPNAME und DROP\n"
+"  f - Flags von Mitgliedern ändern\n"
+"  A - die Mitgliederliste ansehen\n"
+"  m - an die Gruppe gesendete Memos lesen\n"
+"  c - den Channel-Zugang der Gruppe erhalten\n"
+"  v - der Gruppe angebotene vHosts übernehmen\n"
+"  s - SET auf die Gruppe anwenden\n"
+"  i - Konten in die Gruppe einladen\n"
+"  b - gebannt: kann der Gruppe nicht per JOIN beitreten\n"
+"\n"
+"* bedeutet alle außer F und b. Nur ein Gründer kann F hinzufügen oder entfernen, und der letzte Gründer kann nicht entfernt werden."
+
 #: ../modules/operserv/os_stats.cpp
 msgid ""
 "Without any option, shows the current number of users online, and the highest number of users online since services was started, and the length of time services has been running.\n"
@@ -9327,6 +9737,11 @@ msgstr "Wort"
 msgid "XOP"
 msgstr "XOP"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "You are already a member of %s."
+msgstr "Du bist bereits Mitglied von %s."
+
 #: ../modules/nickserv/ns_group.cpp
 #, c-format
 msgid "You are already a member of the account of %s."
@@ -9364,6 +9779,11 @@ msgstr "Du verwendest kein Client-Zertifikat."
 #: ../modules/operserv/os_login.cpp
 msgid "You are now a Services Operator."
 msgstr "Du bist jetzt ein Services-Operator."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "You are now a member of %s."
+msgstr "Du bist jetzt Mitglied von %s."
 
 #: ../modules/operserv/os_set.cpp
 msgid "You are now a super admin."
@@ -9620,6 +10040,11 @@ msgstr "Du hast die maximale Anzahl gespeicherter Memos erreicht (%d). Du kannst
 msgid "You have regained control of %s."
 msgstr "Du hast die Kontrolle über %s zurückerlangt."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "You have too many groups registered (the limit is %u)."
+msgstr "Du hast zu viele Gruppen registriert (das Limit ist %u)."
+
 #: ../modules/nickserv/ns_drop.cpp
 msgid "You may drop any nick within your account."
 msgstr "Du kannst jeden Nick in Deinem Account löschen."
@@ -9649,6 +10074,11 @@ msgstr "Du darfst %s nicht löschen, da es der Anzeige-Nick des Accounts ist."
 #: ../modules/nickserv/ns_drop.cpp
 msgid "You may not drop other Services Operators' nicknames."
 msgstr "Du darfst die Nicknamen anderer Services-Operatoren nicht löschen."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "You may not remove the last founder of %s."
+msgstr "Du darfst den letzten Gründer von %s nicht entfernen."
 
 #: ../modules/nickserv/ns_suspend.cpp
 msgid "You may not suspend other Services Operators' nicknames."
@@ -9683,6 +10113,10 @@ msgstr "Du musst in einem Account eingeloggt sein, um diesen Befehl zu benutzen.
 #: ../modules/chanserv/cs_register.cpp
 msgid "You must confirm your account before you can register a channel."
 msgstr "Du musst dein Konto bestätigen bevor Du einen Kanal registrieren kannst."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "You must confirm your account before you can register a group."
+msgstr "Du musst Dein Konto bestätigen, bevor Du eine Gruppe registrieren kannst."
 
 #: ../modules/hostserv/hs_offer.cpp
 msgid "You must confirm your account before you can view the host offer list."
@@ -10133,6 +10567,10 @@ msgstr "[Nickname] Code"
 msgid "[parameter]"
 msgstr "[Parameter]"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "[pattern]"
+msgstr "[Muster]"
+
 #: ../modules/nickserv/ns_set_timezone.cpp
 msgid "[timezone]"
 msgstr "[Zeitzone]"
@@ -10234,6 +10672,10 @@ msgstr "{mode} -- erstellt von {creator} am {created}"
 #: ../modules/chanserv/cs_mode.cpp
 msgid "{mode} {param} -- created by {creator} on {created}"
 msgstr "{mode} {param} -- erstellt von {creator} am {created}"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "{number}: {account} +{flags} (added {added})"
+msgstr "{number}: {account} +{flags} (hinzugefügt {added})"
 
 #: ../modules/nickserv/ns_ajoin.cpp
 msgid "{number}: {channel}"
@@ -10805,9 +11247,6 @@ msgstr "{number}: {topic} -- gesetzt von {by} am {set}"
 
 #~ msgid "Invalid passcode."
 #~ msgstr "Ungültiger Code."
-
-#~ msgid "Join a group"
-#~ msgstr "Verknüpfe deinen Nicknamen"
 
 #~ msgid "LOGONNEWS {ADD|DEL|LIST} [text|num]"
 #~ msgstr "LOGONNEWS {ADD|DEL|LIST} [Text|Nummer]"
@@ -11395,10 +11834,6 @@ msgstr "{number}: {topic} -- gesetzt von {by} am {set}"
 #, fuzzy
 #~ msgid "Vhost"
 #~ msgstr "vHost"
-
-#, c-format
-#~ msgid "You are now in the group of %s."
-#~ msgstr "Du bist jetzt in der Gruppe %s vertreten."
 
 #, c-format
 #~ msgid "You cannot %s on this network."

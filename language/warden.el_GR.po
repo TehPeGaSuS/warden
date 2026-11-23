@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:32+0100\n"
+"POT-Creation-Date: 2026-11-23 15:57+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -159,6 +159,11 @@ msgstr "Ο %s άλλαξε τα user modes σου σε %s."
 msgid "%s channel list:"
 msgstr "Λίστα καναλιών του %s:"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s contains an unknown flag. See %s for the flags."
+msgstr "Το %s περιέχει άγνωστο flag. Δες το %s για τα flags."
+
 #: ../modules/chanserv/cs_xop.cpp
 #, c-format
 msgid "%s deleted from %s %s list."
@@ -214,12 +219,22 @@ msgstr "Το %s διαγράφηκε από τη λίστα notify."
 msgid "%s disabled on channel %s."
 msgstr "Τα #%s# απενεργοποιήθηκαν στο κανάλι %s."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s does not wish to be added to channel access lists (NEVEROP is on)."
+msgstr "Ο/η %s δεν επιθυμεί να προστίθεται σε λίστες πρόσβασης καναλιών (το NEVEROP είναι ενεργό)."
+
 #: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_xop.cpp
 #, c-format
 msgid "%s does not wish to be added to channel access lists."
 msgstr "Ο/η %s δεν επιθυμεί να προστίθεται σε λίστες πρόσβασης καναλιών."
 
-#: ../modules/chanserv/cs_invite.cpp
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s has already been invited to %s."
+msgstr "Ο/η %s έχει ήδη προσκληθεί στο %s."
+
+#: ../modules/chanserv/cs_invite.cpp ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "%s has been invited to %s."
 msgstr "Ο/η #%s# προσκαλέσθηκε στο κανλάλι #%s#."
@@ -238,6 +253,11 @@ msgstr "Ο/η %s μεταφέρθηκε στο σύστημα πρόσβαση
 #, c-format
 msgid "%s has been parted from %s."
 msgstr "Ο %s βγήκε από το %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s has been removed from %s."
+msgstr "Ο/η %s αφαιρέθηκε από το %s."
 
 #: ../modules/chanserv/cs_unban.cpp
 #, c-format
@@ -259,6 +279,16 @@ msgstr "Ο/η %s δεν έχει πρόσβαση στο %s."
 msgid "%s has too many channels registered."
 msgstr "#%s# έχει πολλά κατοχυρωμένα κανάλια."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s has too many open invitations; wait until some are used."
+msgstr "Ο/η %s έχει πάρα πολλές εκκρεμείς προσκλήσεις· περίμενε μέχρι να χρησιμοποιηθούν κάποιες."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s in %s"
+msgstr "%s στο %s"
+
 #: ../modules/chanserv/cs_status.cpp
 #, c-format
 msgid "%s is a super administrator."
@@ -274,6 +304,11 @@ msgstr ""
 "Ο #%s# είναι μια υπηρεσία που επιτρέπει στους χρήστες του IRC να στέλνουν μικρά γραπτά μηνύματα σε άλλους χρήστες του δικτύου (είτε βρίσκονται συνδεδεμένοι εκείνη τη στιγμή, είτε όχι) ή σε κανάλια(*). Τα ψευδώνυμα του αποστολέα και του παραλήπτη πρέπει να είναι κατοχυρωμένα για να χρησιμοποιηθεί η υπηρεσία.\n"
 "\n"
 "Οι εντολές του %s είναι:"
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s is already a member of %s."
+msgstr "Ο/η %s είναι ήδη μέλος του %s."
 
 #: ../modules/chanserv/cs_invite.cpp
 #, c-format
@@ -299,6 +334,11 @@ msgstr "Ο/η %s είναι ήδη στη λίστα αγνόησης memo τ�
 #, c-format
 msgid "%s is already suspended."
 msgstr "Το %s είναι ήδη σε αναστολή."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s is not a channel."
+msgstr "Το %s δεν είναι κανάλι."
 
 #: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 #, c-format
@@ -329,6 +369,11 @@ msgstr "Το %s δεν είναι έγκυρο αποτύπωμα πιστοπ
 #, c-format
 msgid "%s is not a valid email address."
 msgstr "Το %s δεν είναι έγκυρη διεύθυνση email."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s is not a valid group name. It must start with ! and be up to 32 letters, digits, '-', '_' or '.'."
+msgstr "Το %s δεν είναι έγκυρο όνομα ομάδας. Πρέπει να ξεκινά με ! και να έχει έως 32 γράμματα, ψηφία, '-', '_' ή '.'."
 
 #: ../modules/operserv/os_expiring.cpp
 #, c-format
@@ -364,6 +409,11 @@ msgstr "Ο/η %s είναι στη λίστα auto kick του %s (%s)."
 #, c-format
 msgid "%s is the founder of %s."
 msgstr "Ο/η %s είναι ο founder του %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s manages groups of accounts named like !staff. Members get flags that say what they can do in the group."
+msgstr "Ο %s διαχειρίζεται ομάδες λογαριασμών με ονόματα όπως !staff. Τα μέλη παίρνουν flags που ορίζουν τι μπορούν να κάνουν στην ομάδα."
 
 #: ../modules/chanserv/cs_status.cpp
 #, c-format
@@ -444,6 +494,31 @@ msgstr "Το %s δεν βρέθηκε στη λίστα προσφορών hos
 #, c-format
 msgid "%s not found on the notify list."
 msgstr "Το %s δεν βρέθηκε στη λίστα notify."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s now has flags +%s on %s."
+msgstr "Ο/η %s έχει τώρα τα flags +%s στο %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s of %s has been cleared."
+msgstr "Το %s του %s διαγράφηκε."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s of %s is now %s."
+msgstr "Το %s του %s είναι τώρα %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s of %s is now off."
+msgstr "Το %s του %s είναι τώρα ανενεργό."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s of %s is now on."
+msgstr "Το %s του %s είναι τώρα ενεργό."
 
 #: ../modules/chanserv/cs_flags.cpp
 #, c-format
@@ -542,6 +617,10 @@ msgstr "{fingerprint} -- δημιουργήθηκε από {creator} στις 
 msgid "{fingerprint} -- created by {creator} at {created} ({description})"
 msgstr "{fingerprint} -- δημιουργήθηκε από {creator} στις {created} ({description})"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "{group} ({founder}) {description}"
+msgstr "{group} ({founder}) {description}"
+
 #: ../modules/operserv/os_session.cpp
 msgid "{host}: {session} sessions"
 msgstr "{host}: {session} sessions"
@@ -633,6 +712,30 @@ msgstr "{template} = +{flags}"
 #: ../modules/operserv/os_config.cpp
 msgid "{}{module_name}}:{name} = {value}"
 msgstr "{}{module_name}}:{name} = {value}"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group"
+msgstr "!group"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group account"
+msgstr "!group λογαριασμός"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group account changes"
+msgstr "!group λογαριασμός αλλαγές"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group option [value]"
+msgstr "!group επιλογή [τιμή]"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group [account [changes]]"
+msgstr "!group [λογαριασμός [αλλαγές]]"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "!group [key]"
+msgstr "!group [κλειδί]"
 
 #: ../modules/nickserv/ns_group.cpp
 msgid "[target] [password]"
@@ -1480,6 +1583,16 @@ msgstr "%s δεν έχεις όριο μηνυμάτων."
 msgid "%s has no new memos."
 msgstr "%s δεν έχεις όριο μηνυμάτων."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s invited you to the group %s. To join it, type %s."
+msgstr "Ο/η %s σε προσκάλεσε στην ομάδα %s. Για να μπεις, γράψε %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s invited you to the group %s. To join it, type %s."
+msgstr "Ο/η %s σε προσκάλεσε στην ομάδα %s. Για να μπεις, γράψε %s."
+
 #: ../modules/nickserv/ns_info.cpp
 #, c-format
 msgid "%s is a Services Operator of type %s."
@@ -1975,12 +2088,17 @@ msgstr "Ο βαθμός Access για το #%s# σβήστηκε στο αρχι
 msgid "Access list for %s:"
 msgstr "Λίστα πρόσβασης για %s:"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Access list of %s:"
+msgstr "Λίστα πρόσβασης του %s:"
+
 #: ../modules/help.cpp
 #, c-format
 msgid "Access to this command requires the permission %s to be present in your opertype."
 msgstr "Η πρόσβαση σε αυτή την εντολή χρειάζεται την άδεια #%s# να υπάρχει στο opertype σας."
 
-#: ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_list.cpp
 msgid "Account"
 msgstr "Λογαριασμός"
 
@@ -2071,6 +2189,10 @@ msgstr "Προσθέτει ένα ψευδώνυμο σε λογαριασμό"
 #: ../modules/operserv/os_info.cpp
 msgid "Add or delete oper information for a given nick or channel. This will show to opers in the respective info command for the nick or channel."
 msgstr "Προσθέτει ή διαγράφει πληροφορίες oper για ένα ψευδώνυμο ή κανάλι. Θα εμφανίζονται στους opers στην αντίστοιχη εντολή info του ψευδωνύμου ή του καναλιού."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Added"
+msgstr "Προστέθηκε"
 
 #: ../modules/operserv/os_notinchan.cpp
 #, c-format
@@ -3038,6 +3160,14 @@ msgstr "Λίστα πιστοποιητικών για %s:"
 msgid "ChanServ is required to enable persist on this network."
 msgstr "Ο ChanServ απαιτείται για να ενεργοποιηθεί το persist σε αυτό το δίκτυο."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Change a group's settings"
+msgstr "Αλλαγή ρυθμίσεων μιας ομάδας"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Change anyone's flags in any group"
+msgstr "Αλλαγή των flags οποιουδήποτε σε οποιαδήποτε ομάδα"
+
 #: ../modules/operserv/os_mode.cpp
 msgid "Change channel modes"
 msgstr "Ο/η #%s# άλλαξε τα usermodes σας."
@@ -3063,6 +3193,30 @@ msgstr "Άλλαξε το notify στο %s, ταιριάζει με %u χρή�
 #, c-format
 msgid "Changed user modes of %s to %s."
 msgstr "Τα user modes του %s άλλαξαν σε %s."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid ""
+"Changes a group's settings. These need +s:\n"
+"  DESCRIPTION, URL, EMAIL, CHANNEL [value] - set or clear them\n"
+"  JOINFLAGS [flags|OFF] - flags given to people who JOIN\n"
+"  PUBLIC {ON|OFF} - show founders and members to everyone\n"
+"These need +F:\n"
+"  OPEN {ON|OFF} - let anyone JOIN without an invitation\n"
+"  GROUPNAME !newname - rename the group\n"
+"These are for services operators:\n"
+"  ACSNOLIMIT {ON|OFF} - no limit on the access list size\n"
+"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit"
+msgstr ""
+"Αλλάζει τις ρυθμίσεις μιας ομάδας. Αυτές χρειάζονται +s:\n"
+"  DESCRIPTION, URL, EMAIL, CHANNEL [τιμή] - ορισμός ή διαγραφή τους\n"
+"  JOINFLAGS [flags|OFF] - flags που δίνονται σε όσους κάνουν JOIN\n"
+"  PUBLIC {ON|OFF} - εμφάνιση ιδρυτών και μελών σε όλους\n"
+"Αυτές χρειάζονται +F:\n"
+"  OPEN {ON|OFF} - οποιοσδήποτε μπορεί να κάνει JOIN χωρίς πρόσκληση\n"
+"  GROUPNAME !newname - μετονομασία της ομάδας\n"
+"Αυτές είναι για τους χειριστές των υπηρεσιών:\n"
+"  ACSNOLIMIT {ON|OFF} - χωρίς όριο στο μέγεθος της λίστας πρόσβασης\n"
+"  REGNOLIMIT {ON|OFF} - να μη μετράει στο όριο των ιδρυτών της"
 
 #: ../modules/botserv/bs_bot.cpp
 msgid ""
@@ -3200,7 +3354,7 @@ msgstr "Αλλαγή των user modes σας σε %s"
 msgid "Changing your vhost to %s"
 msgstr "Αλλαγή της vhost σας σε %s"
 
-#: ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
 msgid "Channel"
 msgstr "Κανάλι"
 
@@ -3974,7 +4128,7 @@ msgstr "Διαγράφει το τελευταίο σας memo."
 msgid "Depooled %s."
 msgstr "Το %s αφαιρέθηκε από το pool."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_xop.cpp ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_xop.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_cert.cpp
 msgid "Description"
 msgstr "Περιγραφή"
 
@@ -4112,6 +4266,22 @@ msgstr "Μην χρησιμοποιείς αυτή τη λέξη %s στο κα�
 msgid "Don't use underlines on this channel!"
 msgstr "Μην χρησιμοποιείς χαρακτήρες υπογράμμισης στο κανάλι!"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Drop a group"
+msgstr "Διαγραφή μιας ομάδας"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Drop any group"
+msgstr "Διαγραφή οποιασδήποτε ομάδας"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Drops a group you founded. You are first given a key to confirm it with."
+msgstr "Διαγράφει μια ομάδα που ίδρυσες. Πρώτα σου δίνεται ένα κλειδί για να το επιβεβαιώσεις."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Drops any group, without a key. For services operators."
+msgstr "Διαγράφει οποιαδήποτε ομάδα, χωρίς κλειδί. Για χειριστές των υπηρεσιών."
+
 #: ../modules/nickserv/ns_drop.cpp
 msgid "Drops the given nick from the database. Once your nickname is dropped you may lose all of your access and channels that you may own. Any other user will be able to gain control of this nick."
 msgstr "Διαγράφει το δοσμένο ψευδώνυμο από τη βάση δεδομένων. Μόλις διαγραφεί το ψευδώνυμό σας μπορεί να χάσετε όλη την πρόσβαση και τα κανάλια που ίσως έχετε. Οποιοσδήποτε άλλος χρήστης θα μπορεί να πάρει τον έλεγχο αυτού του ψευδωνύμου."
@@ -4129,6 +4299,10 @@ msgstr "Επεξεργάζεται ή εμφανίζει τη λίστα ειδ�
 #: ../modules/operserv/os_news.cpp
 msgid "Edits or displays the list of random news messages. When a user connects to the network, one (and only one) of the random news will be randomly chosen and sent to them."
 msgstr "Επεξεργάζεται ή εμφανίζει τη λίστα τυχαίων ειδήσεων. Όταν ένας χρήστης συνδέεται στο δίκτυο, επιλέγεται τυχαία μία (και μόνο μία) από τις τυχαίες ειδήσεις και του αποστέλλεται."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Email"
+msgstr "Email"
 
 #: ../modules/nickserv/ns_info.cpp
 msgid "Email address"
@@ -4257,6 +4431,11 @@ msgstr ""
 "\n"
 "Αν ο IRCd σας έχει μόνιμο (persistent) channel mode και αυτό οριστεί ή αφαιρεθεί (για οποιονδήποτε λόγο, συμπεριλαμβανομένου του MODE LOCK), το persist ενεργοποιείται και απενεργοποιείται αυτόματα και για το κανάλι. Επιπλέον, οι υπηρεσίες θα ορίζουν ή θα αφαιρούν αυτό το mode όταν ενεργοποιείτε ή απενεργοποιείτε το persist."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "End of %s access list."
+msgstr "Τέλος της λίστας πρόσβασης του %s."
+
 #: ../modules/operserv/os_sxline.cpp
 #, c-format
 msgid "End of %s list - showing %u of %u entries. Use %s from-to to see the rest."
@@ -4342,6 +4521,11 @@ msgstr "Τέλος λίστας χρηστών."
 msgid "End of host offer list."
 msgstr "Τέλος λίστας προσφερόμενων hosts."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "End of list - %s is on %u channel access list(s)."
+msgstr "Τέλος λίστας - ο/η %s είναι σε %u λίστα(ες) πρόσβασης καναλιών."
+
 #: ../modules/nickserv/ns_alist.cpp
 #, c-format
 msgid "End of list - %d channels shown."
@@ -4351,6 +4535,11 @@ msgstr "Τέλος λίστας - εμφανίστηκαν %d κανάλια."
 #, c-format
 msgid "End of list - %d/%d matches shown."
 msgstr "Τέλος της λίστας - %d/%d βρέθηκαν και εμφανίστηκαν."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "End of list - %u/%u shown."
+msgstr "Τέλος λίστας - εμφανίζονται %u/%u."
 
 #: ../modules/operserv/os_notinchan.cpp
 #, c-format
@@ -4568,7 +4757,7 @@ msgstr "Flag"
 msgid "Flag templates:"
 msgstr "Πρότυπα flags:"
 
-#: ../modules/chanserv/cs_flags.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/groupserv/groupserv.cpp ../modules/operserv/os_notify.cpp
 msgid "Flags"
 msgstr "Flags"
 
@@ -4659,7 +4848,7 @@ msgstr "Αναγκαστική αποχώρηση χρήστη από κανάλ
 msgid "Forcefully part a user from a channel."
 msgstr "Αναγκαστική αποχώρηση χρήστη από κανάλι."
 
-#: ../modules/chanserv/cs_info.cpp ../modules/nickserv/ns_alist.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_alist.cpp
 msgid "Founder"
 msgstr "Ιδρυτής"
 
@@ -4721,6 +4910,24 @@ msgstr "Η επιλογή χαιρετισμού είναι #ON# στο κανά
 #, c-format
 msgid "Greet mode is now on on channel %s."
 msgstr "Η επιλογή χαιρετισμού είναι #ON# στο κανάλι %s."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Group"
+msgstr "Ομάδα"
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Group %s access for %s is unchanged."
+msgstr "Η πρόσβαση της ομάδας %s για τον/την %s δεν άλλαξε."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Groups"
+msgstr "Ομάδες"
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Groups matching %s:"
+msgstr "Ομάδες που ταιριάζουν με το %s:"
 
 #: ../modules/nickserv/ns_info.cpp
 msgid "Hide certain pieces of nickname information"
@@ -4826,6 +5033,11 @@ msgstr "Πληροφορίες για το bot %s:"
 msgid "Information about channel %s:"
 msgstr "Πληροφορίες για το κανάλι %s:"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Information about group %s:"
+msgstr "Πληροφορίες για την ομάδα %s:"
+
 #: ../modules/nickserv/ns_info.cpp
 #, c-format
 msgid "Information about nick %s:"
@@ -4843,6 +5055,11 @@ msgstr "Μη έγκυρος χρόνος λήξης."
 #: ../modules/operserv/os_session.cpp
 msgid "Invalid hostmask. Only real hostmasks are valid, as exceptions are not matched against nicks or usernames."
 msgstr "Λάθος hostmask. Μόνο πραγματικά hostmasks χρησιμοποιούνται και όχι ψευδώνυμα ή usernames."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Invalid key for dropping %s."
+msgstr "Μη έγκυρο κλειδί για τη διαγραφή του %s."
 
 #: ../modules/operserv/os_logsearch.cpp
 #, c-format
@@ -4862,13 +5079,33 @@ msgstr "Λάθος threshold value. Πρέπει να είναι μεγαλύτ�
 msgid "Invalid value for LIMIT. Must be numerical."
 msgstr "Μη έγκυρη τιμή για το LIMIT. Πρέπει να είναι αριθμός."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Invite an account to a group"
+msgstr "Πρόσκληση λογαριασμού σε ομάδα"
+
 #: ../modules/chanserv/cs_invite.cpp
 msgid "Invite you or an optionally specified nick into a channel"
 msgstr "Πρόσκληση εσάς ή ενός προαιρετικού ψευδωνύμου σε ένα κανάλι"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Invites an account to the group (needs +i). They are told, or sent a memo if they are offline, and can then JOIN even if the group isn't open."
+msgstr "Προσκαλεί έναν λογαριασμό στην ομάδα (χρειάζεται +i). Ενημερώνεται, ή λαμβάνει memo αν είναι εκτός σύνδεσης, και μπορεί μετά να κάνει JOIN ακόμη κι αν η ομάδα δεν είναι ανοιχτή."
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Italics kicker"
 msgstr "Kicker πλαγίων"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Join an open group, or one you were invited to"
+msgstr "Είσοδος σε ανοιχτή ομάδα ή σε ομάδα όπου έχεις προσκληθεί"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Join flags"
+msgstr "Flags εισόδου"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Join flags must be flags to add, without F or b, e.g. +Ac."
+msgstr "Τα flags εισόδου πρέπει να είναι flags προς προσθήκη, χωρίς F ή b, π.χ. +Ac."
 
 #: ../modules/chanserv/cs_set_joinflood.cpp
 msgid "Join flood protection"
@@ -4898,6 +5135,10 @@ msgstr "Η προστασία από flood εισόδων δεν είναι εν
 #, c-format
 msgid "Joined %zu user(s) to %s."
 msgstr "%zu χρήστης(ες) μπήκαν στο %s."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Joins a group that is open (SET OPEN) or that you were invited to with INVITE. You get the group's join flags."
+msgstr "Σε βάζει σε μια ομάδα που είναι ανοιχτή (SET OPEN) ή στην οποία σε προσκάλεσαν με INVITE. Παίρνεις τα flags εισόδου της ομάδας."
 
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "Keep a history of earlier topics"
@@ -5063,6 +5304,10 @@ msgstr "Το Level για %s στο κανάλι %s άλλαξε σε founder on
 msgid "Level must be between %d and %d inclusive."
 msgstr "Ο βαθμός πρέπει να είναι μεταξύ %d και %d."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Like FLAGS, for services operators: changes anyone's flags in any group, without the usual checks."
+msgstr "Όπως το FLAGS, για χειριστές των υπηρεσιών: αλλάζει τα flags οποιουδήποτε σε οποιαδήποτε ομάδα, χωρίς τους συνήθεις ελέγχους."
+
 #: ../modules/operserv/os_dns.cpp ../modules/operserv/os_session.cpp
 msgid "Limit"
 msgstr "Όριο"
@@ -5099,6 +5344,10 @@ msgstr "Εμφανίζει όλα τα κανάλια στα οποία έχετ
 #, c-format
 msgid "List for modes %s is full."
 msgstr "Η λίστα για τα modes %s είναι γεμάτη."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "List groups"
+msgstr "Λίστα ομάδων"
 
 #: ../modules/chanserv/cs_info.cpp
 msgid "List information about the specified registered channel"
@@ -5156,6 +5405,10 @@ msgstr ""
 "  {regepoch} - Ο χρόνος UNIX κατοχύρωσης του ψευδωνύμου σας.\n"
 "\n"
 "Με το %sTAKE εφαρμόζεται ένα προσφερόμενο vhost. Πρέπει να δώσετε τη μεταβλητή προτύπου ή τον αριθμό θέσης του vhost που θέλετε. Αφού πάρετε ένα vhost δεν μπορείτε να πάρετε άλλο για %s."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "List the channels a group has access to"
+msgstr "Λίστα των καναλιών στα οποία έχει πρόσβαση μια ομάδα"
 
 #: ../modules/operserv/os_set.cpp
 msgid "List the options"
@@ -5370,6 +5623,14 @@ msgstr "Εμφανίζει πληροφορίες για το κατοχυρωμ
 #: ../modules/memoserv/ms_list.cpp
 msgid "Lists memos numbered 2 through 5 and 7 through 9."
 msgstr "Εμφανίζει τα μηνύματα με αριθμούς 2 έως 5 και 7 έως 9."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Lists the channel access lists the group is on, and with what access (needs +c)."
+msgstr "Εμφανίζει τις λίστες πρόσβασης καναλιών στις οποίες είναι η ομάδα, και με ποια πρόσβαση (χρειάζεται +c)."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Lists the public groups matching a pattern (all groups for services operators)."
+msgstr "Εμφανίζει τις δημόσιες ομάδες που ταιριάζουν με ένα μοτίβο (όλες τις ομάδες για χειριστές των υπηρεσιών)."
 
 #: ../modules/operserv/os_expiring.cpp
 msgid ""
@@ -5656,6 +5917,10 @@ msgstr "Αποτελέσματα για το %s:"
 #, c-format
 msgid "Maximum users: %zu (%s)"
 msgstr "Μέγιστος αριθμός χρηστών: %zu (%s)"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Members"
+msgstr "Μέλη"
 
 #: ../modules/memoserv/ms_read.cpp
 #, c-format
@@ -6011,6 +6276,10 @@ msgstr "Το κανάλι #%s# δεν μπορεί να κατοχυρωθεί."
 msgid "Nicks expiring within %s:"
 msgstr "Ψευδώνυμα που λήγουν εντός %s:"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "No access list limit"
+msgstr "Χωρίς όριο λίστας πρόσβασης"
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Χωρίς auto-op"
@@ -6037,6 +6306,11 @@ msgstr "Κανένα διαγράψιμο bot δεν ταιριάζει με τ�
 #: ../modules/chanserv/cs_set.cpp ../modules/nickserv/ns_set.cpp
 msgid "No expiry"
 msgstr "Χωρίς λήξη"
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "No groups match %s."
+msgstr "Καμία ομάδα δεν ταιριάζει με το %s."
 
 #: ../modules/help.cpp
 #, c-format
@@ -6197,6 +6471,10 @@ msgstr "Τα μη-status modes καθαρίστηκαν στο %s."
 msgid "None"
 msgstr "Κανένα"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Not counted towards the founders' group limit"
+msgstr "Δεν μετράει στο όριο ομάδων των ιδρυτών"
+
 #: ../modules/chanserv/chanserv.cpp
 #, c-format
 msgid "Note that any channel which is not used for %s (i.e. which no user on the channel's access list enters for that period of time) will be automatically dropped."
@@ -6223,7 +6501,7 @@ msgstr "Δεν άλλαξε τίποτα:"
 msgid "Now"
 msgstr "Τώρα"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr "Αριθμός"
 
@@ -6269,6 +6547,22 @@ msgstr "Προσφερόμενο vhost"
 #: ../modules/nickserv/ns_info.cpp
 msgid "Online from"
 msgstr "Online από"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Only a founder can make someone a founder."
+msgstr "Μόνο ένας ιδρυτής μπορεί να κάνει κάποιον ιδρυτή."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Only a founder can remove a founder."
+msgstr "Μόνο ένας ιδρυτής μπορεί να αφαιρέσει έναν ιδρυτή."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Open"
+msgstr "Ανοιχτή"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Open groups have been disabled by the network."
+msgstr "Οι ανοιχτές ομάδες έχουν απενεργοποιηθεί από το δίκτυο."
 
 #: ../modules/operserv/os_oper.cpp
 #, c-format
@@ -6564,6 +6858,10 @@ msgstr ""
 "\n"
 "Οι προεπιλογές είναι 3 είσοδοι μέσα σε 10 δευτερόλεπτα, για 60 δευτερόλεπτα. Οι χρόνοι μπορούν να δοθούν σε δευτερόλεπτα ή όπως 10s, 2m ή 1h. Το SHOW δείχνει τις τρέχουσες ρυθμίσεις."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Public"
+msgstr "Δημόσια"
+
 #: ../modules/operserv/os_chankill.cpp
 msgid "Puts an AKILL for every nick on the specified channel. It uses the entire real ident@host for every nick, and then enforces the AKILL."
 msgstr "Βάζει AKILL σε κάθε ψευδώνυμο του δοσμένου καναλιού. Χρησιμοποιεί ολόκληρο το πραγματικό ident@host κάθε ψευδωνύμου και μετά εφαρμόζει το AKILL."
@@ -6665,11 +6963,15 @@ msgstr "Υποστηρίζονται επίσης regex με τη μηχανή %
 msgid "Register a channel"
 msgstr "Κατοχυρώνει ένα ψευδώνυμο"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Register a group"
+msgstr "Κατοχύρωση ομάδας"
+
 #: ../modules/nickserv/ns_register.cpp
 msgid "Register a nickname"
 msgstr "Κατοχυρώνει ένα ψευδώνυμο"
 
-#: ../modules/chanserv/cs_info.cpp ../modules/nickserv/ns_group.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_group.cpp
 msgid "Registered"
 msgstr "Κατοχυρώθηκε"
 
@@ -6703,6 +7005,11 @@ msgstr ""
 "Κατοχυρώνει ένα κανάλι στη βάση δεδομένων του %s. Για να χρησιμοποιήσετε αυτή την εντολή, πρέπει πρώτα να είστε channel operator στο κανάλι που θέλετε να κατοχυρώσετε. Η περιγραφή, που είναι προαιρετική, είναι μια γενική περιγραφή του σκοπού του καναλιού. \n"
 "\n"
 "Όταν κατοχυρώνετε ένα κανάλι, καταγράφεστε ως ο \"founder\" του καναλιού. Ο founder μπορεί να αλλάξει όλες τις ρυθμίσεις του καναλιού· ο %s θα δίνει επίσης αυτόματα στον founder δικαιώματα channel operator όταν μπαίνει στο κανάλι."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Registers a group, with you as its founder. Group names start with !, e.g. !staff. You can own up to %u groups."
+msgstr "Κατοχυρώνει μια ομάδα, με εσένα ως ιδρυτή. Τα ονόματα ομάδων ξεκινούν με !, π.χ. !staff. Μπορείς να έχεις έως %u ομάδες."
 
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
@@ -7695,6 +8002,10 @@ msgstr "Η ρύθμιση για super admin πρέπει να είναι ON �
 msgid "Should services automatically give status to users"
 msgstr "Αν τα services θα δίνουν αυτόματα status στους χρήστες"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Show information about a group"
+msgstr "Εμφάνιση πληροφοριών για μια ομάδα"
+
 #: ../modules/operserv/os_stats.cpp
 msgid "Show status of services and network"
 msgstr "Εμφανίζει την κατάσταση των services και του δικτύου"
@@ -7718,6 +8029,10 @@ msgstr ""
 "Το LIST τα εμφανίζει, αριθμημένα από το πιο πρόσφατο. Το SET κάνει ένα από αυτά ξανά topic, ακόμη κι αν το TOPICLOCK είναι ενεργό. Το CLEAR τα διαγράφει όλα.\n"
 "\n"
 "Απαιτείται το προνόμιο TOPIC στο κανάλι."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Shows information about a group. Its founders and member count are only shown to members, unless the group is public (SET PUBLIC)."
+msgstr "Εμφανίζει πληροφορίες για μια ομάδα. Οι ιδρυτές της και ο αριθμός μελών εμφανίζονται μόνο στα μέλη, εκτός αν η ομάδα είναι δημόσια (SET PUBLIC)."
 
 #: ../modules/botserv/bs_info.cpp
 msgid ""
@@ -8196,6 +8511,11 @@ msgstr "Η λίστα AKILL καθαρίστηκε."
 msgid "The Defcon level is now at: %d"
 msgstr "Το defcon επίπεδο είναι τώρα: #%d#"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The access list of %s is full."
+msgstr "Η λίστα πρόσβασης του %s είναι γεμάτη."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "The confirmation code for %s has been re-sent to %s."
@@ -8250,10 +8570,55 @@ msgstr "Είναι διαθέσιμα τα εξής ονόματα λειτου�
 msgid "The given mask may also be a channel, which will use the access list from the other channel up to the given level."
 msgstr "Η δοσμένη μάσκα μπορεί επίσης να είναι ένα κανάλι, οπότε θα χρησιμοποιείται η access list του άλλου καναλιού μέχρι το δοσμένο level."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s already exists."
+msgstr "Η ομάδα %s υπάρχει ήδη."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s does not exist."
+msgstr "Η ομάδα %s δεν υπάρχει."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s has been dropped."
+msgstr "Η ομάδα %s διαγράφηκε."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s has been registered to %s."
+msgstr "Η ομάδα %s κατοχυρώθηκε στον/στην %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s has been renamed to %s."
+msgstr "Η ομάδα %s μετονομάστηκε σε %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s is not open to anyone joining."
+msgstr "Η ομάδα %s δεν είναι ανοιχτή για είσοδο σε όλους."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s is on no channel access list."
+msgstr "Η ομάδα %s δεν είναι σε καμία λίστα πρόσβασης καναλιού."
+
 #: ../modules/operserv/os_session.cpp
 #, c-format
 msgid "The host %s currently has %d sessions with a limit of %d because it matches entry: %s."
 msgstr "Ο host %s έχει αυτή τη στιγμή %d sessions με όριο %d επειδή ταιριάζει με την καταχώρηση: %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The join flags of %s are now +%s."
+msgstr "Τα flags εισόδου του %s είναι τώρα +%s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The join flags of %s have been cleared."
+msgstr "Τα flags εισόδου του %s διαγράφηκαν."
 
 #: ../modules/memoserv/ms_check.cpp
 #, c-format
@@ -8677,6 +9042,11 @@ msgstr "Αυτή η επιλογή κάνει ένα κανάλι να μη δέ
 msgid "This option prevents a bot from being assigned to a channel by users that aren't Services Operators."
 msgstr "Αυτή η επιλογή εμποδίζει την ανάθεση bot σε κανάλι από χρήστες που δεν είναι Services Operators."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "This will drop the group %s and all its members' access. To confirm, type %s."
+msgstr "Αυτό θα διαγράψει την ομάδα %s και την πρόσβαση όλων των μελών της. Για επιβεβαίωση, γράψε %s."
+
 #: ../modules/nickserv/ns_set_timezone.cpp
 #, c-format
 msgid "Timezone changed to %s."
@@ -8889,6 +9259,10 @@ msgstr "Γράψτε %sεπιλογή για περισσότερες πλ�
 #, c-format
 msgid "Type %sregion to list timezones for a region."
 msgstr "Γράψτε %sπεριοχή για να εμφανίσετε τις ζώνες ώρας μιας περιοχής."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "URL"
+msgstr "URL"
 
 #: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_sxline.cpp
 #, c-format
@@ -9201,6 +9575,10 @@ msgstr "Προβολή και αλλαγή Χειριστών Υπηρεσιών
 msgid "View and change configuration file settings"
 msgstr "Δες και άλλαξε τις ρυθμίσεις του configuration file"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "View or change who is in a group and what they can do"
+msgstr "Προβολή ή αλλαγή του ποιος είναι σε μια ομάδα και τι μπορεί να κάνει"
+
 #: ../modules/operserv/os_session.cpp
 msgid "View the list of host sessions"
 msgstr "Βλέπεις την λίστα με τα host sessions"
@@ -9291,6 +9669,38 @@ msgstr ""
 "\n"
 "Με παράμετρο, κάνει το ίδιο για το δοσμένο ψευδώνυμο. Αν καθορίσετε επίσης REVALIDATE, οι υπηρεσίες θα ζητήσουν από το δοσμένο ψευδώνυμο να ταυτοποιηθεί ξανά. Αυτό επιτρέπεται μόνο στους Χειριστές Υπηρεσιών."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid ""
+"Without an account, lists the group's members and their flags (needs +A). With one, changes that account's flags (needs +f); a member who loses all flags leaves the group, and you can always leave a group yourself with -*.\n"
+"\n"
+"The flags are:\n"
+"  F - founder: everything, including SET OPEN/GROUPNAME and DROP\n"
+"  f - change members' flags\n"
+"  A - view the member list\n"
+"  m - read memos sent to the group\n"
+"  c - get the group's channel access\n"
+"  v - take vhosts offered to the group\n"
+"  s - use SET on the group\n"
+"  i - invite accounts to the group\n"
+"  b - banned: can't JOIN the group\n"
+"\n"
+"* means all of them except F and b. Only a founder can add or remove F, and the last founder can't be removed."
+msgstr ""
+"Χωρίς λογαριασμό, εμφανίζει τα μέλη της ομάδας και τα flags τους (χρειάζεται +A). Με λογαριασμό, αλλάζει τα flags του (χρειάζεται +f)· ένα μέλος που χάνει όλα τα flags φεύγει από την ομάδα, και μπορείς πάντα να φύγεις μόνος/η σου από μια ομάδα με -*.\n"
+"\n"
+"Τα flags είναι:\n"
+"  F - ιδρυτής: τα πάντα, μαζί με SET OPEN/GROUPNAME και DROP\n"
+"  f - αλλαγή των flags των μελών\n"
+"  A - προβολή της λίστας μελών\n"
+"  m - ανάγνωση memos που στέλνονται στην ομάδα\n"
+"  c - απόκτηση της πρόσβασης της ομάδας σε κανάλια\n"
+"  v - λήψη vhosts που προσφέρονται στην ομάδα\n"
+"  s - χρήση του SET στην ομάδα\n"
+"  i - πρόσκληση λογαριασμών στην ομάδα\n"
+"  b - αποκλεισμένος: δεν μπορεί να κάνει JOIN στην ομάδα\n"
+"\n"
+"Το * σημαίνει όλα εκτός από τα F και b. Μόνο ένας ιδρυτής μπορεί να προσθέσει ή να αφαιρέσει το F, και ο τελευταίος ιδρυτής δεν μπορεί να αφαιρεθεί."
+
 #: ../modules/operserv/os_stats.cpp
 msgid ""
 "Without any option, shows the current number of users online, and the highest number of users online since services was started, and the length of time services has been running.\n"
@@ -9329,6 +9739,11 @@ msgstr "Λέξη"
 msgid "XOP"
 msgstr "XOP"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "You are already a member of %s."
+msgstr "Είσαι ήδη μέλος του %s."
+
 #: ../modules/nickserv/ns_group.cpp
 #, c-format
 msgid "You are already a member of the account of %s."
@@ -9366,6 +9781,11 @@ msgstr "Δεν χρησιμοποιείτε πιστοποιητικό πελά�
 #: ../modules/operserv/os_login.cpp
 msgid "You are now a Services Operator."
 msgstr "Είστε πλέον Χειριστής Υπηρεσιών."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "You are now a member of %s."
+msgstr "Είσαι πλέον μέλος του %s."
 
 #: ../modules/operserv/os_set.cpp
 msgid "You are now a super admin."
@@ -9620,6 +10040,11 @@ msgstr "#Προειδοποίηση:# Έχει φτάσει στο μέγιστ�
 msgid "You have regained control of %s."
 msgstr "Ανακτήσατε τον έλεγχο του %s."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "You have too many groups registered (the limit is %u)."
+msgstr "Έχεις κατοχυρώσει πάρα πολλές ομάδες (το όριο είναι %u)."
+
 #: ../modules/nickserv/ns_drop.cpp
 msgid "You may drop any nick within your account."
 msgstr "Μπορείτε να διαγράψετε οποιοδήποτε ψευδώνυμο του λογαριασμού σας."
@@ -9649,6 +10074,11 @@ msgstr "Δεν μπορείτε να διαγράψετε το %s, επειδ�
 #: ../modules/nickserv/ns_drop.cpp
 msgid "You may not drop other Services Operators' nicknames."
 msgstr "Δεν μπορείτε να διαγράψετε ψευδώνυμα άλλων Χειριστών Υπηρεσιών."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "You may not remove the last founder of %s."
+msgstr "Δεν μπορείς να αφαιρέσεις τον τελευταίο ιδρυτή του %s."
 
 #: ../modules/nickserv/ns_suspend.cpp
 msgid "You may not suspend other Services Operators' nicknames."
@@ -9683,6 +10113,10 @@ msgstr "Πρέπει να είστε συνδεδεμένος σε λογαρι�
 #: ../modules/chanserv/cs_register.cpp
 msgid "You must confirm your account before you can register a channel."
 msgstr "Πρέπει να είσαι να έχεις operator status στο κανάλι για να το κατοχυρώσεις."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "You must confirm your account before you can register a group."
+msgstr "Πρέπει να επιβεβαιώσεις τον λογαριασμό σου πριν μπορέσεις να κατοχυρώσεις ομάδα."
 
 #: ../modules/hostserv/hs_offer.cpp
 msgid "You must confirm your account before you can view the host offer list."
@@ -10133,6 +10567,10 @@ msgstr "[ψευδώνυμο] κωδικός"
 msgid "[parameter]"
 msgstr "[παράμετρος]"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "[pattern]"
+msgstr "[μοτίβο]"
+
 #: ../modules/nickserv/ns_set_timezone.cpp
 msgid "[timezone]"
 msgstr "[ζώνη ώρας]"
@@ -10234,6 +10672,10 @@ msgstr "{mode} -- δημιουργήθηκε από {creator} στις {created}
 #: ../modules/chanserv/cs_mode.cpp
 msgid "{mode} {param} -- created by {creator} on {created}"
 msgstr "{mode} {param} -- δημιουργήθηκε από {creator} στις {created}"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "{number}: {account} +{flags} (added {added})"
+msgstr "{number}: {account} +{flags} (προστέθηκε {added})"
 
 #: ../modules/nickserv/ns_ajoin.cpp
 msgid "{number}: {channel}"
@@ -10703,9 +11145,6 @@ msgstr "{number}: {topic} -- ορίστηκε από {by} στις {set}"
 
 #~ msgid "Invalid passcode."
 #~ msgstr "Μη έγγυρο passcode"
-
-#~ msgid "Join a group"
-#~ msgstr "    GROUP      Μπένετε σε ομάδα ψευδώνυμου"
 
 #~ msgid "LOGONNEWS {ADD|DEL|LIST} [text|num]"
 #~ msgstr "LOGONNEWS {ADD|DEL|LIST} [#περιεχόμενο#|#νούμερο#]#"
@@ -11271,10 +11710,6 @@ msgstr "{number}: {topic} -- ορίστηκε από {by} στις {set}"
 #, c-format
 #~ msgid "VHost for group %s set to %s@%s."
 #~ msgstr "Η vhost για το group #%s# έγινε #%s#@#%s#."
-
-#, c-format
-#~ msgid "You are now in the group of %s."
-#~ msgstr "Είσαι τώρα μέσα στην ομάδα του #%s#."
 
 #, fuzzy, c-format
 #~ msgid "You cannot %s on this network."
