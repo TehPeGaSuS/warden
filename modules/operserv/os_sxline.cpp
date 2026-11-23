@@ -266,14 +266,27 @@ public:
 	{
 		const Warden::string &cmd = params[0];
 
+		// A mask can contain spaces (SNLINE matches realnames), so DEL, LIST
+		// and VIEW take everything after the subcommand as one mask
+		// (anope/anope#599).
+		auto joined = params;
+		if (joined.size() > 2)
+		{
+			Warden::string mask;
+			for (size_t i = 1; i < joined.size(); ++i)
+				mask += (i > 1 ? " " : "") + joined[i];
+			joined.resize(1);
+			joined.push_back(mask);
+		}
+
 		if (cmd.equals_ci("ADD"))
 			return this->OnAdd(source, params);
 		else if (cmd.equals_ci("DEL"))
-			return this->OnDel(source, params);
+			return this->OnDel(source, joined);
 		else if (cmd.equals_ci("LIST"))
-			return this->OnList(source, params);
+			return this->OnList(source, joined);
 		else if (cmd.equals_ci("VIEW"))
-			return this->OnView(source, params);
+			return this->OnView(source, joined);
 		else if (cmd.equals_ci("CLEAR"))
 			return this->OnClear(source);
 		else
@@ -328,9 +341,11 @@ class CommandOSSNLine final
 			return;
 		}
 
+		// The mask and reason can both contain spaces, so use all of it
+		// (anope/anope#598).
 		Warden::string rest = param;
-		if (params.size() > last_param)
-			rest += " " + params[last_param];
+		for (auto i = last_param; i < params.size(); ++i)
+			rest += " " + params[i];
 
 		if (rest.find(':') == Warden::string::npos)
 		{
