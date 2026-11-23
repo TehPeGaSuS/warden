@@ -813,7 +813,10 @@ bool Channel::Kick(BotInfo *bi, User *u, const Warden::string &reason)
 void Channel::ChangeTopicInternal(User *u, const Warden::string &user, const Warden::string &newtopic, time_t ts)
 {
 	this->topic = newtopic;
-	this->topic_setter = u ? u->nick : user;
+	// Keep the setter as the IRCd sent it when it is a full mask, so networks
+	// set up for nick!user@host setters get that back on restored topics
+	// (anope/anope#420). Otherwise it is a UID or nick, so use the nick.
+	this->topic_setter = u && user.find('!') == Warden::string::npos ? u->nick : user;
 	this->topic_ts = ts;
 	this->topic_time = Warden::CurTime;
 
