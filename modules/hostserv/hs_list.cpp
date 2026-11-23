@@ -22,42 +22,33 @@ public:
 	CommandHSList(Module *creator) : Command(creator, "hostserv/list", 0, 2)
 	{
 		this->SetDesc(_("Display one or more vhost entries"));
-		this->SetSyntax(_("[\037key\037] [\037#X-Y\037]"));
+		this->SetSyntax(_("[\037key\037] [\037from\037-\037to\037]"));
 	}
 
 	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
-		// LIST [key] [#X-Y]: a pattern, a range, or both.
-		Warden::string key, range;
+		// LIST [key] [from-to]: a pattern, a range, or both (anope/anope#541).
+		Warden::string key;
+		int from = 0, to = 0;
 		for (const auto &param : params)
 		{
-			if (param[0] == '#')
-				range = param;
-			else
-				key = param;
-		}
-		int from = 0, to = 0;
-
-		if (!range.empty())
-		{
-			const auto &key = range;
-			size_t tmp = key.find('-');
-			if (tmp == Warden::string::npos || tmp == key.length() || tmp == 1)
+			const auto &range = param;
+			auto dash = range.find('-');
+			if (dash == Warden::string::npos || !dash || !isdigit(range[0]))
 			{
-				source.Reply(LIST_INCORRECT_RANGE);
+				key = param;
+				continue;
+			}
+
+			auto n1 = Warden::TryConvert<int>(range.substr(0, dash));
+			auto n2 = Warden::TryConvert<int>(range.substr(dash + 1));
+			if (!n1.has_value() || !n2.has_value() || n1.value() < 1 || n1.value() > n2.value())
+			{
+				source.Reply(_("Incorrect range specified. The correct syntax is \037from\037-\037to\037."));
 				return;
 			}
-			for (unsigned i = 1, end = key.length(); i < end; ++i)
-			{
-				if (!isdigit(key[i]) && i != tmp)
-				{
-					source.Reply(LIST_INCORRECT_RANGE);
-					return;
-				}
-
-				from = Warden::Convert<int>(key.substr(1, tmp - 1), 0);
-				to = Warden::Convert<int>(key.substr(tmp + 1), 0);
-			}
+			from = n1.value();
+			to = n2.value();
 		}
 
 		// Without a range only listmax entries are shown; a range is the
@@ -119,7 +110,7 @@ public:
 		else if (shown_to >= matched)
 			source.Reply(_("End of vhost list - %u/%u vhosts shown (%u-%u)."), shown, matched, shown_from, shown_to);
 		else
-			source.Reply(_("End of vhost list - %u/%u vhosts shown (%u-%u). Give a range such as \002#%u-%u\002 to see more."), shown, matched, shown_from, shown_to, shown_to + 1, shown_to + shown);
+			source.Reply(_("End of vhost list - %u/%u vhosts shown (%u-%u). Give a range such as \002%u-%u\002 to see more."), shown, matched, shown_from, shown_to, shown_to + 1, shown_to + shown);
 	}
 
 	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
@@ -131,9 +122,10 @@ public:
 			"If a \037key\037 is specified, only entries whose nick or vhost match "
 			"the pattern given in \037key\037 are displayed e.g. Rob* for all "
 			"entries beginning with \"Rob\". "
-			"If a \037#X-Y\037 style is used, only entries between the range of \002X\002 "
-			"and \002Y\002 will be displayed, e.g. \002#1-3\002 will display the first 3 "
-			"nick/vhost entries. Both can be given together, e.g. \002Rob* #51-100\002. Without a range, long lists are cut short; the "
+			"If a \037from\037-\037to\037 range is given, only entries between "
+			"\002from\002 and \002to\002 will be displayed, e.g. \0021-3\002 will display "
+			"the first 3 nick/vhost entries. Both can be given together, e.g. "
+			"\002Rob* 51-100\002. Without a range, long lists are cut short; the "
 			"last line says how many vhosts there are and which range to ask "
 			"for next."
 		));

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 11:49+0100\n"
+"POT-Creation-Date: 2026-11-23 12:03+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -3992,7 +3992,7 @@ msgstr ""
 
 #: ../modules/hostserv/hs_list.cpp
 #, c-format
-msgid "End of vhost list - %u/%u vhosts shown (%u-%u). Give a range such as #%u-%u to see more."
+msgid "End of vhost list - %u/%u vhosts shown (%u-%u). Give a range such as %u-%u to see more."
 msgstr ""
 
 #: ../modules/chanserv/cs_enforce.cpp
@@ -4339,11 +4339,9 @@ msgstr ""
 msgid "Incorrect email address."
 msgstr ""
 
-#: ../include/language.h
-msgid "Incorrect range specified. The correct syntax is #from-to."
-msgstr ""
-
-#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_list.cpp ../modules/hostserv/hs_list.cpp
+#: ../modules/nickserv/ns_list.cpp ../modules/operserv/os_forbid.cpp
+#: ../modules/operserv/os_list.cpp
 msgid "Incorrect range specified. The correct syntax is from-to."
 msgstr ""
 
@@ -4704,7 +4702,7 @@ msgstr ""
 msgid ""
 "Lists all registered channels matching the given pattern. Channels with the PRIVATE option set will only be displayed to Services Operators with the proper access. Channels with the NOEXPIRE option set will have a ! prefixed to the channel for Services Operators to see.\n"
 "\n"
-"Note that a preceding '#' specifies a range, channel names are to be written without '#'.\n"
+"A pattern of the form from-to (e.g. 51-100) specifies a range. Channel names can be given with or without their leading '#'.\n"
 "\n"
 "If the SUSPENDED or NOEXPIRE options are given, only channels which, respectively, are SUSPENDED or have the NOEXPIRE flag set will be displayed. If multiple options are given, all channels matching at least one option will be displayed. Note that these options are limited to Services Operators."
 msgstr ""
@@ -4729,7 +4727,7 @@ msgstr ""
 msgid ""
 "Lists all registered nicknames which match the given pattern, in nick!user@host format. Nicks with the PRIVATE option set will only be displayed to Services Operators with the proper access. Nicks with the NOEXPIRE option set will have a ! prefixed to the nickname for Services Operators to see.\n"
 "\n"
-"Note that a preceding '#' specifies a range.\n"
+"A pattern of the form from-to (e.g. 51-100) specifies a range.\n"
 "\n"
 "If the DISPLAY, NOEXPIRE, SUSPENDED, or UNCONFIRMED options are given only nicks which, respectively, are display nicks, will not expire, are suspended, or are unconfirmed will be shown. If multiple options are given, nicks must match every option to be shown. Note that these options are limited to Services Operators."
 msgstr ""
@@ -7595,7 +7593,7 @@ msgid "This command lists information about the specified loaded module."
 msgstr ""
 
 #: ../modules/hostserv/hs_list.cpp
-msgid "This command lists registered vhosts to the operator. If a key is specified, only entries whose nick or vhost match the pattern given in key are displayed e.g. Rob* for all entries beginning with \"Rob\". If a #X-Y style is used, only entries between the range of X and Y will be displayed, e.g. #1-3 will display the first 3 nick/vhost entries. Both can be given together, e.g. Rob* #51-100. Without a range, long lists are cut short; the last line says how many vhosts there are and which range to ask for next."
+msgid "This command lists registered vhosts to the operator. If a key is specified, only entries whose nick or vhost match the pattern given in key are displayed e.g. Rob* for all entries beginning with \"Rob\". If a from-to range is given, only entries between from and to will be displayed, e.g. 1-3 will display the first 3 nick/vhost entries. Both can be given together, e.g. Rob* 51-100. Without a range, long lists are cut short; the last line says how many vhosts there are and which range to ask for next."
 msgstr ""
 
 #: ../modules/operserv/os_module.cpp
@@ -7713,10 +7711,6 @@ msgstr ""
 
 #: ../modules/botserv/bs_kick.cpp
 msgid "To protect voices against bot kicks"
-msgstr ""
-
-#: ../modules/chanserv/cs_list.cpp
-msgid "To search for channels starting with #, search for the channel name without the #-sign prepended (warden instead of #warden)."
 msgstr ""
 
 #: ../modules/operserv/os_logsearch.cpp
@@ -8977,7 +8971,7 @@ msgid "[channel] {num | list | LAST | NEW | ALL}"
 msgstr ""
 
 #: ../modules/hostserv/hs_list.cpp
-msgid "[key] [#X-Y]"
+msgid "[key] [from-to]"
 msgstr ""
 
 #: ../modules/nickserv/ns_set_language.cpp

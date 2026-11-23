@@ -29,17 +29,20 @@ public:
 	{
 		auto from = 0u, to = 0u;
 		auto pattern = params[0];
-		if (pattern[0] == '#')
+		// A range is from-to (anope/anope#541). Nicks can't start with a
+		// digit, so this never clashes with a pattern.
+		if (isdigit(pattern[0]) && pattern.find('-') != Warden::string::npos)
 		{
+			const auto &range = pattern;
 			Warden::string n1, n2;
-			sepstream(pattern.substr(1), '-').GetToken(n1, 0);
-			sepstream(pattern, '-').GetToken(n2, 1);
+			sepstream(range, '-').GetToken(n1, 0);
+			sepstream(range, '-').GetToken(n2, 1);
 
 			auto num1 = Warden::TryConvert<int>(n1);
 			auto num2 = Warden::TryConvert<int>(n2);
 			if (!num1.has_value() || !num2.has_value())
 			{
-				source.Reply(LIST_INCORRECT_RANGE);
+				source.Reply(_("Incorrect range specified. The correct syntax is \037from\037-\037to\037."));
 				return;
 			}
 
@@ -136,7 +139,8 @@ public:
 			"proper access. Nicks with the \002NOEXPIRE\002 option set will have "
 			"a \002!\002 prefixed to the nickname for Services Operators to see."
 			"\n\n"
-			"Note that a preceding '#' specifies a range."
+			"A pattern of the form \037from\037-\037to\037 (e.g. \00251-100\002) "
+			"specifies a range."
 			"\n\n"
 			"If the DISPLAY, NOEXPIRE, SUSPENDED, or UNCONFIRMED options are given "
 			"only nicks which, respectively, are display nicks, will not expire, are "
@@ -149,7 +153,7 @@ public:
 		examples.AddEntry("*Bot*", _(
 			"Lists all registered nicks with \037Bot\037 in their name (case insensitive)."
 		));
-		examples.AddEntry("#51-100", _(
+		examples.AddEntry("51-100", _(
 			"Lists all registered nicks within the given range (51-100)."
 		));
 		examples.AddEntry("* DISPLAY", _(

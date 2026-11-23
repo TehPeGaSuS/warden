@@ -34,10 +34,12 @@ public:
 		int count = 0, from = 0, to = 0;
 		bool suspended = false, channoexpire = false;
 
-		if (pattern[0] == '#')
+		// A range is from-to (anope/anope#541); anything else is a channel
+		// pattern, with or without its leading #.
+		if (isdigit(pattern[0]) && pattern.find('-') != Warden::string::npos)
 		{
 			Warden::string n1, n2;
-			sepstream(pattern.substr(1), '-').GetToken(n1, 0);
+			sepstream(pattern, '-').GetToken(n1, 0);
 			sepstream(pattern, '-').GetToken(n2, 1);
 
 			auto num1 = Warden::TryConvert<int>(n1);
@@ -45,11 +47,7 @@ public:
 
 			if (!num1.has_value() || !num2.has_value())
 			{
-				source.Reply(LIST_INCORRECT_RANGE);
-				source.Reply(_(
-					"To search for channels starting with #, search for the channel "
-					"name without the #-sign prepended (\002warden\002 instead of \002#warden\002)."
-				));
+				source.Reply(_("Incorrect range specified. The correct syntax is \037from\037-\037to\037."));
 				return;
 			}
 
@@ -147,8 +145,9 @@ public:
 			"Channels with the \002NOEXPIRE\002 option set will have "
 			"a \002!\002 prefixed to the channel for Services Operators to see."
 			"\n\n"
-			"Note that a preceding '#' specifies a range, channel names "
-			"are to be written without '#'."
+			"A pattern of the form \037from\037-\037to\037 (e.g. \00251-100\002) "
+			"specifies a range. Channel names can be given with or without "
+			"their leading '#'."
 			"\n\n"
 			"If the SUSPENDED or NOEXPIRE options are given, only channels "
 			"which, respectively, are SUSPENDED or have the NOEXPIRE "
@@ -161,7 +160,7 @@ public:
 		examples.AddEntry("*warden*", _(
 			"Lists all registered channels with \037warden\037 in their name (case insensitive). "
 		));
-		examples.AddEntry("#51-100", _(
+		examples.AddEntry("51-100", _(
 			"Lists all registered channels within the given range (51-100)."
 		));
 		examples.AddEntry("* NOEXPIRE", _(

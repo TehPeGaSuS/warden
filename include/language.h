@@ -122,7 +122,6 @@ namespace Language
 #define CONFIRM_REGISTER_ADMIN       _("All new accounts must be confirmed by an administrator. Please wait for your registration to be confirmed.")
 #define CONFIRM_REGISTER_CODE        _("All new accounts must be confirmed. To confirm your account, type \002%s\002.")
 #define CONFIRM_REGISTER_MAIL        _("All new accounts must be confirmed. To confirm your account, follow the instructions that were emailed to you.")
-#define LIST_INCORRECT_RANGE         _("Incorrect range specified. The correct syntax is \002#\037from\037-\037to\037\002.")
 #define MAIL_X_INVALID               _("\002%s\002 is not a valid email address.")
 #define MORE_INFO                    _("Type \002%s\002 for more information.")
 #define NO_EXPIRE                    _("does not expire")
