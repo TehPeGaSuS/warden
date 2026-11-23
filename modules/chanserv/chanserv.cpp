@@ -425,7 +425,7 @@ public:
 
 			bool c;
 			ci->c = Channel::FindOrCreate(ci->name, c, ci->registered);
-			ci->c->syncing |= created;
+			ci->c->syncing |= c;
 
 			if (perm)
 			{
