@@ -9,9 +9,10 @@
 //
 // SPDX-License-Identifier: GPL-2.0-only
 
-// Tells users when someone else adds them to a channel's access list or makes
-// them its founder or successor (anope/anope#503): a notice if they are
-// online, otherwise a memo (which MemoServ mails if they asked for that).
+// Tells users when someone else adds them to or removes them from a channel's
+// access list, or makes them (or stops them being) its founder or successor
+// (anope/anope#503, #543): a notice if they are online, otherwise a memo
+// (which MemoServ mails if they asked for that).
 
 #include "module.h"
 #include "modules/memoserv/service.h"
@@ -22,6 +23,8 @@ class CSAccessNotify final
 	// Founder and successor before a SET FOUNDER/SUCCESSOR, to see what changed.
 	Warden::string pending_channel;
 	NickCore *old_founder = nullptr, *old_successor = nullptr;
+	// Their names, to check the accounts still exist before using the pointers.
+	Warden::string old_founder_name, old_successor_name;
 
 	static bool IsSetCommand(const Command *command)
 	{
@@ -83,6 +86,15 @@ public:
 			u->SendMessage(chanserv, _("%s added you to the access list of \002%s\002 (%s) by your nick; register it to keep that access safe."), source.GetNick().c_str(), ci->name.c_str(), access->AccessSerialize().c_str());
 	}
 
+	void OnAccessDel(ChannelInfo *ci, CommandSource &source, ChanAccess *access, bool migrated) override
+	{
+		if (migrated)
+			return;
+
+		if (auto *nc = access->GetAccount())
+			Notify(nc, source, _("%s removed you from the access list of \002%s\002 (%s)."), ci->name, access->AccessSerialize());
+	}
+
 	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Warden::string> &params) override
 	{
 		pending_channel.clear();
@@ -95,6 +107,8 @@ public:
 			pending_channel = ci->name;
 			old_founder = ci->GetFounder();
 			old_successor = ci->GetSuccessor();
+			old_founder_name = old_founder ? old_founder->display : "";
+			old_successor_name = old_successor ? old_successor->display : "";
 		}
 		return EVENT_CONTINUE;
 	}
@@ -109,10 +123,20 @@ public:
 		if (!ci)
 			return;
 
-		if (ci->GetFounder() && ci->GetFounder() != old_founder)
-			Notify(ci->GetFounder(), source, _("%s made you the founder of \002%s\002."), ci->name);
-		if (ci->GetSuccessor() && ci->GetSuccessor() != old_successor)
-			Notify(ci->GetSuccessor(), source, _("%s made you the successor of \002%s\002. If you don't want this, ask a channel founder to change it."), ci->name);
+		if (ci->GetFounder() != old_founder)
+		{
+			if (ci->GetFounder())
+				Notify(ci->GetFounder(), source, _("%s made you the founder of \002%s\002."), ci->name);
+			if (old_founder && NickCore::Find(old_founder_name) == old_founder)
+				Notify(old_founder, source, _("%s made someone else the founder of \002%s\002; you are no longer its founder."), ci->name);
+		}
+		if (ci->GetSuccessor() != old_successor)
+		{
+			if (ci->GetSuccessor())
+				Notify(ci->GetSuccessor(), source, _("%s made you the successor of \002%s\002. If you don't want this, ask a channel founder to change it."), ci->name);
+			if (old_successor && NickCore::Find(old_successor_name) == old_successor)
+				Notify(old_successor, source, _("%s removed you as the successor of \002%s\002."), ci->name);
+		}
 	}
 };
 
