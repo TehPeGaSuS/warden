@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 13:48+0100\n"
+"POT-Creation-Date: 2026-11-23 13:57+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -297,6 +297,11 @@ msgstr ""
 #: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 #, c-format
 msgid "%s is not a registered unforbidden nick or channel."
+msgstr ""
+
+#: ../modules/chanserv/cs_flags.cpp
+#, c-format
+msgid "%s is not a template. Use + or - before flags, or see %s for the templates."
 msgstr ""
 
 #: ../modules/chanserv/cs_set.cpp
@@ -592,6 +597,10 @@ msgstr ""
 msgid "{nick}: registered on {registered}; expires in {expires}"
 msgstr ""
 
+#: ../modules/chanserv/cs_flags.cpp
+msgid "{template} = +{flags}"
+msgstr ""
+
 #: ../modules/operserv/os_config.cpp
 msgid "{}{module_name}}:{name} = {value}"
 msgstr ""
@@ -767,6 +776,10 @@ msgstr ""
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel SET type level"
+msgstr ""
+
+#: ../modules/chanserv/cs_flags.cpp
+msgid "channel TEMPLATES"
 msgstr ""
 
 #: ../modules/chanserv/cs_akick.cpp
@@ -1469,6 +1482,8 @@ msgid ""
 "The MODIFY command allows you to modify the access list. If the mask is not already on the access list it is added, then the changes are applied. If the mask has no more flags, then the mask is removed from the access list. Additionally, you may use +* or -* to add or remove all flags, respectively. You are only able to modify the access list if you have the proper permission on the channel, and even then you can only give other people access to the equivalent of what your access is.\n"
 "\n"
 "ADD does the same but only for a mask that is not on the access list yet, and DEL removes a mask (the same as -*). A description of - removes the entry's description.\n"
+"\n"
+"Instead of changes you can give a template name, e.g. AOP: the entry's flags are replaced with the template's flags. TEMPLATES lists the templates and their flags, and LIST shows an entry's template when its flags match one exactly.\n"
 "\n"
 "The LIST command allows you to list existing entries on the channel access list. If a mask is given, the mask is wildcard matched against all existing entries on the access list, and only those entries are returned. If a set of flags is given, only those on the access list with the specified flags are returned. The ALL option allows listing entries from other access systems as well as flags.\n"
 "\n"
@@ -3968,6 +3983,10 @@ msgstr ""
 msgid "End of entry message list."
 msgstr ""
 
+#: ../modules/chanserv/cs_flags.cpp
+msgid "End of flag templates."
+msgstr ""
+
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
 msgid "End of forbid list - %zu/%zu entries shown (%zu-%zu)."
@@ -4177,12 +4196,21 @@ msgid "Flag"
 msgstr ""
 
 #: ../modules/chanserv/cs_flags.cpp
+msgid "Flag templates:"
+msgstr ""
+
+#: ../modules/chanserv/cs_flags.cpp
 msgid "Flags"
 msgstr ""
 
 #: ../modules/chanserv/cs_flags.cpp
 #, c-format
 msgid "Flags for %s on %s set to +%s"
+msgstr ""
+
+#: ../modules/chanserv/cs_flags.cpp
+#, c-format
+msgid "Flags for %s on %s set to +%s (template %s)"
 msgstr ""
 
 #: ../modules/chanserv/cs_flags.cpp
@@ -7153,6 +7181,10 @@ msgstr ""
 msgid "Tells services to jupiter a server -- that is, to create a fake \"server\" connected to services which prevents the real server of that name from connecting. The jupe may be removed using a standard SQUIT. If a reason is given, it is placed in the server information field; otherwise, the server information field will contain the text \"Juped by <nick>\", showing the nickname of the person who jupitered the server."
 msgstr ""
 
+#: ../modules/chanserv/cs_flags.cpp
+msgid "Template"
+msgstr ""
+
 #: ../modules/operserv/os_shutdown.cpp
 msgid "Terminate services WITHOUT saving"
 msgstr ""
@@ -7513,6 +7545,10 @@ msgstr ""
 
 #: ../modules/operserv/os_dns.cpp
 msgid "There are no configured servers."
+msgstr ""
+
+#: ../modules/chanserv/cs_flags.cpp
+msgid "There are no flag templates."
 msgstr ""
 
 #: ../modules/operserv/os_forbid.cpp

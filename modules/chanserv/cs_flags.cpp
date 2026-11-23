@@ -25,6 +25,28 @@
 static std::map<Warden::string, char> defaultFlags;
 static Warden::map<Warden::string> migrationRequires;
 
+// Named sets of flags (anope/anope#628 follow-up, like Atheme's templates):
+// VOP to QOP built from the privilege blocks' xop setting, then any from
+// template blocks in the cs_flags module block. Kept in definition order.
+static std::vector<std::pair<Warden::string, Warden::string>> flagTemplates;
+
+static const Warden::string *FindTemplate(const Warden::string &name)
+{
+	for (const auto &[tname, tflags] : flagTemplates)
+		if (tname.equals_ci(name))
+			return &tflags;
+	return nullptr;
+}
+
+static Warden::string TemplateFor(const Warden::string &flags)
+{
+	std::set<char> want(flags.begin(), flags.end());
+	for (const auto &[tname, tflags] : flagTemplates)
+		if (std::set<char>(tflags.begin(), tflags.end()) == want)
+			return tname;
+	return "";
+}
+
 class FlagsChanAccess final
 	: public ChanAccess
 {
@@ -100,7 +122,7 @@ class CommandCSFlags final
 {
 	enum class ModifyMode { MODIFY, ADD, DEL };
 
-	void DoModify(CommandSource &source, ChannelInfo *ci, Warden::string mask, const Warden::string &flags, Warden::string description, ModifyMode mode = ModifyMode::MODIFY)
+	void DoModify(CommandSource &source, ChannelInfo *ci, Warden::string mask, Warden::string flags, Warden::string description, ModifyMode mode = ModifyMode::MODIFY)
 	{
 		// A description of "-" clears it (anope/anope#627).
 		const auto nodesc = description == "-";
@@ -245,6 +267,26 @@ class CommandCSFlags final
 			return;
 		}
 
+		// A template replaces the entry's flags: remove what isn't in it,
+		// then add what is, with the usual per-flag permission checks.
+		Warden::string usedtemplate;
+		if (flags[0] != '+' && flags[0] != '-')
+		{
+			if (const auto *tflags = FindTemplate(flags))
+			{
+				usedtemplate = flags.upper();
+				flags = "-*+" + *tflags;
+			}
+			else if (!PrivilegeManager::FindPrivilege(flags))
+			{
+				// Like Atheme: a bare word is a template (or a privilege
+				// name), never a string of flag letters.
+				source.Reply(_("\002%s\002 is not a template. Use \002+\002 or \002-\002 before flags, or see \002%s\002 for the templates."),
+					flags.c_str(), source.service->GetQueryCommand("chanserv/flags", ci->name + " TEMPLATES").c_str());
+				return;
+			}
+		}
+
 		Privilege *p = NULL;
 		bool add = true;
 		for (size_t i = 0; i < flags.length(); ++i)
@@ -346,7 +388,9 @@ class CommandCSFlags final
 		FOREACH_MOD(OnAccessAdd, (ci, source, access, false));
 
 		Log(override ? LOG_OVERRIDE : LOG_COMMAND, source, this, ci) << "to modify " << mask << "'s flags to " << access->AccessSerialize();
-		if (p != NULL)
+		if (!usedtemplate.empty())
+			source.Reply(_("Flags for \002%s\002 on %s set to +\002%s\002 (template %s)"), access->Mask().c_str(), ci->name.c_str(), access->AccessSerialize().c_str(), usedtemplate.c_str());
+		else if (p != NULL)
 		{
 			if (add)
 				source.Reply(_("Privilege \002%s\002 added to \002%s\002 on \002%s\002, new flags are +\002%s\002"), p->name.c_str(), access->Mask().c_str(), ci->name.c_str(), access->AccessSerialize().c_str());
@@ -355,6 +399,29 @@ class CommandCSFlags final
 		}
 		else
 			source.Reply(_("Flags for \002%s\002 on %s set to +\002%s\002"), access->Mask().c_str(), ci->name.c_str(), access->AccessSerialize().c_str());
+	}
+
+	static void DoTemplates(CommandSource &source)
+	{
+		if (flagTemplates.empty())
+		{
+			source.Reply(_("There are no flag templates."));
+			return;
+		}
+
+		ListFormatter list(source.GetAccount());
+		list.AddColumn(_("Template")).AddColumn(_("Flags"));
+		list.SetFlexible(_("\002{template}\002 = +{flags}"));
+		for (const auto &[tname, tflags] : flagTemplates)
+		{
+			ListFormatter::ListEntry entry;
+			entry["Template"] = tname;
+			entry["Flags"] = tflags;
+			list.AddEntry(entry);
+		}
+		source.Reply(_("Flag templates:"));
+		list.SendTo(source);
+		source.Reply(_("End of flag templates."));
 	}
 
 	static void DoList(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
@@ -409,7 +476,8 @@ class CommandCSFlags final
 			++count;
 			entry["Number"] = Warden::ToString(i + 1);
 			entry["Mask"] = access->Mask();
-			entry["Flags"] = flags;
+			const auto tname = TemplateFor(flags);
+			entry["Flags"] = tname.empty() ? flags : flags + " (" + tname + ")";
 			entry["Creator"] = access->creator;
 			entry["Created"] = Warden::strftime(access->created, source.nc, true);
 			entry["Description"] = access->description;
@@ -557,6 +625,7 @@ public:
 		this->SetSyntax(_("\037channel\037 [MODIFY] \037mask\037 \037changes\037 [\037description\037]"));
 		this->SetSyntax(_("\037channel\037 ADD \037mask\037 \037changes\037 [\037description\037]"));
 		this->SetSyntax(_("\037channel\037 DEL \037mask\037"));
+		this->SetSyntax(_("\037channel\037 TEMPLATES"));
 		this->SetSyntax(_("\037channel\037 LIST [\037mask\037 | +\037flags\037] [ALL]"));
 		this->SetSyntax(_("\037channel\037 MIGRATE [\037mask\037]"));
 		this->SetSyntax(_("\037channel\037 CLEAR"));
@@ -574,7 +643,7 @@ public:
 			return;
 		}
 
-		bool is_list = cmd.empty() || cmd.equals_ci("LIST");
+		bool is_list = cmd.empty() || cmd.equals_ci("LIST") || cmd.equals_ci("TEMPLATES");
 		bool has_access = false;
 		if (source.HasPriv("chanserv/access/modify"))
 			has_access = true;
@@ -589,6 +658,8 @@ public:
 			source.Reply(ACCESS_DENIED);
 		else if (Warden::ReadOnly && !is_list)
 			source.Reply(READ_ONLY_MODE);
+		else if (cmd.equals_ci("TEMPLATES"))
+			this->DoTemplates(source);
 		else if (is_list)
 			this->DoList(source, ci, params);
 		else if (cmd.equals_ci("MIGRATE"))
@@ -648,6 +719,11 @@ public:
 				"\002DEL\002 removes a mask (the same as \002-*\002). A description of \002-\002 "
 				"removes the entry's description."
 				"\n\n"
+				"Instead of \037changes\037 you can give a template name, e.g. \002AOP\002: the "
+				"entry's flags are replaced with the template's flags. \002TEMPLATES\002 lists "
+				"the templates and their flags, and \002LIST\002 shows an entry's template when "
+				"its flags match one exactly."
+				"\n\n"
 				"The \002LIST\002 command allows you to list existing entries on the channel access list. "
 				"If a mask is given, the mask is wildcard matched against all existing entries on the "
 				"access list, and only those entries are returned. If a set of flags is given, only those "
@@ -694,6 +770,9 @@ public:
 	void OnReload(Configuration::Conf &conf) override
 	{
 		defaultFlags.clear();
+		flagTemplates.clear();
+		static const std::vector<Warden::string> xops = { "VOP", "HOP", "AOP", "SOP", "QOP" };
+		std::vector<std::set<char>> xopflags(xops.size());
 
 		for (const auto &[_,  priv] : conf.GetBlocks("privilege"))
 		{
@@ -712,6 +791,41 @@ public:
 				migrationRequires[p->name] = migration_requires;
 
 			defaultFlags[p->name] = value[0];
+
+			// The privilege's xop is the lowest xOP list that has it.
+			const auto &xop = priv.Get<const Warden::string>("xop");
+			for (size_t i = 0; i < xops.size(); ++i)
+			{
+				if (!xop.equals_ci(xops[i]))
+					continue;
+				for (auto j = i; j < xops.size(); ++j)
+					xopflags[j].insert(value[0]);
+				break;
+			}
+		}
+
+		for (size_t i = 0; i < xops.size(); ++i)
+			if (!xopflags[i].empty())
+				flagTemplates.emplace_back(xops[i], Warden::string(xopflags[i].begin(), xopflags[i].end()));
+
+		for (const auto &[_, tblock] : conf.GetModule(this).GetBlocks("template"))
+		{
+			const auto &tname = tblock.Get<const Warden::string>("name");
+			auto tflags = tblock.Get<const Warden::string>("flags");
+			if (!tflags.empty() && tflags[0] == '+')
+				tflags.erase(0, 1);
+			if (tname.empty() || tflags.empty() || tname[0] == '+' || tname[0] == '-')
+			{
+				Log(this) << "Ignoring a template block with a missing or invalid name or flags";
+				continue;
+			}
+
+			// A template block with the name of a built-in one replaces it.
+			auto it = std::find_if(flagTemplates.begin(), flagTemplates.end(), [&](const auto &t) { return t.first.equals_ci(tname); });
+			if (it != flagTemplates.end())
+				it->second = tflags;
+			else
+				flagTemplates.emplace_back(tname.upper(), tflags);
 		}
 	}
 };
