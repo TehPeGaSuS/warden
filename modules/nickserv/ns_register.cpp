@@ -165,6 +165,11 @@ public:
 
 			FOREACH_MOD(OnNickRegister, (source.GetUser(), na, pass));
 
+			// The network's own welcome text, if it has one.
+			const auto &regmsg = Config->GetModule(this->owner).Get<const Warden::string>("registermessage");
+			if (!regmsg.empty())
+				source.Reply("%s", regmsg.c_str());
+
 			if (u)
 			{
 				// This notifies the user that if their registration is unconfirmed

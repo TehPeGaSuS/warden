@@ -74,6 +74,11 @@ public:
 
 			FOREACH_MOD(OnChanRegistered, (ci));
 
+			// The network's own welcome text, if it has one.
+			const auto &regmsg = Config->GetModule(this->owner).Get<const Warden::string>("registermessage");
+			if (!regmsg.empty())
+				source.Reply("%s", regmsg.c_str());
+
 			/* Implement new mode lock */
 			if (c)
 			{
