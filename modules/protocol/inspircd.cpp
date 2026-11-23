@@ -1056,6 +1056,28 @@ public:
 	}
 };
 
+// The joinpartspam contrib module: <cycles>:<seconds>:<blocktime>[:<redirect>].
+// Services don't allow a redirect, as they can't check the channel.
+class ChannelModeJoinPartSpam final
+	: public ChannelModeParam
+{
+public:
+	ChannelModeJoinPartSpam(char modeChar) : ChannelModeParam("JOINPARTSPAM", modeChar, true) { }
+
+	bool IsValid(Warden::string &value) const override
+	{
+		std::vector<Warden::string> parts;
+		sepstream(value, ':').GetTokens(parts);
+		if (parts.size() != 3)
+			return false;
+
+		const auto cycles = Warden::Convert<int>(parts[0], 0);
+		const auto secs = Warden::Convert<int>(parts[1], 0);
+		const auto block = Warden::Convert<int>(parts[2], 0);
+		return cycles >= 2 && cycles <= 20 && secs >= 1 && secs <= 43200 && block >= 1 && block <= 43200;
+	}
+};
+
 class ChannelModeRedirect final
 	: public ChannelModeParam
 {
@@ -1307,6 +1329,8 @@ struct IRCDMessageCapab final
 					cm = new ChannelModeList("INVITEOVERRIDE", mode.letter);
 				else if (mode.name.equals_cs("inviteonly"))
 					cm = new ChannelMode("INVITE", mode.letter);
+				else if (mode.name.equals_cs("joinpartspam"))
+					cm = new ChannelModeJoinPartSpam(mode.letter);
 				else if (mode.name.equals_cs("joinflood"))
 					cm = new ColonDelimitedParamMode("JOINFLOOD", mode.letter);
 				else if (mode.name.equals_cs("key"))
