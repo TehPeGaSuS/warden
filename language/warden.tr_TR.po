@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 20:03+0100\n"
+"POT-Creation-Date: 2026-11-23 23:43+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -279,6 +279,11 @@ msgstr "%s'nin hiçbir kanala erişimi yok."
 #, c-format
 msgid "%s has no access on %s."
 msgstr "%s'nin %s üzerinde erişimi yok."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "%s has no recovery key."
+msgstr "%s için kurtarma anahtarı yok."
 
 #: ../modules/chanserv/cs_set.cpp
 #, c-format
@@ -1094,7 +1099,7 @@ msgstr "rumuz yeni-rumuz"
 msgid "nick [reason]"
 msgstr "rumuz [sebep]"
 
-#: ../modules/nickserv/ns_suspend.cpp
+#: ../modules/nickserv/ns_resetpass.cpp ../modules/nickserv/ns_suspend.cpp
 msgid "nickname"
 msgstr "rumuz"
 
@@ -1113,6 +1118,10 @@ msgstr "rumuz yeni-afiş"
 #: ../modules/nickserv/ns_set.cpp
 msgid "nickname new-password"
 msgstr "rumuz yeni-şifre"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "nickname recovery-key"
+msgstr "rumuz kurtarma-anahtarı"
 
 #: ../modules/nickserv/ns_set_misc.cpp
 #, c-format
@@ -4945,6 +4954,14 @@ msgstr "Kurucu"
 msgid "Founder of %s changed to %s."
 msgstr "%s kanalının kurucusu %s olarak değiştirildi."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Get a new recovery key"
+msgstr "Yeni bir kurtarma anahtarı al"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Gets you back into your account if you forgot its password. Give the recovery key you were shown when you confirmed your registration: you will be identified, so you can set a new password, and get a new key, as each key works only once."
+msgstr "Şifrenizi unuttuysanız hesabınıza yeniden girmenizi sağlar. Kaydınızı doğruladığınızda size gösterilen kurtarma anahtarını verin: tanınacaksınız, böylece yeni bir şifre belirleyebilir ve yeni bir anahtar alabilirsiniz, çünkü her anahtar yalnızca bir kez çalışır."
+
 #: ../modules/nickserv/ns_recover.cpp
 msgid "Ghost with your nick has been killed."
 msgstr "Rumuzunuzu taşıyan ghost killendi."
@@ -5103,6 +5120,15 @@ msgstr "%s IP adresi %s için mevcut değil."
 #: ../modules/nickserv/ns_identify.cpp
 msgid "Identify yourself with your password"
 msgstr "Şifrenizle kendinizi tanıtın"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "If you forget your password, type %s to get back into your account."
+msgstr "Şifrenizi unutursanız, hesabınıza yeniden girmek için %s yazın."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "If you give the account's email address instead, a confirmation code is sent to it."
+msgstr "Bunun yerine hesabın e-posta adresini verirseniz, bu adrese bir doğrulama kodu gönderilir."
 
 #: ../modules/operserv/os_ignore.cpp
 msgid "Ignore list has been cleared."
@@ -5960,6 +5986,10 @@ msgstr "Botun belirtilen kanalda belirtilen metni söylemesini sağla"
 msgid "Make the channel registered-only during a join flood"
 msgstr "Giriş flood'u sırasında kanalı yalnızca kayıtlı kullanıcılara açık yapar"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Makes a new recovery key for your account and shows it to you once. The old key stops working. Use this if you lost your key or think someone else has seen it."
+msgstr "Hesabınız için yeni bir kurtarma anahtarı oluşturur ve size bir kez gösterir. Eski anahtar çalışmaz hale gelir. Anahtarınızı kaybettiyseniz veya başka birinin gördüğünü düşünüyorsanız bunu kullanın."
+
 #: ../modules/botserv/bs_control.cpp
 msgid "Makes the bot do the equivalent of a \"/me\" command on the specified channel using the specified text."
 msgstr "Botun belirtilen metni kullanarak belirtilen kanalda \"/me\" komutunun eşdeğerini yapmasını sağlar."
@@ -6629,7 +6659,7 @@ msgstr "%s içinde başka kimse grubun memolarını almıyor."
 msgid "Non-status modes cleared on %s."
 msgstr "%s'de durum dışı modlar temizlendi."
 
-#: ../modules/botserv/bs_info.cpp ../modules/operserv/os_dns.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/nickserv/ns_resetpass.cpp ../modules/operserv/os_dns.cpp
 msgid "None"
 msgstr "Yok"
 
@@ -6838,6 +6868,10 @@ msgstr "Şifre doğru değil."
 #, c-format
 msgid "Password reset email for %s has been sent."
 msgstr "%s için şifre sıfırlama e-postası gönderildi."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Password reset is not available on this network."
+msgstr "Bu ağda parola sıfırlama kullanılamıyor."
 
 #: ../modules/operserv/os_stats.cpp
 #, c-format
@@ -7116,9 +7150,21 @@ msgstr "%s sebebi güncellendi."
 msgid "Reason/Online Since"
 msgstr "Sebep/Çevrimiçi olduğu zaman"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recover access to an account"
+msgstr "Bir hesaba erişimi kurtar"
+
 #: ../modules/nickserv/ns_recover.cpp
 msgid "Recovers your nick from another user or from services. If services are currently holding your nick, the hold will be released. If another user is holding your nick and is identified they will be killed (similar to the old GHOST command). If they are not identified they will be forced off of the nick."
 msgstr "Rumuzunuzu başka bir kullanıcıdan veya servislerden kurtarır. Eğer servisler halihazırda rumuzunuzu tutuyorsa, bloke kaldırılacaktır. Eğer başka bir kullanıcı sizin rumuzunuzu tutuyorsa ve tespit edilirse o kişi killenecektir (eski GHOST komutuna benzer şekilde). Kimlikleri belirlenmediği takdirde rumuzdan uzaklaştırılacaklardır."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recovery key"
+msgstr "Kurtarma anahtarı"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recovery keys are not used on this network."
+msgstr "Bu ağda kurtarma anahtarları kullanılmıyor."
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "Redefine the meanings of access levels"
@@ -7277,6 +7323,10 @@ msgstr "Kullanıcının bir kanala girmesini engelleyen tüm banları kaldırın
 msgid "Remove all operators from a server remotely"
 msgstr "Bir sunucudaki tüm operatörleri uzaktan kaldırın"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Remove the recovery key of an account"
+msgstr "Bir hesabın kurtarma anahtarını kaldır"
+
 #: ../modules/operserv/os_dns.cpp
 #, c-format
 msgid "Removed IP %s from %s."
@@ -7319,6 +7369,10 @@ msgstr ""
 ""
 "zebra"
 " kullanıcısının karşılama mesajını kaldırır."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Removes the recovery key of an account, for example if its owner thinks someone else has it. The owner can make a new one with SET RECOVERYKEY."
+msgstr "Bir hesabın kurtarma anahtarını kaldırır; örneğin sahibi başka birinin ona sahip olduğunu düşünüyorsa. Sahibi SET RECOVERYKEY ile yenisini oluşturabilir."
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Removes the specified fingerprint from the certificate list of nickname."
@@ -7564,10 +7618,6 @@ msgstr "Tüm kullanıcılara bir mesaj gönderin"
 #: ../modules/global/gl_server.cpp
 msgid "Send a message to all users on a server"
 msgstr "Sunucudaki tüm kullanıcılara bir mesaj gönderin"
-
-#: ../modules/nickserv/ns_resetpass.cpp
-msgid "Send an email to recover access to an account"
-msgstr "Bir hesaba erişimi kurtarmak için e-posta gönder"
 
 #: ../modules/memoserv/ms_list.cpp
 msgid "Sender"
@@ -7842,7 +7892,7 @@ msgstr "%s için oturum sınırı %d olarak ayarlandı."
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Oturumlar: %zu girdi, %zu buckets, en uzun zincir %zu"
 
-#: ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/nickserv/ns_resetpass.cpp
 msgid "Set"
 msgstr "Zaman"
 
@@ -8992,6 +9042,16 @@ msgstr "Belirttiğiniz şifre yasaklanmış."
 msgid "The range is past the last of the %u vhosts."
 msgstr "Aralık, %u vhostun sonuncusunu aşıyor."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "The recovery key of %s has been removed. Its owner can get a new one with %s."
+msgstr "%s hesabının kurtarma anahtarı kaldırıldı. Sahibi %s ile yenisini alabilir."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "The recovery key you specified for %s is incorrect."
+msgstr "%s için belirttiğiniz kurtarma anahtarı yanlış."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "The registration confirmation code you specified for %s is incorrect."
@@ -10063,6 +10123,11 @@ msgstr "Şuan bir süper adminsiniz."
 
 #: ../modules/nickserv/ns_resetpass.cpp
 #, c-format
+msgid "You are now identified as %s. Change your password now using %s."
+msgstr "Artık %s olarak tanındınız. Şifrenizi şimdi %s ile değiştirin."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
 msgid "You are now identified as %s. Change your password now using %s."
 msgstr "Artık %s olarak tanınıyorsunuz. Şifrenizi şimdi %s kullanarak değiştirin."
 
@@ -10527,6 +10592,10 @@ msgstr "SSL sertifika parmak iziniz %s otomatik olarak sertifika listenize ekl
 msgid "Your account %s has been successfully created."
 msgstr "Hesabınız %s başarıyla oluşturuldu."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Your account must be confirmed before it can have a recovery key."
+msgstr "Hesabınızın kurtarma anahtarı olabilmesi için önce doğrulanması gerekir."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "Your account will expire, if not confirmed, in %s."
@@ -10628,6 +10697,10 @@ msgstr "Rumuzunuz şimdi %s olarak değiştiriliyor."
 msgid "Your nickname will be changed in %s if you do not identify."
 msgstr "Kimliğinizi belirtmezseniz %s içerisinde rumuzunuz değiştirilecektir."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Your old recovery key no longer works."
+msgstr "Eski kurtarma anahtarınız artık çalışmıyor."
+
 #: ../modules/operserv/os_login.cpp
 msgid "Your oper block doesn't require logging in."
 msgstr "Oper bloğunuz oturum açmayı gerektirmez."
@@ -10656,6 +10729,11 @@ msgstr "Bekleyen sertifika parmak iziniz %s, sertifika listeniz dolu olduğu i
 #, c-format
 msgid "Your pending certificate fingerprint %s has been confirmed and added to your certificate list."
 msgstr "Bekleyen sertifika parmak iziniz %s onaylandı ve sertifika listenize eklendi."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "Your recovery key is %s. Save it somewhere safe: it is shown only once."
+msgstr "Kurtarma anahtarınız %s. Güvenli bir yerde saklayın: yalnızca bir kez gösterilir."
 
 #: ../modules/hostserv/hs_request.cpp
 msgid "Your requested vhost has been approved."
@@ -11257,6 +11335,9 @@ msgstr "{number}: {topic} -- {by} tarafından {set} tarihinde ayarlandı"
 
 #~ msgid "Passwords can not be changed right now. Please try again later."
 #~ msgstr "Şifreler şu anda değiştirilemez. Lütfen daha sonra tekrar deneyiniz."
+
+#~ msgid "Send an email to recover access to an account"
+#~ msgstr "Bir hesaba erişimi kurtarmak için e-posta gönder"
 
 #~ msgid "Session limiting is disabled."
 #~ msgstr "Oturum limitleme devre dışı."

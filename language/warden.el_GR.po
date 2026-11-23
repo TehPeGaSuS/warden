@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 20:03+0100\n"
+"POT-Creation-Date: 2026-11-23 23:43+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -278,6 +278,11 @@ msgstr "Ο/η %s δεν έχει πρόσβαση σε κανένα κανάλ
 #, c-format
 msgid "%s has no access on %s."
 msgstr "Ο/η %s δεν έχει πρόσβαση στο %s."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "%s has no recovery key."
+msgstr "Το %s δεν έχει κλειδί ανάκτησης."
 
 #: ../modules/chanserv/cs_set.cpp
 #, c-format
@@ -1094,7 +1099,7 @@ msgstr "ψευδώνυμο νέο-ψευδώνυμο"
 msgid "nick [reason]"
 msgstr "ψευδώνυμο [λόγος]"
 
-#: ../modules/nickserv/ns_suspend.cpp
+#: ../modules/nickserv/ns_resetpass.cpp ../modules/nickserv/ns_suspend.cpp
 msgid "nickname"
 msgstr "CHECK #nickname#"
 
@@ -1113,6 +1118,10 @@ msgstr "ψευδώνυμο νέο-display"
 #: ../modules/nickserv/ns_set.cpp
 msgid "nickname new-password"
 msgstr "Ρυθμίζει τον κωδικό του ψευδονύμου."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "nickname recovery-key"
+msgstr "ψευδώνυμο κλειδί-ανάκτησης"
 
 #: ../modules/nickserv/ns_set_misc.cpp
 #, c-format
@@ -4944,6 +4953,14 @@ msgstr "Ιδρυτής"
 msgid "Founder of %s changed to %s."
 msgstr "Ο ιδρυτής του %s άλλαξε σε %s."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Get a new recovery key"
+msgstr "Λήψη νέου κλειδιού ανάκτησης"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Gets you back into your account if you forgot its password. Give the recovery key you were shown when you confirmed your registration: you will be identified, so you can set a new password, and get a new key, as each key works only once."
+msgstr "Σε επαναφέρει στον λογαριασμό σου αν ξέχασες τον κωδικό του. Δώσε το κλειδί ανάκτησης που σου εμφανίστηκε όταν επιβεβαίωσες την εγγραφή σου: θα αναγνωριστείς, ώστε να ορίσεις νέο κωδικό, και θα πάρεις νέο κλειδί, αφού κάθε κλειδί λειτουργεί μόνο μία φορά."
+
 #: ../modules/nickserv/ns_recover.cpp
 msgid "Ghost with your nick has been killed."
 msgstr "Το ψευδώνυμο σου έγινε kill μέσω ghost εντολής."
@@ -5102,6 +5119,15 @@ msgstr "Η IP %s δεν υπάρχει για το %s."
 #: ../modules/nickserv/ns_identify.cpp
 msgid "Identify yourself with your password"
 msgstr "Σας αναγνωρίζει με τη χρήση κωδικού"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "If you forget your password, type %s to get back into your account."
+msgstr "Αν ξεχάσεις τον κωδικό σου, πληκτρολόγησε %s για να μπεις ξανά στον λογαριασμό σου."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "If you give the account's email address instead, a confirmation code is sent to it."
+msgstr "Αν δώσεις αντί γι' αυτό τη διεύθυνση email του λογαριασμού, θα σταλεί σε αυτήν ένας κωδικός επιβεβαίωσης."
 
 #: ../modules/operserv/os_ignore.cpp
 msgid "Ignore list has been cleared."
@@ -5959,6 +5985,10 @@ msgstr "Κάνει το bot να πει το κείμενο στο κανάλι"
 msgid "Make the channel registered-only during a join flood"
 msgstr "Κάνει το κανάλι μόνο για εγγεγραμμένους κατά τη διάρκεια flood εισόδων"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Makes a new recovery key for your account and shows it to you once. The old key stops working. Use this if you lost your key or think someone else has seen it."
+msgstr "Δημιουργεί νέο κλειδί ανάκτησης για τον λογαριασμό σου και σου το εμφανίζει μία φορά. Το παλιό κλειδί παύει να λειτουργεί. Χρησιμοποίησέ το αν έχασες το κλειδί σου ή πιστεύεις ότι το είδε κάποιος άλλος."
+
 #: ../modules/botserv/bs_control.cpp
 msgid "Makes the bot do the equivalent of a \"/me\" command on the specified channel using the specified text."
 msgstr "Κάνει το bot να εκτελέσει το ισοδύναμο μιας εντολής \"/me\" στο δοσμένο κανάλι με το δοσμένο κείμενο."
@@ -6628,7 +6658,7 @@ msgstr "Κανείς άλλος στο %s δεν λαμβάνει τα μην�
 msgid "Non-status modes cleared on %s."
 msgstr "Τα μη-status modes καθαρίστηκαν στο %s."
 
-#: ../modules/botserv/bs_info.cpp ../modules/operserv/os_dns.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/nickserv/ns_resetpass.cpp ../modules/operserv/os_dns.cpp
 msgid "None"
 msgstr "Κανένα"
 
@@ -6837,6 +6867,10 @@ msgstr "Λάθος κωδικός."
 #, c-format
 msgid "Password reset email for %s has been sent."
 msgstr "Αλλαγή κωδικού για το ψευδόνυμο #%s# στάλθηκε."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Password reset is not available on this network."
+msgstr "Η επαναφορά κωδικού πρόσβασης δεν είναι διαθέσιμη σε αυτό το δίκτυο."
 
 #: ../modules/operserv/os_stats.cpp
 #, c-format
@@ -7115,9 +7149,21 @@ msgstr "Ο λόγος για το %s ενημερώθηκε."
 msgid "Reason/Online Since"
 msgstr "Λόγος/Online από"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recover access to an account"
+msgstr "Ανάκτηση πρόσβασης σε λογαριασμό"
+
 #: ../modules/nickserv/ns_recover.cpp
 msgid "Recovers your nick from another user or from services. If services are currently holding your nick, the hold will be released. If another user is holding your nick and is identified they will be killed (similar to the old GHOST command). If they are not identified they will be forced off of the nick."
 msgstr "Ανακτά το ψευδώνυμό σας από άλλο χρήστη ή από τα services. Αν τα services κρατούν αυτή τη στιγμή το ψευδώνυμό σας, αυτό απελευθερώνεται. Αν άλλος χρήστης χρησιμοποιεί το ψευδώνυμό σας και είναι αναγνωρισμένος, θα γίνει kill (όπως με την παλιά εντολή GHOST). Αν δεν είναι αναγνωρισμένος, θα απομακρυνθεί αναγκαστικά από το ψευδώνυμο."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recovery key"
+msgstr "Κλειδί ανάκτησης"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recovery keys are not used on this network."
+msgstr "Τα κλειδιά ανάκτησης δεν χρησιμοποιούνται σε αυτό το δίκτυο."
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "Redefine the meanings of access levels"
@@ -7276,6 +7322,10 @@ msgstr "Αφαιρεί όλα τα bans που εμποδίζουν έναν χ�
 msgid "Remove all operators from a server remotely"
 msgstr "Αφαίρεση όλων των operators από έναν server απομακρυσμένα"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Remove the recovery key of an account"
+msgstr "Αφαίρεση του κλειδιού ανάκτησης ενός λογαριασμού"
+
 #: ../modules/operserv/os_dns.cpp
 #, c-format
 msgid "Removed IP %s from %s."
@@ -7318,6 +7368,10 @@ msgstr ""
 "Αφαιρεί το μήνυμα χαιρετισμού του "
 "zebra"
 "."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Removes the recovery key of an account, for example if its owner thinks someone else has it. The owner can make a new one with SET RECOVERYKEY."
+msgstr "Αφαιρεί το κλειδί ανάκτησης ενός λογαριασμού, για παράδειγμα αν ο κάτοχός του πιστεύει ότι το έχει κάποιος άλλος. Ο κάτοχος μπορεί να δημιουργήσει νέο με SET RECOVERYKEY."
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Removes the specified fingerprint from the certificate list of nickname."
@@ -7563,10 +7617,6 @@ msgstr "Στέλνει μήνυμα σε όλους τους χρήστες"
 #: ../modules/global/gl_server.cpp
 msgid "Send a message to all users on a server"
 msgstr "Στέλνει μήνυμα σε όλους τους χρήστες ενός server"
-
-#: ../modules/nickserv/ns_resetpass.cpp
-msgid "Send an email to recover access to an account"
-msgstr "Αποστολή email για ανάκτηση πρόσβασης σε λογαριασμό"
 
 #: ../modules/memoserv/ms_list.cpp
 msgid "Sender"
@@ -7845,7 +7895,7 @@ msgstr "Session limit για τον #%s# ρυθμίστηκε σε #%d#."
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Sessions: %zu καταχωρήσεις, %zu buckets, η μακρύτερη αλυσίδα είναι %zu"
 
-#: ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/nickserv/ns_resetpass.cpp
 msgid "Set"
 msgstr "Ορίστηκε"
 
@@ -8993,6 +9043,16 @@ msgstr "Ο κωδικός πρόσβασης που δώσατε απαγορε�
 msgid "The range is past the last of the %u vhosts."
 msgstr "Το εύρος είναι πέρα από το τελευταίο από τα %u vhosts."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "The recovery key of %s has been removed. Its owner can get a new one with %s."
+msgstr "Το κλειδί ανάκτησης του %s αφαιρέθηκε. Ο κάτοχός του μπορεί να πάρει νέο με %s."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "The recovery key you specified for %s is incorrect."
+msgstr "Το κλειδί ανάκτησης που έδωσες για το %s είναι λάθος."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "The registration confirmation code you specified for %s is incorrect."
@@ -10064,6 +10124,11 @@ msgstr "Είστε πλέον super admin."
 
 #: ../modules/nickserv/ns_resetpass.cpp
 #, c-format
+msgid "You are now identified as %s. Change your password now using %s."
+msgstr "Είσαι τώρα αναγνωρισμένος ως %s. Άλλαξε τώρα τον κωδικό σου με %s."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
 msgid "You are now identified as %s. Change your password now using %s."
 msgstr "Έχετε πλέον ταυτοποιηθεί ως %s. Αλλάξτε τώρα τον κωδικό σας με το %s."
 
@@ -10528,6 +10593,10 @@ msgstr "Το αποτύπωμα του πιστοποιητικού SSL σας 
 msgid "Your account %s has been successfully created."
 msgstr "Ο λογαριασμός σας %s δημιουργήθηκε με επιτυχία."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Your account must be confirmed before it can have a recovery key."
+msgstr "Ο λογαριασμός σου πρέπει να επιβεβαιωθεί πριν μπορέσει να έχει κλειδί ανάκτησης."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "Your account will expire, if not confirmed, in %s."
@@ -10629,6 +10698,10 @@ msgstr "Το ψευδώνυμό σας ανήκει πλέον στον λογα
 msgid "Your nickname will be changed in %s if you do not identify."
 msgstr "Το ψευδώνυμό σας θα αλλάξει σε %s αν δεν ταυτοποιηθείτε."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Your old recovery key no longer works."
+msgstr "Το παλιό σου κλειδί ανάκτησης δεν λειτουργεί πλέον."
+
 #: ../modules/operserv/os_login.cpp
 msgid "Your oper block doesn't require logging in."
 msgstr "To oper block σας δεν χρειάζεται login."
@@ -10657,6 +10730,11 @@ msgstr "Το εκκρεμές αποτύπωμα πιστοποιητικού σ
 #, c-format
 msgid "Your pending certificate fingerprint %s has been confirmed and added to your certificate list."
 msgstr "Το εκκρεμές αποτύπωμα πιστοποιητικού σας %s επιβεβαιώθηκε και προστέθηκε στη λίστα πιστοποιητικών σας."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "Your recovery key is %s. Save it somewhere safe: it is shown only once."
+msgstr "Το κλειδί ανάκτησής σου είναι %s. Φύλαξέ το κάπου ασφαλές: εμφανίζεται μόνο μία φορά."
 
 #: ../modules/hostserv/hs_request.cpp
 msgid "Your requested vhost has been approved."
@@ -11630,6 +11708,9 @@ msgstr "{number}: {topic} -- ορίστηκε από {by} στις {set}"
 
 #~ msgid "Security"
 #~ msgstr "Ασφάλεια"
+
+#~ msgid "Send an email to recover access to an account"
+#~ msgstr "Αποστολή email για ανάκτηση πρόσβασης σε λογαριασμό"
 
 #~ msgid "Services are in read-only mode!"
 #~ msgstr "Τα Services είναι τώρα #μόνο ανάγνωσης#."

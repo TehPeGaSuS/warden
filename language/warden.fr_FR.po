@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 20:03+0100\n"
+"POT-Creation-Date: 2026-11-23 23:43+0100\n"
 "PO-Revision-Date: 2024-11-25 01:32+0000\n"
 "Last-Translator: Val Lorentz <progval+git@progval.net>\n"
 "Language-Team: French\n"
@@ -279,6 +279,11 @@ msgstr "%s n'a accès à aucun canal."
 #, c-format
 msgid "%s has no access on %s."
 msgstr "%s n'a pas d'accès sur %s."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "%s has no recovery key."
+msgstr "%s n'a pas de clé de récupération."
 
 #: ../modules/chanserv/cs_set.cpp
 #, c-format
@@ -1095,7 +1100,7 @@ msgstr "pseudo nouveau-pseudo "
 msgid "nick [reason]"
 msgstr "pseudo [raison]"
 
-#: ../modules/nickserv/ns_suspend.cpp
+#: ../modules/nickserv/ns_resetpass.cpp ../modules/nickserv/ns_suspend.cpp
 msgid "nickname"
 msgstr "pseudo"
 
@@ -1114,6 +1119,10 @@ msgstr "pseudo nouvel-affichage"
 #: ../modules/nickserv/ns_set.cpp
 msgid "nickname new-password"
 msgstr "pseudo nouveau-motdepasse"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "nickname recovery-key"
+msgstr "pseudo clé-de-récupération"
 
 #: ../modules/nickserv/ns_set_misc.cpp
 #, c-format
@@ -4947,6 +4956,14 @@ msgstr "Fondateurice"
 msgid "Founder of %s changed to %s."
 msgstr "Le/la fondateurice de %s est maintenant %s."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Get a new recovery key"
+msgstr "Obtenir une nouvelle clé de récupération"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Gets you back into your account if you forgot its password. Give the recovery key you were shown when you confirmed your registration: you will be identified, so you can set a new password, and get a new key, as each key works only once."
+msgstr "Vous permet de retrouver l'accès à votre compte si vous avez oublié son mot de passe. Donnez la clé de récupération qui vous a été affichée lors de la confirmation de votre enregistrement : vous serez identifié, pourrez définir un nouveau mot de passe et obtiendrez une nouvelle clé, car chaque clé ne fonctionne qu'une fois."
+
 #: ../modules/nickserv/ns_recover.cpp
 msgid "Ghost with your nick has been killed."
 msgstr "L'utilisateurice fantôme utilisant votre pseudo a été déconnecté."
@@ -5105,6 +5122,15 @@ msgstr "L'adresse IP %s n'existe pas pour %s."
 #: ../modules/nickserv/ns_identify.cpp
 msgid "Identify yourself with your password"
 msgstr "Vous identifie avec votre mot de passe"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "If you forget your password, type %s to get back into your account."
+msgstr "Si vous oubliez votre mot de passe, tapez %s pour retrouver l'accès à votre compte."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "If you give the account's email address instead, a confirmation code is sent to it."
+msgstr "Si vous donnez plutôt l'adresse e-mail du compte, un code de confirmation y est envoyé."
 
 #: ../modules/operserv/os_ignore.cpp
 msgid "Ignore list has been cleared."
@@ -5962,6 +5988,10 @@ msgstr "Fait dire au bot le texte donné sur un canal"
 msgid "Make the channel registered-only during a join flood"
 msgstr "Réserve le canal aux utilisateurices enregistré·es pendant un flood d'entrées"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Makes a new recovery key for your account and shows it to you once. The old key stops working. Use this if you lost your key or think someone else has seen it."
+msgstr "Crée une nouvelle clé de récupération pour votre compte et vous l'affiche une fois. L'ancienne clé cesse de fonctionner. Utilisez ceci si vous avez perdu votre clé ou pensez que quelqu'un d'autre l'a vue."
+
 #: ../modules/botserv/bs_control.cpp
 msgid "Makes the bot do the equivalent of a \"/me\" command on the specified channel using the specified text."
 msgstr "Fait faire au bot l'équivalent d'une commande \"/me\" sur le canal donné avec le texte donné."
@@ -6633,7 +6663,7 @@ msgstr "Personne d'autre dans %s ne reçoit les mémos du groupe."
 msgid "Non-status modes cleared on %s."
 msgstr "Les modes, sauf ceux de statut, ont été vidés sur %s."
 
-#: ../modules/botserv/bs_info.cpp ../modules/operserv/os_dns.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/nickserv/ns_resetpass.cpp ../modules/operserv/os_dns.cpp
 msgid "None"
 msgstr "Aucune"
 
@@ -6842,6 +6872,10 @@ msgstr "Mot de passe incorrect."
 #, c-format
 msgid "Password reset email for %s has been sent."
 msgstr "Un email de réinitialisation de mot de passe pour %s a été envoyé."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Password reset is not available on this network."
+msgstr "La réinitialisation du mot de passe n'est pas disponible sur ce réseau."
 
 #: ../modules/operserv/os_stats.cpp
 #, c-format
@@ -7120,9 +7154,21 @@ msgstr "Raison mise à jour pour %s."
 msgid "Reason/Online Since"
 msgstr "Raison/En ligne depuis"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recover access to an account"
+msgstr "Récupérer l'accès à un compte"
+
 #: ../modules/nickserv/ns_recover.cpp
 msgid "Recovers your nick from another user or from services. If services are currently holding your nick, the hold will be released. If another user is holding your nick and is identified they will be killed (similar to the old GHOST command). If they are not identified they will be forced off of the nick."
 msgstr "Récupère votre pseudo pris par un(e) autre utilisateurice ou par les services. Si les services détiennent votre pseudo, la détention sera annulée. Si un(e) autre utilisateurice détient votre pseudo et est identifié, iel sera déconnecté du serveur (comme avec l'ancienne commande GHOST). Si iel n'est pas identifié(e), son pseudo sera changé de force."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recovery key"
+msgstr "Clé de récupération"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recovery keys are not used on this network."
+msgstr "Les clés de récupération ne sont pas utilisées sur ce réseau."
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "Redefine the meanings of access levels"
@@ -7281,6 +7327,10 @@ msgstr "Supprime tous les bans qui empêche un(e) utilisateurice d'entrer sur un
 msgid "Remove all operators from a server remotely"
 msgstr "Supprime toustes les Opérateurices d'un serveur"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Remove the recovery key of an account"
+msgstr "Supprimer la clé de récupération d'un compte"
+
 #: ../modules/operserv/os_dns.cpp
 #, c-format
 msgid "Removed IP %s from %s."
@@ -7323,6 +7373,10 @@ msgstr ""
 "Supprime le message d'accueil de "
 "zebra"
 "."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Removes the recovery key of an account, for example if its owner thinks someone else has it. The owner can make a new one with SET RECOVERYKEY."
+msgstr "Supprime la clé de récupération d'un compte, par exemple si son propriétaire pense que quelqu'un d'autre l'a. Le propriétaire peut en créer une nouvelle avec SET RECOVERYKEY."
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Removes the specified fingerprint from the certificate list of nickname."
@@ -7568,10 +7622,6 @@ msgstr "Envoie un message à tous les utilisateurices"
 #: ../modules/global/gl_server.cpp
 msgid "Send a message to all users on a server"
 msgstr "Envoie un message à toustes les utilisateurices sur un serveur"
-
-#: ../modules/nickserv/ns_resetpass.cpp
-msgid "Send an email to recover access to an account"
-msgstr "Envoie un email pour récupérer l'accès à un compte"
 
 #: ../modules/memoserv/ms_list.cpp
 msgid "Sender"
@@ -7846,7 +7896,7 @@ msgstr "La limite de sessions de %s est maintenant de %d."
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Sessions : %zu entrées, %zu paniers, plus longue chaîne : %zu"
 
-#: ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/nickserv/ns_resetpass.cpp
 msgid "Set"
 msgstr "Défini"
 
@@ -8995,6 +9045,16 @@ msgstr "Le mot de passe que vous avez indiqué est interdit."
 msgid "The range is past the last of the %u vhosts."
 msgstr "La plage dépasse le dernier des %u vhosts."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "The recovery key of %s has been removed. Its owner can get a new one with %s."
+msgstr "La clé de récupération de %s a été supprimée. Son propriétaire peut en obtenir une nouvelle avec %s."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "The recovery key you specified for %s is incorrect."
+msgstr "La clé de récupération indiquée pour %s est incorrecte."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "The registration confirmation code you specified for %s is incorrect."
@@ -10066,6 +10126,11 @@ msgstr "Vous êtes maintenant super-administrateurice."
 
 #: ../modules/nickserv/ns_resetpass.cpp
 #, c-format
+msgid "You are now identified as %s. Change your password now using %s."
+msgstr "Vous êtes maintenant identifié en tant que %s. Changez votre mot de passe maintenant avec %s."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
 msgid "You are now identified as %s. Change your password now using %s."
 msgstr "Vous êtes maintenant identifié(e) en tant que %s. Changez votre mot de passe maintenant avec %s."
 
@@ -10532,6 +10597,10 @@ msgstr "Votre empreinte de certificat SSL %s a été automatiquement ajoutée 
 msgid "Your account %s has been successfully created."
 msgstr "Votre compte %s a été créé avec succès."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Your account must be confirmed before it can have a recovery key."
+msgstr "Votre compte doit être confirmé avant de pouvoir avoir une clé de récupération."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "Your account will expire, if not confirmed, in %s."
@@ -10633,6 +10702,10 @@ msgstr "Votre pseudo appartient maintenant au compte %s."
 msgid "Your nickname will be changed in %s if you do not identify."
 msgstr "Votre pseudo sera changé dans %s si vous ne vous identifiez pas."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Your old recovery key no longer works."
+msgstr "Votre ancienne clé de récupération ne fonctionne plus."
+
 #: ../modules/operserv/os_login.cpp
 msgid "Your oper block doesn't require logging in."
 msgstr "Votre bloc oper ne nécessite pas de s'authentifier."
@@ -10661,6 +10734,11 @@ msgstr "L'empreinte de certificat en attente %s n'a pas pu être confirmée ca
 #, c-format
 msgid "Your pending certificate fingerprint %s has been confirmed and added to your certificate list."
 msgstr "L'empreinte de certificat en attente %s a été confirmée et ajoutée à votre liste de certificats."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "Your recovery key is %s. Save it somewhere safe: it is shown only once."
+msgstr "Votre clé de récupération est %s. Conservez-la en lieu sûr : elle n'est affichée qu'une seule fois."
 
 #: ../modules/hostserv/hs_request.cpp
 msgid "Your requested vhost has been approved."
@@ -11523,6 +11601,9 @@ msgstr "{number} : {topic} -- défini par {by} le {set}"
 #, c-format
 #~ msgid "Registered nick groups: %zu entries, %zu buckets, longest chain is %zu"
 #~ msgstr "Groupe de pseudos enregistrés : %zu entrées, %zu paniers, plus longue chaîne : %zu"
+
+#~ msgid "Send an email to recover access to an account"
+#~ msgstr "Envoie un email pour récupérer l'accès à un compte"
 
 #~ msgid "Session limiting is disabled."
 #~ msgstr "La limitation de sessions est désactivée."

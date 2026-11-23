@@ -24,6 +24,14 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   * Opening it only shows a **Confirm** button (password resets ask for the
     new password), so mail scanners that follow links can't confirm anything.
   * Mail templates can use `{?link}...{/link}` and `{!link}...{/link}`.
+* Recovery keys in `ns_resetpass` for `registration = "code"`: users get a
+  one-time key when they confirm their registration, and
+  `RESETPASS nick <key>` gets them back in if they forget their password.
+  * Bots that register and never confirm never get a key.
+  * Keys are stored hashed, work once and are replaced on use;
+    `SET RECOVERYKEY` makes a new one, `SASET RECOVERYKEY` removes one.
+  * `ns_resetpass` now loads without mail; then only recovery keys can reset
+    passwords.
 * `ChanServ FLAGS` has `ADD` and `DEL`, Atheme-style templates
   (`FLAGS #chan nick AOP`) and can clear an entry's description.
 * `NickServ MSET` and `ChanServ MSET` run several `SET`s at once.

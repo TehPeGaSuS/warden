@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 20:03+0100\n"
+"POT-Creation-Date: 2026-11-23 23:43+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -279,6 +279,11 @@ msgstr "%s nu are acces în niciun canal."
 #, c-format
 msgid "%s has no access on %s."
 msgstr "%s nu are acces în %s."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "%s has no recovery key."
+msgstr "%s nu are cheie de recuperare."
 
 #: ../modules/chanserv/cs_set.cpp
 #, c-format
@@ -1095,7 +1100,7 @@ msgstr "pseudonim pseudonim-nou"
 msgid "nick [reason]"
 msgstr "pseudonim [motiv]"
 
-#: ../modules/nickserv/ns_suspend.cpp
+#: ../modules/nickserv/ns_resetpass.cpp ../modules/nickserv/ns_suspend.cpp
 msgid "nickname"
 msgstr "pseudonim"
 
@@ -1114,6 +1119,10 @@ msgstr "pseudonim afișaj-nou"
 #: ../modules/nickserv/ns_set.cpp
 msgid "nickname new-password"
 msgstr "pseudonim parolă-nouă"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "nickname recovery-key"
+msgstr "pseudonim cheie-de-recuperare"
 
 #: ../modules/nickserv/ns_set_misc.cpp
 #, c-format
@@ -4939,6 +4948,14 @@ msgstr "Fondator"
 msgid "Founder of %s changed to %s."
 msgstr "Fondatorul %s a fost schimbat în %s."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Get a new recovery key"
+msgstr "Obține o nouă cheie de recuperare"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Gets you back into your account if you forgot its password. Give the recovery key you were shown when you confirmed your registration: you will be identified, so you can set a new password, and get a new key, as each key works only once."
+msgstr "Te readuce în contul tău dacă i-ai uitat parola. Dă cheia de recuperare care ți-a fost afișată când ți-ai confirmat înregistrarea: vei fi identificat(ă), ca să poți seta o parolă nouă, și vei primi o cheie nouă, deoarece fiecare cheie funcționează o singură dată."
+
 #: ../modules/nickserv/ns_recover.cpp
 msgid "Ghost with your nick has been killed."
 msgstr "Utilizatorul fantomă folosind pseudonimul dumneavoastră a fost deconectat."
@@ -5097,6 +5114,15 @@ msgstr "Adresa IP %s nu există pentru %s."
 #: ../modules/nickserv/ns_identify.cpp
 msgid "Identify yourself with your password"
 msgstr "Vă identifică la servicii prin parolă"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "If you forget your password, type %s to get back into your account."
+msgstr "Dacă îți uiți parola, tastează %s pentru a reintra în contul tău."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "If you give the account's email address instead, a confirmation code is sent to it."
+msgstr "Dacă dai în schimb adresa de email a contului, un cod de confirmare este trimis la ea."
 
 #: ../modules/operserv/os_ignore.cpp
 msgid "Ignore list has been cleared."
@@ -5952,6 +5978,10 @@ msgstr "Faceți ca botul să scrie textul specificat în canalul specificat"
 msgid "Make the channel registered-only during a join flood"
 msgstr "Face canalul doar pentru înregistrați în timpul unei inundări cu intrări"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Makes a new recovery key for your account and shows it to you once. The old key stops working. Use this if you lost your key or think someone else has seen it."
+msgstr "Creează o nouă cheie de recuperare pentru contul tău și ți-o afișează o singură dată. Vechea cheie nu mai funcționează. Folosește asta dacă ți-ai pierdut cheia sau crezi că altcineva a văzut-o."
+
 #: ../modules/botserv/bs_control.cpp
 msgid "Makes the bot do the equivalent of a \"/me\" command on the specified channel using the specified text."
 msgstr "Face ca botul să execute echivalentul unei comenzi \"/me\" în canalul specificat folosind textul specificat."
@@ -6621,7 +6651,7 @@ msgstr "Nimeni altcineva din %s nu primește misivele grupului."
 msgid "Non-status modes cleared on %s."
 msgstr "Modurile fără stare au fost golite în %s."
 
-#: ../modules/botserv/bs_info.cpp ../modules/operserv/os_dns.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/nickserv/ns_resetpass.cpp ../modules/operserv/os_dns.cpp
 msgid "None"
 msgstr "Niciuna"
 
@@ -6830,6 +6860,10 @@ msgstr "Parola este incorectă."
 #, c-format
 msgid "Password reset email for %s has been sent."
 msgstr "A fost trimis mesajul de email de resetare a parolei pentru %s."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Password reset is not available on this network."
+msgstr "Resetarea parolei nu este disponibilă în această rețea."
 
 #: ../modules/operserv/os_stats.cpp
 #, c-format
@@ -7108,9 +7142,21 @@ msgstr "Motivul pentru %s a fost actualizat."
 msgid "Reason/Online Since"
 msgstr "Motiv/Online din"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recover access to an account"
+msgstr "Recuperează accesul la un cont"
+
 #: ../modules/nickserv/ns_recover.cpp
 msgid "Recovers your nick from another user or from services. If services are currently holding your nick, the hold will be released. If another user is holding your nick and is identified they will be killed (similar to the old GHOST command). If they are not identified they will be forced off of the nick."
 msgstr "Recuperează pseudonimul dumneavoastră de la un alt utilizator sau de la servicii. Dacă serviciile vă țin pseudonimul în prezent, această ținere va fi eliberată. Dacă un alt utilizator vă deține pseudonimul și este identificat, acel utilizator va fi deconectat (similar cu vechea comandă GHOST). Dacă acel utilizator nu este identificat, atunci i se va schimba pseudonimul."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recovery key"
+msgstr "Cheie de recuperare"
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Recovery keys are not used on this network."
+msgstr "Cheile de recuperare nu sunt folosite în această rețea."
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "Redefine the meanings of access levels"
@@ -7269,6 +7315,10 @@ msgstr "Înlătură toate blocările care împiedică un utilizator să intre î
 msgid "Remove all operators from a server remotely"
 msgstr "Înlătură de la distanță toți operatorii dintr-un server"
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Remove the recovery key of an account"
+msgstr "Elimină cheia de recuperare a unui cont"
+
 #: ../modules/operserv/os_dns.cpp
 #, c-format
 msgid "Removed IP %s from %s."
@@ -7311,6 +7361,10 @@ msgstr ""
 "Înlătură mesajul de întâmpinare pentru "
 "zebra"
 "."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Removes the recovery key of an account, for example if its owner thinks someone else has it. The owner can make a new one with SET RECOVERYKEY."
+msgstr "Elimină cheia de recuperare a unui cont, de exemplu dacă proprietarul crede că altcineva o are. Proprietarul poate crea una nouă cu SET RECOVERYKEY."
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Removes the specified fingerprint from the certificate list of nickname."
@@ -7556,10 +7610,6 @@ msgstr "Expediază un mesaj tuturor utilizatorilor"
 #: ../modules/global/gl_server.cpp
 msgid "Send a message to all users on a server"
 msgstr "Expediază un mesaj tuturor utilizatorilor dintr-un server"
-
-#: ../modules/nickserv/ns_resetpass.cpp
-msgid "Send an email to recover access to an account"
-msgstr "Trimiteți un mesaj email pentru recuperarea accesului la un cont"
 
 #: ../modules/memoserv/ms_list.cpp
 msgid "Sender"
@@ -7834,7 +7884,7 @@ msgstr "Limita de sesiuni pentru %s a fost setată la %d."
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Sesiuni: %zu intrări, %zu compartimente, cel mai lung lanț este %zu"
 
-#: ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/nickserv/ns_resetpass.cpp
 msgid "Set"
 msgstr "Setat"
 
@@ -8979,6 +9029,16 @@ msgstr "Parola specificată de dumneavoastră este interzisă."
 msgid "The range is past the last of the %u vhosts."
 msgstr "Intervalul depășește ultima dintre cele %u gazde virtuale."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "The recovery key of %s has been removed. Its owner can get a new one with %s."
+msgstr "Cheia de recuperare a lui %s a fost eliminată. Proprietarul poate obține una nouă cu %s."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "The recovery key you specified for %s is incorrect."
+msgstr "Cheia de recuperare specificată pentru %s este incorectă."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "The registration confirmation code you specified for %s is incorrect."
@@ -10050,6 +10110,11 @@ msgstr "Acum sunteți un super-administrator."
 
 #: ../modules/nickserv/ns_resetpass.cpp
 #, c-format
+msgid "You are now identified as %s. Change your password now using %s."
+msgstr "Acum ești identificat(ă) ca %s. Schimbă-ți parola acum folosind %s."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
 msgid "You are now identified as %s. Change your password now using %s."
 msgstr "Acum sunteți identificat(ă) ca %s. Schimbați-vă parola acum folosind %s."
 
@@ -10514,6 +10579,10 @@ msgstr "Amprenta digitală a certificatului SSL %s a fost adăugată automat l
 msgid "Your account %s has been successfully created."
 msgstr "Contul dumneavoastră %s a fost creat cu succes."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Your account must be confirmed before it can have a recovery key."
+msgstr "Contul tău trebuie confirmat înainte de a putea avea o cheie de recuperare."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "Your account will expire, if not confirmed, in %s."
@@ -10615,6 +10684,10 @@ msgstr "Pseudonimul dumneavoastră aparține acum contului %s."
 msgid "Your nickname will be changed in %s if you do not identify."
 msgstr "Pseudonimul dumneavoastră va fi schimbat în %s dacă nu vă identificați."
 
+#: ../modules/nickserv/ns_resetpass.cpp
+msgid "Your old recovery key no longer works."
+msgstr "Vechea ta cheie de recuperare nu mai funcționează."
+
 #: ../modules/operserv/os_login.cpp
 msgid "Your oper block doesn't require logging in."
 msgstr "Blocul de operare al dumneavoastră nu necesită autentificare."
@@ -10643,6 +10716,11 @@ msgstr "Amprenta digitală de certificat în așteptare %s nu a putut fi confi
 #, c-format
 msgid "Your pending certificate fingerprint %s has been confirmed and added to your certificate list."
 msgstr "Amprenta digitală de certificat în așteptare %s a fost confirmată și adăugată în lista dumneavoastră de certificate."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "Your recovery key is %s. Save it somewhere safe: it is shown only once."
+msgstr "Cheia ta de recuperare este %s. Păstreaz-o într-un loc sigur: este afișată o singură dată."
 
 #: ../modules/hostserv/hs_request.cpp
 msgid "Your requested vhost has been approved."
@@ -11098,6 +11176,9 @@ msgstr "{number}: {topic} -- setat de {by} la {set}"
 
 #~ msgid "Forbid allows you to forbid usage of certain nicknames, channels, and email addresses. Wildcards are accepted for all entries."
 #~ msgstr "Forbid vă permite să interziceți utilizarea anumitor pseudonime, canale și adrese de email. Se acceptă caractere wildcard pentru toate intrările."
+
+#~ msgid "Send an email to recover access to an account"
+#~ msgstr "Trimiteți un mesaj email pentru recuperarea accesului la un cont"
 
 #~ msgid "Session limiting is disabled."
 #~ msgstr "Limitarea de sesiuni este dezactivată."
