@@ -51,7 +51,7 @@ jobs:
         id: library-cache
         with:
           key: Conan VS${{ env.VisualStudioVersion }} ${{ env.BUILD_TYPE }} ${{ hashFiles(env.CONAN_FILE) }}
-          path: ${{ env.CONAN_HOME }}/p
+          path: ${{ env.CONAN_HOME }}\p
 
       - name: Install libraries
         working-directory: ${{ env.BUILD_PATH }}
