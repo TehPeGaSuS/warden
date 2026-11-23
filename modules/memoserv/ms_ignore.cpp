@@ -62,21 +62,21 @@ public:
 			}
 
 			if (mi->ignores.insert(param).second)
-				source.Reply(_("\002%s\002 added to ignore list."), param.c_str());
+				source.Reply(_("\002%s\002 added to the memo ignore list of \002%s\002."), param.c_str(), channel.c_str());
 			else
-				source.Reply(_("\002%s\002 is already on the ignore list."), param.c_str());
+				source.Reply(_("\002%s\002 is already on the memo ignore list of \002%s\002."), param.c_str(), channel.c_str());
 		}
 		else if (command.equals_ci("DEL") && !param.empty())
 		{
 			if (mi->ignores.erase(param))
-				source.Reply(_("\002%s\002 removed from the ignore list."), param.c_str());
+				source.Reply(_("\002%s\002 removed from the memo ignore list of \002%s\002."), param.c_str(), channel.c_str());
 			else
-				source.Reply(_("\002%s\002 is not on the ignore list."), param.c_str());
+				source.Reply(_("\002%s\002 is not on the memo ignore list of \002%s\002."), param.c_str(), channel.c_str());
 		}
 		else if (command.equals_ci("LIST"))
 		{
 			if (mi->ignores.empty())
-				source.Reply(_("Memo ignore list is empty."));
+				source.Reply(_("The memo ignore list of \002%s\002 is empty."), channel.c_str());
 			else
 			{
 				ListFormatter list(source.GetAccount());
@@ -90,7 +90,7 @@ public:
 					list.AddEntry(entry);
 				}
 
-				source.Reply(_("Memo ignore list:"));
+				source.Reply(_("Memo ignore list of \002%s\002:"), channel.c_str());
 				list.SendTo(source);
 			}
 		}
