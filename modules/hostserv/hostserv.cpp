@@ -53,6 +53,13 @@ public:
 
 		if (u->vhost.empty() || !u->vhost.equals_cs(na->GetVHostHost()) || (!na->GetVHostIdent().empty() && !u->GetVIdent().equals_cs(na->GetVHostIdent())))
 		{
+			// An oper who already has another vhost most likely got it from
+			// their oper block; don't replace it, e.g. when everyone is logged
+			// back in after a services restart (anope/anope#427). The HostServ
+			// vhost comes back when they deoper (activate_on_deoper).
+			if (u->HasMode("OPER") && !u->vhost.empty() && Config->GetModule(this).Get<bool>("keep_oper_vhost", "yes"))
+				return;
+
 			IRCD->SendVHost(u, na->GetVHostIdent(), na->GetVHostHost());
 
 			u->vhost = na->GetVHostHost();
