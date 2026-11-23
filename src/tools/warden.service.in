@@ -7,7 +7,7 @@ Wants=network-online.target
 
 [Service]
 ExecReload=/bin/kill -HUP $MAINPID
-ExecStart=@BIN_DIR@/@PROGRAM_NAME@ --nofork
+ExecStart=@ABSOLUTE_BIN_DIR@/@PROGRAM_NAME@ --nofork
 Restart=on-failure
 Type=simple
 WorkingDirectory=@CMAKE_INSTALL_PREFIX@

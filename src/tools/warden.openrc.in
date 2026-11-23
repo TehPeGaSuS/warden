@@ -1,0 +1,34 @@
+#!/sbin/openrc-run
+# OpenRC service for Warden IRC Services (anope/anope#614).
+#
+# Install as root:
+#   cp @ABSOLUTE_BIN_DIR@/warden.openrc /etc/init.d/warden
+#   rc-update add warden default
+#
+# Settings can go in /etc/conf.d/warden, e.g. WARDEN_USER="irc".
+
+name="Warden IRC Services"
+description="IRC services for networks"
+extra_started_commands="reload"
+
+# Run as the owner of the install unless told otherwise (not root: Warden
+# doesn't need it and warns about it).
+command_user="${WARDEN_USER:-$(stat -c %U "@CMAKE_INSTALL_PREFIX@")}"
+command="@ABSOLUTE_BIN_DIR@/@PROGRAM_NAME@"
+command_args="--nofork ${WARDEN_ARGS}"
+command_background="yes"
+directory="@CMAKE_INSTALL_PREFIX@"
+pidfile="/run/${RC_SVCNAME}.pid"
+
+depend()
+{
+	need net
+	after firewall
+}
+
+reload()
+{
+	ebegin "Reloading ${name}"
+	start-stop-daemon --signal HUP --pidfile "${pidfile}"
+	eend $?
+}

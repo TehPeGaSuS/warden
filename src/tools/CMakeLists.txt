@@ -25,7 +25,7 @@ install(
   DESTINATION ${BIN_DIR}
 )
 
-# If not on Windows, generate warden.service and wardenrc
+# If not on Windows, generate warden.service, warden.openrc and wardenrc
 if(NOT WIN32)
   if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
     configure_file(
@@ -37,6 +37,16 @@ if(NOT WIN32)
       DESTINATION ${BIN_DIR}
     )
   endif()
+
+  configure_file(
+    ${Warden_SOURCE_DIR}/src/tools/warden.openrc.in
+    ${Warden_BINARY_DIR}/src/tools/warden.openrc
+    @ONLY
+  )
+  install(
+    PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/warden.openrc
+    DESTINATION ${BIN_DIR}
+  )
 
   configure_file(
     ${Warden_SOURCE_DIR}/src/tools/wardenrc.in
