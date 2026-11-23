@@ -356,7 +356,7 @@ bool IRCDProto::IsHostValid(const Warden::string &host)
 
 	const auto &block = Config->GetBlock("networkinfo");
 	const auto &vhostdisablebe = block.Get<const Warden::string>("disallow_start_or_end", ".-/");
-	const auto &vhostchars = block.Get<const Warden::string>("vhost_chars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-/");
+	const auto &vhostchars = block.Get<const Warden::string>("vhost_chars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_/");
 
 	if (vhostdisablebe.find_first_of(host[0]) != Warden::string::npos)
 		return false;

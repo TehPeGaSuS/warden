@@ -54,7 +54,7 @@ namespace
 	// end up alike (foo|bar and foo[bar]) still get different vhosts.
 	Warden::string BuildNetHost(NickAlias *na)
 	{
-		const auto &vhostchars = Config->GetBlock("networkinfo").Get<const Warden::string>("vhost_chars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-/");
+		const auto &vhostchars = Config->GetBlock("networkinfo").Get<const Warden::string>("vhost_chars", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_/");
 
 		Warden::string nick;
 		auto changed = false;
@@ -83,11 +83,19 @@ namespace
 			changed = true;
 		}
 
+		// Like a domain label, keep the name part (with its ID) to 63
+		// characters.
+		const auto id = changed ? hashprefix + Base36(na->nc->GetId()) : "";
+		if (nick.length() + id.length() > 63)
+		{
+			nick = nick.substr(0, 63 > id.length() ? 63 - id.length() : 0);
+			const auto end = nick.find_last_not_of('-');
+			nick = end == Warden::string::npos ? "user" : nick.substr(0, end + 1);
+		}
+
 		// The ID goes before the suffix: foobar-1x2y.users.example.net,
 		// or user/foobar/x-1x2y with prefix "user/" and hashprefix "/x-".
-		if (changed)
-			nick += hashprefix + Base36(na->nc->GetId());
-		return prefix + nick + suffix;
+		return prefix + nick + id + suffix;
 	}
 
 	// Sets na's net host. Unless forced, a vhost set by anything else is left
