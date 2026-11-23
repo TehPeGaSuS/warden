@@ -199,6 +199,23 @@ jobs:
         ref: ${{ env.IRCTEST_REF }}
         repository: progval/irctest
 
+    - name: Adapt irctest's Anope controller to Warden
+      run: |-
+        # Warden's binary is "warden" and it reports Warden-x.y.z; it uses
+        # Anope 2.1's module names, so treat it as 2.1.
+        python3 - <<'PYEOF'
+        from pathlib import Path
+        p = Path("irctest/controllers/anope_services.py")
+        s = p.read_text()
+        s = s.replace('["anope", "--version"]', '["warden", "--version"]')
+        s = s.replace('assert anope == "Anope"\n    return tuple(map(int, version.split(".")))',
+                      'assert anope in ("Anope", "Warden")\n    return (2, 1, 0) if anope == "Warden" else tuple(map(int, version.split(".")))')
+        s = s.replace('shutil.which("anope")', 'shutil.which("warden")')
+        s = s.replace('                "anope",\n                "--config=services.conf"', '                "warden",\n                "--config=services.conf"')
+        assert s.count("warden") == 3 and "Warden" in s, "irctest's Anope controller changed; update this step"
+        p.write_text(s)
+        PYEOF
+
     - name: Install irctest dependencies
       run: |-
         sudo apt-get install --update faketime
