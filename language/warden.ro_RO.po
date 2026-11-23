@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:06+0100\n"
+"POT-Creation-Date: 2026-11-23 17:13+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -385,6 +385,11 @@ msgstr "%s nu este un timp valid, de ex. 30d sau 2w."
 #, c-format
 msgid "%s is not a valid time. Give a Unix timestamp or a date such as 2019-05-01 (UTC), not in the future."
 msgstr "%s nu este o oră validă. Indică un timestamp Unix sau o dată precum 2019-05-01 (UTC), care să nu fie în viitor."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s is not a valid vhost."
+msgstr "%s nu este o gazdă virtuală validă."
 
 #: ../include/language.h
 #, c-format
@@ -3216,7 +3221,8 @@ msgid ""
 "  GROUPNAME !newname - rename the group\n"
 "These are for services operators:\n"
 "  ACSNOLIMIT {ON|OFF} - no limit on the access list size\n"
-"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit"
+"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit\n"
+"  VHOST [vhost|OFF] - a vhost members with +v can take; it may use {account} and {nick}"
 msgstr ""
 "Modifică setările unui grup. Acestea necesită +s:\n"
 "  DESCRIPTION, URL, EMAIL, CHANNEL [valoare] - le setează sau le șterge\n"
@@ -3228,7 +3234,8 @@ msgstr ""
 "  GROUPNAME !newname - redenumește grupul\n"
 "Acestea sunt pentru operatorii serviciilor:\n"
 "  ACSNOLIMIT {ON|OFF} - fără limită pentru mărimea listei de accese\n"
-"  REGNOLIMIT {ON|OFF} - nu este socotit în limita fondatorilor săi"
+"  REGNOLIMIT {ON|OFF} - nu este socotit în limita fondatorilor săi\n"
+"  VHOST [gazdă virtuală|OFF] - o gazdă virtuală pe care membrii cu +v o pot prelua; poate folosi {account} și {nick}"
 
 #: ../modules/botserv/bs_bot.cpp
 msgid ""
@@ -5935,6 +5942,11 @@ msgstr "Utilizatori maximi: %zu (%s)"
 msgid "Members"
 msgstr "Membri"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Members of %s with +v can now take the vhost %s with %s."
+msgstr "Membrii %s cu +v pot acum prelua gazda virtuală %s cu %s."
+
 #: ../modules/memoserv/ms_read.cpp
 #, c-format
 msgid "Memo %d from %s (%s)."
@@ -5974,6 +5986,16 @@ msgstr "Limita de misive pentru %s a fost setată la 0."
 #, c-format
 msgid "Memo sent to %s."
 msgstr "Misiva a fost expediată către %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Memo sent to %u member(s) of %s (%u could not receive it)."
+msgstr "Misivă expediată către %u membru(i) ai %s (%u nu au putut-o primi)."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Memo sent to %u member(s) of %s."
+msgstr "Misivă expediată către %u membru(i) ai %s."
 
 #: ../modules/memoserv/ms_list.cpp
 #, c-format
@@ -6475,6 +6497,11 @@ msgstr "Modul fără boți este acum dezactivat în canalul %s."
 msgid "No-bot mode is now on on channel %s."
 msgstr "Modul fără boți este acum activat în canalul %s."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Nobody else in %s receives the group's memos."
+msgstr "Nimeni altcineva din %s nu primește misivele grupului."
+
 #: ../modules/operserv/os_mode.cpp
 #, c-format
 msgid "Non-status modes cleared on %s."
@@ -6751,7 +6778,7 @@ msgstr "Vă rugăm să așteptați %s înainte de a solicita o nouă gazdă virt
 msgid "Please wait %s before taking a new vhost."
 msgstr "Vă rugăm să așteptați %s înainte de a lua o nouă gazdă virtuală."
 
-#: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 #, c-format
 msgid "Please wait %s before using the %s command again."
 msgstr "Vă rugăm să așteptați %s înainte de a utiliza iar comanda %s."
@@ -8001,6 +8028,10 @@ msgstr "Setează dacă ar trebui să fiți autentificat(ă) automat atunci când
 msgid "Sets whether you will be given your channel status modes automatically. Set to ON to allow %s to set status modes on you automatically when entering channels. Note that depending on channel settings some modes may not get set automatically."
 msgstr "Setează dacă veți primi automat modurile de stare în canale. Setați la ON pentru a permite %s să vă seteze automat modurile de stare atunci când intrați în canale. Rețineți că, în funcție de setările canalelor, este posibil ca unele moduri să nu fie setate automat."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Sets your vhost to the group's vhost (needs +v). The vhost is set by services operators with SET VHOST. You lose it again if you leave the group, lose +v, or the group is dropped."
+msgstr "Setează gazda ta virtuală la cea a grupului (necesită +v). Gazda virtuală este setată de operatorii serviciilor cu SET VHOST. O pierzi dacă părăsești grupul, pierzi +v sau grupul este șters."
+
 #: ../modules/chanserv/cs_access.cpp
 #, c-format
 msgid "Setting %s not known. Type %sLEVELS for a list of valid settings."
@@ -8323,6 +8354,10 @@ msgstr ""
 msgid "TAKE {vhost | entry-num}"
 msgstr "TAKE {gazdă-virtuală | număr-intrare}"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Take a group's vhost"
+msgstr "Preia gazda virtuală a unui grup"
+
 #: ../modules/chanserv/cs_seen.cpp
 msgid "Tell you about the last time a user was seen"
 msgstr "Vă informează despre ultima dată când a fost văzut un utilizator"
@@ -8626,6 +8661,11 @@ msgstr "Grupul %s a fost redenumit în %s."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
+msgid "The group %s has no vhost."
+msgstr "Grupul %s nu are gazdă virtuală."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
 msgid "The group %s is not open to anyone joining."
 msgstr "Grupul %s nu este deschis pentru alăturare."
 
@@ -8820,6 +8860,11 @@ msgstr "Lista de excepții de sesiune este goală."
 #: ../modules/nickserv/ns_recover.cpp
 msgid "The user with your nick has been removed. Use this command again to release services's hold on your nick."
 msgstr "Utilizatorul cu pseudonimul dumneavoastră a fost înlăturat. Folosiți această comandă din nou pentru a elibera actuala ținere a pseudonimului de către servicii."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The vhost of %s has been cleared."
+msgstr "Gazda virtuală a %s a fost ștearsă."
 
 #: ../modules/botserv/bs_botlist.cpp
 msgid "There are no bots available at this time. Ask a Services Operator to create one!"
@@ -9596,6 +9641,14 @@ msgstr "Valoare"
 msgid "Value of %s:%s changed to %s"
 msgstr "Valoarea %s:%s a fost schimbată în %s"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Vhost"
+msgstr "Gazdă virtuală"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Vhosts are not available on this network."
+msgstr "Gazdele virtuale nu sunt disponibile în această rețea."
+
 #: ../modules/operserv/os_oper.cpp
 msgid "View and change Services Operators"
 msgstr "Vizualizează și modifică Operatorii de Servicii"
@@ -10155,7 +10208,7 @@ msgstr "Trebuie să vă confirmați contul înainte de a putea vizualiza lista d
 msgid "You must confirm your account before you may request a vhost."
 msgstr "Trebuie să vă confirmați contul înainte de a putea solicita o gazdă virtuală."
 
-#: ../modules/memoserv/ms_send.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_send.cpp
 msgid "You must confirm your account before you may send a memo."
 msgstr "Trebuie să vă confirmați contul înainte de a putea trimite o misivă."
 
@@ -10453,6 +10506,11 @@ msgstr "Gazda virtuală %s a fost solicitată pentru dumneavoastră."
 #, c-format
 msgid "Your vhost %s has been requested. If the requested vhost is for a valid DNS name you can add a TXT record for %s with the value %s and automatically approve your vhost using %s."
 msgstr "Gazda virtuală %s a fost solicitată pentru dumneavoastră. Dacă gazda virtuală solicitată este pentru un nume DNS valid, puteți adăuga o înregistrare TXT pentru %s cu valoarea %s și puteți aproba automat gazda virtuală folosind %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Your vhost is now %s, from %s. You lose it if you leave the group or lose +v."
+msgstr "Gazda ta virtuală este acum %s, de la %s. O pierzi dacă părăsești grupul sau pierzi +v."
 
 #: ../modules/hostserv/hostserv.cpp ../modules/hostserv/hs_on.cpp
 #, c-format

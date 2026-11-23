@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:06+0100\n"
+"POT-Creation-Date: 2026-11-23 17:13+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -384,6 +384,11 @@ msgstr "Το %s δεν είναι έγκυρος χρόνος, π.χ. 30d ή
 #, c-format
 msgid "%s is not a valid time. Give a Unix timestamp or a date such as 2019-05-01 (UTC), not in the future."
 msgstr "%s δεν είναι έγκυρη ώρα. Δώσε ένα Unix timestamp ή μια ημερομηνία όπως 2019-05-01 (UTC), όχι στο μέλλον."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s is not a valid vhost."
+msgstr "Το %s δεν είναι έγκυρο vhost."
 
 #: ../include/language.h
 #, c-format
@@ -3215,7 +3220,8 @@ msgid ""
 "  GROUPNAME !newname - rename the group\n"
 "These are for services operators:\n"
 "  ACSNOLIMIT {ON|OFF} - no limit on the access list size\n"
-"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit"
+"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit\n"
+"  VHOST [vhost|OFF] - a vhost members with +v can take; it may use {account} and {nick}"
 msgstr ""
 "Αλλάζει τις ρυθμίσεις μιας ομάδας. Αυτές χρειάζονται +s:\n"
 "  DESCRIPTION, URL, EMAIL, CHANNEL [τιμή] - ορισμός ή διαγραφή τους\n"
@@ -3227,7 +3233,8 @@ msgstr ""
 "  GROUPNAME !newname - μετονομασία της ομάδας\n"
 "Αυτές είναι για τους χειριστές των υπηρεσιών:\n"
 "  ACSNOLIMIT {ON|OFF} - χωρίς όριο στο μέγεθος της λίστας πρόσβασης\n"
-"  REGNOLIMIT {ON|OFF} - να μη μετράει στο όριο των ιδρυτών της"
+"  REGNOLIMIT {ON|OFF} - να μη μετράει στο όριο των ιδρυτών της\n"
+"  VHOST [vhost|OFF] - ένα vhost που μπορούν να πάρουν τα μέλη με +v· μπορεί να χρησιμοποιεί {account} και {nick}"
 
 #: ../modules/botserv/bs_bot.cpp
 msgid ""
@@ -5942,6 +5949,11 @@ msgstr "Μέγιστος αριθμός χρηστών: %zu (%s)"
 msgid "Members"
 msgstr "Μέλη"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Members of %s with +v can now take the vhost %s with %s."
+msgstr "Τα μέλη του %s με +v μπορούν τώρα να πάρουν το vhost %s με %s."
+
 #: ../modules/memoserv/ms_read.cpp
 #, c-format
 msgid "Memo %d from %s (%s)."
@@ -5981,6 +5993,16 @@ msgstr "Το όριο μηνυμάτων για τον %s άλλαξε σε #0#.
 #, c-format
 msgid "Memo sent to %s."
 msgstr "Το μήνυμα στάλθηκε στον #%s#."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Memo sent to %u member(s) of %s (%u could not receive it)."
+msgstr "Το μήνυμα στάλθηκε σε %u μέλος(η) του %s (%u δεν μπόρεσαν να το λάβουν)."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Memo sent to %u member(s) of %s."
+msgstr "Το μήνυμα στάλθηκε σε %u μέλος(η) του %s."
 
 #: ../modules/memoserv/ms_list.cpp
 #, c-format
@@ -6482,6 +6504,11 @@ msgstr "Το no-bot mode είναι τώρα απενεργοποιημένο 
 msgid "No-bot mode is now on on channel %s."
 msgstr "Το no-bot mode είναι τώρα ενεργοποιημένο στο κανάλι %s."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Nobody else in %s receives the group's memos."
+msgstr "Κανείς άλλος στο %s δεν λαμβάνει τα μηνύματα της ομάδας."
+
 #: ../modules/operserv/os_mode.cpp
 #, c-format
 msgid "Non-status modes cleared on %s."
@@ -6758,7 +6785,7 @@ msgstr "Παρακαλώ περιμένετε %s πριν ζητήσετε νέ�
 msgid "Please wait %s before taking a new vhost."
 msgstr "Παρακαλώ περιμένετε %s πριν πάρετε νέο vhost."
 
-#: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 #, c-format
 msgid "Please wait %s before using the %s command again."
 msgstr "Παρακαλώ περιμένετε %s πριν χρησιμοποιήσετε ξανά την εντολή %s."
@@ -8015,6 +8042,10 @@ msgstr "Ορίζει αν θα αναγνωρίζεστε αυτόματα ότ�
 msgid "Sets whether you will be given your channel status modes automatically. Set to ON to allow %s to set status modes on you automatically when entering channels. Note that depending on channel settings some modes may not get set automatically."
 msgstr "Ορίζει αν θα παίρνετε αυτόματα τα status modes σας στα κανάλια. Ορίστε ON για να επιτρέψετε στον %s να σας δίνει αυτόματα status modes όταν μπαίνετε σε κανάλια. Σημειώστε ότι, ανάλογα με τις ρυθμίσεις του καναλιού, κάποια modes μπορεί να μη δοθούν αυτόματα."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Sets your vhost to the group's vhost (needs +v). The vhost is set by services operators with SET VHOST. You lose it again if you leave the group, lose +v, or the group is dropped."
+msgstr "Ορίζει το vhost σας στο vhost της ομάδας (χρειάζεται +v). Το vhost ορίζεται από τους χειριστές των υπηρεσιών με SET VHOST. Το χάνετε ξανά αν φύγετε από την ομάδα, χάσετε το +v ή η ομάδα διαγραφεί."
+
 #: ../modules/chanserv/cs_access.cpp
 #, c-format
 msgid "Setting %s not known. Type %sLEVELS for a list of valid settings."
@@ -8337,6 +8368,10 @@ msgstr ""
 msgid "TAKE {vhost | entry-num}"
 msgstr "TAKE {vhost | αριθ-καταχώρησης}"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Take a group's vhost"
+msgstr "Πάρτε το vhost μιας ομάδας"
+
 #: ../modules/chanserv/cs_seen.cpp
 msgid "Tell you about the last time a user was seen"
 msgstr "Σας λέει πότε εθεάθη τελευταία φορά ένας χρήστης"
@@ -8640,6 +8675,11 @@ msgstr "Η ομάδα %s μετονομάστηκε σε %s."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
+msgid "The group %s has no vhost."
+msgstr "Η ομάδα %s δεν έχει vhost."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
 msgid "The group %s is not open to anyone joining."
 msgstr "Η ομάδα %s δεν είναι ανοιχτή για είσοδο σε όλους."
 
@@ -8834,6 +8874,11 @@ msgstr "Η λίστα εξαιρέσεων session είναι άδεια."
 #: ../modules/nickserv/ns_recover.cpp
 msgid "The user with your nick has been removed. Use this command again to release services's hold on your nick."
 msgstr "Ο χρήστης με το nick σας αφαιρέθηκε. Χρησιμοποιήστε ξανά αυτή την εντολή για να απελευθερώσουν τα services το nick σας."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The vhost of %s has been cleared."
+msgstr "Το vhost του %s διαγράφηκε."
 
 #: ../modules/botserv/bs_botlist.cpp
 msgid "There are no bots available at this time. Ask a Services Operator to create one!"
@@ -9610,6 +9655,14 @@ msgstr "Τιμή"
 msgid "Value of %s:%s changed to %s"
 msgstr "Το value του %s:%s άλλαξε σε %s"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Vhost"
+msgstr "Vhost"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Vhosts are not available on this network."
+msgstr "Τα vhost δεν είναι διαθέσιμα σε αυτό το δίκτυο."
+
 #: ../modules/operserv/os_oper.cpp
 msgid "View and change Services Operators"
 msgstr "Προβολή και αλλαγή Χειριστών Υπηρεσιών"
@@ -10169,7 +10222,7 @@ msgstr "Πρέπει να επιβεβαιώσετε τον λογαριασμό
 msgid "You must confirm your account before you may request a vhost."
 msgstr "Πρέπει να επιβεβαιώσετε τον λογαριασμό σας πριν ζητήσετε vhost."
 
-#: ../modules/memoserv/ms_send.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_send.cpp
 msgid "You must confirm your account before you may send a memo."
 msgstr "Πρέπει να επιβεβαιώσετε τον λογαριασμό σας πριν στείλετε memo."
 
@@ -10467,6 +10520,11 @@ msgstr "Το vhost σας %s ζητήθηκε."
 #, c-format
 msgid "Your vhost %s has been requested. If the requested vhost is for a valid DNS name you can add a TXT record for %s with the value %s and automatically approve your vhost using %s."
 msgstr "Το vhost σας %s ζητήθηκε. Αν το ζητούμενο vhost είναι έγκυρο όνομα DNS, μπορείτε να προσθέσετε μια εγγραφή TXT για το %s με την τιμή %s και να εγκρίνετε αυτόματα το vhost σας με το %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Your vhost is now %s, from %s. You lose it if you leave the group or lose +v."
+msgstr "Το vhost σας είναι τώρα %s, από το %s. Το χάνετε αν φύγετε από την ομάδα ή χάσετε το +v."
 
 #: ../modules/hostserv/hostserv.cpp ../modules/hostserv/hs_on.cpp
 #, c-format
@@ -11605,9 +11663,6 @@ msgstr "{number}: {topic} -- ορίστηκε από {by} στις {set}"
 #~ " \n"
 #~ "Η εντολή #BADWORDS CLEAR# διαγράφει όλες τις καταχωρήσεις της λίστας\n"
 #~ "των απαγορευμένων λέξεων."
-
-#~ msgid "The IMMED option is not available on this network."
-#~ msgstr "Η #IMMED# επιλογή δεν είναι διαθέσιμη σε αυτό το δίκτυο."
 
 #, c-format
 #~ msgid "There are %d memos on channel %s."

@@ -40,7 +40,7 @@ struct Group final
 	: Serializable
 {
 	Warden::string name;
-	Warden::string description, url, email, channel, joinflags;
+	Warden::string description, url, email, channel, joinflags, vhost;
 	bool open = false, pub = false, acsnolimit = false, regnolimit = false, neverop = false;
 	time_t registered = 0;
 	std::vector<Member> members;
@@ -103,6 +103,7 @@ struct GroupType final
 		data.Store("email", g->email);
 		data.Store("channel", g->channel);
 		data.Store("joinflags", g->joinflags);
+		data.Store("vhost", g->vhost);
 		data.Store("open", g->open);
 		data.Store("public", g->pub);
 		data.Store("acsnolimit", g->acsnolimit);
@@ -141,6 +142,7 @@ struct GroupType final
 		g->email = data.Load("email");
 		g->channel = data.Load("channel");
 		g->joinflags = data.Load("joinflags");
+		g->vhost = data.Load("vhost");
 		g->open = data.Load<bool>("open");
 		g->pub = data.Load<bool>("public");
 		g->acsnolimit = data.Load<bool>("acsnolimit");
@@ -250,9 +252,32 @@ static Group *FindGroup(CommandSource &source, const Warden::string &name)
 // Channels that only let a group's members in (ChanServ SET GROUPONLY).
 static const char *GROUPONLY_EXT = "GROUPONLY";
 
+// Group vhosts are marked with this as their creator, so they can be taken
+// back when the member leaves or loses +v.
+static Warden::string VHostTag(const Warden::string &group)
+{
+	return "GroupServ (" + group + ")";
+}
+
+static void RevokeVHost(const Group *g, NickCore *nc)
+{
+	const auto tag = VHostTag(g->name);
+	for (auto *na : *nc->aliases)
+	{
+		if (na->HasVHost() && na->GetVHostCreator() == tag)
+		{
+			FOREACH_MOD(OnDeleteVHost, (na));
+			na->RemoveVHost();
+		}
+	}
+}
+
 // Removes a dropped group from every channel access list, like Atheme.
 static void Drop(Group *g)
 {
+	for (const auto &m : g->members)
+		RevokeVHost(g, m.nc);
+
 	for (const auto &[_, ci] : *RegisteredChannelList)
 	{
 		for (unsigned i = ci->GetAccessCount(); i > 0; --i)
@@ -496,6 +521,9 @@ protected:
 			source.Reply(_("Group \002%s\002 access for \002%s\002 is unchanged."), g->name.c_str(), nc->display.c_str());
 			return;
 		}
+
+		if (had('v') && !has('v'))
+			RevokeVHost(g, nc);
 
 		if (flags.empty())
 		{
@@ -832,6 +860,8 @@ public:
 			info[_("Email")] = g->email;
 		if (!g->joinflags.empty() && (member || CanSee(source)))
 			info[_("Join flags")] = "+" + g->joinflags;
+		if (!g->vhost.empty() && (member || CanSee(source)))
+			info[_("Vhost")] = g->vhost;
 
 		if (g->open)
 			info.AddOption(_("Open"));
@@ -1086,6 +1116,31 @@ public:
 			else
 				Toggle(source, g, option == "ACSNOLIMIT" ? g->acsnolimit : g->regnolimit, value, option == "ACSNOLIMIT" ? "ACSNOLIMIT" : "REGNOLIMIT");
 		}
+		else if (option == "VHOST")
+		{
+			if (!IsAdmin(source))
+			{
+				source.Reply(ACCESS_DENIED);
+				return;
+			}
+			if (value.empty() || value.equals_ci("OFF"))
+			{
+				g->vhost.clear();
+				Log(LOG_ADMIN, source, this) << "to clear the vhost of " << g->name;
+				source.Reply(_("The vhost of \002%s\002 has been cleared."), g->name.c_str());
+				return;
+			}
+			const auto sample = Warden::Template(value, { { "account", "account" }, { "nick", "nick" } });
+			if (!IRCD->IsHostValid(sample))
+			{
+				source.Reply(_("\002%s\002 is not a valid vhost."), value.c_str());
+				return;
+			}
+			g->vhost = value;
+			Log(LOG_ADMIN, source, this) << "to set the vhost of " << g->name << " to " << value;
+			source.Reply(_("Members of \002%s\002 with +v can now take the vhost \002%s\002 with \002%s\002."), g->name.c_str(), value.c_str(),
+				source.service->GetQueryCommand("groupserv/vhost", g->name).c_str());
+		}
 		else if (option == "GROUPNAME")
 		{
 			if (!founder)
@@ -1124,6 +1179,12 @@ public:
 					ci->Extend<Warden::string>(GROUPONLY_EXT, value);
 			}
 
+			// Vhosts taken from the group keep following it.
+			const auto oldtag = VHostTag(oldname), newtag = VHostTag(value);
+			for (const auto &[_, na] : *NickAliasList)
+				if (na->HasVHost() && na->GetVHostCreator() == oldtag)
+					na->SetVHost(na->GetVHostIdent(), na->GetVHostHost(), newtag, na->GetVHostCreated());
+
 			Groups.erase(oldname);
 			g->name = value;
 			Groups[value] = g;
@@ -1149,8 +1210,72 @@ public:
 			"  GROUPNAME \037!newname\037 - rename the group\n"
 			"These are for services operators:\n"
 			"  ACSNOLIMIT {ON|OFF} - no limit on the access list size\n"
-			"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit"
+			"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit\n"
+			"  VHOST [\037vhost\037|OFF] - a vhost members with +v can take; it may use {account} and {nick}"
 		));
+		return true;
+	}
+};
+
+class CommandGSVHost final
+	: public Command
+{
+public:
+	CommandGSVHost(Module *creator) : Command(creator, "groupserv/vhost", 1, 1)
+	{
+		this->SetDesc(_("Take a group's vhost"));
+		this->SetSyntax(_("\037!group\037"));
+	}
+
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
+	{
+		auto *g = FindGroup(source, params[0]);
+		if (!g)
+			return;
+		auto *nc = source.GetAccount();
+		if (!g->Has(nc, 'v') || g->Has(nc, 'b'))
+		{
+			source.Reply(ACCESS_DENIED);
+			return;
+		}
+		if (g->vhost.empty())
+		{
+			source.Reply(_("The group \002%s\002 has no vhost."), g->name.c_str());
+			return;
+		}
+		if (!IRCD->CanSetVHost)
+		{
+			source.Reply(_("Vhosts are not available on this network."));
+			return;
+		}
+		if (Warden::ReadOnly)
+		{
+			source.Reply(READ_ONLY_MODE);
+			return;
+		}
+
+		// The nick in use if it is one of the account's, otherwise its display nick.
+		auto *na = source.GetUser() ? NickAlias::Find(source.GetNick()) : nullptr;
+		if (!na || na->nc != nc)
+			na = nc->na;
+		const auto host = Warden::Template(g->vhost, { { "account", nc->display }, { "nick", na->nick } });
+		if (!IRCD->IsHostValid(host))
+		{
+			source.Reply(_("\002%s\002 is not a valid vhost."), host.c_str());
+			return;
+		}
+
+		na->SetVHost("", host, VHostTag(g->name));
+		FOREACH_MOD(OnSetVHost, (na));
+		Log(LOG_COMMAND, source, this) << "to take the vhost " << host << " from " << g->name;
+		source.Reply(_("Your vhost is now \002%s\002, from \002%s\002. You lose it if you leave the group or lose +v."), host.c_str(), g->name.c_str());
+	}
+
+	bool OnHelp(CommandSource &source, const Warden::string &) override
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply(_("Sets your vhost to the group's vhost (needs +v). The vhost is set by services operators with \002SET VHOST\002. You lose it again if you leave the group, lose +v, or the group is dropped."));
 		return true;
 	}
 };
@@ -1241,6 +1366,7 @@ class GroupServCore final
 	CommandGSList commandgslist;
 	CommandGSListChans commandgslistchans;
 	CommandGSSet commandgsset;
+	CommandGSVHost commandgsvhost;
 	CommandCSSetGroupOnly commandcssetgrouponly;
 	SerializableExtensibleItem<Warden::string> grouponly;
 	Reference<BotInfo> GroupServ;
@@ -1252,7 +1378,7 @@ public:
 		, commandgsflags(this), commandgsfflags(this), commandgsjoin(this)
 		, commandgsinvite(this), commandgsinfo(this), commandgslist(this)
 		, commandgslistchans(this), commandgsset(this)
-		, commandcssetgrouponly(this), grouponly(this, GROUPONLY_EXT)
+		, commandgsvhost(this), commandcssetgrouponly(this), grouponly(this, GROUPONLY_EXT)
 	{
 	}
 
@@ -1320,6 +1446,70 @@ public:
 				Drop(g);
 			}
 		}
+	}
+
+	// MemoServ SEND !group: a copy to every member with +m, as in Atheme.
+	EventReturn OnPreCommand(CommandSource &source, Command *command, std::vector<Warden::string> &params) override
+	{
+		if (command->name != "memoserv/send" || params.size() < 2 || params[0].empty() || params[0][0] != '!')
+			return EVENT_CONTINUE;
+
+		auto *g = FindGroup(source, params[0]);
+		auto *nc = source.GetAccount();
+		auto *u = source.GetUser();
+		if (!g)
+			return EVENT_STOP;
+		if (!nc || !u)
+		{
+			source.Reply(NICK_IDENTIFY_REQUIRED);
+			return EVENT_STOP;
+		}
+		if (Warden::ReadOnly)
+		{
+			source.Reply(READ_ONLY_MODE);
+			return EVENT_STOP;
+		}
+		if (nc->HasExt("UNCONFIRMED"))
+		{
+			source.Reply(_("You must confirm your account before you may send a memo."));
+			return EVENT_STOP;
+		}
+
+		// The send delay applies once to the whole group.
+		const auto delay = Config->GetModule("memoserv").Get<time_t>("senddelay");
+		if (delay > 0 && !u->HasPriv("memoserv/no-limit") && u->lastmemosend + delay > Warden::CurTime)
+		{
+			source.Reply(_("Please wait %s before using the %s command again."), Warden::Duration(u->lastmemosend + delay - Warden::CurTime, nc).c_str(), source.command.nobreak().c_str());
+			return EVENT_STOP;
+		}
+		if (!MemoServ::service)
+			return EVENT_CONTINUE;
+
+		const auto text = "[" + g->name + "] " + params[1];
+		const auto last = u->lastmemosend;
+		unsigned sent = 0, failed = 0;
+		for (const auto &m : g->members)
+		{
+			if (m.nc == nc || m.flags.find('m') == Warden::string::npos || m.flags.find('b') != Warden::string::npos)
+				continue;
+
+			// Each memo goes through the normal checks (full box, ignore list).
+			u->lastmemosend = last;
+			if (MemoServ::service->Send(source.GetNick(), m.nc->display, text) == MemoServ::MEMO_SUCCESS)
+				++sent;
+			else
+				++failed;
+		}
+		u->lastmemosend = Warden::CurTime;
+
+		Log(LOG_COMMAND, source, command) << "to send a memo to " << sent << " member(s) of " << g->name;
+		if (!sent && !failed)
+			source.Reply(_("Nobody else in \002%s\002 receives the group's memos."), g->name.c_str());
+		else if (failed)
+			source.Reply(_("Memo sent to \002%u\002 member(s) of \002%s\002 (%u could not receive it)."), sent, g->name.c_str(), failed);
+		else
+			source.Reply(_("Memo sent to \002%u\002 member(s) of \002%s\002."), sent, g->name.c_str());
+		return EVENT_STOP;
 	}
 
 	EventReturn OnChanAccessMatches(const ChanAccess *access, const User *u, const NickCore *acc) override

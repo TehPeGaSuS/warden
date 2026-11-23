@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:06+0100\n"
+"POT-Creation-Date: 2026-11-23 17:13+0100\n"
 "PO-Revision-Date: 2023-04-21 22:04+0200\n"
 "Last-Translator: henk\n"
 "Language-Team: German\n"
@@ -387,6 +387,11 @@ msgstr "%s ist keine gültige Zeitangabe, z. B. 30d oder 2w."
 #, c-format
 msgid "%s is not a valid time. Give a Unix timestamp or a date such as 2019-05-01 (UTC), not in the future."
 msgstr "%s ist keine gültige Zeit. Gib einen Unix-Zeitstempel oder ein Datum wie 2019-05-01 (UTC) an, das nicht in der Zukunft liegt."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s is not a valid vhost."
+msgstr "%s ist kein gültiger vHost."
 
 #: ../include/language.h
 #, c-format
@@ -3220,7 +3225,8 @@ msgid ""
 "  GROUPNAME !newname - rename the group\n"
 "These are for services operators:\n"
 "  ACSNOLIMIT {ON|OFF} - no limit on the access list size\n"
-"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit"
+"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit\n"
+"  VHOST [vhost|OFF] - a vhost members with +v can take; it may use {account} and {nick}"
 msgstr ""
 "Ändert die Einstellungen einer Gruppe. Diese brauchen +s:\n"
 "  DESCRIPTION, URL, EMAIL, CHANNEL [Wert] - setzen oder löschen\n"
@@ -3232,7 +3238,8 @@ msgstr ""
 "  GROUPNAME !newname - die Gruppe umbenennen\n"
 "Diese sind für Services-Operatoren:\n"
 "  ACSNOLIMIT {ON|OFF} - keine Begrenzung der Access-Listen-Größe\n"
-"  REGNOLIMIT {ON|OFF} - nicht auf das Limit ihrer Gründer anrechnen"
+"  REGNOLIMIT {ON|OFF} - nicht auf das Limit ihrer Gründer anrechnen\n"
+"  VHOST [vHost|OFF] - ein vHost, den Mitglieder mit +v übernehmen können; darf {account} und {nick} enthalten"
 
 #: ../modules/botserv/bs_bot.cpp
 msgid ""
@@ -5945,6 +5952,11 @@ msgstr "Maximale Benutzer: %zu (%s)"
 msgid "Members"
 msgstr "Mitglieder"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Members of %s with +v can now take the vhost %s with %s."
+msgstr "Mitglieder von %s mit +v können jetzt den vHost %s mit %s übernehmen."
+
 #: ../modules/memoserv/ms_read.cpp
 #, c-format
 msgid "Memo %d from %s (%s)."
@@ -5984,6 +5996,16 @@ msgstr "Memo-Limit von %s wurde auf 0 gesetzt, kein Memo-Empfang für ihn mehr
 #, c-format
 msgid "Memo sent to %s."
 msgstr "Memo wurde an %s versandt."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Memo sent to %u member(s) of %s (%u could not receive it)."
+msgstr "Memo an %u Mitglied(er) von %s versandt (%u konnten es nicht empfangen)."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Memo sent to %u member(s) of %s."
+msgstr "Memo an %u Mitglied(er) von %s versandt."
 
 #: ../modules/memoserv/ms_list.cpp
 #, c-format
@@ -6487,6 +6509,11 @@ msgstr "No-Bot-Modus ist jetzt aus im Channel %s."
 msgid "No-bot mode is now on on channel %s."
 msgstr "No-Bot-Modus ist jetzt an im Channel %s."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Nobody else in %s receives the group's memos."
+msgstr "Niemand sonst in %s empfängt die Memos der Gruppe."
+
 #: ../modules/operserv/os_mode.cpp
 #, c-format
 msgid "Non-status modes cleared on %s."
@@ -6763,7 +6790,7 @@ msgstr "Bitte warte %s, bevor Du einen neuen vHost anforderst."
 msgid "Please wait %s before taking a new vhost."
 msgstr "Bitte warte %s, bevor Du einen neuen vHost übernimmst."
 
-#: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 #, c-format
 msgid "Please wait %s before using the %s command again."
 msgstr "Bitte warte %s, bevor Du den Befehl %s erneut benutzt."
@@ -8013,6 +8040,10 @@ msgstr "Legt fest, ob Du automatisch eingeloggt werden sollst, wenn Du Dich mit 
 msgid "Sets whether you will be given your channel status modes automatically. Set to ON to allow %s to set status modes on you automatically when entering channels. Note that depending on channel settings some modes may not get set automatically."
 msgstr "Legt fest, ob Du Deine Channel-Status-Modi automatisch erhältst. Auf ON setzen, damit %s automatisch Status-Modi für Dich setzt, wenn Du Channels betrittst. Beachte, dass je nach Channel-Einstellungen manche Modi eventuell nicht automatisch gesetzt werden."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Sets your vhost to the group's vhost (needs +v). The vhost is set by services operators with SET VHOST. You lose it again if you leave the group, lose +v, or the group is dropped."
+msgstr "Setzt deinen vHost auf den vHost der Gruppe (braucht +v). Der vHost wird von Services-Operatoren mit SET VHOST gesetzt. Du verlierst ihn wieder, wenn du die Gruppe verlässt, +v verlierst oder die Gruppe gelöscht wird."
+
 #: ../modules/chanserv/cs_access.cpp
 #, c-format
 msgid "Setting %s not known. Type %sLEVELS for a list of valid settings."
@@ -8335,6 +8366,10 @@ msgstr ""
 msgid "TAKE {vhost | entry-num}"
 msgstr "TAKE {vHost | Eintrag-Nr}"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Take a group's vhost"
+msgstr "Den vHost einer Gruppe übernehmen"
+
 #: ../modules/chanserv/cs_seen.cpp
 msgid "Tell you about the last time a user was seen"
 msgstr "Zeigt Dir, wann ein Benutzer zuletzt gesehen wurde"
@@ -8638,6 +8673,11 @@ msgstr "Die Gruppe %s wurde in %s umbenannt."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
+msgid "The group %s has no vhost."
+msgstr "Die Gruppe %s hat keinen vHost."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
 msgid "The group %s is not open to anyone joining."
 msgstr "Die Gruppe %s ist nicht für jeden zum Beitritt offen."
 
@@ -8832,6 +8872,11 @@ msgstr "Die Liste der Verbindungsausnahmen ist leer."
 #: ../modules/nickserv/ns_recover.cpp
 msgid "The user with your nick has been removed. Use this command again to release services's hold on your nick."
 msgstr "Der Benutzer mit Deinem Nick wurde entfernt. Verwende diesen Befehl erneut, um die Sperre der Services auf Deinen Nick aufzuheben."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The vhost of %s has been cleared."
+msgstr "Der vHost von %s wurde gelöscht."
 
 #: ../modules/botserv/bs_botlist.cpp
 msgid "There are no bots available at this time. Ask a Services Operator to create one!"
@@ -9608,6 +9653,14 @@ msgstr "Wert"
 msgid "Value of %s:%s changed to %s"
 msgstr "Wert von %s:%s geändert auf %s"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Vhost"
+msgstr "vHost"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Vhosts are not available on this network."
+msgstr "vHosts sind in diesem Netzwerk nicht verfügbar."
+
 #: ../modules/operserv/os_oper.cpp
 msgid "View and change Services Operators"
 msgstr "\"Service Operators\" ansehen und ändern."
@@ -10169,7 +10222,7 @@ msgstr "Du musst Deinen Account bestätigen, bevor Du die Liste angebotener Host
 msgid "You must confirm your account before you may request a vhost."
 msgstr "Du musst Deinen Account bestätigen, bevor Du einen vHost anfordern darfst."
 
-#: ../modules/memoserv/ms_send.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_send.cpp
 msgid "You must confirm your account before you may send a memo."
 msgstr "Du musst Deinen Account bestätigen, bevor Du ein Memo senden darfst."
 
@@ -10467,6 +10520,11 @@ msgstr "Dein vHost %s wurde angefordert."
 #, c-format
 msgid "Your vhost %s has been requested. If the requested vhost is for a valid DNS name you can add a TXT record for %s with the value %s and automatically approve your vhost using %s."
 msgstr "Dein vHost %s wurde angefordert. Wenn der angeforderte vHost ein gültiger DNS-Name ist, kannst Du einen TXT-Eintrag für %s mit dem Wert %s hinzufügen und Deinen vHost mit %s automatisch genehmigen."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Your vhost is now %s, from %s. You lose it if you leave the group or lose +v."
+msgstr "Dein vHost ist jetzt %s, von %s. Du verlierst ihn, wenn du die Gruppe verlässt oder +v verlierst."
 
 #: ../modules/hostserv/hostserv.cpp ../modules/hostserv/hs_on.cpp
 #, c-format
@@ -11718,9 +11776,6 @@ msgstr "{number}: {topic} -- gesetzt von {by} am {set}"
 #~ "Zugriffsliste des Channels einen Level grösser 5 \n"
 #~ "(oder INVITE) hat."
 
-#~ msgid "The IMMED option is not available on this network."
-#~ msgstr "Die IMMED Option ist in diesem Netzwerk nicht verfügbar."
-
 #, c-format
 #~ msgid "There are %d memos on channel %s."
 #~ msgstr "Es gibt %d Benachrichtigungen für den Channel %s."
@@ -11869,10 +11924,6 @@ msgstr "{number}: {topic} -- gesetzt von {by} am {set}"
 #, c-format
 #~ msgid "VHost for group %s set to %s@%s."
 #~ msgstr "Der vHost für die Gruppe %s wurde gesetzt auf %s@%s."
-
-#, fuzzy
-#~ msgid "Vhost"
-#~ msgstr "vHost"
 
 #, c-format
 #~ msgid "You cannot %s on this network."

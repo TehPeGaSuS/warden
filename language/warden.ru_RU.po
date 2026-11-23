@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 17:06+0100\n"
+"POT-Creation-Date: 2026-11-23 17:13+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -386,6 +386,11 @@ msgstr "%s не является допустимым временем, нап
 #, c-format
 msgid "%s is not a valid time. Give a Unix timestamp or a date such as 2019-05-01 (UTC), not in the future."
 msgstr "%s не является допустимым временем. Укажите Unix-время или дату, например 2019-05-01 (UTC), не в будущем."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "%s is not a valid vhost."
+msgstr "%s не является допустимым виртуальным хостом."
 
 #: ../include/language.h
 #, c-format
@@ -3205,7 +3210,8 @@ msgid ""
 "  GROUPNAME !newname - rename the group\n"
 "These are for services operators:\n"
 "  ACSNOLIMIT {ON|OFF} - no limit on the access list size\n"
-"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit"
+"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit\n"
+"  VHOST [vhost|OFF] - a vhost members with +v can take; it may use {account} and {nick}"
 msgstr ""
 "Изменяет настройки группы. Требуют +s:\n"
 "  DESCRIPTION, URL, EMAIL, CHANNEL [значение] - установить или очистить их\n"
@@ -3217,7 +3223,8 @@ msgstr ""
 "  GROUPNAME !newname - переименовать группу\n"
 "Для операторов сервисов:\n"
 "  ACSNOLIMIT {ON|OFF} - без ограничения размера списка доступа\n"
-"  REGNOLIMIT {ON|OFF} - не учитывать в лимите групп её основателей"
+"  REGNOLIMIT {ON|OFF} - не учитывать в лимите групп её основателей\n"
+"  VHOST [виртуальный хост|OFF] - виртуальный хост, который могут взять участники с +v; может содержать {account} и {nick}"
 
 #: ../modules/botserv/bs_bot.cpp
 msgid ""
@@ -5891,6 +5898,11 @@ msgstr "Максимум пользователей: %zu (%s)"
 msgid "Members"
 msgstr "Участники"
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Members of %s with +v can now take the vhost %s with %s."
+msgstr "Участники %s с +v теперь могут взять виртуальный хост %s командой %s."
+
 #: ../modules/memoserv/ms_read.cpp
 #, c-format
 msgid "Memo %d from %s (%s)."
@@ -5930,6 +5942,16 @@ msgstr "Лимит записок для %s установлен в 0."
 #, c-format
 msgid "Memo sent to %s."
 msgstr "Записка отправлена %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Memo sent to %u member(s) of %s (%u could not receive it)."
+msgstr "Записка отправлена %u участнику(ам) %s (%u не смогли её получить)."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Memo sent to %u member(s) of %s."
+msgstr "Записка отправлена %u участнику(ам) %s."
 
 #: ../modules/memoserv/ms_list.cpp
 #, c-format
@@ -6431,6 +6453,11 @@ msgstr "Режим «без бота» теперь выключен на кан
 msgid "No-bot mode is now on on channel %s."
 msgstr "Режим «без бота» теперь включен на канале %s."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Nobody else in %s receives the group's memos."
+msgstr "Больше никто в %s не получает записки группы."
+
 #: ../modules/operserv/os_mode.cpp
 #, c-format
 msgid "Non-status modes cleared on %s."
@@ -6707,7 +6734,7 @@ msgstr "Пожалуйста, подождите %s перед запросом 
 msgid "Please wait %s before taking a new vhost."
 msgstr "Пожалуйста, подождите %s перед тем, как взять новый виртуальный хост."
 
-#: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 #, c-format
 msgid "Please wait %s before using the %s command again."
 msgstr "Пожалуйста, подождите %s перед повторным использованием команды %s."
@@ -7934,6 +7961,10 @@ msgstr "Устанавливает, должны ли вы автоматиче�
 msgid "Sets whether you will be given your channel status modes automatically. Set to ON to allow %s to set status modes on you automatically when entering channels. Note that depending on channel settings some modes may not get set automatically."
 msgstr "Устанавливает, будут ли вам автоматически выдаваться ваши статусные режимы канала. Установите в ON, чтобы разрешить %s автоматически устанавливать статусные режимы для вас при входе на каналы. Обратите внимание, что в зависимости от настроек канала некоторые режимы могут не устанавливаться автоматически."
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Sets your vhost to the group's vhost (needs +v). The vhost is set by services operators with SET VHOST. You lose it again if you leave the group, lose +v, or the group is dropped."
+msgstr "Устанавливает ваш виртуальный хост равным виртуальному хосту группы (требуется +v). Виртуальный хост задаётся операторами сервисов командой SET VHOST. Вы снова теряете его, если покидаете группу, теряете +v или группа удаляется."
+
 #: ../modules/chanserv/cs_access.cpp
 #, c-format
 msgid "Setting %s not known. Type %sLEVELS for a list of valid settings."
@@ -8250,6 +8281,10 @@ msgstr ""
 msgid "TAKE {vhost | entry-num}"
 msgstr "TAKE {виртуальный_хост | номер_записи}"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Take a group's vhost"
+msgstr "Взять виртуальный хост группы"
+
 #: ../modules/chanserv/cs_seen.cpp
 msgid "Tell you about the last time a user was seen"
 msgstr "Сообщить вам о последнем появлении пользователя"
@@ -8554,6 +8589,11 @@ msgstr "Группа %s переименована в %s."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
+msgid "The group %s has no vhost."
+msgstr "У группы %s нет виртуального хоста."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
 msgid "The group %s is not open to anyone joining."
 msgstr "Группа %s закрыта для свободного вступления."
 
@@ -8750,6 +8790,11 @@ msgstr "Список исключений сессий пуст."
 #: ../modules/nickserv/ns_recover.cpp
 msgid "The user with your nick has been removed. Use this command again to release services's hold on your nick."
 msgstr "Пользователь с вашим ником был удален. Используйте эту команду снова, чтобы снять удержание сервисов на вашем нике."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The vhost of %s has been cleared."
+msgstr "Виртуальный хост %s очищен."
 
 #: ../modules/botserv/bs_botlist.cpp
 msgid "There are no bots available at this time. Ask a Services Operator to create one!"
@@ -9527,6 +9572,14 @@ msgstr "Значение"
 msgid "Value of %s:%s changed to %s"
 msgstr "Значение %s:%s изменено на %s"
 
+#: ../modules/groupserv/groupserv.cpp
+msgid "Vhost"
+msgstr "Виртуальный хост"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Vhosts are not available on this network."
+msgstr "Виртуальные хосты недоступны в этой сети."
+
 #: ../modules/operserv/os_oper.cpp
 msgid "View and change Services Operators"
 msgstr "Просмотреть и изменить операторов сервисов"
@@ -10089,7 +10142,7 @@ msgstr "Вы должны подтвердить свой аккаунт, пре
 msgid "You must confirm your account before you may request a vhost."
 msgstr "Вы должны подтвердить свой аккаунт, прежде чем сможете запросить виртуальный хост."
 
-#: ../modules/memoserv/ms_send.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_send.cpp
 msgid "You must confirm your account before you may send a memo."
 msgstr "Вы должны подтвердить свой аккаунт, прежде чем сможете отправить записку."
 
@@ -10387,6 +10440,11 @@ msgstr "Ваш виртуальный хост %s был запрошен."
 #, c-format
 msgid "Your vhost %s has been requested. If the requested vhost is for a valid DNS name you can add a TXT record for %s with the value %s and automatically approve your vhost using %s."
 msgstr "Ваш виртуальный хост %s был запрошен. Если запрошенный виртуальный хост является допустимым DNS-именем, вы можете добавить TXT-запись для %s со значением %s и автоматически одобрить свой виртуальный хост с помощью %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Your vhost is now %s, from %s. You lose it if you leave the group or lose +v."
+msgstr "Ваш виртуальный хост теперь %s, от %s. Вы теряете его, если покидаете группу или теряете +v."
 
 #: ../modules/hostserv/hostserv.cpp ../modules/hostserv/hs_on.cpp
 #, c-format
