@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:09+0100\n"
+"POT-Creation-Date: 2026-11-23 14:39+0100\n"
 "PO-Revision-Date: 2014-02-24 20:45+0100\n"
 "Last-Translator: Isaac Fontal <i_fontal@hotmail.com>\n"
 "Language-Team: Spanish\n"
@@ -696,7 +696,7 @@ msgstr "canal ADD {nick | máscara} [razón]"
 msgid "channel APPEND topic"
 msgstr "canal APPEND topic"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp
 msgid "channel CLEAR"
 msgstr "canal CLEAR"
 
@@ -732,7 +732,7 @@ msgstr "canal DEL {palabra | num-entrada | lista}"
 msgid "channel ENFORCE"
 msgstr "canal ENFORCE"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_entrymsg.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_topichistory.cpp
 msgid "channel LIST"
 msgstr "canal LIST"
 
@@ -767,6 +767,10 @@ msgstr "canal PREPEND topic"
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel RESET"
 msgstr "canal RESET"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "channel SET entry-num"
+msgstr "canal SET núm-entrada"
 
 #: ../modules/chanserv/cs_mode.cpp
 msgid "channel SET modes"
@@ -861,7 +865,7 @@ msgstr "canal {DIS | DISABLE} tipo"
 msgid "channel {ON | LEVEL | OFF}"
 msgstr "canal {ON | LEVEL | OFF}"
 
-#: ../modules/botserv/bs_kick.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_topic.cpp ../modules/chanstats.cpp
+#: ../modules/botserv/bs_kick.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_topic.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanstats.cpp
 msgid "channel {ON | OFF}"
 msgstr "canal {ON | OFF}"
 
@@ -2893,6 +2897,10 @@ msgstr "El bot ya no kickeará por flood."
 msgid "Bot won't kick for repeats anymore."
 msgstr "El bot ya no kickeará por repetir."
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "By"
+msgstr "Por"
+
 #: ../src/access.cpp
 #, c-format
 msgid "By default, the %s command is limited to:"
@@ -4241,6 +4249,10 @@ msgstr "Fin de la lista."
 msgid "End of news list."
 msgstr "Fin de la lista de noticias."
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "End of topic history list."
+msgstr "Fin de la lista del historial de topics."
+
 #: ../modules/operserv/os_list.cpp
 #, c-format
 msgid "End of users list - %zu/%zu users shown (%zu-%zu)."
@@ -4562,6 +4574,11 @@ msgstr "Esconde algunas partes de la información del nick"
 msgid "Hide channel from the LIST command"
 msgstr "Esconde el canal del comando LIST"
 
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "History entry %zu is already the topic of %s."
+msgstr "La entrada %zu del historial ya es el topic de %s."
+
 #: ../modules/operserv/os_session.cpp
 msgid "Host"
 msgstr "Host"
@@ -4692,6 +4709,10 @@ msgstr "Invitarte a ti u opcionalmente al nick especificado a un canal"
 #: ../modules/botserv/bs_kick.cpp
 msgid "Italics kicker"
 msgstr "Kick por cursivas"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Keep a history of earlier topics"
+msgstr "Guarda un historial de los topics anteriores"
 
 #: ../modules/chanserv/cs_set.cpp ../modules/nickserv/ns_set_keepmodes.cpp
 msgid "Keep modes"
@@ -5234,6 +5255,10 @@ msgstr ""
 "El comando %sSET te permite establecer modos a través de los servicios. Se pueden usar los comodines * y ? como parámetros para los modos de lista y de status.\n"
 "\n"
 "El comando %sCLEAR es una forma fácil de limpiar modos en un canal. que puede ser cualquier nombre de modo. Por ejemplo bans, excepts, inviteoverrides, ops, halfops y voices. Si no se especifica que, se eliminarán todos los modos básicos."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Maintain a channel's topic history"
+msgstr "Gestiona el historial de topics de un canal"
 
 #: ../modules/botserv/bs_bot.cpp
 msgid "Maintain network bot list"
@@ -5930,7 +5955,7 @@ msgstr "No se cambió nada:"
 msgid "Now"
 msgstr "Ahora"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr "Número"
 
@@ -7016,6 +7041,10 @@ msgstr "Límites de sesión no disponibles."
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Sesiones: %zu entradas, %zu buckets, la cadena más larga es %zu"
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Set"
+msgstr "Fijado"
+
 #: ../modules/nickserv/ns_set.cpp
 msgid "Set SET-options on another nickname"
 msgstr "Establece las opciones SET de otro nick"
@@ -7356,6 +7385,21 @@ msgstr "Muestra el estado de los servicios y la red"
 #, c-format
 msgid "Showed %zu/%zu matches for %s."
 msgstr "Mostradas %zu/%zu coincidencias para %s."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid ""
+"Shows and restores the earlier topics of a channel that has TOPICHISTORY turned on (see %s). Up to %u earlier topics are kept.\n"
+"\n"
+"LIST shows them, numbered from the most recent. SET makes one of them the topic again, even if TOPICLOCK is on. CLEAR forgets them all.\n"
+"\n"
+"This needs the TOPIC privilege on the channel."
+msgstr ""
+"Muestra y restaura los topics anteriores de un canal que tenga TOPICHISTORY activado (ver %s). Se guardan hasta %u topics anteriores.\n"
+"\n"
+"LIST los muestra, numerados desde el más reciente. SET vuelve a poner uno de ellos como topic, incluso si TOPICLOCK está activado. CLEAR los borra todos.\n"
+"\n"
+"Requiere el privilegio TOPIC en el canal."
 
 #: ../modules/botserv/bs_info.cpp
 msgid ""
@@ -8345,9 +8389,48 @@ msgstr "Demasiados resultados para %s."
 msgid "Top %i of %s"
 msgstr "Top %i de %s"
 
-#: ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/operserv/os_list.cpp
 msgid "Topic"
 msgstr "Topic"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Topic history"
+msgstr "Historial de topics"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history entry %s not found for %s."
+msgstr "No se encontró la entrada %s del historial de topics para %s."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s has been cleared."
+msgstr "Se ha borrado el historial de topics de %s."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s is now off."
+msgstr "El historial de topics de %s está ahora desactivado."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s is now on."
+msgstr "El historial de topics de %s está ahora activado."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history is not enabled for %s."
+msgstr "El historial de topics no está activado para %s."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history list for %s is empty."
+msgstr "La lista del historial de topics de %s está vacía."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history list for %s:"
+msgstr "Lista del historial de topics de %s:"
 
 #: ../modules/chanserv/cs_topic.cpp
 msgid "Topic lock"
@@ -8362,6 +8445,11 @@ msgstr "Bloqueo de topic para %s Desactivado."
 #, c-format
 msgid "Topic lock option for %s is now on."
 msgstr "Bloqueo de topic para %s Activado."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic of %s set to history entry %zu."
+msgstr "Topic de %s fijado a la entrada %zu del historial."
 
 #: ../modules/chanserv/cs_topic.cpp
 msgid "Topic retention"
@@ -8420,6 +8508,11 @@ msgstr "Pone las estadísticas de canal para este usuario a ON u OFF."
 #: ../modules/chanstats.cpp
 msgid "Turns chanstats statistics ON or OFF."
 msgstr "Pone las estadísticas de canal a ON u OFF."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Turns the channel's topic history on or off. While it is on, the last %u topics are kept and can be listed and restored with %s. Turning it off forgets them."
+msgstr "Activa o desactiva el historial de topics del canal. Mientras esté activado, se guardan los últimos %u topics, que pueden listarse y restaurarse con %s. Desactivarlo los borra."
 
 #: ../modules/botserv/bs_badwords.cpp ../modules/operserv/os_forbid.cpp
 msgid "Type"
@@ -9884,6 +9977,10 @@ msgstr "{number}: {message} -- creado por {creator} el {created}"
 msgid "{number}: {text} -- created by {creator} on {created}"
 msgstr "{number}: {text} -- creado por {creator} el {created}"
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "{number}: {topic} -- set by {by} at {set}"
+msgstr "{number}: {topic} -- fijado por {by} el {set}"
+
 #, c-format
 #~ msgid "%s deleted from %s's access list."
 #~ msgstr "%s borrado de la lista de acceso de %s."
@@ -10098,9 +10195,6 @@ msgstr "{number}: {text} -- creado por {creator} el {created}"
 
 #~ msgid "Associate an E-mail address with the channel"
 #~ msgstr "Asociar un e-mail con el canal"
-
-#~ msgid "By"
-#~ msgstr "Por"
 
 #~ msgid "Controls what messages will be sent to users when they join the channel."
 #~ msgstr "Controla que mensajes son enviados a los usuarios cuando entran al canal."

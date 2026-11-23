@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 13:57+0100\n"
+"POT-Creation-Date: 2026-11-23 14:39+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -698,7 +698,8 @@ msgstr ""
 
 #: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp
 #: ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp
-#: ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_xop.cpp
 msgid "channel CLEAR"
 msgstr ""
 
@@ -735,6 +736,7 @@ msgid "channel ENFORCE"
 msgstr ""
 
 #: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_entrymsg.cpp
+#: ../modules/chanserv/cs_topichistory.cpp
 msgid "channel LIST"
 msgstr ""
 
@@ -768,6 +770,10 @@ msgstr ""
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel RESET"
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "channel SET entry-num"
 msgstr ""
 
 #: ../modules/chanserv/cs_mode.cpp
@@ -866,7 +872,7 @@ msgstr ""
 
 #: ../modules/botserv/bs_kick.cpp ../modules/chanserv/cs_list.cpp
 #: ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_topic.cpp
-#: ../modules/chanstats.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/chanstats.cpp
 msgid "channel {ON | OFF}"
 msgstr ""
 
@@ -2780,6 +2786,10 @@ msgstr ""
 msgid "Bot won't kick for repeats anymore."
 msgstr ""
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "By"
+msgstr ""
+
 #: ../src/access.cpp
 #, c-format
 msgid "By default, the %s command is limited to:"
@@ -4023,6 +4033,10 @@ msgstr ""
 msgid "End of news list."
 msgstr ""
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "End of topic history list."
+msgstr ""
+
 #: ../modules/operserv/os_list.cpp
 #, c-format
 msgid "End of users list - %zu/%zu users shown (%zu-%zu)."
@@ -4342,6 +4356,11 @@ msgstr ""
 msgid "Hide channel from the LIST command"
 msgstr ""
 
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "History entry %zu is already the topic of %s."
+msgstr ""
+
 #: ../modules/operserv/os_session.cpp
 msgid "Host"
 msgstr ""
@@ -4473,6 +4492,10 @@ msgstr ""
 
 #: ../modules/botserv/bs_kick.cpp
 msgid "Italics kicker"
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Keep a history of earlier topics"
 msgstr ""
 
 #: ../modules/chanserv/cs_set.cpp ../modules/nickserv/ns_set_keepmodes.cpp
@@ -4944,6 +4967,10 @@ msgid ""
 "The %sSET command allows you to set modes through services. Wildcards * and ? may be given as parameters for list and status modes.\n"
 "\n"
 "The %sCLEAR command is an easy way to clear modes on a channel. what may be any mode name. Examples include bans, excepts, inviteoverrides, ops, halfops, and voices. If what is not given then all basic modes are removed."
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Maintain a channel's topic history"
 msgstr ""
 
 #: ../modules/botserv/bs_bot.cpp
@@ -5629,12 +5656,13 @@ msgstr ""
 #: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp
 #: ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp
 #: ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp
-#: ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp
-#: ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp
-#: ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp
-#: ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp
-#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp
+#: ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp
+#: ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr ""
 
@@ -6659,6 +6687,10 @@ msgstr ""
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
 msgstr ""
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Set"
+msgstr ""
+
 #: ../modules/nickserv/ns_set.cpp
 msgid "Set SET-options on another nickname"
 msgstr ""
@@ -6943,6 +6975,16 @@ msgstr ""
 #: ../modules/operserv/os_logsearch.cpp
 #, c-format
 msgid "Showed %zu/%zu matches for %s."
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid ""
+"Shows and restores the earlier topics of a channel that has TOPICHISTORY turned on (see %s). Up to %u earlier topics are kept.\n"
+"\n"
+"LIST shows them, numbered from the most recent. SET makes one of them the topic again, even if TOPICLOCK is on. CLEAR forgets them all.\n"
+"\n"
+"This needs the TOPIC privilege on the channel."
 msgstr ""
 
 #: ../modules/botserv/bs_info.cpp
@@ -7810,8 +7852,47 @@ msgstr ""
 msgid "Top %i of %s"
 msgstr ""
 
-#: ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/operserv/os_list.cpp
 msgid "Topic"
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Topic history"
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history entry %s not found for %s."
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s has been cleared."
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s is now off."
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s is now on."
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history is not enabled for %s."
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history list for %s is empty."
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history list for %s:"
 msgstr ""
 
 #: ../modules/chanserv/cs_topic.cpp
@@ -7826,6 +7907,11 @@ msgstr ""
 #: ../modules/chanserv/cs_topic.cpp
 #, c-format
 msgid "Topic lock option for %s is now on."
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic of %s set to history entry %zu."
 msgstr ""
 
 #: ../modules/chanserv/cs_topic.cpp
@@ -7884,6 +7970,11 @@ msgstr ""
 
 #: ../modules/chanstats.cpp
 msgid "Turns chanstats statistics ON or OFF."
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Turns the channel's topic history on or off. While it is on, the last %u topics are kept and can be listed and restored with %s. Turning it off forgets them."
 msgstr ""
 
 #: ../modules/botserv/bs_badwords.cpp ../modules/operserv/os_forbid.cpp
@@ -9323,4 +9414,8 @@ msgstr ""
 
 #: ../modules/operserv/os_news.cpp
 msgid "{number}: {text} -- created by {creator} on {created}"
+msgstr ""
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "{number}: {topic} -- set by {by} at {set}"
 msgstr ""

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:09+0100\n"
+"POT-Creation-Date: 2026-11-23 14:39+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -694,7 +694,7 @@ msgstr "κανάλι ADD {ψευδώνυμο | μάσκα} [λόγος]"
 msgid "channel APPEND topic"
 msgstr "κανάλι APPEND θέμα"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp
 msgid "channel CLEAR"
 msgstr "κανάλι CLEAR"
 
@@ -730,7 +730,7 @@ msgstr "κανάλι DEL {λέξη | αριθμός-εγγραφής | λ
 msgid "channel ENFORCE"
 msgstr "κανάλι ENFORCE"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_entrymsg.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_topichistory.cpp
 msgid "channel LIST"
 msgstr "κανάλι LIST"
 
@@ -765,6 +765,10 @@ msgstr "κανάλι PREPEND θέμα"
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel RESET"
 msgstr "κανάλι RESET"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "channel SET entry-num"
+msgstr "κανάλι SET αρ-καταχώρισης"
 
 #: ../modules/chanserv/cs_mode.cpp
 msgid "channel SET modes"
@@ -859,7 +863,7 @@ msgstr "κανάλι {DIS | DISABLE} τύπος"
 msgid "channel {ON | LEVEL | OFF}"
 msgstr "κανάλι {ON | LEVEL | OFF}"
 
-#: ../modules/botserv/bs_kick.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_topic.cpp ../modules/chanstats.cpp
+#: ../modules/botserv/bs_kick.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_topic.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanstats.cpp
 msgid "channel {ON | OFF}"
 msgstr "SET #channel# XOP {ON | OFF}"
 
@@ -2891,6 +2895,10 @@ msgstr "Το bot δεν θα κάνει πλέον kick για flood."
 msgid "Bot won't kick for repeats anymore."
 msgstr "Το bot δεν θα κάνει πλέον kick για επαναλήψεις."
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "By"
+msgstr "Από"
+
 #: ../src/access.cpp
 #, c-format
 msgid "By default, the %s command is limited to:"
@@ -4239,6 +4247,10 @@ msgstr "Τέλος λίστας."
 msgid "End of news list."
 msgstr "Τέλος λίστας ειδήσεων."
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "End of topic history list."
+msgstr "Τέλος λίστας ιστορικού topic."
+
 #: ../modules/operserv/os_list.cpp
 #, c-format
 msgid "End of users list - %zu/%zu users shown (%zu-%zu)."
@@ -4560,6 +4572,11 @@ msgstr "Αποκρύπτει συγκεκριμένα τμήματα πληρο�
 msgid "Hide channel from the LIST command"
 msgstr "Απόκρυψη του καναλιού από την εντολή LIST"
 
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "History entry %zu is already the topic of %s."
+msgstr "Η καταχώριση ιστορικού %zu είναι ήδη το topic του %s."
+
 #: ../modules/operserv/os_session.cpp
 msgid "Host"
 msgstr "Host"
@@ -4690,6 +4707,10 @@ msgstr "Πρόσκληση εσάς ή ενός προαιρετικού ψευ�
 #: ../modules/botserv/bs_kick.cpp
 msgid "Italics kicker"
 msgstr "Kicker πλαγίων"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Keep a history of earlier topics"
+msgstr "Διατήρηση ιστορικού προηγούμενων topic"
 
 #: ../modules/chanserv/cs_set.cpp ../modules/nickserv/ns_set_keepmodes.cpp
 msgid "Keep modes"
@@ -5232,6 +5253,10 @@ msgstr ""
 "Η εντολή %sSET σας επιτρέπει να ορίσετε modes μέσω των services. Τα wildcards * και ? μπορούν να δοθούν ως παράμετροι για list και status modes.\n"
 "\n"
 "Η εντολή %sCLEAR είναι ένας εύκολος τρόπος να καθαρίσετε modes σε ένα κανάλι. Το τι μπορεί να είναι οποιοδήποτε όνομα mode, π.χ. bans, excepts, inviteoverrides, ops, halfops και voices. Αν δεν δοθεί τι, αφαιρούνται όλα τα βασικά modes."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Maintain a channel's topic history"
+msgstr "Διαχείριση του ιστορικού topic ενός καναλιού"
 
 #: ../modules/botserv/bs_bot.cpp
 msgid "Maintain network bot list"
@@ -5928,7 +5953,7 @@ msgstr "Δεν άλλαξε τίποτα:"
 msgid "Now"
 msgstr "Τώρα"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr "Αριθμός"
 
@@ -7018,6 +7043,10 @@ msgstr "Η Session limiting  εντολή είναι απενεργοποιημ�
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Sessions: %zu καταχωρήσεις, %zu buckets, η μακρύτερη αλυσίδα είναι %zu"
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Set"
+msgstr "Ορίστηκε"
+
 #: ../modules/nickserv/ns_set.cpp
 msgid "Set SET-options on another nickname"
 msgstr "Αλλάζει τις ρυθμίσεις ενός άλλου ψευδονύμου."
@@ -7361,6 +7390,21 @@ msgstr "Εμφανίζει την κατάσταση των services και το
 #, c-format
 msgid "Showed %zu/%zu matches for %s."
 msgstr "Εμφανίστηκαν %zu/%zu αποτελέσματα για %s."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid ""
+"Shows and restores the earlier topics of a channel that has TOPICHISTORY turned on (see %s). Up to %u earlier topics are kept.\n"
+"\n"
+"LIST shows them, numbered from the most recent. SET makes one of them the topic again, even if TOPICLOCK is on. CLEAR forgets them all.\n"
+"\n"
+"This needs the TOPIC privilege on the channel."
+msgstr ""
+"Εμφανίζει και επαναφέρει τα προηγούμενα topic ενός καναλιού που έχει ενεργό το TOPICHISTORY (δείτε %s). Διατηρούνται έως %u προηγούμενα topic.\n"
+"\n"
+"Το LIST τα εμφανίζει, αριθμημένα από το πιο πρόσφατο. Το SET κάνει ένα από αυτά ξανά topic, ακόμη κι αν το TOPICLOCK είναι ενεργό. Το CLEAR τα διαγράφει όλα.\n"
+"\n"
+"Απαιτείται το προνόμιο TOPIC στο κανάλι."
 
 #: ../modules/botserv/bs_info.cpp
 msgid ""
@@ -8350,9 +8394,48 @@ msgstr "Πάρα πολλά αποτελέσματα για %s."
 msgid "Top %i of %s"
 msgstr "Top %i του %s"
 
-#: ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/operserv/os_list.cpp
 msgid "Topic"
 msgstr "Topic"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Topic history"
+msgstr "Ιστορικό topic"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history entry %s not found for %s."
+msgstr "Η καταχώριση ιστορικού topic %s δεν βρέθηκε για το %s."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s has been cleared."
+msgstr "Το ιστορικό topic του %s διαγράφηκε."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s is now off."
+msgstr "Το ιστορικό topic του %s είναι τώρα ανενεργό."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s is now on."
+msgstr "Το ιστορικό topic του %s είναι τώρα ενεργό."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history is not enabled for %s."
+msgstr "Το ιστορικό topic δεν είναι ενεργό για το %s."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history list for %s is empty."
+msgstr "Η λίστα ιστορικού topic του %s είναι κενή."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history list for %s:"
+msgstr "Λίστα ιστορικού topic του %s:"
 
 #: ../modules/chanserv/cs_topic.cpp
 msgid "Topic lock"
@@ -8367,6 +8450,11 @@ msgstr "Topic lock επιλογή για το %s είναι τώρα #off#."
 #, c-format
 msgid "Topic lock option for %s is now on."
 msgstr "Topic lock επιλογή για το %s είναι τώρα #ON#."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic of %s set to history entry %zu."
+msgstr "Το topic του %s ορίστηκε στην καταχώριση ιστορικού %zu."
 
 #: ../modules/chanserv/cs_topic.cpp
 msgid "Topic retention"
@@ -8425,6 +8513,11 @@ msgstr "Ενεργοποιεί (ON) ή απενεργοποιεί (OFF) τα σ�
 #: ../modules/chanstats.cpp
 msgid "Turns chanstats statistics ON or OFF."
 msgstr "Ενεργοποιεί (ON) ή απενεργοποιεί (OFF) τα στατιστικά chanstats."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Turns the channel's topic history on or off. While it is on, the last %u topics are kept and can be listed and restored with %s. Turning it off forgets them."
+msgstr "Ενεργοποιεί ή απενεργοποιεί το ιστορικό topic του καναλιού. Όσο είναι ενεργό, διατηρούνται τα τελευταία %u topic, τα οποία μπορούν να εμφανιστούν και να επαναφερθούν με το %s. Η απενεργοποίησή του τα διαγράφει."
 
 #: ../modules/botserv/bs_badwords.cpp ../modules/operserv/os_forbid.cpp
 msgid "Type"
@@ -9888,6 +9981,10 @@ msgstr "{number}: {message} -- δημιουργήθηκε από {creator} στ�
 #: ../modules/operserv/os_news.cpp
 msgid "{number}: {text} -- created by {creator} on {created}"
 msgstr "{number}: {text} -- δημιουργήθηκε από {creator} στις {created}"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "{number}: {topic} -- set by {by} at {set}"
+msgstr "{number}: {topic} -- ορίστηκε από {by} στις {set}"
 
 #, fuzzy, c-format
 #~ msgid "%s deleted from %s's access list."

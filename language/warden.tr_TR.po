@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 14:09+0100\n"
+"POT-Creation-Date: 2026-11-23 14:39+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -694,7 +694,7 @@ msgstr "kanal ADD {rumuz | maske} [sebep]"
 msgid "channel APPEND topic"
 msgstr "kanal ADD başlık"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp
 msgid "channel CLEAR"
 msgstr "kanal CLEAR"
 
@@ -730,7 +730,7 @@ msgstr "kanal DEL {kelime | girdi-no | liste}"
 msgid "channel ENFORCE"
 msgstr "kanal ENFORCE"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_entrymsg.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_topichistory.cpp
 msgid "channel LIST"
 msgstr "kanal LIST"
 
@@ -765,6 +765,10 @@ msgstr "kanal PREPEND başlık"
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel RESET"
 msgstr "kanal RESET"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "channel SET entry-num"
+msgstr "kanal SET kayıt-no"
 
 #: ../modules/chanserv/cs_mode.cpp
 msgid "channel SET modes"
@@ -859,7 +863,7 @@ msgstr "kanal {DIS | DISABLE} tip"
 msgid "channel {ON | LEVEL | OFF}"
 msgstr "kanal {ON | LEVEL | OFF}"
 
-#: ../modules/botserv/bs_kick.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_topic.cpp ../modules/chanstats.cpp
+#: ../modules/botserv/bs_kick.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_topic.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanstats.cpp
 msgid "channel {ON | OFF}"
 msgstr "kanal {ON | OFF}"
 
@@ -2898,6 +2902,10 @@ msgstr "Bot artık flood için kanaldan atmayacak."
 msgid "Bot won't kick for repeats anymore."
 msgstr "Bot artık repeats için kanaldan atmayacak."
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "By"
+msgstr "Ayarlayan"
+
 #: ../src/access.cpp
 #, c-format
 msgid "By default, the %s command is limited to:"
@@ -4240,6 +4248,10 @@ msgstr "Listenin sonu."
 msgid "End of news list."
 msgstr "Haber listesi sonu."
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "End of topic history list."
+msgstr "Başlık geçmişi listesinin sonu."
+
 #: ../modules/operserv/os_list.cpp
 #, c-format
 msgid "End of users list - %zu/%zu users shown (%zu-%zu)."
@@ -4561,6 +4573,11 @@ msgstr "Rumuz bilgilerinin belirli parçalarını gizleyin"
 msgid "Hide channel from the LIST command"
 msgstr "Kanalı LIST komutundan gizle"
 
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "History entry %zu is already the topic of %s."
+msgstr "Geçmiş kaydı %zu zaten %s kanalının başlığı."
+
 #: ../modules/operserv/os_session.cpp
 msgid "Host"
 msgstr "Host"
@@ -4691,6 +4708,10 @@ msgstr "Bir kanala sizi ya da isteğe bağlı olarak belirtilen bir rumuzu davet
 #: ../modules/botserv/bs_kick.cpp
 msgid "Italics kicker"
 msgstr "İtalik yazı atma"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Keep a history of earlier topics"
+msgstr "Önceki başlıkların geçmişini tut"
 
 #: ../modules/chanserv/cs_set.cpp ../modules/nickserv/ns_set_keepmodes.cpp
 msgid "Keep modes"
@@ -5233,6 +5254,10 @@ msgstr ""
 "%sSET komutu, servisler aracılığıyla modları ayarlamanıza olanak tanır. Liste ve durum modları için parametre olarak * ve ? joker karakterleri verilebilir.\n"
 "\n"
 "%sCLEAR komutu, bir kanaldaki modları temizlemenin kolay bir yoludur. ne herhangi bir mod adı olabilir. Örnekler arasında bans, excepts, inviteoverrides, ops, halfops ve voices yer alır. ne verilmezse tüm temel modlar kaldırılır."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Maintain a channel's topic history"
+msgstr "Bir kanalın başlık geçmişini yönet"
 
 #: ../modules/botserv/bs_bot.cpp
 msgid "Maintain network bot list"
@@ -5929,7 +5954,7 @@ msgstr "Hiçbir şey değiştirilmedi:"
 msgid "Now"
 msgstr "Şimdi"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr "Numara"
 
@@ -7015,6 +7040,10 @@ msgstr "Oturum limitleme devre dışı."
 msgid "Sessions: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Oturumlar: %zu girdi, %zu buckets, en uzun zincir %zu"
 
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Set"
+msgstr "Zaman"
+
 #: ../modules/nickserv/ns_set.cpp
 msgid "Set SET-options on another nickname"
 msgstr "Başka bir rumuzda SET-seçeneklerini ayarlayın"
@@ -7357,6 +7386,21 @@ msgstr "Servislerin ve ağın durumunu göster"
 #, c-format
 msgid "Showed %zu/%zu matches for %s."
 msgstr "%zu/%zu eşleşme (%s için) gösteriliyor."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid ""
+"Shows and restores the earlier topics of a channel that has TOPICHISTORY turned on (see %s). Up to %u earlier topics are kept.\n"
+"\n"
+"LIST shows them, numbered from the most recent. SET makes one of them the topic again, even if TOPICLOCK is on. CLEAR forgets them all.\n"
+"\n"
+"This needs the TOPIC privilege on the channel."
+msgstr ""
+"TOPICHISTORY açık olan bir kanalın önceki başlıklarını gösterir ve geri yükler (bkz. %s). En fazla %u önceki başlık saklanır.\n"
+"\n"
+"LIST bunları en yeniden başlayarak numaralı gösterir. SET bunlardan birini, TOPICLOCK açık olsa bile, yeniden başlık yapar. CLEAR hepsini siler.\n"
+"\n"
+"Bunun için kanalda TOPIC yetkisi gerekir."
 
 #: ../modules/botserv/bs_info.cpp
 msgid ""
@@ -8349,9 +8393,48 @@ msgstr "%s için çok fazla sonuç var."
 msgid "Top %i of %s"
 msgstr "Top %i (%s arasında)"
 
-#: ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/operserv/os_list.cpp
 msgid "Topic"
 msgstr "Başlık"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "Topic history"
+msgstr "Başlık geçmişi"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history entry %s not found for %s."
+msgstr "%s başlık geçmişi kaydı %s için bulunamadı."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s has been cleared."
+msgstr "%s için başlık geçmişi temizlendi."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s is now off."
+msgstr "%s için başlık geçmişi artık kapalı."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history for %s is now on."
+msgstr "%s için başlık geçmişi artık açık."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history is not enabled for %s."
+msgstr "%s için başlık geçmişi etkin değil."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history list for %s is empty."
+msgstr "%s için başlık geçmişi listesi boş."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic history list for %s:"
+msgstr "%s için başlık geçmişi listesi:"
 
 #: ../modules/chanserv/cs_topic.cpp
 msgid "Topic lock"
@@ -8366,6 +8449,11 @@ msgstr "%s için başlık kilitleme seçeneği artık off (kapalı)."
 #, c-format
 msgid "Topic lock option for %s is now on."
 msgstr "%s için başlık kilitleme seçeneği artık on (açık)."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Topic of %s set to history entry %zu."
+msgstr "%s başlığı %zu numaralı geçmiş kaydına ayarlandı."
 
 #: ../modules/chanserv/cs_topic.cpp
 msgid "Topic retention"
@@ -8424,6 +8512,11 @@ msgstr "Bu kullanıcı için kanal istatistiklerini AÇIK veya KAPALI duruma get
 #: ../modules/chanstats.cpp
 msgid "Turns chanstats statistics ON or OFF."
 msgstr "Chanstats istatistiklerini AÇIK veya KAPALI duruma getirir."
+
+#: ../modules/chanserv/cs_topichistory.cpp
+#, c-format
+msgid "Turns the channel's topic history on or off. While it is on, the last %u topics are kept and can be listed and restored with %s. Turning it off forgets them."
+msgstr "Kanalın başlık geçmişini açar veya kapatır. Açıkken son %u başlık saklanır ve %s ile listelenip geri yüklenebilir. Kapatmak bunları siler."
 
 #: ../modules/botserv/bs_badwords.cpp ../modules/operserv/os_forbid.cpp
 msgid "Type"
@@ -9887,6 +9980,10 @@ msgstr "{number}: {message} -- {created}'de oluşturan {creator}"
 #: ../modules/operserv/os_news.cpp
 msgid "{number}: {text} -- created by {creator} on {created}"
 msgstr "{number}: {text} -- {created}'de oluşturan {creator}"
+
+#: ../modules/chanserv/cs_topichistory.cpp
+msgid "{number}: {topic} -- set by {by} at {set}"
+msgstr "{number}: {topic} -- {by} tarafından {set} tarihinde ayarlandı"
 
 #~ msgid "DEL nick"
 #~ msgstr "DEL rumuz"
