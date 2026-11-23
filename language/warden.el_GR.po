@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:57+0100\n"
+"POT-Creation-Date: 2026-11-23 17:06+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -977,6 +977,10 @@ msgstr "κανάλι [SET] [θέμα]"
 #: ../modules/chanserv/cs_topic.cpp
 msgid "channel [UNLOCK|LOCK]"
 msgstr "κανάλι [UNLOCK|LOCK]"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "channel {!group | OFF}"
+msgstr "κανάλι {!group | OFF}"
 
 #: ../modules/botserv/bs_assign.cpp ../modules/fantasy.cpp ../modules/greet.cpp
 msgid "channel {ON|OFF}"
@@ -2747,6 +2751,11 @@ msgstr "Σας επιτρέπει να δείτε πληροφορίες του 
 msgid "Alternative methods of modifying channel access lists are available."
 msgstr "Υπάρχουν διαθέσιμοι εναλλακτικοί τρόποι τροποποίησης των access lists του καναλιού."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Anyone may join %s again."
+msgstr "Οποιοσδήποτε μπορεί να μπει ξανά στο %s."
+
 #: ../modules/hostserv/hs_request.cpp
 msgid "Approve the requested vhost of a user"
 msgstr "Εγκρίνει τη vhost που ζήτησε ένας χρήστης"
@@ -3200,6 +3209,7 @@ msgid ""
 "  DESCRIPTION, URL, EMAIL, CHANNEL [value] - set or clear them\n"
 "  JOINFLAGS [flags|OFF] - flags given to people who JOIN\n"
 "  PUBLIC {ON|OFF} - show founders and members to everyone\n"
+"  NEVEROP {ON|OFF} - keep the group off channel access lists\n"
 "These need +F:\n"
 "  OPEN {ON|OFF} - let anyone JOIN without an invitation\n"
 "  GROUPNAME !newname - rename the group\n"
@@ -3211,6 +3221,7 @@ msgstr ""
 "  DESCRIPTION, URL, EMAIL, CHANNEL [τιμή] - ορισμός ή διαγραφή τους\n"
 "  JOINFLAGS [flags|OFF] - flags που δίνονται σε όσους κάνουν JOIN\n"
 "  PUBLIC {ON|OFF} - εμφάνιση ιδρυτών και μελών σε όλους\n"
+"  NEVEROP {ON|OFF} - η ομάδα μένει εκτός των λιστών πρόσβασης καναλιών\n"
 "Αυτές χρειάζονται +F:\n"
 "  OPEN {ON|OFF} - οποιοσδήποτε μπορεί να κάνει JOIN χωρίς πρόσκληση\n"
 "  GROUPNAME !newname - μετονομασία της ομάδας\n"
@@ -4921,6 +4932,10 @@ msgid "Group %s access for %s is unchanged."
 msgstr "Η πρόσβαση της ομάδας %s για τον/την %s δεν άλλαξε."
 
 #: ../modules/groupserv/groupserv.cpp
+msgid "Group only"
+msgstr "Μόνο για την ομάδα"
+
+#: ../modules/groupserv/groupserv.cpp
 msgid "Groups"
 msgstr "Ομάδες"
 
@@ -4928,6 +4943,11 @@ msgstr "Ομάδες"
 #, c-format
 msgid "Groups matching %s:"
 msgstr "Ομάδες που ταιριάζουν με το %s:"
+
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#, c-format
+msgid "Groups such as %s can't be put on access lists on this network."
+msgstr "Ομάδες όπως η %s δεν μπορούν να μπουν σε λίστες πρόσβασης σε αυτό το δίκτυο."
 
 #: ../modules/nickserv/ns_info.cpp
 msgid "Hide certain pieces of nickname information"
@@ -6555,6 +6575,24 @@ msgstr "Μόνο ένας ιδρυτής μπορεί να κάνει κάποι
 #: ../modules/groupserv/groupserv.cpp
 msgid "Only a founder can remove a founder."
 msgstr "Μόνο ένας ιδρυτής μπορεί να αφαιρέσει έναν ιδρυτή."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Only let a group's members join the channel"
+msgstr "Μόνο τα μέλη μιας ομάδας μπαίνουν στο κανάλι"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Only lets members of a group join the channel. Anyone else who joins is banned and kicked, except users with access to the channel and services operators. Banned members (+b) count as non-members. OFF lets anyone join again."
+msgstr "Επιτρέπει μόνο στα μέλη μιας ομάδας να μπουν στο κανάλι. Όποιος άλλος μπει αποκλείεται (ban) και αποβάλλεται (kick), εκτός από χρήστες με πρόσβαση στο κανάλι και τους χειριστές των υπηρεσιών. Τα αποκλεισμένα μέλη (+b) μετρούν ως μη μέλη. Το OFF επιτρέπει ξανά σε όλους να μπουν."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Only members of %s (and users with access to the channel) may join %s now."
+msgstr "Μόνο τα μέλη της %s (και χρήστες με πρόσβαση στο κανάλι) μπορούν πλέον να μπουν στο %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Only members of %s may join this channel."
+msgstr "Μόνο τα μέλη της %s μπορούν να μπουν σε αυτό το κανάλι."
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Open"
@@ -8579,6 +8617,11 @@ msgstr "Η ομάδα %s υπάρχει ήδη."
 #, c-format
 msgid "The group %s does not exist."
 msgstr "Η ομάδα %s δεν υπάρχει."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s does not wish to be added to channel access lists (NEVEROP is on)."
+msgstr "Η ομάδα %s δεν επιθυμεί να προστεθεί σε λίστες πρόσβασης καναλιών (το NEVEROP είναι ενεργό)."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -11127,10 +11170,6 @@ msgstr "{number}: {topic} -- ορίστηκε από {by} στις {set}"
 
 #~ msgid "Helps you reset lost passwords"
 #~ msgstr "Σας βοηθά να ανακτήσετε έναν χαμένο κωδικό."
-
-#, fuzzy, c-format
-#~ msgid "I've never seen %s on this channel."
-#~ msgstr "Μην χρησιμοποιείς reverses μέσα στο κανάλι!"
 
 #, fuzzy, c-format
 #~ msgid "If you do not change within %s, I will change your nick."

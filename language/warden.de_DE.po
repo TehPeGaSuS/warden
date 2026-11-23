@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:57+0100\n"
+"POT-Creation-Date: 2026-11-23 17:06+0100\n"
 "PO-Revision-Date: 2023-04-21 22:04+0200\n"
 "Last-Translator: henk\n"
 "Language-Team: German\n"
@@ -982,6 +982,10 @@ msgstr "Channel [SET] [Topic]"
 #: ../modules/chanserv/cs_topic.cpp
 msgid "channel [UNLOCK|LOCK]"
 msgstr "Channel [UNLOCK|LOCK]"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "channel {!group | OFF}"
+msgstr "Channel {!group | OFF}"
 
 #: ../modules/botserv/bs_assign.cpp ../modules/fantasy.cpp ../modules/greet.cpp
 msgid "channel {ON|OFF}"
@@ -2752,6 +2756,11 @@ msgstr "Zeigt %s Informationen über einen Bot oder einen Channel an. Wenn der P
 msgid "Alternative methods of modifying channel access lists are available."
 msgstr "Alternative Methoden zum Bearbeiten der Kanalzugangsliste sind verfügbar."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Anyone may join %s again."
+msgstr "Jeder darf %s wieder betreten."
+
 #: ../modules/hostserv/hs_request.cpp
 msgid "Approve the requested vhost of a user"
 msgstr "Den beantragten vHost eines Users genehmigen"
@@ -3205,6 +3214,7 @@ msgid ""
 "  DESCRIPTION, URL, EMAIL, CHANNEL [value] - set or clear them\n"
 "  JOINFLAGS [flags|OFF] - flags given to people who JOIN\n"
 "  PUBLIC {ON|OFF} - show founders and members to everyone\n"
+"  NEVEROP {ON|OFF} - keep the group off channel access lists\n"
 "These need +F:\n"
 "  OPEN {ON|OFF} - let anyone JOIN without an invitation\n"
 "  GROUPNAME !newname - rename the group\n"
@@ -3216,6 +3226,7 @@ msgstr ""
 "  DESCRIPTION, URL, EMAIL, CHANNEL [Wert] - setzen oder löschen\n"
 "  JOINFLAGS [Flags|OFF] - Flags für alle, die per JOIN beitreten\n"
 "  PUBLIC {ON|OFF} - Gründer und Mitglieder allen zeigen\n"
+"  NEVEROP {ON|OFF} - die Gruppe aus Channel-Access-Listen heraushalten\n"
 "Diese brauchen +F:\n"
 "  OPEN {ON|OFF} - jeden ohne Einladung per JOIN beitreten lassen\n"
 "  GROUPNAME !newname - die Gruppe umbenennen\n"
@@ -4922,6 +4933,10 @@ msgid "Group %s access for %s is unchanged."
 msgstr "Der Zugang der Gruppe %s für %s ist unverändert."
 
 #: ../modules/groupserv/groupserv.cpp
+msgid "Group only"
+msgstr "Nur Gruppe"
+
+#: ../modules/groupserv/groupserv.cpp
 msgid "Groups"
 msgstr "Gruppen"
 
@@ -4929,6 +4944,11 @@ msgstr "Gruppen"
 #, c-format
 msgid "Groups matching %s:"
 msgstr "Gruppen, die auf %s passen:"
+
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#, c-format
+msgid "Groups such as %s can't be put on access lists on this network."
+msgstr "Gruppen wie %s können in diesem Netzwerk nicht auf Access-Listen gesetzt werden."
 
 #: ../modules/nickserv/ns_info.cpp
 msgid "Hide certain pieces of nickname information"
@@ -6560,6 +6580,24 @@ msgstr "Nur ein Gründer kann jemanden zum Gründer machen."
 #: ../modules/groupserv/groupserv.cpp
 msgid "Only a founder can remove a founder."
 msgstr "Nur ein Gründer kann einen Gründer entfernen."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Only let a group's members join the channel"
+msgstr "Nur Mitglieder einer Gruppe den Channel betreten lassen"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Only lets members of a group join the channel. Anyone else who joins is banned and kicked, except users with access to the channel and services operators. Banned members (+b) count as non-members. OFF lets anyone join again."
+msgstr "Lässt nur Mitglieder einer Gruppe den Channel betreten. Alle anderen, die ihn betreten, werden gebannt und gekickt, außer Benutzern mit Zugang zum Channel und Services-Operatoren. Gebannte Mitglieder (+b) zählen als Nichtmitglieder. OFF lässt wieder jeden hinein."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Only members of %s (and users with access to the channel) may join %s now."
+msgstr "Nur Mitglieder von %s (und Benutzer mit Zugang zum Channel) dürfen jetzt %s betreten."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Only members of %s may join this channel."
+msgstr "Nur Mitglieder von %s dürfen diesen Channel betreten."
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Open"
@@ -8577,6 +8615,11 @@ msgstr "Die Gruppe %s existiert bereits."
 #, c-format
 msgid "The group %s does not exist."
 msgstr "Die Gruppe %s existiert nicht."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s does not wish to be added to channel access lists (NEVEROP is on)."
+msgstr "Die Gruppe %s möchte nicht zu Channel-Access-Listen hinzugefügt werden (NEVEROP ist an)."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -11226,10 +11269,6 @@ msgstr "{number}: {topic} -- gesetzt von {by} am {set}"
 #, c-format
 #~ msgid "I don't know who %s is."
 #~ msgstr "Ich weiss nicht, wer %s ist."
-
-#, fuzzy, c-format
-#~ msgid "I've never seen %s on this channel."
-#~ msgstr "Nicht invertiert schreiben!"
 
 #, fuzzy, c-format
 #~ msgid "If you do not change within %s, I will change your nick."

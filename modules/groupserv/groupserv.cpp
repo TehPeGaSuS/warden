@@ -41,7 +41,7 @@ struct Group final
 {
 	Warden::string name;
 	Warden::string description, url, email, channel, joinflags;
-	bool open = false, pub = false, acsnolimit = false, regnolimit = false;
+	bool open = false, pub = false, acsnolimit = false, regnolimit = false, neverop = false;
 	time_t registered = 0;
 	std::vector<Member> members;
 	std::set<NickCore *> invited;
@@ -107,6 +107,7 @@ struct GroupType final
 		data.Store("public", g->pub);
 		data.Store("acsnolimit", g->acsnolimit);
 		data.Store("regnolimit", g->regnolimit);
+		data.Store("neverop", g->neverop);
 		data.Store("registered", g->registered);
 
 		// account-id:+flags:added, space separated.
@@ -144,6 +145,7 @@ struct GroupType final
 		g->pub = data.Load<bool>("public");
 		g->acsnolimit = data.Load<bool>("acsnolimit");
 		g->regnolimit = data.Load<bool>("regnolimit");
+		g->neverop = data.Load<bool>("neverop");
 		g->registered = data.Load<time_t>("registered");
 
 		g->members.clear();
@@ -245,8 +247,24 @@ static Group *FindGroup(CommandSource &source, const Warden::string &name)
 	return it->second;
 }
 
+// Channels that only let a group's members in (ChanServ SET GROUPONLY).
+static const char *GROUPONLY_EXT = "GROUPONLY";
+
+// Removes a dropped group from every channel access list, like Atheme.
 static void Drop(Group *g)
 {
+	for (const auto &[_, ci] : *RegisteredChannelList)
+	{
+		for (unsigned i = ci->GetAccessCount(); i > 0; --i)
+		{
+			if (ci->GetAccess(i - 1)->Mask().equals_ci(g->name))
+				delete ci->EraseAccess(i - 1);
+		}
+
+		auto *only = ci->GetExt<Warden::string>(GROUPONLY_EXT);
+		if (only && only->equals_ci(g->name))
+			ci->Shrink<Warden::string>(GROUPONLY_EXT);
+	}
 	delete g;
 }
 
@@ -1038,6 +1056,13 @@ public:
 			else
 				source.Reply(_("The join flags of \002%s\002 are now \002+%s\002."), g->name.c_str(), flags.c_str());
 		}
+		else if (option == "NEVEROP")
+		{
+			if (!setter)
+				source.Reply(ACCESS_DENIED);
+			else
+				Toggle(source, g, g->neverop, value, "NEVEROP");
+		}
 		else if (option == "PUBLIC")
 		{
 			if (!setter)
@@ -1093,6 +1118,10 @@ public:
 						++moved;
 					}
 				}
+
+				auto *only = ci->GetExt<Warden::string>(GROUPONLY_EXT);
+				if (only && only->equals_ci(oldname))
+					ci->Extend<Warden::string>(GROUPONLY_EXT, value);
 			}
 
 			Groups.erase(oldname);
@@ -1114,12 +1143,84 @@ public:
 			"  DESCRIPTION, URL, EMAIL, CHANNEL [\037value\037] - set or clear them\n"
 			"  JOINFLAGS [\037flags\037|OFF] - flags given to people who JOIN\n"
 			"  PUBLIC {ON|OFF} - show founders and members to everyone\n"
+			"  NEVEROP {ON|OFF} - keep the group off channel access lists\n"
 			"These need +F:\n"
 			"  OPEN {ON|OFF} - let anyone JOIN without an invitation\n"
 			"  GROUPNAME \037!newname\037 - rename the group\n"
 			"These are for services operators:\n"
 			"  ACSNOLIMIT {ON|OFF} - no limit on the access list size\n"
 			"  REGNOLIMIT {ON|OFF} - don't count it towards its founders' limit"
+		));
+		return true;
+	}
+};
+
+class CommandCSSetGroupOnly final
+	: public Command
+{
+public:
+	CommandCSSetGroupOnly(Module *creator, const Warden::string &cname = "chanserv/set/grouponly")
+		: Command(creator, cname, 2, 2)
+	{
+		this->SetDesc(_("Only let a group's members join the channel"));
+		this->SetSyntax(_("\037channel\037 {\037!group\037 | OFF}"));
+	}
+
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
+	{
+		if (Warden::ReadOnly)
+		{
+			source.Reply(READ_ONLY_MODE);
+			return;
+		}
+
+		auto *ci = ChannelInfo::Find(params[0]);
+		if (!ci)
+		{
+			source.Reply(CHAN_X_NOT_REGISTERED, params[0].c_str());
+			return;
+		}
+
+		EventReturn MOD_RESULT;
+		FOREACH_RESULT(OnSetChannelOption, MOD_RESULT, (source, this, ci, params[1]));
+		if (MOD_RESULT == EVENT_STOP)
+			return;
+		if (MOD_RESULT != EVENT_ALLOW && !source.AccessFor(ci).HasPriv("SET") && source.permission.empty() && !source.HasPriv("chanserv/administration"))
+		{
+			source.Reply(ACCESS_DENIED);
+			return;
+		}
+
+		const auto override = !source.AccessFor(ci).HasPriv("SET");
+		if (params[1].equals_ci("OFF"))
+		{
+			ci->Shrink<Warden::string>(GROUPONLY_EXT);
+			Log(override ? LOG_OVERRIDE : LOG_COMMAND, source, this, ci) << "to turn GROUPONLY off";
+			source.Reply(_("Anyone may join \002%s\002 again."), ci->name.c_str());
+			return;
+		}
+
+		auto it = Groups.find(params[1]);
+		if (it == Groups.end())
+		{
+			source.Reply(_("The group \002%s\002 does not exist."), params[1].c_str());
+			return;
+		}
+
+		ci->Extend<Warden::string>(GROUPONLY_EXT, it->second->name);
+		Log(override ? LOG_OVERRIDE : LOG_COMMAND, source, this, ci) << "to only let members of " << it->second->name << " join";
+		source.Reply(_("Only members of \002%s\002 (and users with access to the channel) may join \002%s\002 now."), it->second->name.c_str(), ci->name.c_str());
+	}
+
+	bool OnHelp(CommandSource &source, const Warden::string &) override
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply(_(
+			"Only lets members of a group join the channel. Anyone else who "
+			"joins is banned and kicked, except users with access to the channel "
+			"and services operators. Banned members (+b) count as non-members. "
+			"\002OFF\002 lets anyone join again."
 		));
 		return true;
 	}
@@ -1140,6 +1241,8 @@ class GroupServCore final
 	CommandGSList commandgslist;
 	CommandGSListChans commandgslistchans;
 	CommandGSSet commandgsset;
+	CommandCSSetGroupOnly commandcssetgrouponly;
+	SerializableExtensibleItem<Warden::string> grouponly;
 	Reference<BotInfo> GroupServ;
 
 public:
@@ -1149,6 +1252,7 @@ public:
 		, commandgsflags(this), commandgsfflags(this), commandgsjoin(this)
 		, commandgsinvite(this), commandgsinfo(this), commandgslist(this)
 		, commandgslistchans(this), commandgsset(this)
+		, commandcssetgrouponly(this), grouponly(this, GROUPONLY_EXT)
 	{
 	}
 
@@ -1216,6 +1320,62 @@ public:
 				Drop(g);
 			}
 		}
+	}
+
+	EventReturn OnChanAccessMatches(const ChanAccess *access, const User *u, const NickCore *acc) override
+	{
+		if (!acc && u)
+			acc = u->Account();
+		auto it = Groups.find(access->Mask());
+		if (!acc || it == Groups.end())
+			return EVENT_CONTINUE;
+
+		// +c gives the group's channel access; +b never does.
+		auto *g = it->second;
+		return g->Has(acc, 'c') && !g->Has(acc, 'b') ? EVENT_ALLOW : EVENT_CONTINUE;
+	}
+
+	EventReturn OnCheckAccessMask(CommandSource &source, ChannelInfo *ci, Warden::string &mask) override
+	{
+		auto it = Groups.find(mask);
+		if (it == Groups.end())
+		{
+			source.Reply(_("The group \002%s\002 does not exist."), mask.c_str());
+			return EVENT_STOP;
+		}
+		if (it->second->neverop)
+		{
+			source.Reply(_("The group \002%s\002 does not wish to be added to channel access lists (NEVEROP is on)."), it->second->name.c_str());
+			return EVENT_STOP;
+		}
+		mask = it->second->name;
+		return EVENT_ALLOW;
+	}
+
+	void OnJoinChannel(User *u, Channel *c) override
+	{
+		if (!c->ci || u->server == Me || u->server->IsULined())
+			return;
+		auto *only = grouponly.Get(c->ci);
+		if (!only)
+			return;
+
+		auto it = Groups.find(*only);
+		auto *nc = u->Account();
+		if (it != Groups.end() && nc && it->second->Find(nc) && !it->second->Has(nc, 'b'))
+			return;
+		if (!c->ci->AccessFor(u).empty() || u->IsServicesOper())
+			return;
+
+		const auto mask = c->ci->GetIdealBan(u);
+		c->SetMode(c->ci->WhoSends(), "BAN", mask);
+		c->Kick(c->ci->WhoSends(), u, Language::Translate(u, _("Only members of %s may join this channel.")), only->c_str());
+	}
+
+	void OnChanInfo(CommandSource &source, ChannelInfo *ci, InfoFormatter &info, bool show_hidden) override
+	{
+		if (auto *only = grouponly.Get(ci))
+			info[_("Group only")] = *only;
 	}
 
 	void OnNickInfo(CommandSource &source, NickAlias *na, InfoFormatter &info, bool show_hidden) override

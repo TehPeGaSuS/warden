@@ -687,6 +687,24 @@ public:
 	 */
 	virtual EventReturn OnCheckPriv(const ChanAccess *access, const Warden::string &priv) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
 
+	/** Asks whether an access entry whose mask starts with '!' (a group such as
+	 * !staff) matches a user or account. Used by GroupServ.
+	 * @param access The access entry
+	 * @param u The user, if any
+	 * @param acc The account, if any
+	 * @return EVENT_ALLOW if it matches
+	 */
+	virtual EventReturn OnChanAccessMatches(const ChanAccess *access, const User *u, const NickCore *acc) ATTR_NOT_NULL(2) { throw NotImplementedException(); }
+
+	/** Called when a mask starting with '!' (a group such as !staff) is about to
+	 * be added to a channel access list.
+	 * @param source The source of the command
+	 * @param ci The channel
+	 * @param mask The mask, which may be changed (e.g. to the group's exact name)
+	 * @return EVENT_ALLOW to accept it, EVENT_STOP to refuse it (after replying)
+	 */
+	virtual EventReturn OnCheckAccessMask(CommandSource &source, ChannelInfo *ci, Warden::string &mask) ATTR_NOT_NULL(3) { throw NotImplementedException(); }
+
 	/** Check whether an access group has a privilege
 	 * @param group The group
 	 * @param priv The privilege
@@ -1102,6 +1120,8 @@ enum Implementation
 	I_OnCheckDelete,
 	I_OnCheckKick,
 	I_OnCheckModes,
+	I_OnChanAccessMatches,
+	I_OnCheckAccessMask,
 	I_OnCheckPriv,
 	I_OnCreateBot,
 	I_OnCreateChan,

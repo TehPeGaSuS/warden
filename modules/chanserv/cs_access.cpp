@@ -191,7 +191,20 @@ private:
 		}
 
 		const auto &csconf = Config->GetModule("chanserv");
-		if (IRCD->IsChannelValid(mask))
+		if (mask[0] == '!')
+		{
+			// A group such as !staff; GroupServ checks it.
+			EventReturn MOD_RESULT;
+			FOREACH_RESULT(OnCheckAccessMask, MOD_RESULT, (source, ci, mask));
+			if (MOD_RESULT == EVENT_STOP)
+				return;
+			if (MOD_RESULT != EVENT_ALLOW)
+			{
+				source.Reply(_("Groups such as \002%s\002 can't be put on access lists on this network."), mask.c_str());
+				return;
+			}
+		}
+		else if (IRCD->IsChannelValid(mask))
 		{
 			if (csconf.Get<bool>("disallow_channel_access"))
 			{

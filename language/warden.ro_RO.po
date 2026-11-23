@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 15:57+0100\n"
+"POT-Creation-Date: 2026-11-23 17:06+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -978,6 +978,10 @@ msgstr "canal [SET] [subiect]"
 #: ../modules/chanserv/cs_topic.cpp
 msgid "channel [UNLOCK|LOCK]"
 msgstr "canal [UNLOCK|LOCK]"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "channel {!group | OFF}"
+msgstr "canal {!group | OFF}"
 
 #: ../modules/botserv/bs_assign.cpp ../modules/fantasy.cpp ../modules/greet.cpp
 msgid "channel {ON|OFF}"
@@ -2748,6 +2752,11 @@ msgstr "Vă permite să vedeți informația %s despre un canal sau un bot. Dacă
 msgid "Alternative methods of modifying channel access lists are available."
 msgstr "Există metode alternative de modificare a listelor de accese în canale."
 
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Anyone may join %s again."
+msgstr "Oricine poate intra din nou pe %s."
+
 #: ../modules/hostserv/hs_request.cpp
 msgid "Approve the requested vhost of a user"
 msgstr "Aprobă gazda virtuală solicitată de un utilizator"
@@ -3201,6 +3210,7 @@ msgid ""
 "  DESCRIPTION, URL, EMAIL, CHANNEL [value] - set or clear them\n"
 "  JOINFLAGS [flags|OFF] - flags given to people who JOIN\n"
 "  PUBLIC {ON|OFF} - show founders and members to everyone\n"
+"  NEVEROP {ON|OFF} - keep the group off channel access lists\n"
 "These need +F:\n"
 "  OPEN {ON|OFF} - let anyone JOIN without an invitation\n"
 "  GROUPNAME !newname - rename the group\n"
@@ -3212,6 +3222,7 @@ msgstr ""
 "  DESCRIPTION, URL, EMAIL, CHANNEL [valoare] - le setează sau le șterge\n"
 "  JOINFLAGS [indicatori|OFF] - indicatorii primiți de cei care folosesc JOIN\n"
 "  PUBLIC {ON|OFF} - arată fondatorii și membrii tuturor\n"
+"  NEVEROP {ON|OFF} - ține grupul în afara listelor de accese ale canalelor\n"
 "Acestea necesită +F:\n"
 "  OPEN {ON|OFF} - permite oricui JOIN fără invitație\n"
 "  GROUPNAME !newname - redenumește grupul\n"
@@ -4916,6 +4927,10 @@ msgid "Group %s access for %s is unchanged."
 msgstr "Accesul grupului %s pentru %s este neschimbat."
 
 #: ../modules/groupserv/groupserv.cpp
+msgid "Group only"
+msgstr "Doar grupul"
+
+#: ../modules/groupserv/groupserv.cpp
 msgid "Groups"
 msgstr "Grupuri"
 
@@ -4923,6 +4938,11 @@ msgstr "Grupuri"
 #, c-format
 msgid "Groups matching %s:"
 msgstr "Grupuri care corespund cu %s:"
+
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#, c-format
+msgid "Groups such as %s can't be put on access lists on this network."
+msgstr "Grupuri precum %s nu pot fi puse pe liste de accese în această rețea."
 
 #: ../modules/nickserv/ns_info.cpp
 msgid "Hide certain pieces of nickname information"
@@ -6548,6 +6568,24 @@ msgstr "Doar un fondator poate face pe cineva fondator."
 #: ../modules/groupserv/groupserv.cpp
 msgid "Only a founder can remove a founder."
 msgstr "Doar un fondator poate înlătura un fondator."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Only let a group's members join the channel"
+msgstr "Lasă doar membrii unui grup să intre pe canal"
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "Only lets members of a group join the channel. Anyone else who joins is banned and kicked, except users with access to the channel and services operators. Banned members (+b) count as non-members. OFF lets anyone join again."
+msgstr "Lasă doar membrii unui grup să intre pe canal. Oricine altcineva intră este banat și dat afară, cu excepția utilizatorilor cu acces la canal și a operatorilor serviciilor. Membrii banați (+b) contează ca nemembri. OFF lasă din nou pe oricine să intre."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Only members of %s (and users with access to the channel) may join %s now."
+msgstr "Acum doar membrii %s (și utilizatorii cu acces la canal) pot intra pe %s."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "Only members of %s may join this channel."
+msgstr "Doar membrii %s pot intra pe acest canal."
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Open"
@@ -8565,6 +8603,11 @@ msgstr "Grupul %s există deja."
 #, c-format
 msgid "The group %s does not exist."
 msgstr "Grupul %s nu există."
+
+#: ../modules/groupserv/groupserv.cpp
+#, c-format
+msgid "The group %s does not wish to be added to channel access lists (NEVEROP is on)."
+msgstr "Grupul %s nu dorește să fie adăugat pe listele de accese ale canalelor (NEVEROP este activat)."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format

@@ -238,6 +238,14 @@ bool ChanAccess::Matches(const User *u, const NickCore *acc, ChannelInfo *&next)
 	if (this->nc)
 		return this->nc == acc;
 
+	// A group such as !staff: GroupServ decides who is in it.
+	if (!this->mask.empty() && this->mask[0] == '!')
+	{
+		EventReturn MOD_RESULT;
+		FOREACH_RESULT(OnChanAccessMatches, MOD_RESULT, (this, u, acc));
+		return MOD_RESULT == EVENT_ALLOW;
+	}
+
 	if (u)
 	{
 		bool is_mask = this->mask.find_first_of("!@?*") != Warden::string::npos;
