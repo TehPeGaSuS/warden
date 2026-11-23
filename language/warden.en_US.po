@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 10:12+0100\n"
+"POT-Creation-Date: 2026-11-23 10:36+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -138,6 +138,11 @@ msgstr ""
 #: ../modules/chanserv/cs_flags.cpp
 #, c-format
 msgid "%s can not be migrated to the %s access system because they have privileges that you do not."
+msgstr ""
+
+#: ../include/modules/mset.h
+#, c-format
+msgid "%s can't be set for every %s at once."
 msgstr ""
 
 #: ../modules/botserv/bs_kick.cpp
@@ -985,6 +990,10 @@ msgstr ""
 msgid "option setting"
 msgstr ""
 
+#: ../modules/chanserv/cs_mset.cpp ../modules/nickserv/ns_mset.cpp
+msgid "option [parameters]"
+msgstr ""
+
 #: ../modules/operserv/os_login.cpp
 msgid "password"
 msgstr ""
@@ -1049,6 +1058,11 @@ msgstr ""
 
 #: ../modules/operserv/os_oper.cpp
 msgid "   This oper is configured in the configuration file."
+msgstr ""
+
+#: ../include/modules/mset.h
+#, c-format
+msgid "  ...and %zu other replies."
 msgstr ""
 
 #: ../modules/operserv/os_modinfo.cpp
@@ -5515,6 +5529,10 @@ msgstr ""
 msgid "Nothing to do."
 msgstr ""
 
+#: ../include/modules/mset.h
+msgid "Nothing was changed:"
+msgstr ""
+
 #: ../include/language.h
 msgid "Now"
 msgstr ""
@@ -5862,6 +5880,11 @@ msgstr ""
 msgid "REVOKE server"
 msgstr ""
 
+#: ../include/modules/mset.h
+#, c-format
+msgid "Ran %s%s on %zu %s(s). Replies (* is each %s):"
+msgstr ""
+
 #: ../modules/operserv/os_news.cpp
 #, c-format
 msgid "Random news item #%s not found!"
@@ -6157,6 +6180,22 @@ msgstr ""
 
 #: ../modules/nickserv/ns_logout.cpp
 msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself."
+msgstr ""
+
+#: ../modules/nickserv/ns_mset.cpp
+msgid ""
+"Runs SASET option account parameters for every registered account, e.g. after changing a default in the configuration. Any SASET option can be used except PASSWORD, EMAIL, DISPLAY and the free-text ones such as URL. Each change goes through the normal SASET command, so it is checked exactly as if you ran it yourself, and you get a summary of the replies instead of one per account.\n"
+"\n"
+"Example:\n"
+"    MSET PRIVATE ON"
+msgstr ""
+
+#: ../modules/chanserv/cs_mset.cpp
+msgid ""
+"Runs SET option channel parameters for every registered channel, e.g. after changing a default in the configuration. Any SET option can be used except FOUNDER, SUCCESSOR, DESCRIPTION and the free-text ones such as URL. Each change goes through the normal SET command, so it is checked exactly as if you ran it yourself, and you get a summary of the replies instead of one per channel.\n"
+"\n"
+"Example:\n"
+"    MSET SECUREOPS ON"
 msgstr ""
 
 #: ../modules/operserv/os_noop.cpp
@@ -6533,6 +6572,14 @@ msgstr ""
 
 #: ../modules/nickserv/ns_set.cpp
 msgid "Set SET-options on another nickname"
+msgstr ""
+
+#: ../modules/nickserv/ns_mset.cpp
+msgid "Set an option for every registered account"
+msgstr ""
+
+#: ../modules/chanserv/cs_mset.cpp
+msgid "Set an option for every registered channel"
 msgstr ""
 
 #: ../modules/chanserv/cs_set.cpp
@@ -7465,6 +7512,10 @@ msgstr ""
 msgid "There is no such mode %s."
 msgstr ""
 
+#: ../include/modules/mset.h
+msgid "There is nothing to change."
+msgstr ""
+
 #: ../modules/memoserv/ms_set.cpp
 msgid "There's no email address set for your nick."
 msgstr ""
@@ -7846,6 +7897,16 @@ msgstr ""
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
 msgid "Unknown modes %s ignored."
+msgstr ""
+
+#: ../include/modules/mset.h
+#, c-format
+msgid "Unknown option %s."
+msgstr ""
+
+#: ../include/modules/mset.h
+#, c-format
+msgid "Unknown option %s. Type %s for the options you can use."
 msgstr ""
 
 #: ../modules/operserv/os_logsearch.cpp
