@@ -370,6 +370,10 @@ public:
 		if (!c->ci || !c->ci->HasExt("TOPICHISTORY"))
 			return;
 
+		// A cleared topic is nothing to go back to.
+		if (topic.empty())
+			return;
+
 		auto *entries = c->ci->Require<TopicHistoryList>(TOPICHISTORY_LIST_EXT);
 
 		// A topic that is already in the list moves to the front.

@@ -92,6 +92,9 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   `defaultlevel`, `sessionlimit`, `akillexpire`, `chanmodes` and `akillreason`
   were commented out. They now default to the example values.
 * ChanFix `exclude` took a single mask; it now takes a list.
+* `TOPICHISTORY` recorded the empty topic of a newly registered channel.
+* The git hash in the version was not updated when a pull changed only
+  modules.
 
 ### Upgrading from Anope:
 * The binary is `warden`, the configuration `warden.conf` and the database
