@@ -142,6 +142,13 @@ public:
 		RecoveryKeys::Show(source, nc->na, key);
 	}
 
+	void OnServHelp(CommandSource &source, HelpWrapper &help) override
+	{
+		// Only listed where recovery keys are used (registration = "code").
+		if (CodeMode())
+			Command::OnServHelp(source, help);
+	}
+
 	bool OnHelp(CommandSource &source, const Warden::string &) override
 	{
 		this->SendSyntax(source);
@@ -188,6 +195,13 @@ public:
 		Log(LOG_ADMIN, source, this) << "to remove the recovery key of " << na->nc->display;
 		source.Reply(_("The recovery key of \002%s\002 has been removed. Its owner can get a new one with %s."),
 			na->nc->display.c_str(), source.service->GetQueryCommand("nickserv/set/recoverykey").c_str());
+	}
+
+	void OnServHelp(CommandSource &source, HelpWrapper &help) override
+	{
+		// Only listed where recovery keys are used (registration = "code").
+		if (CodeMode())
+			Command::OnServHelp(source, help);
 	}
 
 	bool OnHelp(CommandSource &source, const Warden::string &) override

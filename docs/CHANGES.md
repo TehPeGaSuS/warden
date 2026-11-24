@@ -4,6 +4,8 @@ Warden 1.0.1
 Not released yet.
 
 ### Enhancements:
+* `SET RECOVERYKEY` and `SASET RECOVERYKEY` are only listed in `HELP SET` /
+  `HELP SASET` when recovery keys are in use (`registration = "code"`).
 * `ChanServ AUTOLIMIT` (`cs_autolimit`, based on Fill's third-party module) keeps
   a channel's user limit a little above its user count, so floods of joins are
   held back while people can still get in. It only changes `+l` when the limit
