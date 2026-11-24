@@ -6,6 +6,7 @@ Warden is a set of IRC services (NickServ, ChanServ, OperServ and friends) for I
 > **Warden is developed with AI assistance** (Claude). Every change is reviewed and tested by a human on real networks before it is released, but if that is a deal-breaker for you, Anope itself is the better choice.
 >
 > **Warden is not affiliated with or endorsed by the Anope team.** Please do not ask for Warden support in Anope's channels, forums or issue tracker. Report Warden problems here.
+>
 > A special thanks to [@ryanwohara](https://github.com/ryanwohara) for the tool(s) that made this possible!
 
 ## Why a fork?
