@@ -363,7 +363,7 @@ public:
 
 			ListFormatter::ListEntry entry;
 			entry["Nick"] = na2->nick;
-			entry["Registered"] = Warden::strftime(na2->registered);
+			entry["Registered"] = Warden::strftime(na2->registered, source.GetAccount());
 			entry["Expires"] = expires;
 			list.AddEntry(entry);
 		}

@@ -99,7 +99,8 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
 * The git hash in the version was not updated when a pull changed only
   modules.
 * Dates in lists (AKICK, ACCESS, ENTRYMSG, mode locks, AKILL, SNLINE,
-  SESSION, NEWS, FORBID, HostServ requests, CERT) ignored `SET TIMEZONE`.
+  SESSION, NEWS, FORBID, HostServ LIST and requests, CERT, GLIST) ignored
+  `SET TIMEZONE`.
 * `NickServ INFO` labels the real mask "Real mask" instead of showing two
   "Online from" or "Last seen mask" lines.
 * FIXED-layout lists broke lines in the wrong place (columns were measured in

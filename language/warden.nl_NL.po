@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 15:11+0100\n"
+"POT-Creation-Date: 2026-11-24 15:27+0100\n"
 "PO-Revision-Date: 2025-02-23 03:23+0100\n"
 "Last-Translator: Robby <robby@chatbelgie.be>\n"
 "Language-Team: Dutch\n"
@@ -424,6 +424,11 @@ msgstr "%s staat op de autokicklijst van %s (%s)."
 #, c-format
 msgid "%s is registered, so ChanFix leaves it to ChanServ."
 msgstr "%s is geregistreerd, dus ChanFix laat het over aan ChanServ."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is registered; ChanFix only tracks unregistered channels."
+msgstr "%s is geregistreerd; ChanFix volgt alleen niet-geregistreerde kanalen."
 
 #: ../modules/chanserv/cs_status.cpp
 #, c-format

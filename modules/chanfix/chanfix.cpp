@@ -425,9 +425,14 @@ public:
 static FixChannel *Lookup(CommandSource &source, const Warden::string &name)
 {
 	auto *fc = Get(name);
-	if (!fc)
+	if (fc)
+		return fc;
+
+	if (ChannelInfo::Find(name))
+		source.Reply(_("\002%s\002 is registered; ChanFix only tracks unregistered channels."), name.c_str());
+	else
 		source.Reply(_("There is no ChanFix record for \002%s\002 (yet)."), name.c_str());
-	return fc;
+	return nullptr;
 }
 
 class CommandCFChanFix final

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 15:11+0100\n"
+"POT-Creation-Date: 2026-11-24 15:27+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -424,6 +424,11 @@ msgstr "Ο/η %s είναι στη λίστα auto kick του %s (%s)."
 #, c-format
 msgid "%s is registered, so ChanFix leaves it to ChanServ."
 msgstr "Το %s είναι κατοχυρωμένο, οπότε το ChanFix το αφήνει στο ChanServ."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is registered; ChanFix only tracks unregistered channels."
+msgstr "Το %s είναι κατοχυρωμένο· το ChanFix παρακολουθεί μόνο μη κατοχυρωμένα κανάλια."
 
 #: ../modules/chanserv/cs_status.cpp
 #, c-format

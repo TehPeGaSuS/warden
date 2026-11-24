@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 15:11+0100\n"
+"POT-Creation-Date: 2026-11-24 15:27+0100\n"
 "PO-Revision-Date: 2026-08-15 19:55+0200\n"
 "Last-Translator: PeGaSuS <25697531+TehPeGaSuS@users.noreply.github.com>\n"
 "Language-Team: Portuguese (Portugal)\n"
@@ -425,6 +425,11 @@ msgstr "%s está na lista de auto kick de %s (%s)."
 #, c-format
 msgid "%s is registered, so ChanFix leaves it to ChanServ."
 msgstr "%s está registado, por isso o ChanFix deixa-o para o ChanServ."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is registered; ChanFix only tracks unregistered channels."
+msgstr "O %s está registado; o ChanFix só acompanha canais não registados."
 
 #: ../modules/chanserv/cs_status.cpp
 #, c-format

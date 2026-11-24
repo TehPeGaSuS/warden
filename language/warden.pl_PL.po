@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 15:11+0100\n"
+"POT-Creation-Date: 2026-11-24 15:27+0100\n"
 "PO-Revision-Date: 2024-02-22 16:42+0000\n"
 "Last-Translator: k4be <k4be@pirc.pl>\n"
 "Language-Team: Polish\n"
@@ -430,6 +430,11 @@ msgstr "%s jest na liście AKICK kanału %s (%s)."
 #, c-format
 msgid "%s is registered, so ChanFix leaves it to ChanServ."
 msgstr "%s jest zarejestrowany, więc ChanFix zostawia go ChanServowi."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is registered; ChanFix only tracks unregistered channels."
+msgstr "%s jest zarejestrowany; ChanFix śledzi tylko niezarejestrowane kanały."
 
 #: ../modules/chanserv/cs_status.cpp
 #, c-format

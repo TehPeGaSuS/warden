@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 15:11+0100\n"
+"POT-Creation-Date: 2026-11-24 15:27+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -425,6 +425,11 @@ msgstr "%s se află în lista de izgoniri automate aparținând %s (%s)."
 #, c-format
 msgid "%s is registered, so ChanFix leaves it to ChanServ."
 msgstr "%s este înregistrat, așa că ChanFix îl lasă în seama ChanServ."
+
+#: ../modules/chanfix/chanfix.cpp
+#, c-format
+msgid "%s is registered; ChanFix only tracks unregistered channels."
+msgstr "%s este înregistrat; ChanFix urmărește doar canalele neînregistrate."
 
 #: ../modules/chanserv/cs_status.cpp
 #, c-format

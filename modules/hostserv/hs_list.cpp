@@ -90,7 +90,7 @@ public:
 			entry["Nick"] = na->nick;
 			entry["VHost"] = na->GetVHostMask();
 			entry["Creator"] = na->GetVHostCreator();
-			entry["Created"] = Warden::strftime(na->GetVHostCreated(), NULL, true);
+			entry["Created"] = Warden::strftime(na->GetVHostCreated(), source.GetAccount(), true);
 			list.AddEntry(entry);
 		}
 
