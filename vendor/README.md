@@ -1,6 +1,6 @@
 # Vendored Libraries
 
-This directory contains vendored dependencies that are shipped with Anope to avoid users needing to install them manually.
+This directory contains vendored dependencies that are shipped with Warden to avoid users needing to install them manually.
 
 ## bcrypt
 
