@@ -6,11 +6,12 @@ Warden is a set of IRC services (NickServ, ChanServ, OperServ and friends) for I
 > **Warden is developed with AI assistance** (Claude). Every change is reviewed and tested by a human on real networks before it is released, but if that is a deal-breaker for you, Anope itself is the better choice.
 >
 > **Warden is not affiliated with or endorsed by the Anope team.** Please do not ask for Warden support in Anope's channels, forums or issue tracker. Report Warden problems here.
-> A special thanks to @ryanwohara for the tool(s) that made this possible!
+> A special thanks to [@ryanwohara](https://github.com/ryanwohara) for the tool(s) that made this possible!
 
 ## Why a fork?
 
 Warden started from problems that hit big networks hard, such as services freezing for many seconds while reloading a forbid list of 10,000 entries, and list commands that cannot page through large results. Fixing those well needs changes Anope is not taking right now, so Warden takes them on separately.
+
 
 Warden is a clean break: it has its own name, namespace, binary and config file names. Anope's history and copyright stay intact, and the code remains GPLv2, so anything useful here is free for Anope to take.
 
