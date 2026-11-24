@@ -75,6 +75,9 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   command aliases in the example configuration.
 
 ### Fixes:
+* `db_json` read numbers through a 32-bit integer, so every account's 64-bit
+  ID changed on the first restart (references changed with it, so nothing
+  broke, but IDs were not stable).
 * AKILL and SNLINE did not reach Solanum.
 * InspIRCd `+f`, `+H` and `+d` parameters were checked wrongly.
 * SNLINE cut reasons and masks at the first space.

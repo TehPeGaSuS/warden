@@ -70,18 +70,20 @@ public:
 				continue;
 			}
 
+			// yyjson_get_int() returns a 32-bit int, which cut 64-bit values
+			// such as account ids; read them at full width.
 			if (yyjson_is_bool(value))
 				data[akey] = Warden::ToString(yyjson_get_bool(value));
-			else if (yyjson_is_int(value))
-				data[akey] = Warden::ToString(yyjson_get_int(value));
+			else if (yyjson_is_uint(value))
+				data[akey] = Warden::ToString(yyjson_get_uint(value));
+			else if (yyjson_is_sint(value))
+				data[akey] = Warden::ToString(yyjson_get_sint(value));
 			else if (yyjson_is_null(value))
 				data[akey];
 			else if (yyjson_is_real(value))
 				data[akey] = Warden::ToString(yyjson_get_real(value));
 			else if (yyjson_is_str(value))
 				data[akey] = Warden::ToString(yyjson_get_astr(value));
-			else if (yyjson_is_uint(value))
-				data[akey] = Warden::ToString(yyjson_get_uint(value));
 		}
 	}
 
