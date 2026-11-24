@@ -23,7 +23,10 @@ Note: You should also read the README and FAQ files!
 
     or clone it with git:
 
-        git clone https://github.com/TehPeGaSuS/warden.git
+        git clone https://github.com/TehPeGaSuS/warden.git repo-warden
+
+    Cloning into a folder other than ~/warden keeps the source apart from
+    the default install directory.
 
     Warden requires cmake to build. You can check if CMake is already
     installed on your system using the command:
