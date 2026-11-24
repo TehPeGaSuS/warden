@@ -90,6 +90,7 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
 * Loading `os_defcon` as shipped stopped Warden from starting, because
   `defaultlevel`, `sessionlimit`, `akillexpire`, `chanmodes` and `akillreason`
   were commented out. They now default to the example values.
+* ChanFix `exclude` took a single mask; it now takes a list.
 
 ### Upgrading from Anope:
 * The binary is `warden`, the configuration `warden.conf` and the database

@@ -33,7 +33,7 @@ namespace
 		time_t gather = 300, expire = 3600, autofix_interval = 60, fixtime = 3600, retention = 28 * 86400;
 		unsigned minfixscore = 12, minusers = 0, listmax = 50;
 		bool autofix = false, clearmodes = true, restrictregister = false;
-		Warden::string exclude;
+		std::vector<Warden::string> exclude;
 	} conf;
 
 	struct OpRecord final
@@ -219,8 +219,13 @@ static unsigned CountOps(Channel *c)
 
 static bool Tracked(Channel *c)
 {
-	if (c->ci || c->name.empty() || (!conf.exclude.empty() && Warden::Match(c->name, conf.exclude)))
+	if (c->ci || c->name.empty())
 		return false;
+	for (const auto &mask : conf.exclude)
+	{
+		if (Warden::Match(c->name, mask))
+			return false;
+	}
 	return c->users.size() >= conf.minusers;
 }
 
@@ -778,7 +783,14 @@ public:
 		conf.autofix = block.Get<bool>("autofix", "no");
 		conf.clearmodes = block.Get<bool>("clearmodes", "yes");
 		conf.restrictregister = block.Get<bool>("restrictregister", "no");
-		conf.exclude = block.Get<const Warden::string>("exclude");
+		conf.exclude.clear();
+		commasepstream excludes(block.Get<const Warden::string>("exclude"), true);
+		for (Warden::string list; excludes.GetToken(list);)
+		{
+			spacesepstream masks(list);
+			for (Warden::string mask; masks.GetToken(mask);)
+				conf.exclude.push_back(mask);
+		}
 		StartTimers();
 	}
 
