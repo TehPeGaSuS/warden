@@ -80,7 +80,12 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
 ### Fixes:
 * Security: with no RPC `token` configured, anyone who could reach httpd could
   use every RPC method (also in Anope). `jsonrpc` now requires at least one
-  `token { }` block and refuses to load without one.
+  `token { }` block and refuses to load without one, and refuses the public
+  token from Anope's example config. The example token block is now empty and
+  read-only. A rehash that would leave no token is rejected and RPC keeps
+  working.
+* A password reset did not confirm accounts with `registration = "mail"`: the
+  setting was read from the wrong block (also in Anope).
 * A password change now logs the account out of the web panel.
 * Security: an emailed password-reset link kept working after the reset was
   finished on IRC, the password was changed, or a recovery key was used, and

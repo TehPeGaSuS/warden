@@ -310,35 +310,41 @@ public:
 
 	void OnReload(Configuration::Conf &conf) override
 	{
-		if (httpref)
-			httpref->UnregisterPage(&jsonrpcinterface);
-
 		const auto &modconf = conf.GetModule(this);
-		JSONRPCServiceInterface::integer_bits = modconf.Get<unsigned>("integer_bits", "64");
 
-		this->httpref.SetServiceName(modconf.Get<const Warden::string>("server", "httpd/main"));
-		if (!httpref)
-			throw ConfigException("Unable to find http reference, is httpd loaded?");
-
-		jsonrpcinterface.tokens.clear();
-
+		// Check the new configuration before touching the running one, so a
+		// bad rehash leaves RPC working as it was.
+		std::vector<RPC::Token> tokens;
 		for (const auto &[_,  block] : modconf.GetBlocks("token"))
 		{
 			RPC::Token token;
 			token.token = block.Get<const Warden::string>("token");
+			// The token Anope's example config shipped with is public.
+			if (token.token.equals_cs("BmcxTaiYjoBtayfnxCFq"))
+				throw ConfigException("jsonrpc: the example token from the documentation is public; set your own");
 			if (!token.token.empty())
 			{
 				token.token_hash = block.Get<const Warden::string>("token_hash");
 				spacesepstream(block.Get<const Warden::string>("methods")).GetTokens(token.methods);
-				jsonrpcinterface.tokens.emplace_back(token);
+				tokens.push_back(token);
 			}
 		}
 
 		// RPC can log users in and run commands as any account, so it is
 		// never open: at least one token is required.
-		if (jsonrpcinterface.tokens.empty())
+		if (tokens.empty())
 			throw ConfigException("jsonrpc needs at least one token { } block; see modules.conf");
 
+		ServiceReference<HTTP::Provider> newref("HTTP::Provider", modconf.Get<const Warden::string>("server", "httpd/main"));
+		if (!newref)
+			throw ConfigException("Unable to find http reference, is httpd loaded?");
+
+		if (httpref)
+			httpref->UnregisterPage(&jsonrpcinterface);
+
+		JSONRPCServiceInterface::integer_bits = modconf.Get<unsigned>("integer_bits", "64");
+		jsonrpcinterface.tokens = std::move(tokens);
+		this->httpref.SetServiceName(modconf.Get<const Warden::string>("server", "httpd/main"));
 		httpref->RegisterPage(&jsonrpcinterface);
 	}
 };

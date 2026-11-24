@@ -10,6 +10,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "../webcpanel.h"
+#include "modules/nickserv/resetpass.h"
 
 #define WEBTOKEN_TYPE "WebToken"
 
@@ -74,7 +75,12 @@ bool WebToken::IsPending() const
 	if (this->type != WebLink::Type::RESETPASS)
 		return true;
 	auto *na = this->GetNick();
-	return na && na->nc->HasExt("reset");
+	if (!na)
+		return false;
+	// The pending reset must be the one this link was sent for: a newer
+	// request replaces it even when the old link wasn't revoked.
+	const auto *ri = na->nc->GetExt<::NickServ::ResetInfo>(NICKSERV_RESETPASS_EXT);
+	return ri && ri->code.equals_cs(this->code);
 }
 
 WebTokenType::WebTokenType()
@@ -294,7 +300,7 @@ bool WebCPanel::Verify::OnRequest(HTTP::Provider *server, const Warden::string &
 			done = nc->pass != old_pass;
 			if (done)
 			{
-				if (Config->GetModule("nickserv").Get<const Warden::string>("registration").equals_ci("mail"))
+				if (Config->GetModule("ns_register").Get<const Warden::string>("registration").equals_ci("mail"))
 					nc->Shrink<bool>("UNCONFIRMED");
 				replacements["MESSAGES"] = "Your password has been changed. You can now identify with it on IRC.";
 			}

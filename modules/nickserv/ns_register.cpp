@@ -493,10 +493,12 @@ public:
 		}
 
 		// Validated as if the new nick were registering (no user, so the
-		// oper's own nick, ident and realname play no part); replies still
-		// go to the oper.
-		CommandSource target(nick, nullptr, nullptr, source.reply, source.service);
+		// oper's own nick, ident and realname play no part). The oper's
+		// account stays, for their language and oper-only details such as a
+		// forbid's reason, and replies keep the command's msgid.
+		CommandSource target(nick, nullptr, source.nc, source.reply, source.service, source.msgid);
 		target.command = source.command;
+		target.permission = source.permission;
 		EventReturn MOD_RESULT;
 		FOREACH_RESULT(OnPasswordValidate, MOD_RESULT, (target, nullptr, pass));
 		if (MOD_RESULT == EVENT_STOP)

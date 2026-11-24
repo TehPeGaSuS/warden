@@ -14,6 +14,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 #include "module.h"
+#include "modules/nickserv/resetpass.h"
 #include "modules/weblink.h"
 #include "modules/encryption.h"
 
@@ -201,11 +202,7 @@ public:
 	}
 };
 
-struct ResetInfo final
-{
-	Warden::string code;
-	time_t time;
-};
+using NickServ::ResetInfo;
 
 class CommandNSResetPass final
 	: public Command
@@ -231,7 +228,7 @@ class CommandNSResetPass final
 
 		// Each key works once, and a pending email reset is no longer needed.
 		const auto newkey = keys.Create(nc);
-		nc->Shrink<ResetInfo>("reset");
+		nc->Shrink<ResetInfo>(NICKSERV_RESETPASS_EXT);
 
 		if (source.GetUser())
 			source.GetUser()->Identify(na);
@@ -389,7 +386,7 @@ public:
 
 		reset.Unset(nc);
 
-		if (Config->GetModule("nickserv").Get<const Warden::string>("registration").equals_ci("mail"))
+		if (Config->GetModule("ns_register").Get<const Warden::string>("registration").equals_ci("mail"))
 			nc->Shrink<bool>("UNCONFIRMED");
 
 		if (source.GetUser())
@@ -437,7 +434,7 @@ public:
 		, commandnsresetpass(this, keys)
 		, commandnssetrecoverykey(this, keys)
 		, commandnssasetrecoverykey(this, keys)
-		, reset(this, "reset")
+		, reset(this, NICKSERV_RESETPASS_EXT)
 	{
 		// Without mail, only recovery keys ({ns_register}:registration = "code")
 		// can reset passwords.
@@ -481,7 +478,7 @@ public:
 
 static bool SendResetEmail(User *u, const NickAlias *na, BotInfo *bi, Module* owner)
 {
-	auto *ri = na->nc->Extend<ResetInfo>("reset");
+	auto *ri = na->nc->Extend<ResetInfo>(NICKSERV_RESETPASS_EXT);
 	ri->code = Warden::Random(Config->GetBlock("options").Get<size_t>("codelength", "15"));
 	ri->time = Warden::CurTime;
 

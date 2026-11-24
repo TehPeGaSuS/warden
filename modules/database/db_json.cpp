@@ -269,6 +269,7 @@ private:
 		if (!yyjson_is_obj(root))
 		{
 			Log(this) << "Unable to read " << dbname << ": root element is not an object";
+			yyjson_doc_free(doc);
 			return std::nullopt;
 		}
 
@@ -276,6 +277,7 @@ private:
 		if (version && version != WARDEN_DATABASE_VERSION)
 		{
 			Log(this) << "Refusing to load an unsupported database version: " << version;
+			yyjson_doc_free(doc);
 			return std::nullopt;
 		}
 
@@ -287,6 +289,7 @@ private:
 		if (!data || !yyjson_is_obj(data))
 		{
 			Log(this) << "Unable to read " << dbname << ": data element is missing or not an object";
+			yyjson_doc_free(doc);
 			return std::nullopt;
 		}
 
@@ -499,7 +502,8 @@ public:
 			auto target = dbname;
 			if (fs::is_symlink(dbname.str(), ec))
 			{
-				const auto resolved = fs::canonical(dbname.str(), ec);
+				// weakly_canonical: the target may not exist yet.
+				const auto resolved = fs::weakly_canonical(dbname.str(), ec);
 				if (!ec)
 					target = resolved.string();
 			}
@@ -552,6 +556,7 @@ public:
 				return;
 			}
 
+			unreadable.erase(dbname); // Readable again (e.g. fixed and the module reloaded).
 			it = databases.emplace(s_type->GetOwner(), std::move(db.value())).first;
 		}
 
