@@ -83,6 +83,7 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
 * Every persistent channel was treated as still syncing when the uplink
   synced.
 * Topic setters sent as a full mask were cut down to a nick.
+* `dontkickops` and `dontkickvoices` in BotServ's `defaults` did nothing.
 
 ### Upgrading from Anope:
 * The binary is `warden`, the configuration `warden.conf` and the database

@@ -1148,6 +1148,26 @@ public:
 
 	}
 
+	void OnCreateChan(ChannelInfo *ci) override
+	{
+		// dontkickops and dontkickvoices live in the kicker data, not in a
+		// BS_ flag, so botserv:defaults cannot set them on its own.
+		spacesepstream sep(Config->GetModule("botserv").Get<const Warden::string>("defaults", "greet fantasy"));
+		for (Warden::string token; sep.GetToken(token);)
+		{
+			const auto ops = token.equals_ci("dontkickops");
+			if (!ops && !token.equals_ci("dontkickvoices"))
+				continue;
+
+			auto *kd = kickerdata.Require(ci);
+			if (ops)
+				kd->dontkickops = true;
+			else
+				kd->dontkickvoices = true;
+			kd->Check(ci);
+		}
+	}
+
 	void OnBotInfo(CommandSource &source, BotInfo *bi, ChannelInfo *ci, InfoFormatter &info) override
 	{
 		if (!ci)
