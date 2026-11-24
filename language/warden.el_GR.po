@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 18:33+0100\n"
+"POT-Creation-Date: 2026-11-24 23:12+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -278,6 +278,11 @@ msgstr "Ο/η %s δεν έχει πρόσβαση σε κανένα κανάλ
 #, c-format
 msgid "%s has no access on %s."
 msgstr "Ο/η %s δεν έχει πρόσβαση στο %s."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "%s has no automatic user limit."
+msgstr "Το %s δεν έχει αυτόματο όριο χρηστών."
 
 #: ../modules/nickserv/ns_resetpass.cpp
 #, c-format
@@ -579,6 +584,11 @@ msgstr "#%s# θα αγνοείται για #%s#."
 #, c-format
 msgid "%s will now permanently be ignored."
 msgstr "#%s# θα αγνοείται για πάντα."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "%s: user count + %u, checked every %s (set by %s)."
+msgstr "%s: πλήθος χρηστών + %u, έλεγχος κάθε %s (ορίστηκε από %s)."
 
 #: ../modules/chanserv/cs_flags.cpp
 #, c-format
@@ -935,6 +945,10 @@ msgstr "κανάλι PREPEND θέμα"
 msgid "channel RESET"
 msgstr "κανάλι RESET"
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "channel SET amount interval"
+msgstr "κανάλι SET ποσότητα διάστημα"
+
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "channel SET entry-num"
 msgstr "κανάλι SET αρ-καταχώρισης"
@@ -1035,6 +1049,10 @@ msgstr "κανάλι {ON|OFF} [ttb [αριθμός]]"
 #: ../modules/botserv/bs_kick.cpp
 msgid "channel {ON|OFF} [ttb]"
 msgstr "κανάλι {ON|OFF} [ttb]"
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "channel {DEL | SHOW}"
+msgstr "κανάλι {DEL | SHOW}"
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel {DIS | DISABLE} type"
@@ -2890,6 +2908,10 @@ msgstr "Αυτόματο status operator καναλιού κατά την είσ
 msgid "Automatic halfop upon join"
 msgstr "Αυτόματο halfop κατά την είσοδο"
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "Automatic limit"
+msgstr "Αυτόματο όριο"
+
 #: ../data/chanserv.example.conf
 msgid "Automatic owner upon join"
 msgstr "Αυτόματο owner κατά την είσοδο"
@@ -4642,6 +4664,11 @@ msgstr "Τέλος λίστας - εμφανίστηκαν %d κανάλια."
 msgid "End of list - %d/%d matches shown."
 msgstr "Τέλος της λίστας - %d/%d βρέθηκαν και εμφανίστηκαν."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "End of list - %u channels."
+msgstr "Τέλος λίστας - %u κανάλια."
+
 #: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "End of list - %u/%u shown."
@@ -5312,6 +5339,28 @@ msgstr "Η διατήρηση modes για το %s είναι πλέον off."
 msgid "Keep modes for %s is now on."
 msgstr "Η διατήρηση modes για το %s είναι πλέον on."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "Keep the channel's user limit just above its user count"
+msgstr "Διατήρηση του ορίου χρηστών του καναλιού λίγο πάνω από το πλήθος τους"
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid ""
+"Keeps the channel's user limit (+l) a little above the number of users in it, so a flood of joins is held back while people can still get in. Every interval the limit is set to the user count plus amount, but only when that changes it.\n"
+"\n"
+"A large interval or a small amount may keep people out during or after a netsplit; an amount of 5 to 10 checked every 30 seconds is a good start. The interval can be given in seconds or like 30s or 2m.\n"
+"\n"
+"DEL stops it and removes the limit. SHOW shows the settings. A mode lock on the limit (+l or -l) takes precedence.\n"
+"\n"
+"You need the SET privilege on the channel."
+msgstr ""
+"Διατηρεί το όριο χρηστών του καναλιού (+l) λίγο πάνω από το πλήθος των χρηστών του, ώστε ένα κύμα εισόδων να συγκρατείται ενώ οι άνθρωποι μπορούν ακόμα να μπουν. Κάθε διάστημα το όριο γίνεται το πλήθος χρηστών συν την ποσότητα, αλλά μόνο όταν αυτό το αλλάζει.\n"
+"\n"
+"Ένα μεγάλο διάστημα ή μια μικρή ποσότητα μπορεί να κρατήσει ανθρώπους έξω κατά τη διάρκεια ή μετά από ένα netsplit· μια ποσότητα 5 έως 10, με έλεγχο κάθε 30 δευτερόλεπτα, είναι καλή αρχή. Το διάστημα μπορεί να δοθεί σε δευτερόλεπτα ή ως 30s ή 2m.\n"
+"\n"
+"Το DEL το σταματά και αφαιρεί το όριο. Το SHOW δείχνει τις ρυθμίσεις. Ένα mode lock στο όριο (+l ή -l) έχει προτεραιότητα.\n"
+"\n"
+"Χρειάζεστε το προνόμιο SET στο κανάλι."
+
 #: ../modules/nickserv/ns_ajoin.cpp
 msgid "Key"
 msgstr "Κλειδί"
@@ -5356,6 +5405,10 @@ msgstr "Το LIMIT επιβλήθηκε από %s"
 #, c-format
 msgid "LIMIT enforced on %s, %zu users removed."
 msgstr "Το LIMIT επιβλήθηκε στο %s, αφαιρέθηκαν %zu χρήστες."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "LIST"
+msgstr "LIST"
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "LIST nickname"
@@ -6502,6 +6555,10 @@ msgstr "Κανένα bot"
 msgid "No bots match %s."
 msgstr "Κανένα bot δεν ταιριάζει με το %s."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "No channel has an automatic user limit."
+msgstr "Κανένα κανάλι δεν έχει αυτόματο όριο χρηστών."
+
 #: ../modules/operserv/os_expiring.cpp
 #, c-format
 msgid "No channels will expire within %s."
@@ -6942,7 +6999,7 @@ msgstr "Παρακαλώ επιβεβαιώστε ότι θέλετε να δι�
 msgid "Please contact an Operator to get a vhost assigned to this nick."
 msgstr "Παρακαλώ επικοινωνήστε με έναν Operator για να σας δοθεί vhost σε αυτό το ψευδώνυμο."
 
-#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_register.cpp
+#: ../modules/nickserv/nickserv.cpp
 msgid "Please try again with a more obscure password. Passwords should not be something that could be easily guessed (e.g. your real name or your nick) and cannot contain a space character."
 msgstr "Παρακαλώ δοκιμάστε ξανά με ένα πιο δύσκολο password. Τα passwords δεν πρέπει να μαντεύονται εύκολα (π.χ. το πραγματικό σας όνομα ή το ψευδώνυμό σας) και δεν μπορούν να περιέχουν κενό."
 
@@ -7828,6 +7885,10 @@ msgstr "Οι Services operators (επικεφαλείς) μπορούν να δ�
 #: ../modules/chanserv/chanserv.cpp
 msgid "Services Operators can also, depending on their access drop any channel, view (and modify) the access, levels and akick lists and settings for any channel."
 msgstr "Οι Services Operators μπορούν επίσης, ανάλογα με την πρόσβασή τους, να κάνουν drop οποιοδήποτε κανάλι και να δουν (και να τροποποιήσουν) την access list, τα levels, τη λίστα akick και τις ρυθμίσεις οποιουδήποτε καναλιού."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "Services Operators can use it on any channel, and LIST shows every channel with an automatic user limit."
+msgstr "Οι Χειριστές Υπηρεσιών μπορούν να το χρησιμοποιήσουν σε οποιοδήποτε κανάλι, και το LIST δείχνει όλα τα κανάλια με αυτόματο όριο χρηστών."
 
 #: ../modules/operserv/os_defcon.cpp
 msgid "Services are in DefCon mode, please try again later."
@@ -8831,6 +8892,16 @@ msgstr "Το defcon επίπεδο είναι τώρα: #%d#"
 msgid "The access list of %s is full."
 msgstr "Η λίστα πρόσβασης του %s είναι γεμάτη."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The amount must be between %u and %u."
+msgstr "Η ποσότητα πρέπει να είναι από %u έως %u."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The automatic user limit of %s has been removed."
+msgstr "Το αυτόματο όριο χρηστών του %s αφαιρέθηκε."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "The confirmation code for %s has been re-sent to %s."
@@ -8934,6 +9005,11 @@ msgstr "Η ομάδα %s δεν είναι σε καμία λίστα πρόσ
 #, c-format
 msgid "The host %s currently has %d sessions with a limit of %d because it matches entry: %s."
 msgstr "Ο host %s έχει αυτή τη στιγμή %d sessions με όριο %d επειδή ταιριάζει με την καταχώρηση: %s."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The interval must be between %s and %s, e.g. 30s or 2m."
+msgstr "Το διάστημα πρέπει να είναι από %s έως %s, π.χ. 30s ή 2m."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -9127,6 +9203,16 @@ msgstr "Το επίπεδο πρόσβασης του  #%s# στα Services θα
 #: ../modules/operserv/os_session.cpp
 msgid "The session exception list is empty."
 msgstr "Η λίστα εξαιρέσεων session είναι άδεια."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The user limit of %s is mode locked; remove that lock first."
+msgstr "Το όριο χρηστών του %s είναι κλειδωμένο με mode lock· αφαιρέστε πρώτα αυτό το κλείδωμα."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The user limit of %s will be kept at the user count + %u, checked every %s."
+msgstr "Το όριο χρηστών του %s θα διατηρείται στο πλήθος χρηστών + %u, με έλεγχο κάθε %s."
 
 #: ../modules/nickserv/ns_recover.cpp
 msgid "The user with your nick has been removed. Use this command again to release services's hold on your nick."
@@ -11050,6 +11136,11 @@ msgstr "γράμματα: %s, λέξεις: %s, γραμμές: %s, φατσού
 #: ../modules/botserv/bs_info.cpp
 msgid "not assigned yet"
 msgstr "δεν έχει οριστεί ακόμα"
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "user count + %u, every %s"
+msgstr "πλήθος χρηστών + %u, κάθε %s"
 
 #: ../modules/chanserv/cs_set_misc.cpp ../modules/nickserv/ns_set_misc.cpp
 msgid "value"

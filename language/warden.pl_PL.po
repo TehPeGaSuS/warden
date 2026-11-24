@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 18:33+0100\n"
+"POT-Creation-Date: 2026-11-24 23:12+0100\n"
 "PO-Revision-Date: 2024-02-22 16:42+0000\n"
 "Last-Translator: k4be <k4be@pirc.pl>\n"
 "Language-Team: Polish\n"
@@ -284,6 +284,11 @@ msgstr "%s nie jest na liście dostępu żadnego kanału."
 #, c-format
 msgid "%s has no access on %s."
 msgstr "%s nie ma uprawnień na %s."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "%s has no automatic user limit."
+msgstr "%s nie ma automatycznego limitu użytkowników."
 
 #: ../modules/nickserv/ns_resetpass.cpp
 #, c-format
@@ -585,6 +590,11 @@ msgstr "Nick %s będzie ignorowany przez %s."
 #, c-format
 msgid "%s will now permanently be ignored."
 msgstr "Nick %s będzie stale ignorowany."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "%s: user count + %u, checked every %s (set by %s)."
+msgstr "%s: liczba użytkowników + %u, sprawdzane co %s (ustawił %s)."
 
 #: ../modules/chanserv/cs_flags.cpp
 #, c-format
@@ -944,6 +954,10 @@ msgstr "kanał PREPEND temat"
 msgid "channel RESET"
 msgstr "kanał RESET"
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "channel SET amount interval"
+msgstr "kanał SET ilość odstęp"
+
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "channel SET entry-num"
 msgstr "kanał SET nr-wpisu"
@@ -1044,6 +1058,10 @@ msgstr "kanał {ON|OFF} [ttb [numer]]"
 #: ../modules/botserv/bs_kick.cpp
 msgid "channel {ON|OFF} [ttb]"
 msgstr "kanał {ON|OFF} [ttb]"
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "channel {DEL | SHOW}"
+msgstr "kanał {DEL | SHOW}"
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel {DIS | DISABLE} type"
@@ -2912,6 +2930,10 @@ msgstr "Automatyczne przydzielanie statusu operatora przy wejściu"
 msgid "Automatic halfop upon join"
 msgstr "Automatyczne przydzielanie statusu półoperatora (halfop) przy wejściu"
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "Automatic limit"
+msgstr "Automatyczny limit"
+
 #: ../data/chanserv.example.conf
 msgid "Automatic owner upon join"
 msgstr "Automatyczne przydzielanie statusu właściciela (owner) przy wejściu"
@@ -4669,6 +4691,11 @@ msgstr "Koniec listy - %d kanałów wyświetlono."
 msgid "End of list - %d/%d matches shown."
 msgstr "Koniec listy - %d/%d wpisów wyświetlono."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "End of list - %u channels."
+msgstr "Koniec listy - %u kanałów."
+
 #: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "End of list - %u/%u shown."
@@ -5339,6 +5366,28 @@ msgstr "Opcja zapamiętywania flag dla %s została wyłączona."
 msgid "Keep modes for %s is now on."
 msgstr "Opcja zapamiętywania flag dla %s została włączona."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "Keep the channel's user limit just above its user count"
+msgstr "Utrzymuj limit użytkowników kanału nieco powyżej ich liczby"
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid ""
+"Keeps the channel's user limit (+l) a little above the number of users in it, so a flood of joins is held back while people can still get in. Every interval the limit is set to the user count plus amount, but only when that changes it.\n"
+"\n"
+"A large interval or a small amount may keep people out during or after a netsplit; an amount of 5 to 10 checked every 30 seconds is a good start. The interval can be given in seconds or like 30s or 2m.\n"
+"\n"
+"DEL stops it and removes the limit. SHOW shows the settings. A mode lock on the limit (+l or -l) takes precedence.\n"
+"\n"
+"You need the SET privilege on the channel."
+msgstr ""
+"Utrzymuje limit użytkowników kanału (+l) nieco powyżej liczby obecnych użytkowników, tak aby fala wejść została powstrzymana, a ludzie wciąż mogli wejść. Co odstęp limit jest ustawiany na liczbę użytkowników plus ilość, ale tylko wtedy, gdy to go zmienia.\n"
+"\n"
+"Duży odstęp lub mała ilość mogą nie wpuścić ludzi podczas lub po netsplicie; ilość od 5 do 10, sprawdzana co 30 sekund, to dobry początek. Odstęp można podać w sekundach lub jako 30s albo 2m.\n"
+"\n"
+"DEL wyłącza go i usuwa limit. SHOW pokazuje ustawienia. Mode lock na limicie (+l lub -l) ma pierwszeństwo.\n"
+"\n"
+"Potrzebujesz uprawnienia SET na kanale."
+
 #: ../modules/nickserv/ns_ajoin.cpp
 msgid "Key"
 msgstr "Klucz"
@@ -5383,6 +5432,10 @@ msgstr "LIMIT wymuszony przez %s"
 #, c-format
 msgid "LIMIT enforced on %s, %zu users removed."
 msgstr "LIMIT wymuszony na %s, wyrzucono %zu użytkowników."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "LIST"
+msgstr "LIST"
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "LIST nickname"
@@ -6531,6 +6584,10 @@ msgstr "NOBOT"
 msgid "No bots match %s."
 msgstr "Żaden bot nie pasuje do %s."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "No channel has an automatic user limit."
+msgstr "Żaden kanał nie ma automatycznego limitu użytkowników."
+
 #: ../modules/operserv/os_expiring.cpp
 #, c-format
 msgid "No channels will expire within %s."
@@ -6971,7 +7028,7 @@ msgstr "Potwierdź, że chcesz usunąć %s, wpisując %s%s%s"
 msgid "Please contact an Operator to get a vhost assigned to this nick."
 msgstr "Skontaktuj się z operatorem, aby przypisał vhosta do tego nicka."
 
-#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_register.cpp
+#: ../modules/nickserv/nickserv.cpp
 msgid "Please try again with a more obscure password. Passwords should not be something that could be easily guessed (e.g. your real name or your nick) and cannot contain a space character."
 msgstr "Spróbuj ponownie z trudniejszym hasłem. Hasło nie powinno być łatwe do odgadnięcia (np. Twoje prawdziwe imię lub nick) i nie może zawierać spacji."
 
@@ -7855,6 +7912,10 @@ msgstr "Administratorzy serwisów mogą usunąć każdy nick bez potrzeby identy
 #: ../modules/chanserv/chanserv.cpp
 msgid "Services Operators can also, depending on their access drop any channel, view (and modify) the access, levels and akick lists and settings for any channel."
 msgstr "Operatorzy serwisów mogą usunąć każdy kanał bez potrzeby identyfikacji jako jego właściciele. Mogą przeglądać (i zmieniać) listę dostępu każdego kanału, listę AKICK, ustawienia poziomów dostępu itd."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "Services Operators can use it on any channel, and LIST shows every channel with an automatic user limit."
+msgstr "Operatorzy Serwisów mogą go używać na każdym kanale, a LIST pokazuje wszystkie kanały z automatycznym limitem użytkowników."
 
 #: ../modules/operserv/os_defcon.cpp
 msgid "Services are in DefCon mode, please try again later."
@@ -8855,6 +8916,16 @@ msgstr "Defcon jest teraz na poziomie: %d"
 msgid "The access list of %s is full."
 msgstr "Lista dostępu %s jest pełna."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The amount must be between %u and %u."
+msgstr "Ilość musi wynosić od %u do %u."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The automatic user limit of %s has been removed."
+msgstr "Automatyczny limit użytkowników kanału %s został usunięty."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "The confirmation code for %s has been re-sent to %s."
@@ -8959,6 +9030,11 @@ msgstr "Grupy %s nie ma na żadnej liście dostępu kanałów."
 #, c-format
 msgid "The host %s currently has %d sessions with a limit of %d because it matches entry: %s."
 msgstr "Host %s aktualnie posiada %d sesji z limitem %d, ponieważ pasuje do wpisu: %s."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The interval must be between %s and %s, e.g. 30s or 2m."
+msgstr "Odstęp musi wynosić od %s do %s, np. 30s lub 2m."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -9156,6 +9232,16 @@ msgstr "Status dostępu do serwisów osoby %s będzie pokazywany w informacjac
 #: ../modules/operserv/os_session.cpp
 msgid "The session exception list is empty."
 msgstr "Lista wyjątków sesji jest pusta."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The user limit of %s is mode locked; remove that lock first."
+msgstr "Limit użytkowników kanału %s jest zablokowany przez mode lock; najpierw usuń tę blokadę."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The user limit of %s will be kept at the user count + %u, checked every %s."
+msgstr "Limit użytkowników kanału %s będzie utrzymywany na poziomie liczby użytkowników + %u, sprawdzany co %s."
 
 #: ../modules/nickserv/ns_recover.cpp
 msgid "The user with your nick has been removed. Use this command again to release services's hold on your nick."
@@ -11097,6 +11183,11 @@ msgstr "litery: %s, słowa: %s, linie: %s, emotikony: %s, akcje: %s"
 #: ../modules/botserv/bs_info.cpp
 msgid "not assigned yet"
 msgstr "jeszcze nie przypisano"
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "user count + %u, every %s"
+msgstr "liczba użytkowników + %u, co %s"
 
 #: ../modules/chanserv/cs_set_misc.cpp ../modules/nickserv/ns_set_misc.cpp
 msgid "value"

@@ -3,6 +3,12 @@ Warden 1.0.1
 
 Not released yet.
 
+### Enhancements:
+* `ChanServ AUTOLIMIT` (`cs_autolimit`, based on Fill's third-party module) keeps
+  a channel's user limit a little above its user count, so floods of joins are
+  held back while people can still get in. It only changes `+l` when the limit
+  actually changes and respects mode locks.
+
 ### Fixes:
 * The systemd unit is wanted by `default.target` instead of `multi-user.target`,
   so `systemctl --user enable warden` starts it at boot (also in Anope).

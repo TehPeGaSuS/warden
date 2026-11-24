@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 18:33+0100\n"
+"POT-Creation-Date: 2026-11-24 23:12+0100\n"
 "PO-Revision-Date: 2025-02-23 03:23+0100\n"
 "Last-Translator: Robby <robby@chatbelgie.be>\n"
 "Language-Team: Dutch\n"
@@ -278,6 +278,11 @@ msgstr "%s heeft op geen enkel kanaal toegang."
 #, c-format
 msgid "%s has no access on %s."
 msgstr "%s heeft geen toegang op %s."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "%s has no automatic user limit."
+msgstr "%s heeft geen automatische gebruikerslimiet."
 
 #: ../modules/nickserv/ns_resetpass.cpp
 #, c-format
@@ -579,6 +584,11 @@ msgstr "%s zal nu genegeerd worden voor %s."
 #, c-format
 msgid "%s will now permanently be ignored."
 msgstr "%s zal nu permanent genegeerd worden."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "%s: user count + %u, checked every %s (set by %s)."
+msgstr "%s: aantal gebruikers + %u, elke %s gecontroleerd (ingesteld door %s)."
 
 #: ../modules/chanserv/cs_flags.cpp
 #, c-format
@@ -935,6 +945,10 @@ msgstr "kanaal PREPEND topic"
 msgid "channel RESET"
 msgstr "kanaal RESET"
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "channel SET amount interval"
+msgstr "kanaal SET aantal interval"
+
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "channel SET entry-num"
 msgstr "kanaal SET item-nr"
@@ -1035,6 +1049,10 @@ msgstr "kanaal {ON|OFF} [ttb [aantal]]"
 #: ../modules/botserv/bs_kick.cpp
 msgid "channel {ON|OFF} [ttb]"
 msgstr "kanaal {ON|OFF} [ttb]"
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "channel {DEL | SHOW}"
+msgstr "kanaal {DEL | SHOW}"
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel {DIS | DISABLE} type"
@@ -2890,6 +2908,10 @@ msgstr "Automatische kanaaloperator status bij het betreden"
 msgid "Automatic halfop upon join"
 msgstr "Automatische halfoperator status bij het betreden"
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "Automatic limit"
+msgstr "Automatische limiet"
+
 #: ../data/chanserv.example.conf
 msgid "Automatic owner upon join"
 msgstr "Automatische eigenaar status bij het betreden"
@@ -4638,6 +4660,11 @@ msgstr "Einde van lijst - %d kanalen weergegeven."
 msgid "End of list - %d/%d matches shown."
 msgstr "Einde van lijst - %d/%d overeenkomsten weergegeven."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "End of list - %u channels."
+msgstr "Einde van de lijst - %u kanalen."
+
 #: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
 #, c-format
 msgid "End of list - %u/%u shown."
@@ -5308,6 +5335,28 @@ msgstr "Modes behouden voor %s is nu uit."
 msgid "Keep modes for %s is now on."
 msgstr "Modes behouden voor %s is nu aan."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "Keep the channel's user limit just above its user count"
+msgstr "De gebruikerslimiet van het kanaal net boven het aantal gebruikers houden"
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid ""
+"Keeps the channel's user limit (+l) a little above the number of users in it, so a flood of joins is held back while people can still get in. Every interval the limit is set to the user count plus amount, but only when that changes it.\n"
+"\n"
+"A large interval or a small amount may keep people out during or after a netsplit; an amount of 5 to 10 checked every 30 seconds is a good start. The interval can be given in seconds or like 30s or 2m.\n"
+"\n"
+"DEL stops it and removes the limit. SHOW shows the settings. A mode lock on the limit (+l or -l) takes precedence.\n"
+"\n"
+"You need the SET privilege on the channel."
+msgstr ""
+"Houdt de gebruikerslimiet van het kanaal (+l) iets boven het aantal gebruikers erin, zodat een vloed aan joins wordt afgeremd terwijl mensen nog binnen kunnen. Elke interval wordt de limiet op het aantal gebruikers plus aantal gezet, maar alleen als dat hem verandert.\n"
+"\n"
+"Een groot interval of een klein aantal kan mensen buitensluiten tijdens of na een netsplit; een aantal van 5 tot 10, elke 30 seconden gecontroleerd, is een goed begin. Het interval kan in seconden of als 30s of 2m worden gegeven.\n"
+"\n"
+"DEL stopt het en verwijdert de limiet. SHOW toont de instellingen. Een mode lock op de limiet (+l of -l) gaat voor.\n"
+"\n"
+"Je hebt het SET-privilege in het kanaal nodig."
+
 #: ../modules/nickserv/ns_ajoin.cpp
 msgid "Key"
 msgstr "Sleutel"
@@ -5352,6 +5401,10 @@ msgstr "LIMIT afgedwongen door %s"
 #, c-format
 msgid "LIMIT enforced on %s, %zu users removed."
 msgstr "LIMIT afgedwongen op %s, %zu gebruikers werden verwijderd."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "LIST"
+msgstr "LIST"
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "LIST nickname"
@@ -6498,6 +6551,10 @@ msgstr "Geen bot"
 msgid "No bots match %s."
 msgstr "Geen bots komen overeen met %s."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "No channel has an automatic user limit."
+msgstr "Geen enkel kanaal heeft een automatische gebruikerslimiet."
+
 #: ../modules/operserv/os_expiring.cpp
 #, c-format
 msgid "No channels will expire within %s."
@@ -6938,7 +6995,7 @@ msgstr "Bevestig dat je %s wil verwijderen met %s%s%s"
 msgid "Please contact an Operator to get a vhost assigned to this nick."
 msgstr "Gelieve een Operator te contacteren om een vhost aan je nick toegewezen te krijgen."
 
-#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_register.cpp
+#: ../modules/nickserv/nickserv.cpp
 msgid "Please try again with a more obscure password. Passwords should not be something that could be easily guessed (e.g. your real name or your nick) and cannot contain a space character."
 msgstr "Probeer opnieuw met een minder voor de hand liggend wachtwoord. Wachtwoorden mogen niet iets zijn dat makkelijk geraden kan worden (bv. je echte naam of je nick) en mogen geen spatie bevatten."
 
@@ -7820,6 +7877,10 @@ msgstr "Services Operators kunnen ook de registratie van elke nick verwijderen z
 #: ../modules/chanserv/chanserv.cpp
 msgid "Services Operators can also, depending on their access drop any channel, view (and modify) the access, levels and akick lists and settings for any channel."
 msgstr "Services Operators kunnen ook, afhankelijk van hun eigen toegang, kanaalregistraties verwijderen, bekijken (en aanpassen) van de toegangs-, niveau-, privilege- en autokicklijsten, en de instellingen van elk kanaal."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+msgid "Services Operators can use it on any channel, and LIST shows every channel with an automatic user limit."
+msgstr "Services Operators kunnen het in elk kanaal gebruiken, en LIST toont alle kanalen met een automatische gebruikerslimiet."
 
 #: ../modules/operserv/os_defcon.cpp
 msgid "Services are in DefCon mode, please try again later."
@@ -8820,6 +8881,16 @@ msgstr "Het Defcon niveau staat nu op: %d"
 msgid "The access list of %s is full."
 msgstr "De toegangslijst van %s is vol."
 
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The amount must be between %u and %u."
+msgstr "Het aantal moet tussen %u en %u liggen."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The automatic user limit of %s has been removed."
+msgstr "De automatische gebruikerslimiet van %s is verwijderd."
+
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
 msgid "The confirmation code for %s has been re-sent to %s."
@@ -8923,6 +8994,11 @@ msgstr "De groep %s staat op geen enkele toegangslijst van een kanaal."
 #, c-format
 msgid "The host %s currently has %d sessions with a limit of %d because it matches entry: %s."
 msgstr "Host %s heeft momenteel %d sessies met een limiet van %d omdat het overeenstemt met: %s."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The interval must be between %s and %s, e.g. 30s or 2m."
+msgstr "Het interval moet tussen %s en %s liggen, bijvoorbeeld 30s of 2m."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -9116,6 +9192,16 @@ msgstr "Het services toegangsniveau van %s zal vanaf nu getoond worden in %s I
 #: ../modules/operserv/os_session.cpp
 msgid "The session exception list is empty."
 msgstr "De uitzonderingenlijst voor sessielimieten is leeg."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The user limit of %s is mode locked; remove that lock first."
+msgstr "De gebruikerslimiet van %s is vastgezet met een mode lock; verwijder die eerst."
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "The user limit of %s will be kept at the user count + %u, checked every %s."
+msgstr "De gebruikerslimiet van %s wordt op het aantal gebruikers + %u gehouden, elke %s gecontroleerd."
 
 #: ../modules/nickserv/ns_recover.cpp
 msgid "The user with your nick has been removed. Use this command again to release services's hold on your nick."
@@ -11039,6 +11125,11 @@ msgstr "letters: %s, woorden: %s, lijnen: %s, smileys: %s, acties: %s"
 #: ../modules/botserv/bs_info.cpp
 msgid "not assigned yet"
 msgstr "nog niet toegewezen"
+
+#: ../modules/chanserv/cs_autolimit.cpp
+#, c-format
+msgid "user count + %u, every %s"
+msgstr "aantal gebruikers + %u, elke %s"
 
 #: ../modules/chanserv/cs_set_misc.cpp ../modules/nickserv/ns_set_misc.cpp
 msgid "value"
