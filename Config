@@ -166,29 +166,31 @@ export ok INPUT
 
 ####
 
-TEMP_YN="n"
-if [ "$DEVEL" = "yes" ] ; then
-	TEMP_YN="y"
-fi
-echo "You are building the 2.1 development branch. This branch is not as well tested"
-echo "as the 2.0 stable branch and may have compatibility breaks without notice. Are"
-echo "you sure you want to use this version?"
-echo -n "[$TEMP_YN] "
-read YN
-if [ "$YN" ] ; then
-	if [ "$YN" = "y" ] ; then
-		DEVEL="yes"
-	else
-		DEVEL="no"
+if [ "$VERSION_EXTRA" = "-git" ] ; then
+	TEMP_YN="n"
+	if [ "$DEVEL" = "yes" ] ; then
+		TEMP_YN="y"
 	fi
-fi
-echo ""
+	echo "You are building a development version of Warden ($VERSION_MAJOR.$VERSION_MINOR.$VERSION_PATCH$VERSION_EXTRA)."
+	echo "It is not as well tested as a release and may have compatibility breaks"
+	echo "without notice. Are you sure you want to use this version?"
+	echo -n "[$TEMP_YN] "
+	read YN
+	if [ "$YN" ] ; then
+		if [ "$YN" = "y" ] ; then
+			DEVEL="yes"
+		else
+			DEVEL="no"
+		fi
+	fi
+	echo ""
 
-if [ "$DEVEL" != "yes" ] ; then
-	echo "If you are building from Git you can run \`git checkout 2.0\` to get the latest"
-	echo "stable code. Otherwise, you can download the latest 2.0 release tarball from"
-	echo "https://github.com/anope/anope/releases/latest"
-	exit 1
+	if [ "$DEVEL" != "yes" ] ; then
+		echo "You can download the latest release from"
+		echo "https://github.com/TehPeGaSuS/warden/releases/latest"
+		echo "or, if you are building from Git, check out the latest release tag."
+		exit 1
+	fi
 fi
 
 ####
