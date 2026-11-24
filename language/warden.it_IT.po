@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 14:54+0100\n"
+"POT-Creation-Date: 2026-11-24 15:11+0100\n"
 "PO-Revision-Date: 2024-02-22 16:38+0000\n"
 "Last-Translator: Dragone2 <dragone2@risposteinformatiche.it>\n"
 "Language-Team: Italian\n"
@@ -7481,8 +7481,8 @@ msgid "Reverses kicker"
 msgstr "Espulsione per inversione"
 
 #: ../modules/nickserv/ns_logout.cpp
-msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself."
-msgstr "Annulla l'effetto del comando IDENTIFY, cioè non verrai più riconosciuto come vero proprietario del nick. Nota, comunque, che non ti verrà chiesto di identificarti di nuovo."
+msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed."
+msgstr "Annulla l'effetto del comando IDENTIFY, cioè non verrai più riconosciuto come vero proprietario del nick. Se il nick che stai usando è protetto, devi identificarti di nuovo o il tuo nick verrà cambiato."
 
 #: ../modules/nickserv/ns_mset.cpp
 msgid ""
@@ -9986,11 +9986,11 @@ msgstr ""
 
 #: ../modules/nickserv/ns_logout.cpp
 msgid ""
-"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself.\n"
+"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed.\n"
 "\n"
 "With a parameter, does the same for the given nick. If you specify REVALIDATE as well, services will ask the given nick to re-identify. This is limited to Services Operators."
 msgstr ""
-"Senza nessun parametro, annulla l'effetto del comando IDENTIFY, rendendoti non più identificato come proprietario del nick. Da notare, comunque, che non ti sarà richiesto di identificarti di nuovo.\n"
+"Senza nessun parametro, annulla l'effetto del comando IDENTIFY, rendendoti non più identificato come proprietario del nick. Se il nick che stai usando è protetto, devi identificarti di nuovo o il tuo nick verrà cambiato.\n"
 "\n"
 "Con un parametro, il funzionamento è identico ma viene applicato al nick specificato. Se si indica anche REVALIDATE, i Services chiederanno al nick specificato di re-identificarsi. Questo utilizzo è limitato ai Services Operator."
 

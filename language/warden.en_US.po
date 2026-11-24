@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 14:54+0100\n"
+"POT-Creation-Date: 2026-11-24 15:11+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -7144,7 +7144,7 @@ msgid "Reverses kicker"
 msgstr ""
 
 #: ../modules/nickserv/ns_logout.cpp
-msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself."
+msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed."
 msgstr ""
 
 #: ../modules/nickserv/ns_mset.cpp
@@ -9415,7 +9415,7 @@ msgstr ""
 
 #: ../modules/nickserv/ns_logout.cpp
 msgid ""
-"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself.\n"
+"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed.\n"
 "\n"
 "With a parameter, does the same for the given nick. If you specify REVALIDATE as well, services will ask the given nick to re-identify. This is limited to Services Operators."
 msgstr ""

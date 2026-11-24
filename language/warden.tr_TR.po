@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 14:54+0100\n"
+"POT-Creation-Date: 2026-11-24 15:11+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -7485,8 +7485,8 @@ msgid "Reverses kicker"
 msgstr "Reverse yazı atma"
 
 #: ../modules/nickserv/ns_logout.cpp
-msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself."
-msgstr "IDENTIFY komutunun etkisini tersine çevirir, yani artık rumuzun gerçek sahibi olarak tanınmamanızı sağlar. Ancak kendinizi yeniden tanımlamanızın istenmeyeceğini unutmayın."
+msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed."
+msgstr "IDENTIFY komutunun etkisini tersine çevirir, yani artık rumuzun gerçek sahibi olarak tanınmamanızı sağlar. Kullandığınız rumuz korunuyorsa, yeniden kimlik doğrulamanız gerekir, aksi halde rumuzunuz değiştirilir."
 
 #: ../modules/nickserv/ns_mset.cpp
 msgid ""
@@ -9995,11 +9995,11 @@ msgstr ""
 
 #: ../modules/nickserv/ns_logout.cpp
 msgid ""
-"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself.\n"
+"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed.\n"
 "\n"
 "With a parameter, does the same for the given nick. If you specify REVALIDATE as well, services will ask the given nick to re-identify. This is limited to Services Operators."
 msgstr ""
-"Parametre olmadan IDENTIFY komutunun etkisini tersine çevirir, yani artık rumuzun gerçek sahibi olarak tanınmamanızı sağlar. Ancak kendinizi yeniden tanımlamanızın istenmeyeceğini unutmayın.\n"
+"Parametre olmadan IDENTIFY komutunun etkisini tersine çevirir, yani artık rumuzun gerçek sahibi olarak tanınmamanızı sağlar. Kullandığınız rumuz korunuyorsa, yeniden kimlik doğrulamanız gerekir, aksi halde rumuzunuz değiştirilir.\n"
 "\n"
 "Bir parametre olarak belirtilen rumuz için de aynı işlemi yapar. REVALIDATE'yi de belirtirseniz, Servisler verilen rumuzun yeniden tanıtılanmasını isteyecektir. Bu, Servis Operatörleri ile sınırlıdır."
 

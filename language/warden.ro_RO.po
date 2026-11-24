@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 14:54+0100\n"
+"POT-Creation-Date: 2026-11-24 15:11+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -7477,8 +7477,8 @@ msgid "Reverses kicker"
 msgstr "Izgonire la inversări"
 
 #: ../modules/nickserv/ns_logout.cpp
-msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself."
-msgstr "Inversează efectul comenzii IDENTIFY, adică vă face să nu mai fiți recunoscut(ă) ca proprietarul real al pseudonimului. Rețineți, totuși, că nu vi se va cere să vă reidentificați."
+msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed."
+msgstr "Inversează efectul comenzii IDENTIFY, adică vă face să nu mai fiți recunoscut(ă) ca proprietarul real al pseudonimului. Dacă pseudonimul pe care îl folosiți este protejat, trebuie să vă identificați din nou, altfel pseudonimul vă va fi schimbat."
 
 #: ../modules/nickserv/ns_mset.cpp
 msgid ""
@@ -9982,11 +9982,11 @@ msgstr ""
 
 #: ../modules/nickserv/ns_logout.cpp
 msgid ""
-"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself.\n"
+"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed.\n"
 "\n"
 "With a parameter, does the same for the given nick. If you specify REVALIDATE as well, services will ask the given nick to re-identify. This is limited to Services Operators."
 msgstr ""
-"Fără un parametru, inversează efectul comenzii IDENTIFY, adică face ca dumneavoastră să nu mai fiți recunoscut(ă) ca proprietarul real al pseudonimului. Rețineți, totuși, că nu vi se va cere să vă reidentificați.\n"
+"Fără un parametru, inversează efectul comenzii IDENTIFY, adică face ca dumneavoastră să nu mai fiți recunoscut(ă) ca proprietarul real al pseudonimului. Dacă pseudonimul pe care îl folosiți este protejat, trebuie să vă identificați din nou, altfel pseudonimul vă va fi schimbat.\n"
 "\n"
 "Cu un parametru, face același lucru pentru pseudonimul precizat. Dacă specificați și REVALIDATE, serviciile vor solicita pseudonimului să se reidentifice. Această funcție este limitată la Operatorii de Servicii."
 

@@ -41,9 +41,6 @@ public:
 			source.Reply(_("You can't logout %s, they are a Services Operator."), nick.c_str());
 		else
 		{
-			if (!nick.empty() && !param.empty() && param.equals_ci("REVALIDATE") && NickServ::service)
-				NickServ::service->Validate(u2);
-
 			u2->super_admin = false; /* Don't let people logout and remain a SuperAdmin */
 			Log(LOG_COMMAND, source, this) << "to logout " << u2->nick;
 
@@ -59,6 +56,17 @@ public:
 
 			/* Send out an event */
 			FOREACH_MOD(OnNickLogout, (u2));
+
+			// Logging yourself out (or an oper's REVALIDATE) puts the nick back
+			// under protection, as if the user had just taken it. Certificate
+			// auto-login is off until they identify again, or it would log
+			// them straight back in.
+			const auto revalidate = nick.empty() || param.equals_ci("REVALIDATE");
+			if (revalidate && NickServ::service)
+			{
+				u2->Extend<bool>("LOGGEDOUT");
+				NickServ::service->Validate(u2);
+			}
 		}
 	}
 
@@ -72,8 +80,8 @@ public:
 			source.Reply(_(
 				"Without a parameter, reverses the effect of the \002IDENTIFY\002 "
 				"command, i.e. make you not recognized as the real owner of the nick "
-				"anymore. Note, however, that you won't be asked to reidentify "
-				"yourself."
+				"anymore. If the nick you are using is protected, you have to "
+				"identify again or your nick will be changed."
 				"\n\n"
 				"With a parameter, does the same for the given nick. If you "
 				"specify \002REVALIDATE\002 as well, services will ask the given nick "
@@ -84,8 +92,9 @@ public:
 		{
 			source.Reply(_(
 				"Reverses the effect of the \002IDENTIFY\002 command, i.e. make you not "
-				"recognized as the real owner of the nick anymore. Note, however, that "
-				"you won't be asked to reidentify yourself."
+				"recognized as the real owner of the nick anymore. If the nick you are "
+				"using is protected, you have to identify again or your nick will be "
+				"changed."
 			));
 		}
 		return true;
@@ -96,12 +105,18 @@ class NSLogout final
 	: public Module
 {
 	CommandNSLogout commandnslogout;
+	ExtensibleItem<bool> loggedout;
 
 public:
 	NSLogout(const Warden::string &modname, const Warden::string &creator) : Module(modname, creator, VENDOR),
-		commandnslogout(this)
+		commandnslogout(this), loggedout(this, "LOGGEDOUT")
 	{
 
+	}
+
+	void OnNickIdentify(User *u) override
+	{
+		loggedout.Unset(u);
 	}
 };
 

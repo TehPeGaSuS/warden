@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 14:54+0100\n"
+"POT-Creation-Date: 2026-11-24 15:11+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -7425,8 +7425,8 @@ msgid "Reverses kicker"
 msgstr "Кикер реверса"
 
 #: ../modules/nickserv/ns_logout.cpp
-msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself."
-msgstr "Отменяет действие команды IDENTIFY, то есть вы больше не распознаётесь как настоящий владелец ника. Обратите внимание, однако, что вам не будет предложено повторно идентифицироваться."
+msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed."
+msgstr "Отменяет действие команды IDENTIFY, то есть вы больше не распознаётесь как настоящий владелец ника. Если используемый вами ник защищён, вам нужно идентифицироваться снова, иначе ваш ник будет изменён."
 
 #: ../modules/nickserv/ns_mset.cpp
 msgid ""
@@ -9913,13 +9913,13 @@ msgstr ""
 
 #: ../modules/nickserv/ns_logout.cpp
 msgid ""
-"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself.\n"
+"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed.\n"
 "\n"
 "With a parameter, does the same for the given nick. If you specify REVALIDATE as well, services will ask the given nick to re-identify. This is limited to Services Operators."
 msgstr ""
-"Без параметров отменяет действие команды IDENTIFY, то есть вы больше не распознаетесь как настоящий владелец ника. Обратите внимание, однако, что вам не будет предложено повторно идентифицироваться.\n"
+"Без параметров отменяет действие команды IDENTIFY, то есть вы больше не распознаетесь как настоящий владелец ника. Если используемый вами ник защищён, вам нужно идентифицироваться снова, иначе ваш ник будет изменён.\n"
 "\n"
-"С параметром делает то же самое для указанного ника. Если вы также укажете REVALIDATE, сервисы попросят указанный ник повторно идентифицироваться. Это ограничено операторами сервисов."
+"С параметром делает то же самое для указанного ника. Если вы также укажете REVALIDATE, сервисы попросят указанный ник повторно идентифицироваться. Это ограничено операторами сервисов."
 
 #: ../modules/groupserv/groupserv.cpp
 msgid ""

@@ -906,7 +906,8 @@ public:
 		auto *cl = certs.Get(na->nc);
 		if (!u->fingerprint.empty() && cl && cl->FindCert(u->fingerprint))
 		{
-			if (!CanLogin(u, na->nc))
+			// The user logged out (ns_logout); don't log them back in.
+			if (!CanLogin(u, na->nc) || u->HasExt("LOGGEDOUT"))
 				return EVENT_CONTINUE;
 
 			u->Identify(na);

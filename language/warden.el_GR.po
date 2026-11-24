@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 14:54+0100\n"
+"POT-Creation-Date: 2026-11-24 15:11+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -7484,8 +7484,8 @@ msgid "Reverses kicker"
 msgstr "Kicker αντεστραμμένων χρωμάτων"
 
 #: ../modules/nickserv/ns_logout.cpp
-msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself."
-msgstr "Αναιρεί το αποτέλεσμα της εντολής IDENTIFY, δηλαδή δεν θα αναγνωρίζεστε πλέον ως ο πραγματικός κάτοχος του nick. Σημειώστε όμως ότι δεν θα σας ζητηθεί να αναγνωριστείτε ξανά."
+msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed."
+msgstr "Αναιρεί το αποτέλεσμα της εντολής IDENTIFY, δηλαδή δεν θα αναγνωρίζεστε πλέον ως ο πραγματικός κάτοχος του nick. Αν το ψευδώνυμο που χρησιμοποιείτε προστατεύεται, πρέπει να ταυτοποιηθείτε ξανά, αλλιώς το ψευδώνυμό σας θα αλλάξει."
 
 #: ../modules/nickserv/ns_mset.cpp
 msgid ""
@@ -9996,11 +9996,11 @@ msgstr ""
 
 #: ../modules/nickserv/ns_logout.cpp
 msgid ""
-"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself.\n"
+"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed.\n"
 "\n"
 "With a parameter, does the same for the given nick. If you specify REVALIDATE as well, services will ask the given nick to re-identify. This is limited to Services Operators."
 msgstr ""
-"Χωρίς παράμετρο, αναιρεί το αποτέλεσμα της εντολής IDENTIFY, δηλαδή δεν αναγνωρίζεστε πλέον ως ο πραγματικός κάτοχος του ψευδωνύμου. Σημειώστε, ωστόσο, ότι δεν θα σας ζητηθεί να ταυτοποιηθείτε ξανά.\n"
+"Χωρίς παράμετρο, αναιρεί το αποτέλεσμα της εντολής IDENTIFY, δηλαδή δεν αναγνωρίζεστε πλέον ως ο πραγματικός κάτοχος του ψευδωνύμου. Αν το ψευδώνυμο που χρησιμοποιείτε προστατεύεται, πρέπει να ταυτοποιηθείτε ξανά, αλλιώς το ψευδώνυμό σας θα αλλάξει.\n"
 "\n"
 "Με παράμετρο, κάνει το ίδιο για το δοσμένο ψευδώνυμο. Αν καθορίσετε επίσης REVALIDATE, οι υπηρεσίες θα ζητήσουν από το δοσμένο ψευδώνυμο να ταυτοποιηθεί ξανά. Αυτό επιτρέπεται μόνο στους Χειριστές Υπηρεσιών."
 

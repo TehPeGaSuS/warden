@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 14:54+0100\n"
+"POT-Creation-Date: 2026-11-24 15:11+0100\n"
 "PO-Revision-Date: 2026-08-15 19:55+0200\n"
 "Last-Translator: PeGaSuS <25697531+TehPeGaSuS@users.noreply.github.com>\n"
 "Language-Team: Portuguese (Portugal)\n"
@@ -7479,8 +7479,8 @@ msgid "Reverses kicker"
 msgstr "Kicker de texto inverso"
 
 #: ../modules/nickserv/ns_logout.cpp
-msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself."
-msgstr "Inverte o efeito do comando IDENTIFY, ou seja, faz com que deixes de ser reconhecido(a) como o verdadeiro dono do nick. No entanto, nota que não te será pedido para te identificares novamente."
+msgid "Reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed."
+msgstr "Inverte o efeito do comando IDENTIFY, ou seja, faz com que deixes de ser reconhecido(a) como o verdadeiro dono do nick. Se o nick que estás a usar estiver protegido, tens de te identificar novamente ou o teu nick será alterado."
 
 #: ../modules/nickserv/ns_mset.cpp
 msgid ""
@@ -9984,11 +9984,11 @@ msgstr ""
 
 #: ../modules/nickserv/ns_logout.cpp
 msgid ""
-"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. Note, however, that you won't be asked to reidentify yourself.\n"
+"Without a parameter, reverses the effect of the IDENTIFY command, i.e. make you not recognized as the real owner of the nick anymore. If the nick you are using is protected, you have to identify again or your nick will be changed.\n"
 "\n"
 "With a parameter, does the same for the given nick. If you specify REVALIDATE as well, services will ask the given nick to re-identify. This is limited to Services Operators."
 msgstr ""
-"Sem parâmetro, inverte o efeito do comando IDENTIFY, ou seja, faz com que deixes de ser reconhecido(a) como o verdadeiro dono do nick. No entanto, nota que não te será pedido para te identificares novamente.\n"
+"Sem parâmetro, inverte o efeito do comando IDENTIFY, ou seja, faz com que deixes de ser reconhecido(a) como o verdadeiro dono do nick. Se o nick que estás a usar estiver protegido, tens de te identificar novamente ou o teu nick será alterado.\n"
 "\n"
 "Com um parâmetro, faz o mesmo para o nick indicado. Se também especificares REVALIDATE, os serviços pedirão ao nick indicado para se reidentificar. Isto está limitado a Operadores de Serviços."
 

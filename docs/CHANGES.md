@@ -102,6 +102,10 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
 * FIXED-layout lists broke lines in the wrong place (columns were measured in
   alphabetical order) and showed empty columns, so e.g. `FLAGS LIST` put an
   unused Description header on a line of its own.
+* `NickServ LOGOUT` puts your nick back under protection (identify again or
+  it is changed), and certificate auto-login stays off until you identify.
+  The oper form `LOGOUT <nick> REVALIDATE` checked the nick before logging
+  it out, so it never did anything.
 
 ### Upgrading from Anope:
 * The binary is `warden`, the configuration `warden.conf` and the database
