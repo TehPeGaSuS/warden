@@ -259,7 +259,16 @@ public:
 		DThread = new DispatcherThread();
 		DThread->Start();
 
-		Log(this) << "Module was compiled against MySQL version " << MYSQL_SERVER_VERSION << " and is running against version " << mysql_get_client_info();
+		// Compare client library versions: MYSQL_SERVER_VERSION is the server
+		// version of the headers (e.g. MariaDB 11.8 with Connector/C 3.4).
+#if defined(MARIADB_PACKAGE_VERSION)
+		const char *built = MARIADB_PACKAGE_VERSION;
+#elif defined(LIBMYSQL_VERSION)
+		const char *built = LIBMYSQL_VERSION;
+#else
+		const char *built = MYSQL_SERVER_VERSION;
+#endif
+		Log(this) << "Module was compiled against MySQL client library " << built << " and is running against " << mysql_get_client_info();
 	}
 
 	~ModuleSQL()

@@ -12,6 +12,9 @@ Not released yet.
   `aliases/anope.conf`) including `/GS` (GroupServ) and `/CF` (ChanFix).
 
 ### Fixes:
+* The MySQL module's startup line compared the headers' *server* version
+  with the client library's, so MariaDB always looked mismatched (also in
+  Anope).
 * `ChanServ SET CHANSTATS` names the channel in its reply instead of "this
   channel".
 * The systemd unit is wanted by `default.target` instead of `multi-user.target`,
