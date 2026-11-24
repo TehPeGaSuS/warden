@@ -8,6 +8,8 @@ Not released yet.
   a channel's user limit a little above its user count, so floods of joins are
   held back while people can still get in. It only changes `+l` when the limit
   actually changes and respects mode locks.
+* `docs/unrealircd/warden.conf`: UnrealIRCd command aliases (like its
+  `aliases/anope.conf`) including `/GS` (GroupServ) and `/CF` (ChanFix).
 
 ### Fixes:
 * The systemd unit is wanted by `default.target` instead of `multi-user.target`,
