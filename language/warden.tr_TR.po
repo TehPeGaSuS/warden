@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 23:43+0100\n"
+"POT-Creation-Date: 2026-11-24 13:50+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -5854,11 +5854,15 @@ msgstr "%s'de oturum açmanızı sağlar, böylece Servis Operatörü ayrıcalı
 msgid ""
 "Logs you in to the account that owns nickname and changes your nick to it. If you are logged in to a different account you are logged out of it first.\n"
 "\n"
-"If an identified user is on the nick they are killed, as with RECOVER; an unidentified user is forced off it. If services are holding the nick the hold is released."
+"If an identified user is on the nick they are killed, as with RECOVER; an unidentified user is forced off it. If services are holding the nick the hold is released.\n"
+"\n"
+"If you are already using nickname, this works like IDENTIFY."
 msgstr ""
 "Sizi rumuz sahibi olan hesaba giriş yaptırır ve rumuzunuzu ona değiştirir. Farklı bir hesapta oturum açmışsanız önce o hesaptan çıkış yaptırılırsınız.\n"
 "\n"
-"Rumuzu kimliği doğrulanmış bir kullanıcı kullanıyorsa, RECOVER komutunda olduğu gibi bağlantısı kesilir (kill); kimliği doğrulanmamış bir kullanıcı ise rumuzdan zorla çıkarılır. Servisler rumuzu tutuyorsa bu tutma serbest bırakılır."
+"Rumuzu kimliği doğrulanmış bir kullanıcı kullanıyorsa, RECOVER komutunda olduğu gibi bağlantısı kesilir (kill); kimliği doğrulanmamış bir kullanıcı ise rumuzdan zorla çıkarılır. Servisler rumuzu tutuyorsa bu tutma serbest bırakılır.\n"
+"\n"
+"Zaten rumuz kullanıyorsanız, bu IDENTIFY gibi çalışır."
 
 #: ../modules/operserv/os_login.cpp
 #, c-format
@@ -6851,7 +6855,7 @@ msgstr "POOL sunucu.adı"
 msgid "Param"
 msgstr "Parametre"
 
-#: ../modules/nickserv/ns_identify.cpp
+#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp
 msgid "Password accepted - you are now recognized."
 msgstr "Şifre kabul edildi - şuan tanınıyorsunuz."
 
@@ -10079,7 +10083,7 @@ msgstr "Zaten %s grubunun üyesisiniz."
 msgid "You are already a member of the account of %s."
 msgstr "Zaten %s grubunun bir üyesisiniz."
 
-#: ../modules/nickserv/ns_identify.cpp ../modules/operserv/os_login.cpp
+#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp ../modules/operserv/os_login.cpp
 msgid "You are already identified."
 msgstr "Zaten tanınıyorsunuz."
 
@@ -10087,6 +10091,10 @@ msgstr "Zaten tanınıyorsunuz."
 #, c-format
 msgid "You are already in %s!"
 msgstr "Zaten %s'desiniz!"
+
+#: ../modules/nickserv/ns_recover.cpp
+msgid "You are already logged in to another account; give the password to switch."
+msgstr "Zaten başka bir hesapta oturum açtınız; geçiş yapmak için parolayı verin."
 
 #: ../modules/operserv/os_set.cpp
 msgid "You are no longer a super admin."

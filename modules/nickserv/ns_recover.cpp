@@ -89,6 +89,21 @@ public:
 
 		Log(LOG_COMMAND, source, cmd) << "for " << na->nick;
 
+		/* LOGIN on the nick you are already using: identify, as IDENTIFY would. */
+		if (login && u && u == source.GetUser())
+		{
+			if (u->Account() == na->nc)
+				source.Reply(_("You are already identified."));
+			else if (!proven && u->IsIdentified())
+				source.Reply(_("You are already logged in to another account; give the password to switch."));
+			else
+			{
+				source.Reply(_("Password accepted - you are now recognized."));
+				u->Identify(na);
+			}
+			return;
+		}
+
 		/* Nobody is on the nick: release any hold; LOGIN also logs in and takes the nick. */
 		if (!u)
 		{
@@ -210,7 +225,7 @@ public:
 
 		User *user = User::Find(nick, true);
 
-		if (user && source.GetUser() == user)
+		if (user && source.GetUser() == user && this->name != "nickserv/login")
 		{
 			source.Reply(_("You can't %s yourself!"), source.command.lower().c_str());
 			return;
@@ -297,6 +312,9 @@ public:
 			"If an identified user is on the nick they are killed, as "
 			"with \002RECOVER\002; an unidentified user is forced off "
 			"it. If services are holding the nick the hold is released."
+			"\n\n"
+			"If you are already using \037nickname\037, this works like "
+			"\002IDENTIFY\002."
 		));
 		return true;
 	}

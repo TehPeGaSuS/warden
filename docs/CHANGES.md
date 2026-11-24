@@ -35,8 +35,9 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
 * `ChanServ FLAGS` has `ADD` and `DEL`, Atheme-style templates
   (`FLAGS #chan nick AOP`) and can clear an entry's description.
 * `NickServ MSET` and `ChanServ MSET` run several `SET`s at once.
-* `NickServ LOGIN <nick> <password>` switches accounts, and `RECOVER` can take
-  free or held nicks.
+* `NickServ LOGIN <nick> <password>` switches accounts (on the nick you are
+  already using it works like `IDENTIFY`), and `RECOVER` can take free or held
+  nicks.
 * Built-in versions of popular third-party modules: `cs_set_joinflood`,
   `cs_topichistory`, `hs_nethost`, `os_expiring`, `os_notify`,
   `os_notinchan` and `os_regset`.

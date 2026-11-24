@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 23:43+0100\n"
+"POT-Creation-Date: 2026-11-24 13:50+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -5853,11 +5853,15 @@ msgstr "Σας συνδέει στο %s ώστε να αποκτήσετε δι�
 msgid ""
 "Logs you in to the account that owns nickname and changes your nick to it. If you are logged in to a different account you are logged out of it first.\n"
 "\n"
-"If an identified user is on the nick they are killed, as with RECOVER; an unidentified user is forced off it. If services are holding the nick the hold is released."
+"If an identified user is on the nick they are killed, as with RECOVER; an unidentified user is forced off it. If services are holding the nick the hold is released.\n"
+"\n"
+"If you are already using nickname, this works like IDENTIFY."
 msgstr ""
 "Σας συνδέει στον λογαριασμό που κατέχει το ψευδώνυμο και αλλάζει το ψευδώνυμό σας σε αυτό. Αν είστε συνδεδεμένοι σε άλλο λογαριασμό, αποσυνδέεστε πρώτα από αυτόν.\n"
 "\n"
-"Αν ένας αναγνωρισμένος χρήστης χρησιμοποιεί το ψευδώνυμο, γίνεται kill, όπως με το RECOVER· ένας μη αναγνωρισμένος χρήστης απομακρύνεται αναγκαστικά από αυτό. Αν τα services κρατούν το ψευδώνυμο, αυτό απελευθερώνεται."
+"Αν ένας αναγνωρισμένος χρήστης χρησιμοποιεί το ψευδώνυμο, γίνεται kill, όπως με το RECOVER· ένας μη αναγνωρισμένος χρήστης απομακρύνεται αναγκαστικά από αυτό. Αν τα services κρατούν το ψευδώνυμο, αυτό απελευθερώνεται.\n"
+"\n"
+"Αν χρησιμοποιείς ήδη το ψευδώνυμο, αυτό λειτουργεί όπως το IDENTIFY."
 
 #: ../modules/operserv/os_login.cpp
 #, c-format
@@ -6850,7 +6854,7 @@ msgstr "POOL όνομα.server"
 msgid "Param"
 msgstr "Παράμετρος"
 
-#: ../modules/nickserv/ns_identify.cpp
+#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp
 msgid "Password accepted - you are now recognized."
 msgstr "Ο κωδικός έγινε δεκτός - τώρα είσαι αναγνωρισμένος."
 
@@ -10080,7 +10084,7 @@ msgstr "Είσαι ήδη μέλος του %s."
 msgid "You are already a member of the account of %s."
 msgstr "Είστε ήδη μέλος του λογαριασμού του %s."
 
-#: ../modules/nickserv/ns_identify.cpp ../modules/operserv/os_login.cpp
+#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp ../modules/operserv/os_login.cpp
 msgid "You are already identified."
 msgstr "Είστε ήδη identified."
 
@@ -10088,6 +10092,10 @@ msgstr "Είστε ήδη identified."
 #, c-format
 msgid "You are already in %s!"
 msgstr "Βρίσκεστε ήδη στο %s!"
+
+#: ../modules/nickserv/ns_recover.cpp
+msgid "You are already logged in to another account; give the password to switch."
+msgstr "Είσαι ήδη συνδεδεμένος σε άλλο λογαριασμό· δώσε τον κωδικό για να αλλάξεις."
 
 #: ../modules/operserv/os_set.cpp
 msgid "You are no longer a super admin."

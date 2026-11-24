@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 23:43+0100\n"
+"POT-Creation-Date: 2026-11-24 13:50+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -5846,11 +5846,15 @@ msgstr "Vă identifică la %s astfel încât să obțineți privilegiile de Oper
 msgid ""
 "Logs you in to the account that owns nickname and changes your nick to it. If you are logged in to a different account you are logged out of it first.\n"
 "\n"
-"If an identified user is on the nick they are killed, as with RECOVER; an unidentified user is forced off it. If services are holding the nick the hold is released."
+"If an identified user is on the nick they are killed, as with RECOVER; an unidentified user is forced off it. If services are holding the nick the hold is released.\n"
+"\n"
+"If you are already using nickname, this works like IDENTIFY."
 msgstr ""
 "Vă autentifică în contul căruia îi aparține pseudonimul și vă schimbă pseudonimul în acesta. Dacă sunteți autentificat(ă) într-un alt cont, veți fi mai întâi deconectat(ă) din acesta.\n"
 "\n"
-"Dacă un utilizator identificat folosește pseudonimul, acesta este deconectat, ca la RECOVER; un utilizator neidentificat este forțat să renunțe la el. Dacă serviciile rețin pseudonimul, reținerea este eliberată."
+"Dacă un utilizator identificat folosește pseudonimul, acesta este deconectat, ca la RECOVER; un utilizator neidentificat este forțat să renunțe la el. Dacă serviciile rețin pseudonimul, reținerea este eliberată.\n"
+"\n"
+"Dacă folosești deja pseudonimul, aceasta funcționează ca IDENTIFY."
 
 #: ../modules/operserv/os_login.cpp
 #, c-format
@@ -6843,7 +6847,7 @@ msgstr "POOL nume.server"
 msgid "Param"
 msgstr "Parametru"
 
-#: ../modules/nickserv/ns_identify.cpp
+#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp
 msgid "Password accepted - you are now recognized."
 msgstr "Parolă acceptată - acum ești recunoscut(ă)."
 
@@ -10066,7 +10070,7 @@ msgstr "Sunteți deja membru al %s."
 msgid "You are already a member of the account of %s."
 msgstr "Sunteți deja membru al contului %s."
 
-#: ../modules/nickserv/ns_identify.cpp ../modules/operserv/os_login.cpp
+#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp ../modules/operserv/os_login.cpp
 msgid "You are already identified."
 msgstr "Sunteți deja identificat(ă)."
 
@@ -10074,6 +10078,10 @@ msgstr "Sunteți deja identificat(ă)."
 #, c-format
 msgid "You are already in %s!"
 msgstr "Sunteți deja în %s!"
+
+#: ../modules/nickserv/ns_recover.cpp
+msgid "You are already logged in to another account; give the password to switch."
+msgstr "Ești deja autentificat într-un alt cont; dă parola pentru a schimba."
 
 #: ../modules/operserv/os_set.cpp
 msgid "You are no longer a super admin."

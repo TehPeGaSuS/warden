@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-23 23:43+0100\n"
+"POT-Creation-Date: 2026-11-24 13:50+0100\n"
 "PO-Revision-Date: 2023-04-21 22:04+0200\n"
 "Last-Translator: henk\n"
 "Language-Team: German\n"
@@ -5856,11 +5856,15 @@ msgstr "Meldet dich an %s an, sodass du Services Operator Privilegien bekommst. 
 msgid ""
 "Logs you in to the account that owns nickname and changes your nick to it. If you are logged in to a different account you are logged out of it first.\n"
 "\n"
-"If an identified user is on the nick they are killed, as with RECOVER; an unidentified user is forced off it. If services are holding the nick the hold is released."
+"If an identified user is on the nick they are killed, as with RECOVER; an unidentified user is forced off it. If services are holding the nick the hold is released.\n"
+"\n"
+"If you are already using nickname, this works like IDENTIFY."
 msgstr ""
 "Meldet Dich bei dem Account an, dem Nickname gehört, und ändert Deinen Nick zu diesem. Bist Du bei einem anderen Account angemeldet, wirst Du zuerst davon abgemeldet.\n"
 "\n"
-"Befindet sich ein identifizierter Benutzer auf dem Nick, wird er gekillt, wie bei RECOVER; ein nicht identifizierter Benutzer wird davon verdrängt. Halten die Services den Nick fest, wird er freigegeben."
+"Befindet sich ein identifizierter Benutzer auf dem Nick, wird er gekillt, wie bei RECOVER; ein nicht identifizierter Benutzer wird davon verdrängt. Halten die Services den Nick fest, wird er freigegeben.\n"
+"\n"
+"Wenn du Nickname bereits verwendest, funktioniert dies wie IDENTIFY."
 
 #: ../modules/operserv/os_login.cpp
 #, c-format
@@ -6855,7 +6859,7 @@ msgstr "POOL server.name"
 msgid "Param"
 msgstr "Param"
 
-#: ../modules/nickserv/ns_identify.cpp
+#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp
 msgid "Password accepted - you are now recognized."
 msgstr "Passwort akzeptiert - Du bist jetzt angemeldet."
 
@@ -10078,7 +10082,7 @@ msgstr "Du bist bereits Mitglied von %s."
 msgid "You are already a member of the account of %s."
 msgstr "Du bist bereits Mitglied des Accounts von %s."
 
-#: ../modules/nickserv/ns_identify.cpp ../modules/operserv/os_login.cpp
+#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp ../modules/operserv/os_login.cpp
 msgid "You are already identified."
 msgstr "Du bist bereits angemeldet."
 
@@ -10086,6 +10090,10 @@ msgstr "Du bist bereits angemeldet."
 #, c-format
 msgid "You are already in %s!"
 msgstr "Du bist schon in %s!"
+
+#: ../modules/nickserv/ns_recover.cpp
+msgid "You are already logged in to another account; give the password to switch."
+msgstr "Du bist bereits bei einem anderen Konto angemeldet; gib das Passwort an, um zu wechseln."
 
 #: ../modules/operserv/os_set.cpp
 msgid "You are no longer a super admin."
