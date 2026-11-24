@@ -211,6 +211,8 @@ Table of Contents
         --nothird       Do not load the non-core modules specified
         --protocoldebug Debug each incoming message after protocol parsing
         --support       Used for support, same as --debug --nofork --nothird
+                            (logs raw IRC traffic; not for normal running)
+        --nodb          Do not load or save any database
 
     Upon starting, Warden will parse its command-line parameters then
     (assuming the --nofork option is not given) detach itself and run in the
