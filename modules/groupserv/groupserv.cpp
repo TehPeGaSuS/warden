@@ -136,6 +136,17 @@ struct GroupType final
 			}
 			Groups[g->name] = g;
 		}
+		else
+		{
+			// Reloaded from a live database: it may have been renamed.
+			const auto name = data.Load("name");
+			if (!name.empty() && name != g->name && !Groups.count(name))
+			{
+				Groups.erase(g->name);
+				g->name = name;
+				Groups[name] = g;
+			}
+		}
 
 		g->description = data.Load("description");
 		g->url = data.Load("url");
@@ -435,6 +446,12 @@ public:
 
 	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
+		// Not only the command block's permission: these act on any group.
+		if (!source.HasCommand(this->name))
+		{
+			source.Reply(ACCESS_DENIED);
+			return;
+		}
 		auto *g = FindGroup(source, params[0]);
 		if (!g)
 			return;
@@ -658,6 +675,12 @@ public:
 
 	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
+		// Not only the command block's permission: these act on any group.
+		if (!source.HasCommand(this->name))
+		{
+			source.Reply(ACCESS_DENIED);
+			return;
+		}
 		auto *g = FindGroup(source, params[0]);
 		if (!g)
 			return;
@@ -1426,6 +1449,21 @@ public:
 		return EVENT_CONTINUE;
 	}
 
+	void OnPostCommand(CommandSource &source, Command *command, const std::vector<Warden::string> &params) override
+	{
+		// Every GroupServ change is made by a command naming the group, so
+		// queue its update here for the live database modules (db_sql_live,
+		// db_redis). A rename leaves the new name in the last parameter.
+		if (params.empty() || command->name.find("groupserv/") != 0)
+			return;
+		for (const auto &name : { params[0], params.back() })
+		{
+			auto it = Groups.find(name);
+			if (it != Groups.end())
+				it->second->QueueUpdate();
+		}
+	}
+
 	void OnDelCore(NickCore *nc) override
 	{
 		for (auto it = Groups.begin(); it != Groups.end(); )
@@ -1438,6 +1476,7 @@ public:
 				continue;
 			const auto wasfounder = m->flags.find('F') != Warden::string::npos;
 			g->members.erase(std::remove_if(g->members.begin(), g->members.end(), [nc](const auto &mem) { return mem.nc == nc; }), g->members.end());
+			g->QueueUpdate();
 			if (!wasfounder || g->Count('F'))
 				continue;
 

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 18:27+0100\n"
+"POT-Creation-Date: 2026-11-24 18:33+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -6935,7 +6935,7 @@ msgstr "Vă rugăm confirmați că doriți să radiați %s cu %s%s%s"
 msgid "Please contact an Operator to get a vhost assigned to this nick."
 msgstr "Vă rugăm să contactați un Operator pentru a obține o gazdă virtuală atribuită acestui pseudonim."
 
-#: ../modules/nickserv/nickserv.cpp
+#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_register.cpp
 msgid "Please try again with a more obscure password. Passwords should not be something that could be easily guessed (e.g. your real name or your nick) and cannot contain a space character."
 msgstr "Vă rugăm să încercați din nou cu o parolă mai puțin cunoscută. Parolele nu ar trebui să fie ceva care ar putea fi ușor de ghicit (de exemplu, numele dumneavoastră real sau pseudonimul dumneavoastră) și pot conține caracterul spațiu."
 

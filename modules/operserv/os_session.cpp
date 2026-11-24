@@ -634,6 +634,8 @@ class OSSession final
 	CommandOSSession commandossession;
 	CommandOSException commandosexception;
 	ServiceReference<XLineManager> akills;
+	// Users counted in a session, so only they are taken off it when they quit.
+	ExtensibleItem<bool> counted;
 
 public:
 	OSSession(const Warden::string &modname, const Warden::string &creator)
@@ -642,6 +644,7 @@ public:
 		, commandossession(this)
 		, commandosexception(this)
 		, akills("XLineManager", "xlinemanager/sgline")
+		, counted(this, "SESSION_COUNTED")
 	{
 		this->SetPermanent(true);
 	}
@@ -683,6 +686,7 @@ public:
 			return;
 
 		auto *&session = this->ss.FindOrCreateSession(u_ip);
+		counted.Set(u, true);
 
 		if (session)
 		{
@@ -742,7 +746,7 @@ public:
 
 	void OnUserQuit(User *u, const Warden::string &msg) override
 	{
-		if (!u->server || u->server->IsULined())
+		if (!u->server || u->server->IsULined() || !counted.HasExt(u))
 			return;
 
 		auto &sessions = this->ss.GetSessions();

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 18:27+0100\n"
+"POT-Creation-Date: 2026-11-24 18:33+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -6942,7 +6942,7 @@ msgstr "Παρακαλώ επιβεβαιώστε ότι θέλετε να δι�
 msgid "Please contact an Operator to get a vhost assigned to this nick."
 msgstr "Παρακαλώ επικοινωνήστε με έναν Operator για να σας δοθεί vhost σε αυτό το ψευδώνυμο."
 
-#: ../modules/nickserv/nickserv.cpp
+#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_register.cpp
 msgid "Please try again with a more obscure password. Passwords should not be something that could be easily guessed (e.g. your real name or your nick) and cannot contain a space character."
 msgstr "Παρακαλώ δοκιμάστε ξανά με ένα πιο δύσκολο password. Τα passwords δεν πρέπει να μαντεύονται εύκολα (π.χ. το πραγματικό σας όνομα ή το ψευδώνυμό σας) και δεν μπορούν να περιέχουν κενό."
 

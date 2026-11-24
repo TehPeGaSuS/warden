@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 18:27+0100\n"
+"POT-Creation-Date: 2026-11-24 18:33+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -6891,7 +6891,7 @@ msgstr "Пожалуйста, подтвердите, что вы хотите �
 msgid "Please contact an Operator to get a vhost assigned to this nick."
 msgstr "Пожалуйста, свяжитесь с оператором, чтобы получить виртуальный хост для этого ника."
 
-#: ../modules/nickserv/nickserv.cpp
+#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_register.cpp
 msgid "Please try again with a more obscure password. Passwords should not be something that could be easily guessed (e.g. your real name or your nick) and cannot contain a space character."
 msgstr "Пожалуйста, попробуйте снова с более сложным паролем. Пароли не должны быть чем-то, что можно легко угадать (например, ваше настоящее имя или ваш ник), и не могут содержать символ пробела."
 

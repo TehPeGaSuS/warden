@@ -88,6 +88,22 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
 * The `warden.server` RPC call without parameters crashed services (also in
   Anope).
 * ChanFix forgot channels whose ops never changed after the retention period.
+* ChanFix's automatic fixes ignored `minfixscore`, so someone opped briefly
+  could be opped again later.
+* `NickServ LOGIN` switching accounts did not tell the IRCd about the new
+  login; an oper's LOGIN with a password was treated as a privileged one.
+* `SAREGISTER` checked "password equals nick" against the oper's nick.
+* GroupServ `FDROP` and `FFLAGS` also check the privilege in code, and GroupServ
+  changes are now saved with the live database modules (db_sql_live,
+  db_redis).
+* `db_json` writes to a temporary file and renames it, and refuses to start if
+  the database exists but can't be read, instead of replacing it with an empty
+  one on the next save (also in Anope).
+* RPC no longer sends email confirmation codes, recovery-key hashes or DNS
+  validation tokens, and refused RPC requests no longer leak memory.
+* LIST ranges: a pattern such as `10-net.*` is no longer taken as a range.
+* Session limits: users exempt when they connected were still taken off the
+  count when they quit (also in Anope).
 * webcpanel without `allowed_origins` accepted forms posted from any site.
   It now only accepts them from its own address (Origin matching Host or
   X-Forwarded-Host), which works behind Apache with ProxyPreserveHost and

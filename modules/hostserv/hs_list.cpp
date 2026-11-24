@@ -34,7 +34,9 @@ public:
 		{
 			const auto &range = param;
 			auto dash = range.find('-');
-			if (dash == Warden::string::npos || !dash || !isdigit(range[0]))
+			// Only digits-digits is a range; anything else (e.g. 10-net.*) is a pattern.
+			if (dash == Warden::string::npos || !dash || dash != range.rfind('-')
+				|| range.find_first_not_of("0123456789-") != Warden::string::npos)
 			{
 				key = param;
 				continue;

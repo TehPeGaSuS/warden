@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 18:27+0100\n"
+"POT-Creation-Date: 2026-11-24 18:33+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -6943,7 +6943,7 @@ msgstr "Lütfen %s rumuzunu droplamak isteğinizi %s%s%s ile onaylayın"
 msgid "Please contact an Operator to get a vhost assigned to this nick."
 msgstr "Bu rumuza atanan bir vHost almak için lütfen bir operle iletişime geçin."
 
-#: ../modules/nickserv/nickserv.cpp
+#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_register.cpp
 msgid "Please try again with a more obscure password. Passwords should not be something that could be easily guessed (e.g. your real name or your nick) and cannot contain a space character."
 msgstr "Lütfen daha belirsiz bir şifreyle tekrar deneyin. Şifreler kolay tahmin edilebilir bir şey olmamalı (örneğin gerçek adınız veya rumuzunuz) ve boşluk karakteri içeremez."
 

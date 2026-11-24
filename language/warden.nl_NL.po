@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 18:27+0100\n"
+"POT-Creation-Date: 2026-11-24 18:33+0100\n"
 "PO-Revision-Date: 2025-02-23 03:23+0100\n"
 "Last-Translator: Robby <robby@chatbelgie.be>\n"
 "Language-Team: Dutch\n"
@@ -6938,7 +6938,7 @@ msgstr "Bevestig dat je %s wil verwijderen met %s%s%s"
 msgid "Please contact an Operator to get a vhost assigned to this nick."
 msgstr "Gelieve een Operator te contacteren om een vhost aan je nick toegewezen te krijgen."
 
-#: ../modules/nickserv/nickserv.cpp
+#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_register.cpp
 msgid "Please try again with a more obscure password. Passwords should not be something that could be easily guessed (e.g. your real name or your nick) and cannot contain a space character."
 msgstr "Probeer opnieuw met een minder voor de hand liggend wachtwoord. Wachtwoorden mogen niet iets zijn dat makkelijk geraden kan worden (bv. je echte naam of je nick) en mogen geen spatie bevatten."
 

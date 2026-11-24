@@ -36,7 +36,7 @@ public:
 
 		// A range is from-to (anope/anope#541); anything else is a channel
 		// pattern, with or without its leading #.
-		if (isdigit(pattern[0]) && pattern.find('-') != Warden::string::npos)
+		if (pattern.find('-') != Warden::string::npos && pattern.find('-') == pattern.rfind('-') && pattern[0] != '-' && pattern.find_first_not_of("0123456789-") == Warden::string::npos)
 		{
 			Warden::string n1, n2;
 			sepstream(pattern, '-').GetToken(n1, 0);

@@ -39,10 +39,11 @@ class NSRecoverRequest final
 	// Log the user running the command in to the account. LOGIN also switches
 	// away from the account they are on now; RECOVER, and opers using LOGIN by
 	// privilege alone, only log in users who are not identified yet.
-	void LogInAs(NickCore *nc)
+	void LogInAs(NickAlias *na)
 	{
 		auto *su = source.GetUser();
 		auto *old = su->Account();
+		NickCore *nc = na ? *na->nc : nullptr;
 		if (!nc || old == nc || (old && (!login || !proven)))
 			return;
 
@@ -51,9 +52,13 @@ class NSRecoverRequest final
 			IRCD->SendLogout(su);
 			su->RemoveMode(source.service, "REGISTERED");
 			su->Logout();
+			su->super_admin = false;
 			FOREACH_MOD(OnNickLogout, (su));
 		}
-		su->Login(nc);
+
+		// As IDENTIFY does: tells the IRCd about the login and runs the
+		// identify hooks.
+		su->Identify(na);
 
 		if (old)
 		{
@@ -104,6 +109,14 @@ public:
 			return;
 		}
 
+		// LOGIN by privilege alone does not switch accounts; say so instead of
+		// moving an oper onto the nick while they stay on their own account.
+		if (login && !proven && source.GetAccount() && source.GetAccount() != na->nc)
+		{
+			source.Reply(_("You are already logged in to another account; give the password to switch."));
+			return;
+		}
+
 		/* Nobody is on the nick: release any hold; LOGIN also logs in and takes the nick. */
 		if (!u)
 		{
@@ -118,7 +131,7 @@ public:
 			if (!login)
 				return;
 
-			LogInAs(na->nc);
+			LogInAs(na);
 
 			if (source.GetUser()->nick.equals_ci(na->nick))
 				;
@@ -131,7 +144,7 @@ public:
 		// same person that is executing the command, so kill them off (old GHOST command).
 		else if (u->Account() == na->nc)
 		{
-			LogInAs(u->Account());
+			LogInAs(na);
 
 			if (Config->GetModule("ns_recover").Get<bool>("restoreonrecover"))
 			{
@@ -161,7 +174,7 @@ public:
 		/* User is not identified or not identified to the same account as the person using this command */
 		else
 		{
-			LogInAs(na->nc);
+			LogInAs(na);
 
 			u->SendMessage(source.service, _("This nickname has been recovered by %s."), source.GetNick().c_str());
 
@@ -251,8 +264,10 @@ public:
 		if (source.GetUser() && !source.GetUser()->fingerprint.empty() && cl && cl->FindCert(source.GetUser()->fingerprint))
 			ok = true;
 
+		// The privilege is for opers who give no password; with one, it is
+		// checked as for anyone else, so LOGIN can switch accounts.
 		bool bypriv = false;
-		if (!ok && source.HasPriv("nickserv/recover"))
+		if (!ok && pass.empty() && source.HasPriv("nickserv/recover"))
 			ok = bypriv = true;
 
 		if (!ok && !pass.empty())

@@ -492,6 +492,16 @@ public:
 			return;
 		}
 
+		// The password checks compare against the oper's own nick; check the
+		// new one here.
+		if (pass.equals_ci(nick))
+		{
+			source.Reply(_("Please try again with a more obscure password. "
+				"Passwords should not be something that could be easily guessed (e.g. your "
+				"real name or your nick) and cannot contain a space character."));
+			return;
+		}
+
 		EventReturn MOD_RESULT;
 		FOREACH_RESULT(OnPasswordValidate, MOD_RESULT, (source, nullptr, pass));
 		if (MOD_RESULT == EVENT_STOP)

@@ -31,7 +31,7 @@ public:
 		auto pattern = params[0];
 		// A range is from-to (anope/anope#541). Nicks can't start with a
 		// digit, so this never clashes with a pattern.
-		if (isdigit(pattern[0]) && pattern.find('-') != Warden::string::npos)
+		if (pattern.find('-') != Warden::string::npos && pattern.find('-') == pattern.rfind('-') && pattern[0] != '-' && pattern.find_first_not_of("0123456789-") == Warden::string::npos)
 		{
 			const auto &range = pattern;
 			Warden::string n1, n2;

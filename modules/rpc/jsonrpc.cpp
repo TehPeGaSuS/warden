@@ -152,6 +152,7 @@ public:
 			auto it = message.headers.find("Authorization");
 			if (it == message.headers.end() || !CanExecute(it->second, request.name))
 			{
+				yyjson_doc_free(doc);
 				SendError(reply, RPC::ERR_METHOD_NOT_FOUND, "No authorization for method: " + request.name, id);
 				return true;
 			}

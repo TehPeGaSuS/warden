@@ -37,7 +37,7 @@ namespace
 				}
 
 				auto dash = param.find('-');
-				if (dash != Warden::string::npos && dash && isdigit(param[0]))
+				if (dash != Warden::string::npos && dash && dash == param.rfind('-') && param.find_first_not_of("0123456789-") == Warden::string::npos)
 				{
 					auto n1 = Warden::TryConvert<unsigned>(param.substr(0, dash));
 					auto n2 = Warden::TryConvert<unsigned>(param.substr(dash + 1));

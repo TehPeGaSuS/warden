@@ -381,7 +381,18 @@ public:
 
 		auto db = ReadDatabase(dbname);
 		if (!db)
+		{
+			// A missing database is a new install; one that exists but can't
+			// be read must not be replaced by an empty one on the next save.
+			std::error_code ec;
+			if (fs::exists(dbname.str(), ec))
+			{
+				Warden::Quitting = true;
+				Warden::QuitReason = "Unable to read the database " + dbname + "; fix it or restore a backup before starting again";
+				Log(this) << Warden::QuitReason;
+			}
 			return EVENT_STOP;
+		}
 
 		auto it = databases.emplace(nullptr, std::move(db.value())).first;
 		for (const auto &type : Serialize::Type::GetTypeOrder())
@@ -470,10 +481,20 @@ public:
 
 			yyjson_write_err errmsg;
 			const auto flags = YYJSON_WRITE_ALLOW_INVALID_UNICODE | YYJSON_WRITE_NEWLINE_AT_END | YYJSON_WRITE_PRETTY;
-			if (!yyjson_mut_write_file(dbname.c_str(), doc, flags, nullptr, &errmsg))
+			// Written to a temporary file first and then renamed over the
+			// database, so a crash mid-write can't leave a truncated file.
+			const auto tmpname = dbname + ".tmp";
+			std::error_code ec;
+			if (!yyjson_mut_write_file(tmpname.c_str(), doc, flags, nullptr, &errmsg))
 			{
 				Warden::Quitting = true;
-				Warden::QuitReason = "Unable to write " + dbname + ": error #" + Warden::ToString(errmsg.code) + ": " + errmsg.msg;
+				Warden::QuitReason = "Unable to write " + tmpname + ": error #" + Warden::ToString(errmsg.code) + ": " + errmsg.msg;
+				Log(this) << Warden::QuitReason;
+			}
+			else if (fs::rename(tmpname.str(), dbname.str(), ec), ec)
+			{
+				Warden::Quitting = true;
+				Warden::QuitReason = "Unable to replace " + dbname + " with " + tmpname + ": " + ec.message();
 				Log(this) << Warden::QuitReason;
 			}
 

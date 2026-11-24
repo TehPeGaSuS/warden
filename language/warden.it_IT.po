@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 18:27+0100\n"
+"POT-Creation-Date: 2026-11-24 18:33+0100\n"
 "PO-Revision-Date: 2024-02-22 16:38+0000\n"
 "Last-Translator: Dragone2 <dragone2@risposteinformatiche.it>\n"
 "Language-Team: Italian\n"
@@ -6939,7 +6939,7 @@ msgstr "Conferma che vuoi eliminare %s con %s%s%s"
 msgid "Please contact an Operator to get a vhost assigned to this nick."
 msgstr "Per favore contatta un Operatore per avere un vHost assegnato a questo nick."
 
-#: ../modules/nickserv/nickserv.cpp
+#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_register.cpp
 msgid "Please try again with a more obscure password. Passwords should not be something that could be easily guessed (e.g. your real name or your nick) and cannot contain a space character."
 msgstr "Prova di nuovo con una password più sicura. Le password non devono essere facilmente intuibili (ad es. il proprio nome o nick) e non possono contenere spazi."
 

@@ -327,6 +327,9 @@ static void AutoFix()
 
 		if (!fc->fix_started)
 		{
+			// Automatic fixes need real history, like a CHANFIX by an oper does.
+			if (!fc->fix_requested && fc->HighScore() < conf.minfixscore)
+				continue;
 			if (!CanStartFix(fc, c))
 			{
 				// Only clear modes for a fix someone asked for.

@@ -42,6 +42,11 @@ public:
 		Extensible::ExtensibleSerialize(e, s, data);
 		for (const auto &[k, v] : data.data)
 		{
+			// Secrets that let the holder act as the account: the email
+			// confirmation code, the recovery key hash and DNS validation tokens.
+			if (k.equals_ci("passcode") || k.equals_ci("RECOVERYKEY") || k.find_ci("validation_token") != Warden::string::npos)
+				continue;
+
 			switch (data.GetType(k))
 			{
 				case Serialize::DataType::BOOL:
