@@ -273,18 +273,47 @@ namespace WebPanel
 		return Warden::ReplaceUnsafe(dit->second);
 	}
 
+	// The host part of an Origin or Host value: no scheme, path or port.
+	static Warden::string HostOf(Warden::string value)
+	{
+		auto pos = value.find("://");
+		if (pos != Warden::string::npos)
+			value = value.substr(pos + 3);
+		pos = value.find('/');
+		if (pos != Warden::string::npos)
+			value = value.substr(0, pos);
+		pos = value.rfind(':');
+		if (pos != Warden::string::npos && value.find(']', pos) == Warden::string::npos)
+			value = value.substr(0, pos);
+		return value.trim();
+	}
+
 	bool IsAllowedOrigin(const HTTP::Message &message)
 	{
-		if (allowed_origins.empty())
-			return true; // No allowed origins specified.
-
-		std::map<Warden::string, Warden::string, ci::less>::const_iterator it = message.headers.find("Origin");
+		auto it = message.headers.find("Origin");
 		if (it == message.headers.end())
-			return true; // Not a POST.
+			return true; // Browsers send Origin with every cross-site POST.
 
-		for (std::vector<Warden::string>::const_iterator allowed_origin = allowed_origins.begin(); allowed_origin != allowed_origins.end(); ++allowed_origin)
+		if (!allowed_origins.empty())
 		{
-			if (Warden::Match(it->second, *allowed_origin))
+			for (const auto &allowed_origin : allowed_origins)
+			{
+				if (Warden::Match(it->second, allowed_origin))
+					return true;
+			}
+			return false;
+		}
+
+		// Without allowed_origins, only the panel's own pages may post to it:
+		// the Origin must name the host the request was sent to (Host, or
+		// X-Forwarded-Host behind a proxy that rewrites Host).
+		const auto origin = HostOf(it->second);
+		if (origin.empty())
+			return false;
+		for (const auto *header : { "Host", "X-Forwarded-Host" })
+		{
+			auto hit = message.headers.find(header);
+			if (hit != message.headers.end() && origin.equals_ci(HostOf(hit->second)))
 				return true;
 		}
 		return false;

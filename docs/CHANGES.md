@@ -78,6 +78,11 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   command aliases in the example configuration.
 
 ### Fixes:
+* webcpanel without `allowed_origins` accepted forms posted from any site.
+  It now only accepts them from its own address (Origin matching Host or
+  X-Forwarded-Host), which works behind Apache with ProxyPreserveHost and
+  Cloudflare Tunnel. Anope 2.1.29 refuses to load without `allowed_origins`
+  instead.
 * `db_json` read numbers through a 32-bit integer, so every account's 64-bit
   ID changed on the first restart (references changed with it, so nothing
   broke, but IDs were not stable).
