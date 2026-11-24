@@ -147,7 +147,19 @@ public:
 			return true;
 		}
 
-		if (!tokens.empty())
+		if (tokens.empty())
+		{
+			// Without a token, only local clients (e.g. a panel on the same
+			// host) may use RPC; anything remote needs a token.
+			const auto &ip = client->GetIP();
+			if (ip != "::1" && ip.find("127.") != 0 && ip.find("::ffff:127.") != 0)
+			{
+				yyjson_doc_free(doc);
+				SendError(reply, RPC::ERR_METHOD_NOT_FOUND, "No authorization for method: " + request.name, id);
+				return true;
+			}
+		}
+		else
 		{
 			auto it = message.headers.find("Authorization");
 			if (it == message.headers.end() || !CanExecute(it->second, request.name))

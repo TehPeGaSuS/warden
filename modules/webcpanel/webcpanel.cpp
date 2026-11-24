@@ -245,6 +245,26 @@ public:
 		}
 	}
 
+	void OnPostCommand(CommandSource &source, Command *command, const std::vector<Warden::string> &params) override
+	{
+		// A new password logs the account out of the web panel everywhere.
+		NickCore *nc = nullptr;
+		if (command->name == "nickserv/set/password")
+			nc = source.GetAccount();
+		else if (command->name == "nickserv/saset/password" && !params.empty())
+		{
+			auto *na = NickAlias::Find(params[0]);
+			nc = na ? *na->nc : nullptr;
+		}
+		if (!nc)
+			return;
+		for (auto *na : *nc->aliases)
+		{
+			id.Unset(na);
+			ip.Unset(na);
+		}
+	}
+
 	void OnExpireTick() override
 	{
 		WebCPanel::WebLinkService::Expire();

@@ -78,6 +78,10 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   command aliases in the example configuration.
 
 ### Fixes:
+* Security: with no RPC `token` configured, anyone who could reach httpd could
+  use every RPC method (also in Anope). Without a token, RPC now only answers
+  clients on the same host; anything remote needs a token.
+* A password change now logs the account out of the web panel.
 * Security: an emailed password-reset link kept working after the reset was
   finished on IRC, the password was changed, or a recovery key was used, and
   it ignored suspended accounts. Links now only work while the reset is still
