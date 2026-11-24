@@ -169,7 +169,9 @@ public:
 		}
 		catch (const SQL::Exception &ex)
 		{
-			Log(LOG_DEBUG) << ex.GetReason();
+			// Tell the user, and log the reason where an admin will see it.
+			Log(this) << "Unable to read the channel stats: " << ex.GetReason();
+			source.Reply(_("The channel statistics are not available right now."));
 		}
 
 	}

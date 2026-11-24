@@ -12,6 +12,9 @@ Not released yet.
   `aliases/anope.conf`) including `/GS` (GroupServ) and `/CF` (ChanFix).
 
 ### Fixes:
+* `ChanServ TOP`/`TOP10`/`GTOP` and `STATS`/`GSTATS` said nothing when the
+  stats query failed; they now say the stats are unavailable and log the
+  reason (also in Anope).
 * The MySQL module's startup line compared the headers' *server* version
   with the client library's, so MariaDB always looked mismatched (also in
   Anope).

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:34+0100\n"
+"POT-Creation-Date: 2026-11-24 23:47+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -8879,6 +8879,10 @@ msgstr "Cantitatea trebuie să fie între %u și %u."
 #, c-format
 msgid "The automatic user limit of %s has been removed."
 msgstr "Limita automată de utilizatori a %s a fost eliminată."
+
+#: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_fantasy_top.cpp
+msgid "The channel statistics are not available right now."
+msgstr "Statisticile canalului nu sunt disponibile momentan."
 
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
