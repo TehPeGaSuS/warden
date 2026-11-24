@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:12+0100\n"
+"POT-Creation-Date: 2026-11-24 23:34+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -3606,12 +3606,8 @@ msgstr "Chanstats"
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now disabled for %s"
-msgstr "Τα στατιστικά Chanstats είναι πλέον απενεργοποιημένα για το %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now disabled for this channel."
-msgstr "Τα στατιστικά Chanstats είναι πλέον απενεργοποιημένα για αυτό το κανάλι."
+msgid "Chanstats statistics are now disabled for %s."
+msgstr "Τα στατιστικά Chanstats είναι πλέον απενεργοποιημένα για το %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now disabled for your nick."
@@ -3619,12 +3615,8 @@ msgstr "Τα στατιστικά Chanstats είναι πλέον απενεργ
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now enabled for %s"
-msgstr "Τα στατιστικά Chanstats είναι πλέον ενεργοποιημένα για το %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now enabled for this channel."
-msgstr "Τα στατιστικά Chanstats είναι πλέον ενεργοποιημένα για αυτό το κανάλι."
+msgid "Chanstats statistics are now enabled for %s."
+msgstr "Τα στατιστικά Chanstats είναι πλέον ενεργοποιημένα για το %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now enabled for your nick."
@@ -11459,6 +11451,12 @@ msgstr "{number}: {topic} -- ορίστηκε από {by} στις {set}"
 #, fuzzy
 #~ msgid "Associate an E-mail address with the channel"
 #~ msgstr "Συσχετίζει μία διεύθυνση e-mail με το ψευδώνυμό σας"
+
+#~ msgid "Chanstats statistics are now disabled for this channel."
+#~ msgstr "Τα στατιστικά Chanstats είναι πλέον απενεργοποιημένα για αυτό το κανάλι."
+
+#~ msgid "Chanstats statistics are now enabled for this channel."
+#~ msgstr "Τα στατιστικά Chanstats είναι πλέον ενεργοποιημένα για αυτό το κανάλι."
 
 #, c-format
 #~ msgid "Current number of SNLINEs: %d"

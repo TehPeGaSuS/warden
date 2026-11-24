@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:12+0100\n"
+"POT-Creation-Date: 2026-11-24 23:34+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -3603,12 +3603,8 @@ msgstr "Chanstats"
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now disabled for %s"
-msgstr "Statisticile Chanstats sunt dezactivate acum pentru %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now disabled for this channel."
-msgstr "Statisticile Chanstats sunt dezactivate acum pentru acest canal."
+msgid "Chanstats statistics are now disabled for %s."
+msgstr "Statisticile Chanstats sunt dezactivate acum pentru %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now disabled for your nick."
@@ -3616,12 +3612,8 @@ msgstr "Statisticile Chanstats sunt dezactivate acum pentru pseudonimul dumneavo
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now enabled for %s"
-msgstr "Statisticile Chanstats sunt activate acum pentru %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now enabled for this channel."
-msgstr "Statisticile Chanstats sunt activate acum pentru acest canal."
+msgid "Chanstats statistics are now enabled for %s."
+msgstr "Statisticile Chanstats sunt activate acum pentru %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now enabled for your nick."
@@ -11306,6 +11298,12 @@ msgstr "{number}: {topic} -- setat de {by} la {set}"
 
 #~ msgid "DEL nick"
 #~ msgstr "DEL pseudonim"
+
+#~ msgid "Chanstats statistics are now disabled for this channel."
+#~ msgstr "Statisticile Chanstats sunt dezactivate acum pentru acest canal."
+
+#~ msgid "Chanstats statistics are now enabled for this channel."
+#~ msgstr "Statisticile Chanstats sunt activate acum pentru acest canal."
 
 #~ msgid "Forbid allows you to forbid usage of certain nicknames, channels, and email addresses. Wildcards are accepted for all entries."
 #~ msgstr "Forbid vă permite să interziceți utilizarea anumitor pseudonime, canale și adrese de email. Se acceptă caractere wildcard pentru toate intrările."

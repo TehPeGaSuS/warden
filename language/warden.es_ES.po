@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:12+0100\n"
+"POT-Creation-Date: 2026-11-24 23:34+0100\n"
 "PO-Revision-Date: 2014-02-24 20:45+0100\n"
 "Last-Translator: Isaac Fontal <i_fontal@hotmail.com>\n"
 "Language-Team: Spanish\n"
@@ -3604,12 +3604,8 @@ msgstr "Estadísticas de Canal"
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now disabled for %s"
-msgstr "Las estadísticas de canal están ahora deshabilitadas para %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now disabled for this channel."
-msgstr "Las estadísticas están ahora deshabilitadas para este canal."
+msgid "Chanstats statistics are now disabled for %s."
+msgstr "Las estadísticas de canal están ahora deshabilitadas para %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now disabled for your nick."
@@ -3617,12 +3613,8 @@ msgstr "Las estadísticas de canal están ahora deshabilitadas para tu nick."
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now enabled for %s"
-msgstr "Las estadísticas de canal están ahora habilitadas para %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now enabled for this channel."
-msgstr "Las estadísticas están ahora habilitadas para este canal."
+msgid "Chanstats statistics are now enabled for %s."
+msgstr "Las estadísticas de canal están ahora habilitadas para %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now enabled for your nick."
@@ -11527,6 +11519,12 @@ msgstr "{number}: {topic} -- fijado por {by} el {set}"
 
 #~ msgid "Associate an E-mail address with the channel"
 #~ msgstr "Asociar un e-mail con el canal"
+
+#~ msgid "Chanstats statistics are now disabled for this channel."
+#~ msgstr "Las estadísticas están ahora deshabilitadas para este canal."
+
+#~ msgid "Chanstats statistics are now enabled for this channel."
+#~ msgstr "Las estadísticas están ahora habilitadas para este canal."
 
 #~ msgid "Controls what messages will be sent to users when they join the channel."
 #~ msgstr "Controla que mensajes son enviados a los usuarios cuando entran al canal."

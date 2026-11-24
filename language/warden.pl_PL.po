@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:12+0100\n"
+"POT-Creation-Date: 2026-11-24 23:34+0100\n"
 "PO-Revision-Date: 2024-02-22 16:42+0000\n"
 "Last-Translator: k4be <k4be@pirc.pl>\n"
 "Language-Team: Polish\n"
@@ -3626,12 +3626,8 @@ msgstr "Statystyki kanałów"
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now disabled for %s"
-msgstr "Statystyki kanałowe są teraz wyłączone dla %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now disabled for this channel."
-msgstr "Statystyki tego kanału są teraz wyłączone."
+msgid "Chanstats statistics are now disabled for %s."
+msgstr "Statystyki kanałowe są teraz wyłączone dla %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now disabled for your nick."
@@ -3639,12 +3635,8 @@ msgstr "Statystyki kanałowe dla Twojego nicka są teraz wyłączone."
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now enabled for %s"
-msgstr "Statystyki kanałowe dla %s są teraz włączone"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now enabled for this channel."
-msgstr "Statystyki tego kanału są teraz włączone."
+msgid "Chanstats statistics are now enabled for %s."
+msgstr "Statystyki kanałowe dla %s są teraz włączone."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now enabled for your nick."
@@ -11547,6 +11539,12 @@ msgstr "{number}: {topic} -- ustawiony przez {by} o {set}"
 
 #~ msgid "Associate an E-mail address with the channel"
 #~ msgstr "Przypisuje adres e-mail do kanału"
+
+#~ msgid "Chanstats statistics are now disabled for this channel."
+#~ msgstr "Statystyki tego kanału są teraz wyłączone."
+
+#~ msgid "Chanstats statistics are now enabled for this channel."
+#~ msgstr "Statystyki tego kanału są teraz włączone."
 
 #~ msgid "Controls what messages will be sent to users when they join the channel."
 #~ msgstr ""

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:12+0100\n"
+"POT-Creation-Date: 2026-11-24 23:34+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -3609,12 +3609,8 @@ msgstr "Kanal İstatistikleri"
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now disabled for %s"
-msgstr "Chanstats istatistikleri artık %s için devre dışı bırakıldı"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now disabled for this channel."
-msgstr "Chanstats istatistikleri artık bu kanal için devre dışı."
+msgid "Chanstats statistics are now disabled for %s."
+msgstr "Chanstats istatistikleri artık %s için devre dışı bırakıldı."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now disabled for your nick."
@@ -3622,12 +3618,8 @@ msgstr "Artık rumuzunuzun Chanstats istatistikleri devre dışı bırakıldı."
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now enabled for %s"
-msgstr "Chanstats istatistikleri artık %s için etkin"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now enabled for this channel."
-msgstr "Chanstats istatistikleri artık bu kanal için etkin."
+msgid "Chanstats statistics are now enabled for %s."
+msgstr "Chanstats istatistikleri artık %s için etkin."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now enabled for your nick."
@@ -11345,6 +11337,12 @@ msgstr "{number}: {topic} -- {by} tarafından {set} tarihinde ayarlandı"
 
 #~ msgid "Associate an email address with the channel"
 #~ msgstr "Bir e-posta adresini kanalla ilişkilendirin"
+
+#~ msgid "Chanstats statistics are now disabled for this channel."
+#~ msgstr "Chanstats istatistikleri artık bu kanal için devre dışı."
+
+#~ msgid "Chanstats statistics are now enabled for this channel."
+#~ msgstr "Chanstats istatistikleri artık bu kanal için etkin."
 
 #, c-format
 #~ msgid "Current number of SNLINEs: %zu"

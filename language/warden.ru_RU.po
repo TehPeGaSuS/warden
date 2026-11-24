@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:12+0100\n"
+"POT-Creation-Date: 2026-11-24 23:34+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -3573,12 +3573,8 @@ msgstr "Статистика каналов (Chanstats)"
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now disabled for %s"
-msgstr "Статистика Chanstats теперь отключена для %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now disabled for this channel."
-msgstr "Статистика Chanstats теперь отключена для этого канала."
+msgid "Chanstats statistics are now disabled for %s."
+msgstr "Статистика Chanstats теперь отключена для %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now disabled for your nick."
@@ -3586,12 +3582,8 @@ msgstr "Статистика Chanstats теперь отключена для в
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now enabled for %s"
-msgstr "Статистика Chanstats теперь включена для %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now enabled for this channel."
-msgstr "Статистика Chanstats теперь включена для этого канала."
+msgid "Chanstats statistics are now enabled for %s."
+msgstr "Статистика Chanstats теперь включена для %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now enabled for your nick."
@@ -11240,6 +11232,12 @@ msgstr "{number}: {topic} -- установил(а) {by} в {set}"
 
 #~ msgid "DEL nick"
 #~ msgstr "УДАЛИТЬ <ник>"
+
+#~ msgid "Chanstats statistics are now disabled for this channel."
+#~ msgstr "Статистика Chanstats теперь отключена для этого канала."
+
+#~ msgid "Chanstats statistics are now enabled for this channel."
+#~ msgstr "Статистика Chanstats теперь включена для этого канала."
 
 #~ msgid "Forbid allows you to forbid usage of certain nicknames, channels, and email addresses. Wildcards are accepted for all entries."
 #~ msgstr "Forbid позволяет запретить использование определенных ников, каналов и адресов электронной почты. Для всех записей принимаются подстановочные знаки."

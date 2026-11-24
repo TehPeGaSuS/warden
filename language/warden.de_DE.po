@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:12+0100\n"
+"POT-Creation-Date: 2026-11-24 23:34+0100\n"
 "PO-Revision-Date: 2023-04-21 22:04+0200\n"
 "Last-Translator: henk\n"
 "Language-Team: German\n"
@@ -3609,12 +3609,8 @@ msgstr "Chanstats"
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now disabled for %s"
-msgstr "Chanstats-Statistiken sind jetzt für %s deaktiviert"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now disabled for this channel."
-msgstr "Chanstats-Statistiken sind jetzt für diesen Channel deaktiviert."
+msgid "Chanstats statistics are now disabled for %s."
+msgstr "Chanstats-Statistiken sind jetzt für %s deaktiviert."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now disabled for your nick."
@@ -3622,12 +3618,8 @@ msgstr "Chanstats-Statistiken sind jetzt für Deinen Nicknamen deaktiviert."
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now enabled for %s"
-msgstr "Chanstats-Statistiken sind jetzt für %s aktiviert"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now enabled for this channel."
-msgstr "Chanstats-Statistiken sind jetzt für diesen Channel aktiviert."
+msgid "Chanstats statistics are now enabled for %s."
+msgstr "Chanstats-Statistiken sind jetzt für %s aktiviert."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now enabled for your nick."
@@ -11534,6 +11526,12 @@ msgstr "{number}: {topic} -- gesetzt von {by} am {set}"
 #, fuzzy
 #~ msgid "Associate an E-mail address with the channel"
 #~ msgstr "Verbindet eine eMail-Adresse mit Deinem Nicknamen"
+
+#~ msgid "Chanstats statistics are now disabled for this channel."
+#~ msgstr "Chanstats-Statistiken sind jetzt für diesen Channel deaktiviert."
+
+#~ msgid "Chanstats statistics are now enabled for this channel."
+#~ msgstr "Chanstats-Statistiken sind jetzt für diesen Channel aktiviert."
 
 #~ msgid "Controls what messages will be sent to users when they join the channel."
 #~ msgstr ""

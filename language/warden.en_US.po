@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:12+0100\n"
+"POT-Creation-Date: 2026-11-24 23:34+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -3441,11 +3441,7 @@ msgstr ""
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now disabled for %s"
-msgstr ""
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now disabled for this channel."
+msgid "Chanstats statistics are now disabled for %s."
 msgstr ""
 
 #: ../modules/chanstats.cpp
@@ -3454,11 +3450,7 @@ msgstr ""
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now enabled for %s"
-msgstr ""
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now enabled for this channel."
+msgid "Chanstats statistics are now enabled for %s."
 msgstr ""
 
 #: ../modules/chanstats.cpp

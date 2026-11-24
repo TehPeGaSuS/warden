@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:12+0100\n"
+"POT-Creation-Date: 2026-11-24 23:34+0100\n"
 "PO-Revision-Date: 2026-08-15 19:55+0200\n"
 "Last-Translator: PeGaSuS <25697531+TehPeGaSuS@users.noreply.github.com>\n"
 "Language-Team: Portuguese (Portugal)\n"
@@ -3603,12 +3603,8 @@ msgstr "Chanstats"
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now disabled for %s"
-msgstr "As estatísticas do Chanstats estão agora desativadas para %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now disabled for this channel."
-msgstr "As estatísticas do Chanstats estão agora desativadas para este canal."
+msgid "Chanstats statistics are now disabled for %s."
+msgstr "As estatísticas do Chanstats estão agora desativadas para %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now disabled for your nick."
@@ -3616,12 +3612,8 @@ msgstr "As estatísticas do Chanstats estão agora desativadas para o teu nick."
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now enabled for %s"
-msgstr "As estatísticas do Chanstats estão agora ativadas para %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now enabled for this channel."
-msgstr "As estatísticas do Chanstats estão agora ativadas para este canal."
+msgid "Chanstats statistics are now enabled for %s."
+msgstr "As estatísticas do Chanstats estão agora ativadas para %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now enabled for your nick."
@@ -11308,6 +11300,12 @@ msgstr "{number}: {topic} -- definido por {by} em {set}"
 
 #~ msgid "DEL nick"
 #~ msgstr "DEL nick"
+
+#~ msgid "Chanstats statistics are now disabled for this channel."
+#~ msgstr "As estatísticas do Chanstats estão agora desativadas para este canal."
+
+#~ msgid "Chanstats statistics are now enabled for this channel."
+#~ msgstr "As estatísticas do Chanstats estão agora ativadas para este canal."
 
 #~ msgid "Forbid allows you to forbid usage of certain nicknames, channels, and email addresses. Wildcards are accepted for all entries."
 #~ msgstr "Forbid permite-te proibir o uso de certos nicknames, canais e endereços de email. Caracteres curinga são aceites para todas as entradas."

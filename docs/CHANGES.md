@@ -12,6 +12,8 @@ Not released yet.
   `aliases/anope.conf`) including `/GS` (GroupServ) and `/CF` (ChanFix).
 
 ### Fixes:
+* `ChanServ SET CHANSTATS` names the channel in its reply instead of "this
+  channel".
 * The systemd unit is wanted by `default.target` instead of `multi-user.target`,
   so `systemctl --user enable warden` starts it at boot (also in Anope).
 * The Windows installer was built for a release but could not be attached to it

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:12+0100\n"
+"POT-Creation-Date: 2026-11-24 23:34+0100\n"
 "PO-Revision-Date: 2025-02-23 03:23+0100\n"
 "Last-Translator: Robby <robby@chatbelgie.be>\n"
 "Language-Team: Dutch\n"
@@ -3604,12 +3604,8 @@ msgstr "Kanaalstatistieken"
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now disabled for %s"
-msgstr "Chanstats statistieken zijn nu uitgeschakeld voor %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now disabled for this channel."
-msgstr "Chanstats statistieken zijn nu uitgeschakeld voor dit kanaal."
+msgid "Chanstats statistics are now disabled for %s."
+msgstr "Chanstats statistieken zijn nu uitgeschakeld voor %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now disabled for your nick."
@@ -3617,12 +3613,8 @@ msgstr "Chanstats statistieken zijn nu uitgeschakeld voor jouw nick."
 
 #: ../modules/chanstats.cpp
 #, c-format
-msgid "Chanstats statistics are now enabled for %s"
-msgstr "Chanstats statistieken zijn nu ingeschakeld voor %s"
-
-#: ../modules/chanstats.cpp
-msgid "Chanstats statistics are now enabled for this channel."
-msgstr "Chanstats statistieken zijn nu ingeschakeld voor dit kanaal."
+msgid "Chanstats statistics are now enabled for %s."
+msgstr "Chanstats statistieken zijn nu ingeschakeld voor %s."
 
 #: ../modules/chanstats.cpp
 msgid "Chanstats statistics are now enabled for your nick."
@@ -11461,6 +11453,12 @@ msgstr "{number}: {topic} -- ingesteld door {by} op {set}"
 
 #~ msgid "Associate an email address with the channel"
 #~ msgstr "Koppel een e-mailadres aan het kanaal"
+
+#~ msgid "Chanstats statistics are now disabled for this channel."
+#~ msgstr "Chanstats statistieken zijn nu uitgeschakeld voor dit kanaal."
+
+#~ msgid "Chanstats statistics are now enabled for this channel."
+#~ msgstr "Chanstats statistieken zijn nu ingeschakeld voor dit kanaal."
 
 #~ msgid "Controls what messages will be sent to users when they join the channel."
 #~ msgstr "Beheer welke berichten verstuurd worden naar gebruikers wanneer ze het kanaal betreden."

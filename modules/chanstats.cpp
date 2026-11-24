@@ -49,14 +49,14 @@ public:
 		if (params[1].equals_ci("ON"))
 		{
 			ci->Extend<bool>("CS_STATS");
-			source.Reply(_("Chanstats statistics are now enabled for this channel."));
+			source.Reply(_("Chanstats statistics are now enabled for \002%s\002."), ci->name.c_str());
 			Log(source.AccessFor(ci).HasPriv("SET") ? LOG_COMMAND : LOG_OVERRIDE, source, this, ci) << "to enable chanstats";
 		}
 		else if (params[1].equals_ci("OFF"))
 		{
 			Log(source.AccessFor(ci).HasPriv("SET") ? LOG_COMMAND : LOG_OVERRIDE, source, this, ci) << "to disable chanstats";
 			ci->Shrink<bool>("CS_STATS");
-			source.Reply(_("Chanstats statistics are now disabled for this channel."));
+			source.Reply(_("Chanstats statistics are now disabled for \002%s\002."), ci->name.c_str());
 		}
 		else
 			this->OnSyntaxError(source, "");
@@ -99,7 +99,7 @@ public:
 			Log(na->nc == source.GetAccount() ? LOG_COMMAND : LOG_ADMIN, source, this) << "to enable chanstats for " << na->nc->display;
 			na->nc->Extend<bool>("NS_STATS");
 			if (saset)
-				source.Reply(_("Chanstats statistics are now enabled for %s"), na->nc->display.c_str());
+				source.Reply(_("Chanstats statistics are now enabled for \002%s\002."), na->nc->display.c_str());
 			else
 				source.Reply(_("Chanstats statistics are now enabled for your nick."));
 		}
@@ -108,7 +108,7 @@ public:
 			Log(na->nc == source.GetAccount() ? LOG_COMMAND : LOG_ADMIN, source, this) << "to disable chanstats for " << na->nc->display;
 			na->nc->Shrink<bool>("NS_STATS");
 			if (saset)
-				source.Reply(_("Chanstats statistics are now disabled for %s"), na->nc->display.c_str());
+				source.Reply(_("Chanstats statistics are now disabled for \002%s\002."), na->nc->display.c_str());
 			else
 				source.Reply(_("Chanstats statistics are now disabled for your nick."));
 		}
