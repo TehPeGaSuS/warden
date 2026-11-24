@@ -32,8 +32,7 @@ public:
 		int from = 0, to = 0;
 		for (const auto &param : params)
 		{
-			// Anope wrote ranges as #from-to; both forms work.
-			const auto range = param[0] == '#' ? param.substr(1) : param;
+			const auto &range = param;
 			auto dash = range.find('-');
 			if (dash == Warden::string::npos || !dash || !isdigit(range[0]))
 			{
