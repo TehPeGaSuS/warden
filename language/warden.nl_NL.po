@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 17:36+0100\n"
+"POT-Creation-Date: 2026-11-24 18:27+0100\n"
 "PO-Revision-Date: 2025-02-23 03:23+0100\n"
 "Last-Translator: Robby <robby@chatbelgie.be>\n"
 "Language-Team: Dutch\n"
@@ -6768,12 +6768,12 @@ msgid "Online from"
 msgstr "Is online vanaf"
 
 #: ../modules/groupserv/groupserv.cpp
-msgid "Only a founder can make someone a founder."
-msgstr "Alleen een stichter kan iemand stichter maken."
+msgid "Only a founder can change a founder's flags."
+msgstr "Alleen een oprichter kan de flags van een oprichter wijzigen."
 
 #: ../modules/groupserv/groupserv.cpp
-msgid "Only a founder can remove a founder."
-msgstr "Alleen een stichter kan een stichter verwijderen."
+msgid "Only a founder can make someone a founder."
+msgstr "Alleen een stichter kan iemand stichter maken."
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Only let a group's members join the channel"
@@ -10241,6 +10241,10 @@ msgid "You can only have %u access entry on a channel."
 msgid_plural "You can only have %u access entries on a channel."
 msgstr[0] "Je kan maar %u toegangsvermelding op een kanaal hebben."
 msgstr[1] "Je kan maar %u toegangsvermeldingen op een kanaal hebben."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "You can only use join flags that you have yourself."
+msgstr "Je kunt alleen join-flags gebruiken die je zelf hebt."
 
 #: ../modules/nickserv/ns_recover.cpp
 #, c-format

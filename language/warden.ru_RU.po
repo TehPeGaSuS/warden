@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 17:36+0100\n"
+"POT-Creation-Date: 2026-11-24 18:27+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -6721,12 +6721,12 @@ msgid "Online from"
 msgstr "В сети с"
 
 #: ../modules/groupserv/groupserv.cpp
-msgid "Only a founder can make someone a founder."
-msgstr "Только основатель может сделать кого-либо основателем."
+msgid "Only a founder can change a founder's flags."
+msgstr "Только основатель может изменять флаги основателя."
 
 #: ../modules/groupserv/groupserv.cpp
-msgid "Only a founder can remove a founder."
-msgstr "Только основатель может удалить основателя."
+msgid "Only a founder can make someone a founder."
+msgstr "Только основатель может сделать кого-либо основателем."
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Only let a group's members join the channel"
@@ -10171,6 +10171,10 @@ msgid_plural "You can only have %u access entries on a channel."
 msgstr[0] "На канале может быть не более %u записи доступа."
 msgstr[1] "На канале может быть не более %u записей доступа."
 msgstr[2] "На канале может быть не более %u записи доступа."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "You can only use join flags that you have yourself."
+msgstr "Вы можете использовать только флаги входа, которые есть у вас самих."
 
 #: ../modules/nickserv/ns_recover.cpp
 #, c-format

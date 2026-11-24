@@ -78,6 +78,16 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   command aliases in the example configuration.
 
 ### Fixes:
+* Security: an emailed password-reset link kept working after the reset was
+  finished on IRC, the password was changed, or a recovery key was used, and
+  it ignored suspended accounts. Links now only work while the reset is still
+  pending, and changing the password on IRC or using a recovery key cancels a
+  pending email reset.
+* Security: a GroupServ member with `+s` could set join flags they did not hold
+  (e.g. `+f`), and a member with `+f` could change a founder's flags.
+* The `warden.server` RPC call without parameters crashed services (also in
+  Anope).
+* ChanFix forgot channels whose ops never changed after the retention period.
 * webcpanel without `allowed_origins` accepted forms posted from any site.
   It now only accepts them from its own address (Origin matching Host or
   X-Forwarded-Host), which works behind Apache with ProxyPreserveHost and

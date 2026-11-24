@@ -33,6 +33,8 @@ struct WebToken final
 
 	// The nick the link is for, if it still belongs to the same account.
 	NickAlias *GetNick() const;
+	/** False for a reset link whose reset is no longer pending. */
+	bool IsPending() const;
 };
 
 struct WebTokenType final

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 17:36+0100\n"
+"POT-Creation-Date: 2026-11-24 18:27+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -6765,12 +6765,12 @@ msgid "Online from"
 msgstr "Conectat(ă) din"
 
 #: ../modules/groupserv/groupserv.cpp
-msgid "Only a founder can make someone a founder."
-msgstr "Doar un fondator poate face pe cineva fondator."
+msgid "Only a founder can change a founder's flags."
+msgstr "Doar un fondator poate schimba flag-urile unui fondator."
 
 #: ../modules/groupserv/groupserv.cpp
-msgid "Only a founder can remove a founder."
-msgstr "Doar un fondator poate înlătura un fondator."
+msgid "Only a founder can make someone a founder."
+msgstr "Doar un fondator poate face pe cineva fondator."
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Only let a group's members join the channel"
@@ -10238,6 +10238,10 @@ msgid "You can only have %u access entry on a channel."
 msgid_plural "You can only have %u access entries on a channel."
 msgstr[0] "Puteți avea doar %u intrare de acces într-un canal."
 msgstr[1] "Puteți avea doar %u intrări de accese într-un canal."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "You can only use join flags that you have yourself."
+msgstr "Puteți folosi doar flag-uri de intrare pe care le aveți dumneavoastră."
 
 #: ../modules/nickserv/ns_recover.cpp
 #, c-format

@@ -496,9 +496,9 @@ protected:
 				source.Reply(_("Only a founder can make someone a founder."));
 				return;
 			}
-			if (had('F') && !has('F') && !g->Has(src, 'F'))
+			if (had('F') && !g->Has(src, 'F'))
 			{
-				source.Reply(_("Only a founder can remove a founder."));
+				source.Reply(_("Only a founder can change a founder's flags."));
 				return;
 			}
 		}
@@ -1077,6 +1077,19 @@ public:
 				{
 					source.Reply(_("Join flags must be flags to add, without \002F\002 or \002b\002, e.g. \002+Ac\002."));
 					return;
+				}
+
+				// Nobody can hand out (to joiners) flags they don't hold.
+				if (!founder)
+				{
+					for (const auto f : flags)
+					{
+						if (!g->Has(nc, f))
+						{
+							source.Reply(_("You can only use join flags that you have yourself."));
+							return;
+						}
+					}
 				}
 			}
 			g->joinflags = flags;

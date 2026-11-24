@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 17:36+0100\n"
+"POT-Creation-Date: 2026-11-24 18:27+0100\n"
 "PO-Revision-Date: 2024-02-22 16:42+0000\n"
 "Last-Translator: k4be <k4be@pirc.pl>\n"
 "Language-Team: Polish\n"
@@ -6801,12 +6801,12 @@ msgid "Online from"
 msgstr "Jest online z"
 
 #: ../modules/groupserv/groupserv.cpp
-msgid "Only a founder can make someone a founder."
-msgstr "Tylko założyciel może uczynić kogoś założycielem."
+msgid "Only a founder can change a founder's flags."
+msgstr "Tylko założyciel może zmienić flagi założyciela."
 
 #: ../modules/groupserv/groupserv.cpp
-msgid "Only a founder can remove a founder."
-msgstr "Tylko założyciel może usunąć założyciela."
+msgid "Only a founder can make someone a founder."
+msgstr "Tylko założyciel może uczynić kogoś założycielem."
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Only let a group's members join the channel"
@@ -10286,6 +10286,10 @@ msgid_plural "You can only have %u access entries on a channel."
 msgstr[0] "Możesz mieć tylko %u wpis dostępu na kanale."
 msgstr[1] "Możesz mieć tylko %u wpisy dostępu na kanale."
 msgstr[2] "Możesz mieć tylko %u wpisów dostępu na kanale."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "You can only use join flags that you have yourself."
+msgstr "Możesz używać tylko flag dołączenia, które sam posiadasz."
 
 #: ../modules/nickserv/ns_recover.cpp
 #, c-format

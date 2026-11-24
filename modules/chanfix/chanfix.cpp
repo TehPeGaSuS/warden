@@ -382,7 +382,12 @@ static void Gather()
 			}
 		}
 		if (fc)
+		{
+			// Seen with ops now: a channel whose ops never change still counts
+			// as active, or it would be forgotten after the retention period.
+			fc->lastupdate = Warden::CurTime;
 			fc->QueueUpdate();
+		}
 	}
 }
 

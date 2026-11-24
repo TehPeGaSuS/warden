@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 17:36+0100\n"
+"POT-Creation-Date: 2026-11-24 18:27+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -6773,12 +6773,12 @@ msgid "Online from"
 msgstr "Çevrimiçi"
 
 #: ../modules/groupserv/groupserv.cpp
-msgid "Only a founder can make someone a founder."
-msgstr "Yalnızca bir kurucu birini kurucu yapabilir."
+msgid "Only a founder can change a founder's flags."
+msgstr "Yalnızca bir kurucu, bir kurucunun bayraklarını değiştirebilir."
 
 #: ../modules/groupserv/groupserv.cpp
-msgid "Only a founder can remove a founder."
-msgstr "Yalnızca bir kurucu bir kurucuyu çıkarabilir."
+msgid "Only a founder can make someone a founder."
+msgstr "Yalnızca bir kurucu birini kurucu yapabilir."
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Only let a group's members join the channel"
@@ -10251,6 +10251,10 @@ msgid "You can only have %u access entry on a channel."
 msgid_plural "You can only have %u access entries on a channel."
 msgstr[0] "Bir kanalda yalnızca %u erişim girdisine sahip olabilirsiniz."
 msgstr[1] "Bir kanalda yalnızca %u erişim girdisine sahip olabilirsiniz."
+
+#: ../modules/groupserv/groupserv.cpp
+msgid "You can only use join flags that you have yourself."
+msgstr "Yalnızca kendinizde olan katılım bayraklarını kullanabilirsiniz."
 
 #: ../modules/nickserv/ns_recover.cpp
 #, c-format

@@ -467,7 +467,7 @@ class WardenServerRPCEvent final
 {
 public:
 	WardenServerRPCEvent(Module *o)
-		: RPC::Event(o, "warden.server")
+		: RPC::Event(o, "warden.server", 1)
 	{
 	}
 

@@ -66,6 +66,17 @@ NickAlias *WebToken::GetNick() const
 	return na && na->nc->GetId() == this->account ? na : nullptr;
 }
 
+bool WebToken::IsPending() const
+{
+	// A reset link only works while ns_resetpass still has the reset pending:
+	// finishing the reset on IRC, changing the password, using a recovery key
+	// or restarting services all end it.
+	if (this->type != WebLink::Type::RESETPASS)
+		return true;
+	auto *na = this->GetNick();
+	return na && na->nc->HasExt("reset");
+}
+
 WebTokenType::WebTokenType()
 	: Serialize::Type(WEBTOKEN_TYPE)
 {
@@ -160,7 +171,7 @@ WebToken *WebLinkService::Find(const Warden::string &token)
 		return nullptr;
 
 	auto *wt = it->second;
-	if ((wt->expires && wt->expires <= Warden::CurTime) || !wt->GetNick())
+	if ((wt->expires && wt->expires <= Warden::CurTime) || !wt->GetNick() || !wt->IsPending())
 	{
 		delete wt;
 		return nullptr;
@@ -173,7 +184,7 @@ void WebLinkService::Expire()
 	std::vector<WebToken *> old;
 	for (const auto &[_, wt] : tokens)
 	{
-		if ((wt->expires && wt->expires <= Warden::CurTime) || !wt->GetNick())
+		if ((wt->expires && wt->expires <= Warden::CurTime) || !wt->GetNick() || !wt->IsPending())
 			old.push_back(wt);
 	}
 	for (auto *wt : old)
@@ -261,6 +272,12 @@ bool WebCPanel::Verify::OnRequest(HTTP::Provider *server, const Warden::string &
 		}
 		case WebLink::Type::RESETPASS:
 		{
+			if (nc->HasExt("NS_SUSPENDED"))
+			{
+				replacements["MESSAGES"] = Warden::Format(Language::Translate(NICK_X_SUSPENDED), na->nick.c_str());
+				return serve();
+			}
+
 			const auto pass = WebPanel::GetRequestData(message.post_data, "password");
 			if (pass.empty() || pass != WebPanel::GetRequestData(message.post_data, "password2"))
 			{

@@ -201,6 +201,12 @@ public:
 	}
 };
 
+struct ResetInfo final
+{
+	Warden::string code;
+	time_t time;
+};
+
 class CommandNSResetPass final
 	: public Command
 {
@@ -223,8 +229,9 @@ class CommandNSResetPass final
 			return;
 		}
 
-		// Each key works once.
+		// Each key works once, and a pending email reset is no longer needed.
 		const auto newkey = keys.Create(nc);
+		nc->Shrink<ResetInfo>("reset");
 
 		if (source.GetUser())
 			source.GetUser()->Identify(na);
@@ -312,12 +319,6 @@ public:
 		}
 		return true;
 	}
-};
-
-struct ResetInfo final
-{
-	Warden::string code;
-	time_t time;
 };
 
 class CommandNSConfirmResetPass final
@@ -462,6 +463,26 @@ public:
 
 		CommandSource source(u->nick, u, nc, u, NickServ);
 		RecoveryKeys::Show(source, nc->na, keys.Create(nc));
+	}
+
+	void OnPostCommand(CommandSource &source, Command *command, const std::vector<Warden::string> &params) override
+	{
+		// A password changed on IRC cancels a pending email reset, and with it
+		// any reset link in the user's mailbox. (The web panel's own reset sets
+		// the password with no user behind it and confirms the reset itself.)
+		if (!source.GetUser())
+			return;
+
+		NickCore *nc = nullptr;
+		if (command->name == "nickserv/set/password")
+			nc = source.GetAccount();
+		else if (command->name == "nickserv/saset/password" && !params.empty())
+		{
+			auto *na = NickAlias::Find(params[0]);
+			nc = na ? *na->nc : nullptr;
+		}
+		if (nc)
+			reset.Unset(nc);
 	}
 
 	void OnNickInfo(CommandSource &source, NickAlias *na, InfoFormatter &info, bool show_hidden) override
