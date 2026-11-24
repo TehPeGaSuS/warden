@@ -28,11 +28,12 @@ public:
 	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
 	{
 		// LIST [key] [from-to]: a pattern, a range, or both (anope/anope#541).
-		Warden::string key;
+		Warden::string key, typed_range;
 		int from = 0, to = 0;
 		for (const auto &param : params)
 		{
-			const auto &range = param;
+			// Anope wrote ranges as #from-to; both forms work.
+			const auto range = param[0] == '#' ? param.substr(1) : param;
 			auto dash = range.find('-');
 			if (dash == Warden::string::npos || !dash || !isdigit(range[0]))
 			{
@@ -49,6 +50,7 @@ public:
 			}
 			from = n1.value();
 			to = n2.value();
+			typed_range = param;
 		}
 
 		// Without a range only listmax entries are shown; a range is the
@@ -104,9 +106,10 @@ public:
 		}
 
 		// Anope's header lines, kept so scripts written for Anope still work.
-		if (pattern)
-			source.Reply(_("Displayed records matching key \002%s\002 (count: \002%d\002)."), key.c_str(), shown);
-		else if (shown < matched || from)
+		// As in Anope, a range is reported as the "key" the user typed.
+		if (pattern || from)
+			source.Reply(_("Displayed records matching key \002%s\002 (count: \002%d\002)."), (pattern ? key : typed_range).c_str(), shown);
+		else if (shown < matched)
 			source.Reply(_("Displayed records from \002%d\002 to \002%d\002."), shown_from, shown_to);
 		else
 			source.Reply(_("Displayed all records (count: \002%d\002)."), shown);
