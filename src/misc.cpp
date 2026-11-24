@@ -173,43 +173,64 @@ void ListFormatter::SendFixed(CommandSource &source)
 {
 	const auto *monospace = source.nc && source.GetAccount()->HasExt("NS_MONOSPACE") ? "\021" : "";
 
+	// Leave out columns that are empty in every entry (e.g. an unused
+	// Description), so they don't take space or force a line break.
+	std::vector<Warden::string> columns;
+	for (const auto &column : this->columns)
+	{
+		auto used = this->entries.empty();
+		for (auto &entry : this->entries)
+		{
+			if (!entry[column].empty())
+			{
+				used = true;
+				break;
+			}
+		}
+		if (used)
+			columns.push_back(column);
+	}
+
 	std::vector<Warden::string> tcolumns;
 	std::map<Warden::string, size_t> lengths;
 	std::set<Warden::string> breaks;
-	for (const auto &column : this->columns)
+	for (const auto &column : columns)
 	{
 		tcolumns.emplace_back(Language::Translate(this->nc, column.c_str()));
-		lengths[column] = column.length();
+		lengths[column] = tcolumns.back().length();
 	}
 	for (auto &entry : this->entries)
 	{
-		for (const auto &column : this->columns)
+		for (const auto &column : columns)
 		{
 			if (entry[column].length() > lengths[column])
 				lengths[column] = entry[column].length();
 		}
 	}
+
+	// Break before a column that would make the line too long, in the order
+	// the columns are shown.
 	const auto max_length = Config->GetBlock("options").Get<size_t>("linelength", "100");
-	unsigned total_length = 0;
-	for (const auto &[column, length] : lengths)
+	size_t total_length = 0;
+	for (const auto &column : columns)
 	{
-		// Break lines that are getting too long.
-		if (total_length > max_length)
+		const auto width = lengths[column] + (total_length ? 2 : 0);
+		if (total_length && total_length + width > max_length)
 		{
 			breaks.insert(column);
-			total_length = 0;
+			total_length = 2 + lengths[column];
 		}
 		else
-			total_length += length;
+			total_length += width;
 	}
 
 	/* Only put a list header if more than 1 column */
-	if (this->columns.size() > 1)
+	if (columns.size() > 1)
 	{
 		Warden::string s = monospace;
-		for (unsigned i = 0; i < this->columns.size(); ++i)
+		for (unsigned i = 0; i < columns.size(); ++i)
 		{
-			if (breaks.count(this->columns[i]))
+			if (breaks.count(columns[i]))
 			{
 				source.Reply(s);
 				s = Warden::Format("%s  ", monospace);
@@ -217,8 +238,8 @@ void ListFormatter::SendFixed(CommandSource &source)
 			else if (!s.empty())
 				s += "  ";
 			s += tcolumns[i];
-			if (i + 1 != this->columns.size())
-				for (unsigned j = tcolumns[i].length(); j < lengths[this->columns[i]]; ++j)
+			if (i + 1 != columns.size())
+				for (unsigned j = tcolumns[i].length(); j < lengths[columns[i]]; ++j)
 					s += " ";
 		}
 		source.Reply(s);
@@ -227,18 +248,24 @@ void ListFormatter::SendFixed(CommandSource &source)
 	for (auto &entry : this->entries)
 	{
 		Warden::string s = monospace;
-		for (unsigned j = 0; j < this->columns.size(); ++j)
+		for (unsigned j = 0; j < columns.size(); ++j)
 		{
-			if (breaks.count(this->columns[j]))
+			if (breaks.count(columns[j]))
 			{
+				// Nothing left to show on a continuation line: stop here.
+				auto rest = false;
+				for (auto k = j; k < columns.size() && !rest; ++k)
+					rest = !entry[columns[k]].empty();
+				if (!rest)
+					break;
 				source.Reply(s);
 				s = Warden::Format("%s  ", monospace);
 			}
 			else if (!s.empty())
 				s += "  ";
-			s += entry[this->columns[j]];
-			if (j + 1 != this->columns.size())
-				for (unsigned k = entry[this->columns[j]].length(); k < lengths[this->columns[j]]; ++k)
+			s += entry[columns[j]];
+			if (j + 1 != columns.size())
+				for (unsigned k = entry[columns[j]].length(); k < lengths[columns[j]]; ++k)
 					s += " ";
 		}
 		source.Reply(s);

@@ -99,6 +99,9 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   SESSION, NEWS, FORBID, HostServ requests, CERT) ignored `SET TIMEZONE`.
 * `NickServ INFO` labels the real mask "Real mask" instead of showing two
   "Online from" or "Last seen mask" lines.
+* FIXED-layout lists broke lines in the wrong place (columns were measured in
+  alphabetical order) and showed empty columns, so e.g. `FLAGS LIST` put an
+  unused Description header on a line of its own.
 
 ### Upgrading from Anope:
 * The binary is `warden`, the configuration `warden.conf` and the database
