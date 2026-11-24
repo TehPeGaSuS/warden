@@ -140,9 +140,6 @@ public:
 					Global::service->SendSingle(DConfig.offmessage);
 				else
 					Global::service->SendSingle(Warden::Format(Language::Translate(_("The Defcon level is now at: \002%d\002")), DConfig.defaultlevel));
-
-				if (!DConfig.message.empty())
-					Global::service->SendSingle(DConfig.message);
 			}
 
 			runDefCon();
@@ -222,10 +219,10 @@ public:
 		{
 			if (DConfig.defaultlevel == 5 && !DConfig.offmessage.empty())
 				Global::service->SendSingle(DConfig.offmessage);
-			else if (DConfig.defaultlevel != 5)
+			else
 			{
-				Global::service->SendSingle(Warden::Format(_("The Defcon level is now at: \002%d\002"), DConfig.defaultlevel));
-				if (!DConfig.message.empty())
+				Global::service->SendSingle(Warden::Format(Language::Translate(_("The Defcon level is now at: \002%d\002")), DConfig.defaultlevel));
+				if (DConfig.defaultlevel != 5 && !DConfig.message.empty())
 					Global::service->SendSingle(DConfig.message);
 			}
 		}
@@ -344,15 +341,15 @@ public:
 
 		{
 		const auto &block = conf.GetModule(this);
-		dconfig.defaultlevel = block.Get<int>("defaultlevel");
+		dconfig.defaultlevel = block.Get<int>("defaultlevel", "5");
 		dconfig.defcons[4] = block.Get<const Warden::string>("level4");
 		dconfig.defcons[3] = block.Get<const Warden::string>("level3");
 		dconfig.defcons[2] = block.Get<const Warden::string>("level2");
 		dconfig.defcons[1] = block.Get<const Warden::string>("level1");
-		dconfig.sessionlimit = block.Get<int>("sessionlimit");
-		dconfig.akillreason = block.Get<const Warden::string>("akillreason");
-		dconfig.akillexpire = block.Get<time_t>("akillexpire");
-		dconfig.chanmodes = block.Get<const Warden::string>("chanmodes");
+		dconfig.sessionlimit = block.Get<int>("sessionlimit", "2");
+		dconfig.akillreason = block.Get<const Warden::string>("akillreason", "This network is currently not accepting connections, please try again later.");
+		dconfig.akillexpire = block.Get<time_t>("akillexpire", "5m");
+		dconfig.chanmodes = block.Get<const Warden::string>("chanmodes", "+R");
 		dconfig.timeout = block.Get<time_t>("timeout");
 		dconfig.globalondefcon = block.Get<bool>("globalondefcon");
 		dconfig.message = block.Get<const Warden::string>("message");

@@ -84,6 +84,12 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   synced.
 * Topic setters sent as a full mask were cut down to a nick.
 * `dontkickops` and `dontkickvoices` in BotServ's `defaults` did nothing.
+* DefCon: a timeout back to level 5 resent the "raised" `message`, and a manual
+  return to 5 without `offmessage` announced nothing. The unused
+  `globalondefconmore` option was removed from the example config.
+* Loading `os_defcon` as shipped stopped Warden from starting, because
+  `defaultlevel`, `sessionlimit`, `akillexpire`, `chanmodes` and `akillreason`
+  were commented out. They now default to the example values.
 
 ### Upgrading from Anope:
 * The binary is `warden`, the configuration `warden.conf` and the database
