@@ -1,3 +1,14 @@
+Warden 1.0.1
+============
+
+Not released yet.
+
+### Fixes:
+* The systemd unit is wanted by `default.target` instead of `multi-user.target`,
+  so `systemctl --user enable warden` starts it at boot (also in Anope).
+* The Windows installer was built for a release but could not be attached to it
+  (missing workflow permission).
+
 Warden 1.0.0
 ============
 

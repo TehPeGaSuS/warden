@@ -1,7 +1,7 @@
 [Unit]
-After=network.target
 Description=Warden IRC Services
 Documentation=https://github.com/TehPeGaSuS/warden
+# The network targets only exist for system units; a user unit ignores them.
 After=network-online.target
 Wants=network-online.target
 
@@ -13,5 +13,6 @@ Type=simple
 WorkingDirectory=@CMAKE_INSTALL_PREFIX@
 
 [Install]
-WantedBy=multi-user.target
-
+# default.target exists for both user and system units (multi-user.target
+# only for system ones, so "systemctl --user enable" did nothing at boot).
+WantedBy=default.target
