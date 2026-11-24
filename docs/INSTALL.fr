@@ -46,8 +46,7 @@ Note : Vous devrez également lire les fichiers README et FAQ !
     sur votre système. Si vous ne savez pas comment répondre à une question,
     utilisez la valeur par défaut.
 
-    Allez dans le dossier build (cd build) et tapez make et make install.
-    Ceci va installer tous les fichiers nécessaires dans les dossiers que
+    Tapez ensuite make -C build install. Ceci va compiler et installer tous les fichiers nécessaires dans les dossiers que
     vous avez indiqués avec le script Config et régler les permissions des
     fichiers. Vous devez vous assurer que le répertoire data n'est pas
     accessible par les autres utilisateurs, car des utilisateurs

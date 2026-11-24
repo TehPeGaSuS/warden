@@ -49,7 +49,7 @@ Note: You should also read the README and FAQ files!
     few questions, and figure out how to compile Warden on your system. If
     you are unsure about the answer to a question, use the default value.
 
-    Now cd build and type make and make install. This will install
+    Now type make -C build install. This will build and install
     all the needed files in the paths you specified with the configure
     script, and setup file permissions. You should ensure that the data
     directory is not accessible by other users, as malicious users may

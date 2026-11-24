@@ -97,10 +97,9 @@ Warden Modules
     use of them:
 
     1. Make sure you're in the main source directory. (usually warden-1.X.XX/)
-    2. Run ./Config to find and configure modules, then `cd build`.
-    3. Run `make` to compile Warden, and any modules.
-    4. Run `make install` to copy the compiled binaries to the ~/warden/
-       directory.
+    2. Run ./Config to find and configure modules.
+    3. Run `make -C build install` to compile Warden and any modules, and
+       copy the compiled binaries to the ~/warden/ directory.
 
     You can now use /msg OperServ MODLOAD to load the new modules.
 

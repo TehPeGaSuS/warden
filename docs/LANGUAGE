@@ -24,7 +24,7 @@ Warden Multi Language Support
     Warden uses gettext (https://www.gnu.org/software/gettext/) to translate messages for users. To add a new language
     install gettext and run `msginit -l language -o warden.language.po -i warden.pot`. For example if I was translating to
     Spanish I could run `msginit -l es_ES -o warden.es_ES.po -i warden.pot`. Open the newly generating .po file and start
-    translating. Once you are done simply rerun ./Config; make && make install and add the language to your warden.conf.
+    translating. Once you are done simply rerun ./Config; make -C build install and add the language to your warden.conf.
 
     Poedit (https://poedit.net/) is a popular po file editor, and we recommend using it or another editor designed to edit
     po files (especially on Windows).
@@ -47,7 +47,7 @@ Warden Multi Language Support
 
     Next, run msginit on the .pot file with
     `msginit -l language -o modulename.language.po -i modulename.pot`.
-    Translate the new .po file and rerun ./Config; make && make install.
+    Translate the new .po file and rerun ./Config; make -C build install.
 
     All .po and .pot files should be placed in modules/third/language. Additionally an update script is provided there
     that will create .pot files and merge any changes to it with existing .po files.

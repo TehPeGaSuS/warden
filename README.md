@@ -28,9 +28,7 @@ Windows builds are inherited from Anope and **unsupported**: they may work, but 
 
 ```
 $ ./Config
-$ cd build
-$ make
-$ make install
+$ make -C build install
 ```
 
 Then, in the install directory:
@@ -49,7 +47,7 @@ Warden reads an existing `anope.conf` and `anope.json` if `warden.conf` / `warde
 
 ## Extra modules
 
-Modules that need extra libraries (such as the SQL and LDAP modules) are enabled with `./extras` from the source directory; then re-run `Config`, `make` and `make install`. Third-party modules go in `modules/third`.
+Modules that need extra libraries (such as the SQL and LDAP modules) are enabled with `./extras` from the source directory; then re-run `./Config` and `make -C build install`. Third-party modules go in `modules/third`.
 
 ## Help and bug reports
 
