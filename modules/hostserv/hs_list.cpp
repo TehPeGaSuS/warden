@@ -103,6 +103,14 @@ public:
 			return;
 		}
 
+		// Anope's header lines, kept so scripts written for Anope still work.
+		if (pattern)
+			source.Reply(_("Displayed records matching key \002%s\002 (count: \002%d\002)."), key.c_str(), shown);
+		else if (shown < matched || from)
+			source.Reply(_("Displayed records from \002%d\002 to \002%d\002."), shown_from, shown_to);
+		else
+			source.Reply(_("Displayed all records (count: \002%d\002)."), shown);
+
 		list.SendTo(source);
 
 		if (shown >= matched)

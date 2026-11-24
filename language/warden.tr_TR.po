@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 15:27+0100\n"
+"POT-Creation-Date: 2026-11-24 17:36+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -1123,6 +1123,10 @@ msgstr "rumuz yeni-afiş"
 #: ../modules/nickserv/ns_set.cpp
 msgid "nickname new-password"
 msgstr "rumuz yeni-şifre"
+
+#: ../modules/nickserv/ns_register.cpp
+msgid "nickname password [email]"
+msgstr "rumuz parola [eposta]"
 
 #: ../modules/nickserv/ns_resetpass.cpp
 msgid "nickname recovery-key"
@@ -4289,6 +4293,21 @@ msgstr "Global İstatistiklerinizi görüntüler"
 msgid "Displayed %d records (%d total)."
 msgstr "Görüntülenen %d kayıt (%d toplam)."
 
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed all records (count: %d)."
+msgstr "Tüm kayıtlar görüntülendi (Toplam: %d)."
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records from %d to %d."
+msgstr "%d ile %d arasındaki kayıtlar görüntülendi."
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records matching key %s (count: %d)."
+msgstr "%s anahtarıyla eşleşen kayıtlar görüntülendi (toplam: %d)."
+
 #: ../modules/memoserv/ms_read.cpp
 msgid "Displays all of your memos."
 msgstr "Tüm memolarınızı görüntüler."
@@ -7218,6 +7237,10 @@ msgstr "Bir grup kaydet"
 msgid "Register a nickname"
 msgstr "Bir rumuz kaydedin"
 
+#: ../modules/nickserv/ns_register.cpp
+msgid "Register a nickname for someone else"
+msgstr "Başkası için rumuz kaydet"
+
 #: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_group.cpp
 msgid "Registered"
 msgstr "Kayıt Tarihi"
@@ -7241,6 +7264,16 @@ msgstr "Kayıtlı rumuzlar: %zu girdi, %zu buckets, en uzun zincir %zu"
 #, c-format
 msgid "Registered only enforced on %s."
 msgstr "Kayıtlı yalnızca %s tarihinde uygulandı."
+
+#: ../modules/nickserv/ns_register.cpp
+msgid ""
+"Registers nickname with the given password and email address, for someone else. The account is confirmed straight away, and nobody is logged in to it: give the owner the password so they can identify. If someone is using the nick, they are asked to identify as with any registered nick.\n"
+"\n"
+"The email limit (maxemails) and forbids do not apply."
+msgstr ""
+"rumuz için verilen parola ve e-posta adresiyle başkası adına kayıt yapar. Hesap hemen onaylanır ve kimse oturum açmış olmaz: sahibinin kimlik doğrulayabilmesi için parolayı ona verin. Rumuzu biri kullanıyorsa, her kayıtlı rumuzda olduğu gibi kimlik doğrulaması istenir.\n"
+"\n"
+"E-posta sınırı (maxemails) ve yasaklar uygulanmaz."
 
 #: ../modules/chanserv/cs_register.cpp
 #, c-format
@@ -11319,18 +11352,6 @@ msgstr "{number}: {topic} -- {by} tarafından {set} tarihinde ayarlandı"
 #~ "\n"
 #~ "   DEL 2-5,7-9\n"
 #~ "      2'den 5'e ve 7'den 9'a kadar numaralandırılmış memoları siler."
-
-#, c-format
-#~ msgid "Displayed all records (count: %d)."
-#~ msgstr "Tüm kayıtlar görüntülendi (Toplam: %d)."
-
-#, c-format
-#~ msgid "Displayed records from %d to %d."
-#~ msgstr "%d ile %d arasındaki kayıtlar görüntülendi."
-
-#, c-format
-#~ msgid "Displayed records matching key %s (count: %d)."
-#~ msgstr "%s anahtarıyla eşleşen kayıtlar görüntülendi (toplam: %d)."
 
 #~ msgid "Enable or disable keep modes"
 #~ msgstr "Saklama modlarını etkinleştirme veya devre dışı bırakma"

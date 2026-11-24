@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 15:27+0100\n"
+"POT-Creation-Date: 2026-11-24 17:36+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -1124,6 +1124,10 @@ msgstr "pseudonim afișaj-nou"
 #: ../modules/nickserv/ns_set.cpp
 msgid "nickname new-password"
 msgstr "pseudonim parolă-nouă"
+
+#: ../modules/nickserv/ns_register.cpp
+msgid "nickname password [email]"
+msgstr "pseudonim parolă [email]"
 
 #: ../modules/nickserv/ns_resetpass.cpp
 msgid "nickname recovery-key"
@@ -4283,6 +4287,21 @@ msgstr "Afișați statisticile globale ale dumneavoastră"
 msgid "Displayed %d records (%d total)."
 msgstr "S-au afișat %d înregistrări (%d în total)."
 
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed all records (count: %d)."
+msgstr "S-au afișat toate înregistrările (număr: %d)."
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records from %d to %d."
+msgstr "S-au afișat înregistrările de la %d la %d."
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records matching key %s (count: %d)."
+msgstr "S-au afișat înregistrările corespunzând cheii %s (număr: %d)."
+
 #: ../modules/memoserv/ms_read.cpp
 msgid "Displays all of your memos."
 msgstr "Afișează toate misivele dumneavoastră."
@@ -7210,6 +7229,10 @@ msgstr "Înregistrează un grup"
 msgid "Register a nickname"
 msgstr "Înregistrează un pseudonim"
 
+#: ../modules/nickserv/ns_register.cpp
+msgid "Register a nickname for someone else"
+msgstr "Înregistrează un pseudonim pentru altcineva"
+
 #: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_group.cpp
 msgid "Registered"
 msgstr "Înregistrat"
@@ -7233,6 +7256,16 @@ msgstr "Pseudonime înregistrate: %zu intrări, %zu compartimente, cel mai lung 
 #, c-format
 msgid "Registered only enforced on %s."
 msgstr "Doar pseudonimele înregistrate sunt permise în %s."
+
+#: ../modules/nickserv/ns_register.cpp
+msgid ""
+"Registers nickname with the given password and email address, for someone else. The account is confirmed straight away, and nobody is logged in to it: give the owner the password so they can identify. If someone is using the nick, they are asked to identify as with any registered nick.\n"
+"\n"
+"The email limit (maxemails) and forbids do not apply."
+msgstr ""
+"Înregistrează pseudonimul cu parola și adresa de email date, pentru altcineva. Contul este confirmat imediat și nimeni nu este autentificat în el: dați parola proprietarului ca să se poată identifica. Dacă cineva folosește pseudonimul, i se cere să se identifice, ca pentru orice pseudonim înregistrat.\n"
+"\n"
+"Limita de emailuri (maxemails) și interdicțiile nu se aplică."
 
 #: ../modules/chanserv/cs_register.cpp
 #, c-format
@@ -11178,18 +11211,6 @@ msgstr "{number}: {topic} -- setat de {by} la {set}"
 
 #~ msgid "DEL nick"
 #~ msgstr "DEL pseudonim"
-
-#, c-format
-#~ msgid "Displayed all records (count: %d)."
-#~ msgstr "S-au afișat toate înregistrările (număr: %d)."
-
-#, c-format
-#~ msgid "Displayed records from %d to %d."
-#~ msgstr "S-au afișat înregistrările de la %d la %d."
-
-#, c-format
-#~ msgid "Displayed records matching key %s (count: %d)."
-#~ msgstr "S-au afișat înregistrările corespunzând cheii %s (număr: %d)."
 
 #~ msgid "Forbid allows you to forbid usage of certain nicknames, channels, and email addresses. Wildcards are accepted for all entries."
 #~ msgstr "Forbid vă permite să interziceți utilizarea anumitor pseudonime, canale și adrese de email. Se acceptă caractere wildcard pentru toate intrările."

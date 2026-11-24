@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 15:27+0100\n"
+"POT-Creation-Date: 2026-11-24 17:36+0100\n"
 "PO-Revision-Date: 2024-11-25 01:32+0000\n"
 "Last-Translator: Val Lorentz <progval+git@progval.net>\n"
 "Language-Team: French\n"
@@ -1124,6 +1124,10 @@ msgstr "pseudo nouvel-affichage"
 #: ../modules/nickserv/ns_set.cpp
 msgid "nickname new-password"
 msgstr "pseudo nouveau-motdepasse"
+
+#: ../modules/nickserv/ns_register.cpp
+msgid "nickname password [email]"
+msgstr "pseudo mot-de-passe [email]"
 
 #: ../modules/nickserv/ns_resetpass.cpp
 msgid "nickname recovery-key"
@@ -4291,6 +4295,21 @@ msgstr "Affiche vos statistiques globales"
 msgid "Displayed %d records (%d total)."
 msgstr "%d enregistrements affichés (Total : %d)"
 
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed all records (count: %d)."
+msgstr "Tous les enregistrements sont affichés (Total : %d)."
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records from %d to %d."
+msgstr "Les enregistrements de %d à %d sont affichés."
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records matching key %s (count: %d)."
+msgstr "Les enregistrements contenant %s sont affichés (Nombre : %d)"
+
 #: ../modules/memoserv/ms_read.cpp
 msgid "Displays all of your memos."
 msgstr "Affiche tous vos mémos."
@@ -7222,6 +7241,10 @@ msgstr "Enregistrer un groupe"
 msgid "Register a nickname"
 msgstr "Enregistre un pseudo"
 
+#: ../modules/nickserv/ns_register.cpp
+msgid "Register a nickname for someone else"
+msgstr "Enregistrer un pseudo pour quelqu'un d'autre"
+
 #: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_group.cpp
 msgid "Registered"
 msgstr "Enregistré"
@@ -7245,6 +7268,16 @@ msgstr "Pseudos enregistrés : %zu entrées, %zu paniers, plus longue chaîne : 
 #, c-format
 msgid "Registered only enforced on %s."
 msgstr "Application sur %s de la restriction aux seuls pseudos enregistrés."
+
+#: ../modules/nickserv/ns_register.cpp
+msgid ""
+"Registers nickname with the given password and email address, for someone else. The account is confirmed straight away, and nobody is logged in to it: give the owner the password so they can identify. If someone is using the nick, they are asked to identify as with any registered nick.\n"
+"\n"
+"The email limit (maxemails) and forbids do not apply."
+msgstr ""
+"Enregistre pseudo avec le mot de passe et l'adresse email donnés, pour quelqu'un d'autre. Le compte est confirmé immédiatement et personne n'y est connecté : donnez le mot de passe au propriétaire pour qu'il puisse s'identifier. Si quelqu'un utilise le pseudo, on lui demande de s'identifier comme pour tout pseudo enregistré.\n"
+"\n"
+"La limite d'emails (maxemails) et les interdictions ne s'appliquent pas."
 
 #: ../modules/chanserv/cs_register.cpp
 #, c-format
@@ -11465,18 +11498,6 @@ msgstr "{number} : {topic} -- défini par {by} le {set}"
 #~ " \n"
 #~ "   DEL 2-5,7-9\n"
 #~ "      Supprime les mémos compris entre 2 et 5 et entre 7 et 9."
-
-#, c-format
-#~ msgid "Displayed all records (count: %d)."
-#~ msgstr "Tous les enregistrements sont affichés (Total : %d)."
-
-#, c-format
-#~ msgid "Displayed records from %d to %d."
-#~ msgstr "Les enregistrements de %d à %d sont affichés."
-
-#, c-format
-#~ msgid "Displayed records matching key %s (count: %d)."
-#~ msgstr "Les enregistrements contenant %s sont affichés (Nombre : %d)"
 
 #~ msgid "Enable or disable keep modes"
 #~ msgstr "Active ou désactive le maintien des modes"

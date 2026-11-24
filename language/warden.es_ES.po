@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 15:27+0100\n"
+"POT-Creation-Date: 2026-11-24 17:36+0100\n"
 "PO-Revision-Date: 2014-02-24 20:45+0100\n"
 "Last-Translator: Isaac Fontal <i_fontal@hotmail.com>\n"
 "Language-Team: Spanish\n"
@@ -1125,6 +1125,10 @@ msgstr "nick nuevo-display"
 #: ../modules/nickserv/ns_set.cpp
 msgid "nickname new-password"
 msgstr "nick nueva-contraseña"
+
+#: ../modules/nickserv/ns_register.cpp
+msgid "nickname password [email]"
+msgstr "nick contraseña [email]"
 
 #: ../modules/nickserv/ns_resetpass.cpp
 msgid "nickname recovery-key"
@@ -4290,6 +4294,21 @@ msgstr "Muestra tus Estadísticas Globales"
 msgid "Displayed %d records (%d total)."
 msgstr "Mostrados %d registros (%d en total)."
 
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed all records (count: %d)."
+msgstr "Todos los registros mostrados (cuenta: %d)"
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records from %d to %d."
+msgstr "Registros mostrados de %d a %d."
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records matching key %s (count: %d)."
+msgstr "Registros mostrados que coinciden con la clave %s (cuenta: %d)."
+
 #: ../modules/memoserv/ms_read.cpp
 msgid "Displays all of your memos."
 msgstr "Muestra todos tus memos."
@@ -7219,6 +7238,10 @@ msgstr "Registrar un grupo"
 msgid "Register a nickname"
 msgstr "Registrar un nick"
 
+#: ../modules/nickserv/ns_register.cpp
+msgid "Register a nickname for someone else"
+msgstr "Registrar un nick para otra persona"
+
 #: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_group.cpp
 msgid "Registered"
 msgstr "Registrado"
@@ -7242,6 +7265,16 @@ msgstr "Nicks registrados: %zu entradas, %zu buckets, la cadena más larga es %z
 #, c-format
 msgid "Registered only enforced on %s."
 msgstr "Solo registrados forzado en %s"
+
+#: ../modules/nickserv/ns_register.cpp
+msgid ""
+"Registers nickname with the given password and email address, for someone else. The account is confirmed straight away, and nobody is logged in to it: give the owner the password so they can identify. If someone is using the nick, they are asked to identify as with any registered nick.\n"
+"\n"
+"The email limit (maxemails) and forbids do not apply."
+msgstr ""
+"Registra nick con la contraseña y la dirección de email indicadas, para otra persona. La cuenta queda confirmada de inmediato y nadie inicia sesión en ella: da la contraseña al propietario para que pueda identificarse. Si alguien está usando el nick, se le pide que se identifique como con cualquier nick registrado.\n"
+"\n"
+"El límite de emails (maxemails) y las prohibiciones no se aplican."
 
 #: ../modules/chanserv/cs_register.cpp
 #, c-format
@@ -11513,18 +11546,6 @@ msgstr "{number}: {topic} -- fijado por {by} el {set}"
 #~ " \n"
 #~ "   DEL 2-5,7-9\n"
 #~ "      Borra los memos número 2 a 5 y 7 a 9."
-
-#, c-format
-#~ msgid "Displayed all records (count: %d)."
-#~ msgstr "Todos los registros mostrados (cuenta: %d)"
-
-#, c-format
-#~ msgid "Displayed records from %d to %d."
-#~ msgstr "Registros mostrados de %d a %d."
-
-#, c-format
-#~ msgid "Displayed records matching key %s (count: %d)."
-#~ msgstr "Registros mostrados que coinciden con la clave %s (cuenta: %d)."
 
 #~ msgid "Enable or disable keep modes"
 #~ msgstr "Activa o desactiva la conservación de modos"

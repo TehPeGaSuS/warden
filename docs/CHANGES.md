@@ -11,6 +11,9 @@ but read [Coming from Anope](https://github.com/TehPeGaSuS/warden/wiki/Coming-fr
 Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
 
 ### Enhancements:
+* `NickServ SAREGISTER <nick> <password> [email]` lets opers register a nick
+  for someone else: confirmed straight away, nobody logged in to it, and
+  `maxemails` and forbids do not apply (privilege `nickserv/saregister`).
 * [GroupServ](https://github.com/TehPeGaSuS/warden/wiki/GroupServ): groups of accounts such as `!staff`, with
   per-member flags.
   * Groups can be put on channel access lists (`ACCESS`, `FLAGS`, `XOP`).
@@ -96,6 +99,9 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   were commented out. They now default to the example values.
 * ChanFix `exclude` took a single mask; it now takes a list.
 * `TOPICHISTORY` recorded the empty topic of a newly registered channel.
+* `HostServ LIST` shows Anope's header line again ("Displayed all records
+  (count: N)." and the like) before the list, so scripts written for Anope
+  keep working.
 * The git hash in the version was not updated when a pull changed only
   modules.
 * Dates in lists (AKICK, ACCESS, ENTRYMSG, mode locks, AKILL, SNLINE,

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 15:27+0100\n"
+"POT-Creation-Date: 2026-11-24 17:36+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -1123,6 +1123,10 @@ msgstr "ψευδώνυμο νέο-display"
 #: ../modules/nickserv/ns_set.cpp
 msgid "nickname new-password"
 msgstr "Ρυθμίζει τον κωδικό του ψευδονύμου."
+
+#: ../modules/nickserv/ns_register.cpp
+msgid "nickname password [email]"
+msgstr "ψευδώνυμο κωδικός [email]"
 
 #: ../modules/nickserv/ns_resetpass.cpp
 msgid "nickname recovery-key"
@@ -4288,6 +4292,21 @@ msgstr "Εμφάνιση των γενικών στατιστικών σας"
 msgid "Displayed %d records (%d total)."
 msgstr "Εμφανίστηκαν %d εγγραφές (%d συνολικά)."
 
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed all records (count: %d)."
+msgstr "Εμφανίστηκαν όλες οι εγγραφές (πλήθος: %d)."
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records from %d to %d."
+msgstr "Εμφανίστηκαν οι εγγραφές από %d έως %d."
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records matching key %s (count: %d)."
+msgstr "Εμφανίστηκαν οι εγγραφές που ταιριάζουν με %s (πλήθος: %d)."
+
 #: ../modules/memoserv/ms_read.cpp
 msgid "Displays all of your memos."
 msgstr "Εμφανίζει όλα τα memos σας."
@@ -7217,6 +7236,10 @@ msgstr "Κατοχύρωση ομάδας"
 msgid "Register a nickname"
 msgstr "Κατοχυρώνει ένα ψευδώνυμο"
 
+#: ../modules/nickserv/ns_register.cpp
+msgid "Register a nickname for someone else"
+msgstr "Κατοχύρωση ψευδωνύμου για κάποιον άλλο"
+
 #: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_group.cpp
 msgid "Registered"
 msgstr "Κατοχυρώθηκε"
@@ -7240,6 +7263,16 @@ msgstr "Κατοχυρωμένα ψευδώνυμα: %zu εγγραφές, %zu b
 #, c-format
 msgid "Registered only enforced on %s."
 msgstr "Το registered only εφαρμόστηκε στο %s."
+
+#: ../modules/nickserv/ns_register.cpp
+msgid ""
+"Registers nickname with the given password and email address, for someone else. The account is confirmed straight away, and nobody is logged in to it: give the owner the password so they can identify. If someone is using the nick, they are asked to identify as with any registered nick.\n"
+"\n"
+"The email limit (maxemails) and forbids do not apply."
+msgstr ""
+"Κατοχυρώνει το ψευδώνυμο με τον δοσμένο κωδικό και διεύθυνση email, για κάποιον άλλο. Ο λογαριασμός επιβεβαιώνεται αμέσως και κανείς δεν είναι συνδεδεμένος σε αυτόν: δώστε τον κωδικό στον κάτοχο για να ταυτοποιηθεί. Αν κάποιος χρησιμοποιεί το ψευδώνυμο, του ζητείται να ταυτοποιηθεί όπως με κάθε κατοχυρωμένο ψευδώνυμο.\n"
+"\n"
+"Το όριο email (maxemails) και οι απαγορεύσεις δεν ισχύουν."
 
 #: ../modules/chanserv/cs_register.cpp
 #, c-format
@@ -11444,18 +11477,6 @@ msgstr "{number}: {topic} -- ορίστηκε από {by} στις {set}"
 #~ "\n"
 #~ "   #DEL 2-5,7-9#\n"
 #~ "      Διαγράφονται τα μηνύματα με νούμερα 2 έως 5 και 7 έως 9."
-
-#, fuzzy, c-format
-#~ msgid "Displayed all records (count: %d)."
-#~ msgstr "Εμφανίστηκαν όλα τα records (Αριθμός: #%d#)"
-
-#, fuzzy, c-format
-#~ msgid "Displayed records from %d to %d."
-#~ msgstr "Εμφανίστηκαν όλα τα records από #%d# εώς #%d#"
-
-#, fuzzy, c-format
-#~ msgid "Displayed records matching key %s (count: %d)."
-#~ msgstr "Εμφανίστηκαν όλα τα records που ταιριάζουν το κρητήριο #%s# (Αριθμός: #%d#)"
 
 #, fuzzy
 #~ msgid ""

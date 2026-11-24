@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 15:27+0100\n"
+"POT-Creation-Date: 2026-11-24 17:36+0100\n"
 "PO-Revision-Date: 2024-02-22 16:42+0000\n"
 "Last-Translator: k4be <k4be@pirc.pl>\n"
 "Language-Team: Polish\n"
@@ -1132,6 +1132,10 @@ msgstr "nick nowa-wyświetlana-nazwa"
 #: ../modules/nickserv/ns_set.cpp
 msgid "nickname new-password"
 msgstr "nick nowe-hasło"
+
+#: ../modules/nickserv/ns_register.cpp
+msgid "nickname password [email]"
+msgstr "nick hasło [email]"
 
 #: ../modules/nickserv/ns_resetpass.cpp
 msgid "nickname recovery-key"
@@ -4315,6 +4319,21 @@ msgstr "Wyświetla Twoje statystyki globalne"
 msgid "Displayed %d records (%d total)."
 msgstr "Wyświetlono %d wpisów (razem %d)"
 
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed all records (count: %d)."
+msgstr "Wyświetlono wszystkie wpisy (Liczba: %d)"
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records from %d to %d."
+msgstr "Wyświetlono wpisy od %d do %d."
+
+#: ../modules/hostserv/hs_list.cpp
+#, c-format
+msgid "Displayed records matching key %s (count: %d)."
+msgstr "Wyświetlono pasujące wpisy %s (Liczba: %d)"
+
 #: ../modules/memoserv/ms_read.cpp
 msgid "Displays all of your memos."
 msgstr "Wyświetla wszystkie Twoje memo."
@@ -7246,6 +7265,10 @@ msgstr "Zarejestruj grupę"
 msgid "Register a nickname"
 msgstr "Rejestruje nicka"
 
+#: ../modules/nickserv/ns_register.cpp
+msgid "Register a nickname for someone else"
+msgstr "Zarejestruj nick dla kogoś innego"
+
 #: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_group.cpp
 msgid "Registered"
 msgstr "Zarejestrowano"
@@ -7269,6 +7292,16 @@ msgstr "Zarejestrowane nicki: %zu wpisów, %zu pakietów, najdłuższy łańcuch
 #, c-format
 msgid "Registered only enforced on %s."
 msgstr "Wymuszono dostęp tylko dla zarejestrowanych na %s."
+
+#: ../modules/nickserv/ns_register.cpp
+msgid ""
+"Registers nickname with the given password and email address, for someone else. The account is confirmed straight away, and nobody is logged in to it: give the owner the password so they can identify. If someone is using the nick, they are asked to identify as with any registered nick.\n"
+"\n"
+"The email limit (maxemails) and forbids do not apply."
+msgstr ""
+"Rejestruje nick z podanym hasłem i adresem email, dla kogoś innego. Konto jest od razu potwierdzone i nikt nie jest na nim zalogowany: przekaż właścicielowi hasło, aby mógł się zidentyfikować. Jeśli ktoś używa tego nicka, zostanie poproszony o identyfikację jak przy każdym zarejestrowanym nicku.\n"
+"\n"
+"Limit adresów email (maxemails) i zakazy nie mają zastosowania."
 
 #: ../modules/chanserv/cs_register.cpp
 #, c-format
@@ -11535,18 +11568,6 @@ msgstr "{number}: {topic} -- ustawiony przez {by} o {set}"
 #~ "\n"
 #~ "   DEL 2-5,7-9\n"
 #~ "      Kasuje wiadomości od numeru 2 do 5 oraz od 7 do 9."
-
-#, c-format
-#~ msgid "Displayed all records (count: %d)."
-#~ msgstr "Wyświetlono wszystkie wpisy (Liczba: %d)"
-
-#, c-format
-#~ msgid "Displayed records from %d to %d."
-#~ msgstr "Wyświetlono wpisy od %d do %d."
-
-#, c-format
-#~ msgid "Displayed records matching key %s (count: %d)."
-#~ msgstr "Wyświetlono pasujące wpisy %s (Liczba: %d)"
 
 #~ msgid "Enable or disable keep modes"
 #~ msgstr "Włącza lub wyłącza przywracanie flag"

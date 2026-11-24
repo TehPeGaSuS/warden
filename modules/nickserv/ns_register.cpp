@@ -452,12 +452,104 @@ public:
 	}
 };
 
+class CommandNSSARegister final
+	: public Command
+{
+public:
+	CommandNSSARegister(Module *creator) : Command(creator, "nickserv/saregister", 2, 3)
+	{
+		this->SetDesc(_("Register a nickname for someone else"));
+		this->SetSyntax(_("\037nickname\037 \037password\037 [\037email\037]"));
+	}
+
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
+	{
+		const auto &nick = params[0];
+		const auto &pass = params[1];
+		const auto email = params.size() > 2 ? params[2] : "";
+
+		if (Warden::ReadOnly)
+		{
+			source.Reply(READ_ONLY_MODE);
+			return;
+		}
+
+		if ((NickServ::service && NickServ::service->IsGuestNick(nick)) || !IRCD->IsNickValid(nick) || BotInfo::Find(nick, true))
+		{
+			source.Reply(NICK_CANNOT_BE_REGISTERED, nick.c_str());
+			return;
+		}
+
+		if (NickAlias::Find(nick))
+		{
+			source.Reply(NICK_ALREADY_REGISTERED, nick.c_str());
+			return;
+		}
+
+		if (!email.empty() && !Mail::Validate(email))
+		{
+			source.Reply(MAIL_X_INVALID, email.c_str());
+			return;
+		}
+
+		EventReturn MOD_RESULT;
+		FOREACH_RESULT(OnPasswordValidate, MOD_RESULT, (source, nullptr, pass));
+		if (MOD_RESULT == EVENT_STOP)
+			return;
+
+		Warden::string encpass;
+		if (!Warden::Encrypt(pass, encpass))
+		{
+			source.Reply(TRY_AGAIN_LATER, source.command.nobreak().c_str());
+			return;
+		}
+
+		// Registered by an oper, so already confirmed. Nobody is logged in to
+		// it: the owner identifies with the password they were given.
+		auto *nc = new NickCore(nick);
+		auto *na = new NickAlias(nick, nc);
+		nc->email = email;
+		nc->pass = encpass;
+
+		auto *u = User::Find(nick, true);
+		if (u)
+			na->UpdateSeen(u);
+
+		Log(LOG_ADMIN, source, this) << "to register " << na->nick << " (email: " << (!email.empty() ? email : "none") << ")";
+		source.Reply(_("Nickname \002%s\002 registered."), na->nick.c_str());
+
+		FOREACH_MOD(OnNickRegister, (nullptr, na, pass));
+
+		// Whoever is using the nick now has to identify, as with any
+		// registered nick.
+		if (u && NickServ::service)
+			NickServ::service->Validate(u);
+	}
+
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply(_(
+			"Registers \037nickname\037 with the given password and email "
+			"address, for someone else. The account is confirmed straight "
+			"away, and nobody is logged in to it: give the owner the password "
+			"so they can identify. If someone is using the nick, they are asked "
+			"to identify as with any registered nick."
+			"\n\n"
+			"The email limit (\002maxemails\002) and forbids do not apply."
+		));
+		return true;
+	}
+};
+
 class NSRegister final
 	: public Module
 {
 	CommandNSRegister commandnsregister;
 	CommandNSConfirmRegister commandnsconfirmregister;
 	CommandNSResend commandnsresend;
+	CommandNSSARegister commandnssaregister;
 
 	SerializableExtensibleItem<bool> unconfirmed;
 	SerializableExtensibleItem<Warden::string> passcode;
@@ -468,6 +560,7 @@ public:
 		, commandnsregister(this)
 		, commandnsconfirmregister(this)
 		, commandnsresend(this)
+		, commandnssaregister(this)
 		, unconfirmed(this, "UNCONFIRMED")
 		, passcode(this, "passcode")
 	{
