@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 13:50+0100\n"
+"POT-Creation-Date: 2026-11-24 14:54+0100\n"
 "PO-Revision-Date: 2014-02-24 20:45+0100\n"
 "Last-Translator: Isaac Fontal <i_fontal@hotmail.com>\n"
 "Language-Team: Spanish\n"
@@ -729,8 +729,8 @@ msgid "{nick}: registered on {registered}"
 msgstr "{nick}: registrado el {registered}"
 
 #: ../modules/nickserv/ns_group.cpp
-msgid "{nick}: registered on {registered}; expires in {expires}"
-msgstr "{nick}: registrado el {registered}; expira en {expires}"
+msgid "{nick}: registered on {registered}; expires on {expires}"
+msgstr "{nick}: registrado el {registered}; expira el {expires}"
 
 #: ../modules/chanserv/cs_flags.cpp
 msgid "{template} = +{flags}"
@@ -7133,6 +7133,10 @@ msgstr "Noticias al Azar:"
 #: ../modules/memoserv/ms_read.cpp
 msgid "Read a memo or memos"
 msgstr "Leer un memo o memos"
+
+#: ../modules/nickserv/ns_info.cpp
+msgid "Real mask"
+msgstr "Máscara real"
 
 #: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp
 msgid "Real name"

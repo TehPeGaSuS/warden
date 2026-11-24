@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 13:50+0100\n"
+"POT-Creation-Date: 2026-11-24 14:54+0100\n"
 "PO-Revision-Date: 2024-02-22 16:42+0000\n"
 "Last-Translator: k4be <k4be@pirc.pl>\n"
 "Language-Team: Polish\n"
@@ -736,8 +736,8 @@ msgid "{nick}: registered on {registered}"
 msgstr "{nick}: zarejestrowany {registered}"
 
 #: ../modules/nickserv/ns_group.cpp
-msgid "{nick}: registered on {registered}; expires in {expires}"
-msgstr "{nick}: zarejestrowany {registered}; wygasa za {expires}"
+msgid "{nick}: registered on {registered}; expires on {expires}"
+msgstr "{nick}: zarejestrowany {registered}; wygasa {expires}"
 
 #: ../modules/chanserv/cs_flags.cpp
 msgid "{template} = +{flags}"
@@ -7160,6 +7160,10 @@ msgstr "Losowe wiadomości:"
 #: ../modules/memoserv/ms_read.cpp
 msgid "Read a memo or memos"
 msgstr "Wyświetla jedną lub więcej wiadomości"
+
+#: ../modules/nickserv/ns_info.cpp
+msgid "Real mask"
+msgstr "Prawdziwa maska"
 
 #: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp
 msgid "Real name"

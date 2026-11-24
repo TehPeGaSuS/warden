@@ -533,7 +533,7 @@ public:
 					entry["Mask"] = forbid->mask;
 					entry["Type"] = stype;
 					entry["Creator"] = forbid->creator;
-					entry["Expires"] = forbid->expires ? Warden::strftime(forbid->expires, NULL, true).c_str() : TIME_NEVER;
+					entry["Expires"] = forbid->expires ? Warden::strftime(forbid->expires, source.GetAccount(), true).c_str() : TIME_NEVER;
 					entry["Reason"] = forbid->reason;
 					list.AddEntry(entry);
 

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 13:50+0100\n"
+"POT-Creation-Date: 2026-11-24 14:54+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -726,7 +726,7 @@ msgid "{nick}: registered on {registered}"
 msgstr ""
 
 #: ../modules/nickserv/ns_group.cpp
-msgid "{nick}: registered on {registered}; expires in {expires}"
+msgid "{nick}: registered on {registered}; expires on {expires}"
 msgstr ""
 
 #: ../modules/chanserv/cs_flags.cpp
@@ -6807,6 +6807,10 @@ msgstr ""
 
 #: ../modules/memoserv/ms_read.cpp
 msgid "Read a memo or memos"
+msgstr ""
+
+#: ../modules/nickserv/ns_info.cpp
+msgid "Real mask"
 msgstr ""
 
 #: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp

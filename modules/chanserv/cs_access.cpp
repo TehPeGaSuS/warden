@@ -124,7 +124,7 @@ private:
 			if (access->last_seen == 0)
 				timebuf = TIME_NEVER;
 			else
-				timebuf = Warden::strftime(access->last_seen, NULL, true);
+				timebuf = Warden::strftime(access->last_seen, list.GetAccount(), true);
 		}
 
 		ListFormatter::ListEntry entry;

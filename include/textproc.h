@@ -186,6 +186,8 @@ private:
 
 public:
 	ListFormatter(NickCore *nc);
+	/** The account the list is formatted for, e.g. for its timezone. */
+	NickCore *GetAccount() const { return nc; }
 	ListFormatter &AddColumn(const Warden::string &name);
 	void AddEntry(const ListEntry &entry);
 	bool IsEmpty() const;

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 13:50+0100\n"
+"POT-Creation-Date: 2026-11-24 14:54+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -732,8 +732,8 @@ msgid "{nick}: registered on {registered}"
 msgstr "{nick}: зарегистрирован {registered}"
 
 #: ../modules/nickserv/ns_group.cpp
-msgid "{nick}: registered on {registered}; expires in {expires}"
-msgstr "{nick}: зарегистрирован {registered}; истекает через {expires}"
+msgid "{nick}: registered on {registered}; expires on {expires}"
+msgstr "{nick}: зарегистрирован {registered}; истекает {expires}"
 
 #: ../modules/chanserv/cs_flags.cpp
 msgid "{template} = +{flags}"
@@ -7080,6 +7080,10 @@ msgstr "Случайные новости:"
 #: ../modules/memoserv/ms_read.cpp
 msgid "Read a memo or memos"
 msgstr "Прочитать записку или записки"
+
+#: ../modules/nickserv/ns_info.cpp
+msgid "Real mask"
+msgstr "Настоящая маска"
 
 #: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp
 msgid "Real name"

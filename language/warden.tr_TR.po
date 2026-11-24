@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 13:50+0100\n"
+"POT-Creation-Date: 2026-11-24 14:54+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -727,8 +727,8 @@ msgid "{nick}: registered on {registered}"
 msgstr "{nick}: {registered}'de kaydedildi"
 
 #: ../modules/nickserv/ns_group.cpp
-msgid "{nick}: registered on {registered}; expires in {expires}"
-msgstr "{nick}: {registered}'de kaydedildi; {expires}'de sona eriyor"
+msgid "{nick}: registered on {registered}; expires on {expires}"
+msgstr "{nick}: {registered} tarihinde kaydedildi; {expires} tarihinde sona eriyor"
 
 #: ../modules/chanserv/cs_flags.cpp
 msgid "{template} = +{flags}"
@@ -7132,6 +7132,10 @@ msgstr "Rastgele haber öğeleri:"
 #: ../modules/memoserv/ms_read.cpp
 msgid "Read a memo or memos"
 msgstr "Memo/memoları okuyun"
+
+#: ../modules/nickserv/ns_info.cpp
+msgid "Real mask"
+msgstr "Gerçek maske"
 
 #: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp
 msgid "Real name"

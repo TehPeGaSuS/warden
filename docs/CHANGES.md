@@ -95,6 +95,10 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
 * `TOPICHISTORY` recorded the empty topic of a newly registered channel.
 * The git hash in the version was not updated when a pull changed only
   modules.
+* Dates in lists (AKICK, ACCESS, ENTRYMSG, mode locks, AKILL, SNLINE,
+  SESSION, NEWS, FORBID, HostServ requests, CERT) ignored `SET TIMEZONE`.
+* `NickServ INFO` labels the real mask "Real mask" instead of showing two
+  "Online from" or "Last seen mask" lines.
 
 ### Upgrading from Anope:
 * The binary is `warden`, the configuration `warden.conf` and the database

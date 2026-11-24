@@ -344,7 +344,7 @@ public:
 		{
 			return row["Expires"].equals_cs(NO_EXPIRE)
 				? _("\002{nick}\002: registered on {registered}")
-				: _("\002{nick}\002: registered on {registered}; expires in {expires}");
+				: _("\002{nick}\002: registered on {registered}; expires on {expires}");
 		});
 
 		time_t nickserv_expire = Config->GetModule("nickserv").Get<time_t>("expire", "1y"),

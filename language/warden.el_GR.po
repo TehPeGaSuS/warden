@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 13:50+0100\n"
+"POT-Creation-Date: 2026-11-24 14:54+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -727,8 +727,8 @@ msgid "{nick}: registered on {registered}"
 msgstr "{nick}: κατοχυρώθηκε στις {registered}"
 
 #: ../modules/nickserv/ns_group.cpp
-msgid "{nick}: registered on {registered}; expires in {expires}"
-msgstr "{nick}: κατοχυρώθηκε στις {registered}· λήγει σε {expires}"
+msgid "{nick}: registered on {registered}; expires on {expires}"
+msgstr "{nick}: κατοχυρώθηκε στις {registered}· λήγει στις {expires}"
 
 #: ../modules/chanserv/cs_flags.cpp
 msgid "{template} = +{flags}"
@@ -7131,6 +7131,10 @@ msgstr "Νέα για το δίκτυο:"
 #: ../modules/memoserv/ms_read.cpp
 msgid "Read a memo or memos"
 msgstr "Διαβάζει ένα ή πολλά μηνύματα"
+
+#: ../modules/nickserv/ns_info.cpp
+msgid "Real mask"
+msgstr "Πραγματική μάσκα"
 
 #: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp
 msgid "Real name"

@@ -472,11 +472,11 @@ class CommandCSAKick final
 
 					Warden::string timebuf, lastused;
 					if (akick->addtime)
-						timebuf = Warden::strftime(akick->addtime, NULL, true);
+						timebuf = Warden::strftime(akick->addtime, list.GetAccount(), true);
 					else
 						timebuf = TIME_UNKNOWN;
 					if (akick->last_used)
-						lastused = Warden::strftime(akick->last_used, NULL, true);
+						lastused = Warden::strftime(akick->last_used, list.GetAccount(), true);
 					else
 						lastused = TIME_NEVER;
 
@@ -512,11 +512,11 @@ class CommandCSAKick final
 
 				Warden::string timebuf, lastused;
 				if (akick->addtime)
-					timebuf = Warden::strftime(akick->addtime, NULL, true);
+					timebuf = Warden::strftime(akick->addtime, list.GetAccount(), true);
 				else
 					timebuf = TIME_UNKNOWN;
 				if (akick->last_used)
-					lastused = Warden::strftime(akick->last_used, NULL, true);
+					lastused = Warden::strftime(akick->last_used, list.GetAccount(), true);
 				else
 					lastused = TIME_NEVER;
 

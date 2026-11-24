@@ -98,15 +98,15 @@ public:
 
 			if (nick_online)
 			{
-				bool shown = false;
-				if (show_hidden && !na->last_userhost_real.empty())
-				{
-					info[_("Online from")] = na->last_userhost_real;
-					shown = true;
-				}
-				if ((show_hidden || !na->nc->HasExt("HIDE_MASK")) && (!shown || na->last_userhost != na->last_userhost_real))
+				const auto show_mask = show_hidden || !na->nc->HasExt("HIDE_MASK");
+				const auto show_real = show_hidden && !na->last_userhost_real.empty() && na->last_userhost_real != na->last_userhost;
+				if (show_mask)
 					info[_("Online from")] = na->last_userhost;
-				else
+				else if (show_hidden && !na->last_userhost_real.empty())
+					info[_("Online from")] = na->last_userhost_real;
+				if (show_mask && show_real)
+					info[_("Real mask")] = na->last_userhost_real;
+				if (!show_mask && !show_hidden)
 					source.Reply(_("%s is currently online."), na->nick.c_str());
 			}
 			else
@@ -121,7 +121,7 @@ public:
 				}
 
 				if (show_hidden && !na->last_userhost_real.empty() && na->last_userhost_real != shown)
-					info[_("Last seen mask")] = na->last_userhost_real;
+					info[_("Real mask")] = na->last_userhost_real;
 
 				if (!na->last_quit.empty() && (show_hidden || !na->nc->HasExt("HIDE_QUIT")))
 					info[_("Last quit message")] = na->last_quit;

@@ -136,7 +136,7 @@ private:
 			ListFormatter::ListEntry entry;
 			entry["Number"] = Warden::ToString(i + 1);
 			entry["Creator"] = msg->creator;
-			entry["Created"] = Warden::strftime(msg->when, NULL, true);
+			entry["Created"] = Warden::strftime(msg->when, source.GetAccount(), true);
 			entry["Message"] = msg->message;
 			list.AddEntry(entry);
 		}

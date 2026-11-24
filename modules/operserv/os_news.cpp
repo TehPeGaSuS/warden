@@ -212,7 +212,7 @@ protected:
 				ListFormatter::ListEntry entry;
 				entry["Number"] = Warden::ToString(i + 1);
 				entry["Creator"] = list[i]->who;
-				entry["Created"] = Warden::strftime(list[i]->time, NULL, true);
+				entry["Created"] = Warden::strftime(list[i]->time, source.GetAccount(), true);
 				entry["Text"] = list[i]->text;
 				lflist.AddEntry(entry);
 			}
