@@ -1,6 +1,8 @@
 Warden 1.0.0
 ============
 
+Released on 2026-11-24.
+
 Warden 1.0.0 is the first release of Warden, a fork of Anope 2.1.28. It keeps
 everything Anope 2.1 does and adds GroupServ, ChanFix, single-use confirmation
 links, many built-in versions of popular third-party modules and fixes for
