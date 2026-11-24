@@ -79,8 +79,8 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
 
 ### Fixes:
 * Security: with no RPC `token` configured, anyone who could reach httpd could
-  use every RPC method (also in Anope). Without a token, RPC now only answers
-  clients on the same host; anything remote needs a token.
+  use every RPC method (also in Anope). `jsonrpc` now requires at least one
+  `token { }` block and refuses to load without one.
 * A password change now logs the account out of the web panel.
 * Security: an emailed password-reset link kept working after the reset was
   finished on IRC, the password was changed, or a recovery key was used, and
@@ -98,8 +98,7 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   login; an oper's LOGIN with a password was treated as a privileged one.
 * `SAREGISTER` checked "password equals nick" against the oper's nick.
 * GroupServ `FDROP` and `FFLAGS` also check the privilege in code, and GroupServ
-  changes are now saved with the live database modules (db_sql_live,
-  db_redis).
+  changes are now saved with the live database module (db_sql_live).
 * `db_json` writes to a temporary file and renames it, and refuses to start if
   the database exists but can't be read, instead of replacing it with an empty
   one on the next save (also in Anope).
@@ -153,6 +152,8 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   it out, so it never did anything.
 
 ### Upgrading from Anope:
+* If you load `jsonrpc`, it needs at least one `token { }` block now (and your
+  RPC clients must send it as `Authorization: Bearer`).
 * The binary is `warden`, the configuration `warden.conf` and the database
   `warden.json`. If they don't exist, `anope.conf`, `anope.json` and
   `anope.db` are used.

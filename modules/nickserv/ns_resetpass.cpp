@@ -465,24 +465,11 @@ public:
 		RecoveryKeys::Show(source, nc->na, keys.Create(nc));
 	}
 
-	void OnPostCommand(CommandSource &source, Command *command, const std::vector<Warden::string> &params) override
+	void OnPasswordChange(CommandSource &source, NickCore *nc) override
 	{
-		// A password changed on IRC cancels a pending email reset, and with it
-		// any reset link in the user's mailbox. (The web panel's own reset sets
-		// the password with no user behind it and confirms the reset itself.)
-		if (!source.GetUser())
-			return;
-
-		NickCore *nc = nullptr;
-		if (command->name == "nickserv/set/password")
-			nc = source.GetAccount();
-		else if (command->name == "nickserv/saset/password" && !params.empty())
-		{
-			auto *na = NickAlias::Find(params[0]);
-			nc = na ? *na->nc : nullptr;
-		}
-		if (nc)
-			reset.Unset(nc);
+		// A new password, however it was set (IRC, RPC or the web panel's own
+		// reset), cancels a pending email reset and with it any reset link.
+		reset.Unset(nc);
 	}
 
 	void OnNickInfo(CommandSource &source, NickAlias *na, InfoFormatter &info, bool show_hidden) override

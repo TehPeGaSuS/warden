@@ -140,7 +140,8 @@ struct GroupType final
 		{
 			// Reloaded from a live database: it may have been renamed.
 			const auto name = data.Load("name");
-			if (!name.empty() && name != g->name && !Groups.count(name))
+			auto other = Groups.find(name);
+			if (!name.empty() && !name.equals_cs(g->name) && (other == Groups.end() || other->second == g))
 			{
 				Groups.erase(g->name);
 				g->name = name;
@@ -1452,8 +1453,8 @@ public:
 	void OnPostCommand(CommandSource &source, Command *command, const std::vector<Warden::string> &params) override
 	{
 		// Every GroupServ change is made by a command naming the group, so
-		// queue its update here for the live database modules (db_sql_live,
-		// db_redis). A rename leaves the new name in the last parameter.
+		// queue its update here for the live database module (db_sql_live).
+		// A rename leaves the new name in the last parameter.
 		if (params.empty() || command->name.find("groupserv/") != 0)
 			return;
 		for (const auto &name : { params[0], params.back() })
@@ -1466,17 +1467,21 @@ public:
 
 	void OnDelCore(NickCore *nc) override
 	{
+		// Updates are queued after the loop: a live database module may
+		// reload or change groups while they are being saved.
+		std::set<Warden::string, ci::less> changed;
 		for (auto it = Groups.begin(); it != Groups.end(); )
 		{
 			auto *g = (it++)->second;
-			g->invited.erase(nc);
+			if (g->invited.erase(nc))
+				changed.insert(g->name);
 
 			auto *m = g->Find(nc);
 			if (!m)
 				continue;
 			const auto wasfounder = m->flags.find('F') != Warden::string::npos;
 			g->members.erase(std::remove_if(g->members.begin(), g->members.end(), [nc](const auto &mem) { return mem.nc == nc; }), g->members.end());
-			g->QueueUpdate();
+			changed.insert(g->name);
 			if (!wasfounder || g->Count('F'))
 				continue;
 
@@ -1497,6 +1502,13 @@ public:
 				Log(LOG_NORMAL, "groupserv/drop", GroupServ) << "Dropping group " << g->name << ": its last founder " << nc->display << " was dropped and no member is left";
 				Drop(g);
 			}
+		}
+
+		for (const auto &name : changed)
+		{
+			auto it = Groups.find(name);
+			if (it != Groups.end())
+				it->second->QueueUpdate();
 		}
 	}
 

@@ -372,7 +372,7 @@ namespace Warden
 
 	/** The value to return from main()
 	 */
-	extern int ReturnValue;
+	extern CoreExport int ReturnValue;
 
 	extern sig_atomic_t Signal;
 	extern CoreExport bool Quitting;

@@ -492,18 +492,13 @@ public:
 			return;
 		}
 
-		// The password checks compare against the oper's own nick; check the
-		// new one here.
-		if (pass.equals_ci(nick))
-		{
-			source.Reply(_("Please try again with a more obscure password. "
-				"Passwords should not be something that could be easily guessed (e.g. your "
-				"real name or your nick) and cannot contain a space character."));
-			return;
-		}
-
+		// Validated as if the new nick were registering (no user, so the
+		// oper's own nick, ident and realname play no part); replies still
+		// go to the oper.
+		CommandSource target(nick, nullptr, nullptr, source.reply, source.service);
+		target.command = source.command;
 		EventReturn MOD_RESULT;
-		FOREACH_RESULT(OnPasswordValidate, MOD_RESULT, (source, nullptr, pass));
+		FOREACH_RESULT(OnPasswordValidate, MOD_RESULT, (target, nullptr, pass));
 		if (MOD_RESULT == EVENT_STOP)
 			return;
 

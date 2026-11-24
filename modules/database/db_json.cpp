@@ -129,6 +129,9 @@ private:
 	// Whether OnLoadDatabase has been called yet.
 	bool loaded = false;
 
+	// Database files that exist but could not be read: never overwritten.
+	std::set<Warden::string> unreadable;
+
 	void CreateBackup(const Warden::string &backupdir, const fs::path &dbpath, size_t backups, const char *fmt, const char *glob)
 	{
 		if (!backups)
@@ -387,6 +390,8 @@ public:
 			std::error_code ec;
 			if (fs::exists(dbname.str(), ec))
 			{
+				unreadable.insert(dbname);
+				Warden::ReturnValue = EXIT_FAILURE;
 				Warden::Quitting = true;
 				Warden::QuitReason = "Unable to read the database " + dbname + "; fix it or restore a backup before starting again";
 				Log(this) << Warden::QuitReason;
@@ -459,6 +464,11 @@ public:
 		for (auto &[mod, database] : databases)
 		{
 			auto dbname = GetDatabaseFile(mod);
+			if (unreadable.count(dbname))
+			{
+				Log(this) << "Not saving " << dbname << ": it could not be read when it was loaded. Fix or remove it, then restart.";
+				continue;
+			}
 			BackupDatabase(dbname);
 
 			auto *doc = yyjson_mut_doc_new(nullptr);
@@ -482,19 +492,34 @@ public:
 			yyjson_write_err errmsg;
 			const auto flags = YYJSON_WRITE_ALLOW_INVALID_UNICODE | YYJSON_WRITE_NEWLINE_AT_END | YYJSON_WRITE_PRETTY;
 			// Written to a temporary file first and then renamed over the
-			// database, so a crash mid-write can't leave a truncated file.
-			const auto tmpname = dbname + ".tmp";
+			// database, so a crash mid-write can't leave a truncated file. A
+			// symlinked database is written at its target, and the file keeps
+			// its permissions.
 			std::error_code ec;
-			if (!yyjson_mut_write_file(tmpname.c_str(), doc, flags, nullptr, &errmsg))
+			auto target = dbname;
+			if (fs::is_symlink(dbname.str(), ec))
+			{
+				const auto resolved = fs::canonical(dbname.str(), ec);
+				if (!ec)
+					target = resolved.string();
+			}
+			const auto tmpname = target + ".tmp";
+			const auto perms = fs::status(target.str(), ec).permissions();
+			const auto keep_perms = !ec;
+			ec.clear();
+			const auto written = yyjson_mut_write_file(tmpname.c_str(), doc, flags, nullptr, &errmsg);
+			if (written && keep_perms)
+				fs::permissions(tmpname.str(), perms, ec); // Best effort.
+			if (!written)
 			{
 				Warden::Quitting = true;
 				Warden::QuitReason = "Unable to write " + tmpname + ": error #" + Warden::ToString(errmsg.code) + ": " + errmsg.msg;
 				Log(this) << Warden::QuitReason;
 			}
-			else if (fs::rename(tmpname.str(), dbname.str(), ec), ec)
+			else if (ec.clear(), fs::rename(tmpname.str(), target.str(), ec), ec)
 			{
 				Warden::Quitting = true;
-				Warden::QuitReason = "Unable to replace " + dbname + " with " + tmpname + ": " + ec.message();
+				Warden::QuitReason = "Unable to replace " + target + " with " + tmpname + ": " + ec.message();
 				Log(this) << Warden::QuitReason;
 			}
 
@@ -515,7 +540,17 @@ public:
 
 			auto db = ReadDatabase(dbname);
 			if (!db)
-				return; // Not much we can do here.
+			{
+				// Keep a module's database that exists but can't be read, as
+				// for the main one; the module starts without its data.
+				std::error_code ec;
+				if (fs::exists(dbname.str(), ec))
+				{
+					unreadable.insert(dbname);
+					Log(this) << "Unable to read " << dbname << "; it will not be saved over until it is fixed";
+				}
+				return;
+			}
 
 			it = databases.emplace(s_type->GetOwner(), std::move(db.value())).first;
 		}

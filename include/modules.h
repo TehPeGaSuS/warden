@@ -1077,6 +1077,12 @@ public:
 	 * @param pass The password which needs to be validated.
 	 */
 	virtual EventReturn OnPasswordValidate(CommandSource &source, NickCore *nc, const Warden::string &pass) { throw NotImplementedException(); }
+
+	/** Called after an account's password has been changed.
+	 * @param source The source that changed it.
+	 * @param nc The account.
+	 */
+	virtual void OnPasswordChange(CommandSource &source, NickCore *nc) { throw NotImplementedException(); }
 };
 
 enum Implementation
@@ -1171,6 +1177,7 @@ enum Implementation
 	I_OnNickUpdate,
 	I_OnNickValidate,
 	I_OnPartChannel,
+	I_OnPasswordChange,
 	I_OnPasswordValidate,
 	I_OnPostCommand,
 	I_OnPostHelp,

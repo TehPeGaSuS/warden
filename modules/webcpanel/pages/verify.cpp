@@ -285,17 +285,17 @@ bool WebCPanel::Verify::OnRequest(HTTP::Provider *server, const Warden::string &
 				return serve();
 			}
 
-			// The token proves the request came from the account's email; set
-			// the password, then let ns_resetpass clear its pending reset.
+			// The token proves the request came from the account's email. The
+			// new password ends the pending reset (ns_resetpass), and, as a
+			// confirmed reset does, confirms an address-confirmed account.
 			const auto old_pass = nc->pass;
 			params.push_back(pass);
 			WebPanel::RunCommand(client, na->nick, nc, "NickServ", "nickserv/set/password", params, replacements);
 			done = nc->pass != old_pass;
 			if (done)
 			{
-				TemplateFileServer::Replacements ignored;
-				std::vector<Warden::string> confirm = { na->nick, wt->code };
-				WebPanel::RunCommand(client, na->nick, nc, "NickServ", "nickserv/confirm/resetpass", confirm, ignored);
+				if (Config->GetModule("nickserv").Get<const Warden::string>("registration").equals_ci("mail"))
+					nc->Shrink<bool>("UNCONFIRMED");
 				replacements["MESSAGES"] = "Your password has been changed. You can now identify with it on IRC.";
 			}
 			break;

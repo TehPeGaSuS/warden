@@ -152,6 +152,7 @@ public:
 			return;
 		}
 
+		FOREACH_MOD(OnPasswordChange, (source, nc));
 		Log(LOG_COMMAND, source, this) << "to change their password";
 		source.Reply(_("Password for \002%s\002 changed."), source.nc->display.c_str());
 	}
@@ -211,6 +212,7 @@ public:
 			return;
 		}
 
+		FOREACH_MOD(OnPasswordChange, (source, nc));
 		Log(LOG_ADMIN, source, this) << "to change the password of " << nc->display;
 		source.Reply(_("Password for \002%s\002 changed."), nc->display.c_str());
 	}
