@@ -935,14 +935,6 @@ msgstr ""
 msgid "channel MIGRATE [mask]"
 msgstr ""
 
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "channel OFF"
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "channel ON [joins [time [duration]]]"
-msgstr ""
-
 #: ../modules/chanserv/cs_topic.cpp
 msgid "channel PREPEND topic"
 msgstr ""
@@ -965,10 +957,6 @@ msgstr ""
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel SET type level"
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "channel SHOW"
 msgstr ""
 
 #: ../modules/chanserv/cs_flags.cpp
@@ -1318,8 +1306,63 @@ msgstr ""
 msgid " but %s mysteriously dematerialized."
 msgstr ""
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Give at least 2 joins, and times such as \00210s\002 or \0022m\002."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Give the modes to set, such as \002+R\002 or \002+mR\002."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Helps against join floods by unidentified users. When \037joins\037 of them join within \037time\037, the channel gets the join flood modes for \037duration\037 and the ops are told. Nobody is kicked or banned: what to do next is up to the ops. Afterwards only the modes it set are removed, and modes locked off with \002MODE LOCK\002 are never set.\n\n\002MODES\002 chooses the modes, e.g. \002+mR\002 (moderated and registered-only). Only modes without a parameter can be used. The default is \002+R\002, or \002+m\002 on networks without +R.\n\nThe defaults are 3 joins within 10 seconds, for 60 seconds. Times can be given as seconds or like \00210s\002, \0022m\002 or \0021h\002. \002SHOW\002 shows the current settings."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Join flood protection"
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in \002%s\002 is now \002off\002."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in \002%s\002 is now \002on\002: %u joins within %s set \002%s\002 for %s."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in \002%s\002: %u joins within %s set \002%s\002 for %s."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection is not enabled for \002%s\002."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join floods in \002%s\002 will set \002+%s\002."
+msgstr ""
+
 #: ../modules/chanserv/cs_access.cpp
 msgid "Levels only apply to entries added with \002ACCESS\002. Entries added with \002VOP\002, \002HOP\002, \002AOP\002, \002SOP\002 or \002QOP\002 get a fixed set of functions, and \002FLAGS\002 entries get the functions whose flags they have; \002DISABLE\002 is the only setting that also applies to them."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Mode \002%c\002 can't be used: only modes without a parameter, like \002R\002, \002i\002 or \002m\002."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Set channel modes during a join flood"
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "This network has no channel mode \002%c\002."
 msgstr ""
 
 #: ../modules/chanserv/cs_access.cpp
@@ -4802,10 +4845,6 @@ msgstr ""
 msgid "Give a channel's usual ops back"
 msgstr ""
 
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "Give at least 2 joins, and times such as 10s or 2m."
-msgstr ""
-
 #: ../modules/hostserv/hs_nethost.cpp
 msgid "Give every account its default vhost"
 msgstr ""
@@ -5071,30 +5110,6 @@ msgstr ""
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Join flags must be flags to add, without F or b, e.g. +Ac."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "Join flood protection"
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-#, c-format
-msgid "Join flood protection in %s is now off."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-#, c-format
-msgid "Join flood protection in %s is now on: %u joins within %s make it registered-only for %s."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-#, c-format
-msgid "Join flood protection in %s: %u joins within %s make it registered-only for %s."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-#, c-format
-msgid "Join flood protection is not enabled for %s."
 msgstr ""
 
 #: ../modules/operserv/os_notinchan.cpp
@@ -5733,10 +5748,6 @@ msgstr ""
 
 #: ../modules/botserv/bs_control.cpp
 msgid "Make the bot say the specified text on the specified channel"
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "Make the channel registered-only during a join flood"
 msgstr ""
 
 #: ../modules/nickserv/ns_resetpass.cpp
@@ -6841,13 +6852,6 @@ msgstr ""
 #: ../modules/nickserv/ns_set_protect.cpp
 #, c-format
 msgid "Protection is now on for %s."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid ""
-"Protects the channel from join floods by unidentified users. When joins of them join within time, the channel is made registered-users-only for duration, and the ops are told. If the IRCd has no such mode, unidentified users who join during that time are banned and kicked instead, and the bans are lifted afterwards.\n"
-"\n"
-"The defaults are 3 joins within 10 seconds, for 60 seconds. Times can be given as seconds or like 10s, 2m or 1h. SHOW shows the current settings."
 msgstr ""
 
 #: ../modules/groupserv/groupserv.cpp
@@ -10522,6 +10526,22 @@ msgstr ""
 #: ../modules/chanserv/cs_access.cpp
 #, c-format
 msgid "\002%s\002 is given to \002%s\002 and above."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "\037channel\037 MODES \037modes\037"
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "\037channel\037 OFF"
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "\037channel\037 ON [\037joins\037 [\037time\037 [\037duration\037]]]"
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "\037channel\037 SHOW"
 msgstr ""
 
 #: ../modules/greet.cpp

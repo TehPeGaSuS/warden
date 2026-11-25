@@ -11,11 +11,12 @@
 // SPDX-License-Identifier: GPL-2.0-only
 
 // A gentle join flood protection: when too many unidentified users join a
-// channel too quickly, it is made registered-users-only for a while (or, if
-// the IRCd has no such mode, further unidentified joiners are banned and
-// kicked until it ends). Based on genius3000's third-party cs_set_joinflood.
+// channel too quickly, it sets some modes (+R by default) for a while and
+// tells the ops. It never kicks or bans; that is left to the ops. Based on
+// genius3000's third-party cs_set_joinflood.
 
 #include "module.h"
+#include "modules/chanserv/mode.h"
 
 #define JOINFLOOD_EXT "JOINFLOOD"
 #define JOINCOUNTER_EXT "joincounter"
@@ -26,13 +27,13 @@ struct JoinCounter final
 	unsigned joins = 3;
 	time_t secs = 10;
 	time_t duration = 60;
+	Warden::string modes; // Mode letters; empty means the default.
 
 	// State.
 	unsigned counter = 0;
 	time_t reset = 0;
 	bool engaged = false;
-	bool setmode = false;
-	std::vector<Warden::string> banmasks;
+	std::vector<Warden::string> setmodes; // Names of the modes we set.
 
 	JoinCounter(Extensible *) { }
 
@@ -43,7 +44,17 @@ struct JoinCounter final
 	}
 };
 
-static ChannelMode *regonlymode = nullptr;
+// +R if the IRCd has it, +m otherwise.
+static Warden::string DefaultModes()
+{
+	auto *cm = ModeManager::FindChannelModeByName("REGISTEREDONLY");
+	return cm ? Warden::string(1, cm->mchar) : "m";
+}
+
+static Warden::string ModesOf(const JoinCounter *jc)
+{
+	return "+" + (jc->modes.empty() ? DefaultModes() : jc->modes);
+}
 
 // Sent to the channel's ops (with STATUSMSG) or the whole channel.
 static void NoticeOps(Channel *c, const Warden::string &text)
@@ -80,15 +91,12 @@ public:
 		if (!jc || !jc->engaged)
 			return false;
 
-		// Only undo what we did: a +R that was there before stays.
-		if (jc->setmode && regonlymode)
-			c->RemoveMode(c->ci->WhoSends(), regonlymode);
-		for (const auto &mask : jc->banmasks)
-			c->RemoveMode(c->ci->WhoSends(), "BAN", mask);
+		// Only undo what we did: modes that were set before stay.
+		for (const auto &mode : jc->setmodes)
+			c->RemoveMode(c->ci->WhoSends(), mode);
 
 		jc->engaged = false;
-		jc->setmode = false;
-		jc->banmasks.clear();
+		jc->setmodes.clear();
 		jc->ResetCounter();
 
 		NoticeOps(c, "Join flood protection has disengaged.");
@@ -105,12 +113,41 @@ class CommandCSSetJoinFlood final
 		return out > 0;
 	}
 
+	// Checks "+Rm"-style input; returns the letters or an empty string.
+	static Warden::string ParseModes(CommandSource &source, const Warden::string &input)
+	{
+		Warden::string letters;
+		for (const auto chr : input)
+		{
+			if (chr == '+')
+				continue;
+
+			auto *cm = ModeManager::FindChannelModeByChar(chr);
+			if (!cm)
+			{
+				source.Reply(_("This network has no channel mode \002%c\002."), chr);
+				return "";
+			}
+			if (cm->type != MODE_REGULAR)
+			{
+				source.Reply(_("Mode \002%c\002 can't be used: only modes without a parameter, like \002R\002, \002i\002 or \002m\002."), chr);
+				return "";
+			}
+			if (letters.find(chr) == Warden::string::npos)
+				letters.push_back(chr);
+		}
+		if (letters.empty())
+			source.Reply(_("Give the modes to set, such as \002+R\002 or \002+mR\002."));
+		return letters;
+	}
+
 public:
 	CommandCSSetJoinFlood(Module *creator, const Warden::string &cname = "chanserv/set/joinflood")
 		: Command(creator, cname, 2, 5)
 	{
-		this->SetDesc(_("Make the channel registered-only during a join flood"));
+		this->SetDesc(_("Set channel modes during a join flood"));
 		this->SetSyntax(_("\037channel\037 ON [\037joins\037 [\037time\037 [\037duration\037]]]"));
+		this->SetSyntax(_("\037channel\037 MODES \037modes\037"));
 		this->SetSyntax(_("\037channel\037 OFF"));
 		this->SetSyntax(_("\037channel\037 SHOW"));
 	}
@@ -128,8 +165,8 @@ public:
 		{
 			auto *jc = ci->GetExt<JoinCounter>(JOINCOUNTER_EXT);
 			if (jc && ci->HasExt(JOINFLOOD_EXT))
-				source.Reply(_("Join flood protection in \002%s\002: %u joins within %s make it registered-only for %s."), ci->name.c_str(), jc->joins,
-					Warden::Duration(jc->secs, source.GetAccount()).c_str(), Warden::Duration(jc->duration, source.GetAccount()).c_str());
+				source.Reply(_("Join flood protection in \002%s\002: %u joins within %s set \002%s\002 for %s."), ci->name.c_str(), jc->joins,
+					Warden::Duration(jc->secs, source.GetAccount()).c_str(), ModesOf(jc).c_str(), Warden::Duration(jc->duration, source.GetAccount()).c_str());
 			else
 				source.Reply(_("Join flood protection is not enabled for \002%s\002."), ci->name.c_str());
 			return;
@@ -152,6 +189,7 @@ public:
 			return;
 		}
 
+		const auto logtype = source.AccessFor(ci).HasPriv("SET") ? LOG_COMMAND : LOG_OVERRIDE;
 		if (params[1].equals_ci("ON"))
 		{
 			unsigned joins = 3;
@@ -173,13 +211,30 @@ public:
 			jc->secs = secs;
 			jc->duration = duration;
 
-			Log(source.AccessFor(ci).HasPriv("SET") ? LOG_COMMAND : LOG_OVERRIDE, source, this, ci) << "to enable join flood protection (" << joins << " joins in " << secs << "s, for " << duration << "s)";
-			source.Reply(_("Join flood protection in \002%s\002 is now \002on\002: %u joins within %s make it registered-only for %s."), ci->name.c_str(), joins,
-				Warden::Duration(secs, source.GetAccount()).c_str(), Warden::Duration(duration, source.GetAccount()).c_str());
+			Log(logtype, source, this, ci) << "to enable join flood protection (" << joins << " joins in " << secs << "s, " << ModesOf(jc) << " for " << duration << "s)";
+			source.Reply(_("Join flood protection in \002%s\002 is now \002on\002: %u joins within %s set \002%s\002 for %s."), ci->name.c_str(), joins,
+				Warden::Duration(secs, source.GetAccount()).c_str(), ModesOf(jc).c_str(), Warden::Duration(duration, source.GetAccount()).c_str());
+		}
+		else if (params[1].equals_ci("MODES"))
+		{
+			if (params.size() < 3)
+			{
+				this->OnSyntaxError(source, "MODES");
+				return;
+			}
+
+			const auto letters = ParseModes(source, params[2]);
+			if (letters.empty())
+				return;
+
+			auto *jc = ci->Require<JoinCounter>(JOINCOUNTER_EXT);
+			jc->modes = letters;
+			Log(logtype, source, this, ci) << "to set the join flood modes to +" << letters;
+			source.Reply(_("Join floods in \002%s\002 will set \002+%s\002."), ci->name.c_str(), letters.c_str());
 		}
 		else if (params[1].equals_ci("OFF"))
 		{
-			Log(source.AccessFor(ci).HasPriv("SET") ? LOG_COMMAND : LOG_OVERRIDE, source, this, ci) << "to disable join flood protection";
+			Log(logtype, source, this, ci) << "to disable join flood protection";
 			ci->Shrink<bool>(JOINFLOOD_EXT);
 			ci->Shrink<JoinCounter>(JOINCOUNTER_EXT);
 			source.Reply(_("Join flood protection in \002%s\002 is now \002off\002."), ci->name.c_str());
@@ -193,11 +248,15 @@ public:
 		this->SendSyntax(source);
 		source.Reply(" ");
 		source.Reply(_(
-			"Protects the channel from join floods by unidentified users. When "
-			"\037joins\037 of them join within \037time\037, the channel is made "
-			"registered-users-only for \037duration\037, and the ops are told. If "
-			"the IRCd has no such mode, unidentified users who join during that time "
-			"are banned and kicked instead, and the bans are lifted afterwards."
+			"Helps against join floods by unidentified users. When \037joins\037 of "
+			"them join within \037time\037, the channel gets the join flood modes "
+			"for \037duration\037 and the ops are told. Nobody is kicked or banned: "
+			"what to do next is up to the ops. Afterwards only the modes it set are "
+			"removed, and modes locked off with \002MODE LOCK\002 are never set."
+			"\n\n"
+			"\002MODES\002 chooses the modes, e.g. \002+mR\002 (moderated and "
+			"registered-only). Only modes without a parameter can be used. The "
+			"default is \002+R\002, or \002+m\002 on networks without +R."
 			"\n\n"
 			"The defaults are 3 joins within 10 seconds, for 60 seconds. Times can "
 			"be given as seconds or like \00210s\002, \0022m\002 or \0021h\002. "
@@ -228,6 +287,7 @@ class CSSetJoinFlood final
 				data.Store("jf:joins", jc->joins);
 				data.Store("jf:secs", jc->secs);
 				data.Store("jf:duration", jc->duration);
+				data.Store("jf:modes", jc->modes);
 			}
 		}
 
@@ -245,6 +305,7 @@ class CSSetJoinFlood final
 			jc->joins = data.Load<unsigned>("jf:joins");
 			jc->secs = data.Load<time_t>("jf:secs");
 			jc->duration = data.Load<time_t>("jf:duration");
+			jc->modes = data.Load<Warden::string>("jf:modes");
 		}
 	} joinflood;
 
@@ -258,13 +319,6 @@ public:
 		, joincounter(this, JOINCOUNTER_EXT)
 		, commandcssetjoinflood(this)
 	{
-		if (Me && Me->IsSynced())
-			regonlymode = ModeManager::FindChannelModeByName("REGISTEREDONLY");
-	}
-
-	void OnUplinkSync(Server *) override
-	{
-		regonlymode = ModeManager::FindChannelModeByName("REGISTEREDONLY");
 	}
 
 	void OnJoinChannel(User *u, Channel *c) override
@@ -277,19 +331,8 @@ public:
 			return;
 
 		auto *jc = c->ci->GetExt<JoinCounter>(JOINCOUNTER_EXT);
-		if (!jc)
+		if (!jc || jc->engaged)
 			return;
-
-		// Engaged without a registered-only mode (or someone got in anyway):
-		// keep unidentified users out until it ends.
-		if (jc->engaged)
-		{
-			const auto mask = c->ci->GetIdealBan(u);
-			jc->banmasks.push_back(mask);
-			c->SetMode(c->ci->WhoSends(), "BAN", mask);
-			c->Kick(c->ci->WhoSends(), u, "This channel is currently restricted to registered users only.");
-			return;
-		}
 
 		if (jc->reset <= Warden::CurTime)
 			jc->ResetCounter();
@@ -297,10 +340,17 @@ public:
 			return;
 
 		jc->engaged = true;
-		if (regonlymode && !c->HasMode(regonlymode->name))
+		const auto *locks = c->ci->GetExt<ChanServ::ModeLocks>(CHANSERV_MODE_LOCK_EXT);
+		for (const auto chr : ModesOf(jc).substr(1))
 		{
-			c->SetMode(c->ci->WhoSends(), regonlymode);
-			jc->setmode = true;
+			auto *cm = ModeManager::FindChannelModeByChar(chr);
+			if (!cm || cm->type != MODE_REGULAR || c->HasMode(cm->name))
+				continue;
+			if (locks && locks->HasMLock(cm, "", false))
+				continue; // Locked off: don't fight the mode lock.
+
+			c->SetMode(c->ci->WhoSends(), cm);
+			jc->setmodes.push_back(cm->name);
 		}
 		new DisengageTimer(this, jc->duration, c);
 		NoticeOps(c, "Join flood protection has engaged for " + Warden::Duration(jc->duration) + ".");

@@ -4,6 +4,10 @@ Warden 1.0.1
 Not released yet.
 
 ### Enhancements:
+* `ChanServ SET JOINFLOOD #chan MODES +mR` chooses the modes set during a join
+  flood (default `+R`, or `+m` without +R). The protection no longer kicks or
+  bans anyone, so revolving-door spam can't use it; modes locked off with
+  `MODE LOCK` are skipped.
 * `mail:replyto` sets the address replies go to (Reply-To), e.g. a support
   address on the same domain as `sendfrom`.
 * `mail:sendfrom` and `mail:replyto` are checked when the config is loaded: a
