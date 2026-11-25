@@ -496,10 +496,43 @@ void Mail::SendSMTP(const Warden::string &send_from, const Warden::string &mail_
 	Attempt(mail);
 }
 
+// Checks an address setting is "addr@domain" or "Name <addr@domain>".
+static Warden::string CheckAddress(const Configuration::Conf &conf, const char *key)
+{
+	const auto value = conf.GetBlock("mail").Get<const Warden::string>(key);
+	if (value.empty())
+		return "";
+
+	auto addr = value;
+	const auto lt = value.find('<');
+	if (lt != Warden::string::npos)
+	{
+		if (value.find('>') != value.length() - 1 || value.find('<', lt + 1) != Warden::string::npos)
+			return Warden::string("mail:") + key + " is not a valid address: \"" + value + "\" (use \"Name <user@example.com>\" or \"user@example.com\")";
+		addr = value.substr(lt + 1, value.length() - lt - 2);
+	}
+
+	const auto at = addr.find('@');
+	if (at == 0 || at == Warden::string::npos || at == addr.length() - 1 || addr.find('@', at + 1) != Warden::string::npos
+		|| addr.find_first_of(" \t\r\n<>\"") != Warden::string::npos)
+		return Warden::string("mail:") + key + " is not a valid address: \"" + value + "\" (use \"Name <user@example.com>\" or \"user@example.com\")";
+	return "";
+}
+
 Warden::string Mail::CheckSMTPConfig(const Configuration::Conf &conf)
 {
+	if (!conf.GetBlock("mail").Get<bool>("usemail"))
+		return "";
+
+	for (const auto *key : { "sendfrom", "replyto" })
+	{
+		const auto err = CheckAddress(conf, key);
+		if (!err.empty())
+			return err;
+	}
+
 	const auto settings = SMTPSettings::Load(conf);
-	if (settings.server.empty() || !conf.GetBlock("mail").Get<bool>("usemail"))
+	if (settings.server.empty())
 		return "";
 
 	if (settings.tls != "none" && settings.tls != "starttls" && settings.tls != "tls")

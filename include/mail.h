@@ -34,7 +34,7 @@ namespace Mail
 	/** Sends a mail through mail:smtpserver, retrying temporary failures. */
 	extern CoreExport void SendSMTP(const Warden::string &send_from, const Warden::string &mail_to, const Warden::string &addr, const Warden::string &subject, const Warden::string &message, HeaderMap headers);
 
-	/** Checks the SMTP settings against the loaded modules.
+	/** Checks mail:sendfrom and mail:replyto, and the SMTP settings against the loaded modules.
 	 * @return an error message, or an empty string if they are fine
 	 */
 	extern CoreExport Warden::string CheckSMTPConfig(const Configuration::Conf &conf);

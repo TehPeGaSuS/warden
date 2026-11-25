@@ -6,6 +6,9 @@ Not released yet.
 ### Enhancements:
 * `mail:replyto` sets the address replies go to (Reply-To), e.g. a support
   address on the same domain as `sendfrom`.
+* `mail:sendfrom` and `mail:replyto` are checked when the config is loaded: a
+  malformed address (e.g. a missing `>`) stops Warden from starting, and on a
+  reload it is logged as a warning.
 * `ChanServ LEVELS SET` and `LEVELS RESET` say when the channel also has xOP or
   FLAGS entries, which levels don't change, and who those give the privilege
   to (e.g. "AUTOLIMIT is given to SOP and above, and to FLAGS entries with
