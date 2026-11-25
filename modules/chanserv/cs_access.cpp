@@ -840,7 +840,7 @@ class CommandCSLevels final
 			detail = Warden::Format(source.Translate(_("\002%s\002 is given to FLAGS entries with \002+%s\002.")), p->name.c_str(), flag.c_str());
 
 		if (detail.empty())
-			source.Reply(lead);
+			source.Reply("%s", source.Translate(lead));
 		else
 			source.Reply("%s %s", source.Translate(lead), detail.c_str());
 	}
