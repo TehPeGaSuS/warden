@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:47+0100\n"
+"POT-Creation-Date: 2026-11-25 01:07+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -2488,6 +2488,10 @@ msgstr ""
 
 #: ../data/chanserv.example.conf
 msgid "Allowed to issue commands restricted to channel founders"
+msgstr ""
+
+#: ../data/chanserv.example.conf
+msgid "Allowed to manage the automatic user limit"
 msgstr ""
 
 #: ../data/chanserv.example.conf
@@ -5116,7 +5120,7 @@ msgid ""
 "\n"
 "DEL stops it and removes the limit. SHOW shows the settings. A mode lock on the limit (+l or -l) takes precedence.\n"
 "\n"
-"You need the SET privilege on the channel."
+"You need the AUTOLIMIT privilege on the channel (see LEVELS)."
 msgstr ""
 
 #: ../modules/nickserv/ns_ajoin.cpp

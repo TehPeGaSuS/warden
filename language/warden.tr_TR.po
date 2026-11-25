@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:47+0100\n"
+"POT-Creation-Date: 2026-11-25 01:07+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -2534,6 +2534,10 @@ msgstr "Tam INFO çıktısı alma izni var"
 #: ../data/chanserv.example.conf
 msgid "Allowed to issue commands restricted to channel founders"
 msgstr "Kanal kurucularıyla sınırlı komutlar verme izni var"
+
+#: ../data/chanserv.example.conf
+msgid "Allowed to manage the automatic user limit"
+msgstr "Otomatik kullanıcı sınırını yönetebilir"
 
 #: ../data/chanserv.example.conf
 msgid "Allowed to modify channel badwords list"
@@ -5344,7 +5348,7 @@ msgid ""
 "\n"
 "DEL stops it and removes the limit. SHOW shows the settings. A mode lock on the limit (+l or -l) takes precedence.\n"
 "\n"
-"You need the SET privilege on the channel."
+"You need the AUTOLIMIT privilege on the channel (see LEVELS)."
 msgstr ""
 "Kanalın kullanıcı sınırını (+l) içindeki kullanıcı sayısının biraz üstünde tutar; böylece toplu girişler frenlenir ama insanlar yine de girebilir. Her aralık süresinde sınır, kullanıcı sayısı artı miktar olarak ayarlanır, ancak yalnızca bu onu değiştirdiğinde.\n"
 "\n"
@@ -5352,7 +5356,7 @@ msgstr ""
 "\n"
 "DEL onu durdurur ve sınırı kaldırır. SHOW ayarları gösterir. Sınır üzerindeki bir mode lock (+l veya -l) önceliklidir.\n"
 "\n"
-"Kanalda SET yetkisine sahip olmanız gerekir."
+"Kanalda AUTOLIMIT yetkisine sahip olmanız gerekir (bkz. LEVELS)."
 
 #: ../modules/nickserv/ns_ajoin.cpp
 msgid "Key"

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:47+0100\n"
+"POT-Creation-Date: 2026-11-25 01:07+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -2535,6 +2535,10 @@ msgstr "Permite a obține toate informațiile cu INFO"
 #: ../data/chanserv.example.conf
 msgid "Allowed to issue commands restricted to channel founders"
 msgstr "Permite a executa comenzi limitate la fondatorii canalului"
+
+#: ../data/chanserv.example.conf
+msgid "Allowed to manage the automatic user limit"
+msgstr "Poate gestiona limita automată de utilizatori"
 
 #: ../data/chanserv.example.conf
 msgid "Allowed to modify channel badwords list"
@@ -5338,7 +5342,7 @@ msgid ""
 "\n"
 "DEL stops it and removes the limit. SHOW shows the settings. A mode lock on the limit (+l or -l) takes precedence.\n"
 "\n"
-"You need the SET privilege on the channel."
+"You need the AUTOLIMIT privilege on the channel (see LEVELS)."
 msgstr ""
 "Menține limita de utilizatori a canalului (+l) puțin peste numărul de utilizatori din el, astfel încât un val de intrări să fie oprit, iar oamenii să poată totuși intra. La fiecare interval limita este setată la numărul de utilizatori plus cantitate, dar doar când asta o schimbă.\n"
 "\n"
@@ -5346,7 +5350,7 @@ msgstr ""
 "\n"
 "DEL îl oprește și elimină limita. SHOW arată setările. Un mode lock pe limită (+l sau -l) are prioritate.\n"
 "\n"
-"Aveți nevoie de privilegiul SET pe canal."
+"Aveți nevoie de privilegiul AUTOLIMIT pe canal (vedeți LEVELS)."
 
 #: ../modules/nickserv/ns_ajoin.cpp
 msgid "Key"

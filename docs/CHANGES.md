@@ -9,7 +9,9 @@ Not released yet.
 * `ChanServ AUTOLIMIT` (`cs_autolimit`, based on Fill's third-party module) keeps
   a channel's user limit a little above its user count, so floods of joins are
   held back while people can still get in. It only changes `+l` when the limit
-  actually changes and respects mode locks.
+  actually changes and respects mode locks. Who may use it is the new
+  `AUTOLIMIT` channel privilege (default level 10 / SOP / flag `l`, see
+  `LEVELS`); without that privilege block in `chanserv.conf` it uses `SET`.
 * `docs/unrealircd/warden.conf`: UnrealIRCd command aliases (like its
   `aliases/anope.conf`) including `/GS` (GroupServ) and `/CF` (ChanFix).
 

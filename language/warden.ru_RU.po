@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:47+0100\n"
+"POT-Creation-Date: 2026-11-25 01:07+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -2524,6 +2524,10 @@ msgstr "Разрешено получать полный вывод INFO"
 #: ../data/chanserv.example.conf
 msgid "Allowed to issue commands restricted to channel founders"
 msgstr "Разрешено выполнять команды, доступные только основателем канала"
+
+#: ../data/chanserv.example.conf
+msgid "Allowed to manage the automatic user limit"
+msgstr "Может управлять автоматическим лимитом пользователей"
 
 #: ../data/chanserv.example.conf
 msgid "Allowed to modify channel badwords list"
@@ -5303,7 +5307,7 @@ msgid ""
 "\n"
 "DEL stops it and removes the limit. SHOW shows the settings. A mode lock on the limit (+l or -l) takes precedence.\n"
 "\n"
-"You need the SET privilege on the channel."
+"You need the AUTOLIMIT privilege on the channel (see LEVELS)."
 msgstr ""
 "Держит лимит пользователей канала (+l) немного выше числа пользователей в нём, чтобы сдерживать поток входов, но не мешать людям заходить. Каждые интервал лимит устанавливается равным числу пользователей плюс количество, но только если это его меняет.\n"
 "\n"
@@ -5311,7 +5315,7 @@ msgstr ""
 "\n"
 "DEL отключает его и снимает лимит. SHOW показывает настройки. Mode lock на лимит (+l или -l) имеет приоритет.\n"
 "\n"
-"Вам нужна привилегия SET на канале."
+"Вам нужна привилегия AUTOLIMIT на канале (см. LEVELS)."
 
 #: ../modules/nickserv/ns_ajoin.cpp
 msgid "Key"

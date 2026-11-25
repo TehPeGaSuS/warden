@@ -136,7 +136,9 @@ public:
 			return;
 		}
 
-		const auto access = source.AccessFor(ci).HasPriv("SET");
+		// Its own privilege, or SET with a chanserv.conf from before it existed.
+		const auto *priv = PrivilegeManager::FindPrivilege("AUTOLIMIT") ? "AUTOLIMIT" : "SET";
+		const auto access = source.AccessFor(ci).HasPriv(priv);
 		if (!access && !source.HasPriv("chanserv/administration"))
 		{
 			source.Reply(ACCESS_DENIED);
@@ -223,7 +225,7 @@ public:
 			"\002DEL\002 stops it and removes the limit. \002SHOW\002 shows the "
 			"settings. A mode lock on the limit (+l or -l) takes precedence."
 			"\n\n"
-			"You need the \002SET\002 privilege on the channel."
+			"You need the \002AUTOLIMIT\002 privilege on the channel (see \002LEVELS\002)."
 		));
 		if (source.HasPriv("chanserv/administration"))
 		{

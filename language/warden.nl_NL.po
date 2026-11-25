@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:47+0100\n"
+"POT-Creation-Date: 2026-11-25 01:07+0100\n"
 "PO-Revision-Date: 2025-02-23 03:23+0100\n"
 "Last-Translator: Robby <robby@chatbelgie.be>\n"
 "Language-Team: Dutch\n"
@@ -2534,6 +2534,10 @@ msgstr "Kan de volledige INFO zien"
 #: ../data/chanserv.example.conf
 msgid "Allowed to issue commands restricted to channel founders"
 msgstr "Kan commando's voorbehouden aan stichters uitvoeren"
+
+#: ../data/chanserv.example.conf
+msgid "Allowed to manage the automatic user limit"
+msgstr "Mag de automatische gebruikerslimiet beheren"
 
 #: ../data/chanserv.example.conf
 msgid "Allowed to modify channel badwords list"
@@ -5339,7 +5343,7 @@ msgid ""
 "\n"
 "DEL stops it and removes the limit. SHOW shows the settings. A mode lock on the limit (+l or -l) takes precedence.\n"
 "\n"
-"You need the SET privilege on the channel."
+"You need the AUTOLIMIT privilege on the channel (see LEVELS)."
 msgstr ""
 "Houdt de gebruikerslimiet van het kanaal (+l) iets boven het aantal gebruikers erin, zodat een vloed aan joins wordt afgeremd terwijl mensen nog binnen kunnen. Elke interval wordt de limiet op het aantal gebruikers plus aantal gezet, maar alleen als dat hem verandert.\n"
 "\n"
@@ -5347,7 +5351,7 @@ msgstr ""
 "\n"
 "DEL stopt het en verwijdert de limiet. SHOW toont de instellingen. Een mode lock op de limiet (+l of -l) gaat voor.\n"
 "\n"
-"Je hebt het SET-privilege in het kanaal nodig."
+"Je hebt het AUTOLIMIT-privilege in het kanaal nodig (zie LEVELS)."
 
 #: ../modules/nickserv/ns_ajoin.cpp
 msgid "Key"

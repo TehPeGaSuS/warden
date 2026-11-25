@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:47+0100\n"
+"POT-Creation-Date: 2026-11-25 01:07+0100\n"
 "PO-Revision-Date: 2014-02-24 20:45+0100\n"
 "Last-Translator: Isaac Fontal <i_fontal@hotmail.com>\n"
 "Language-Team: Spanish\n"
@@ -2536,6 +2536,10 @@ msgstr "Puede ver la salida completa del comando INFO"
 #: ../data/chanserv.example.conf
 msgid "Allowed to issue commands restricted to channel founders"
 msgstr "Puede usar comandos reservados a fundadores del canal"
+
+#: ../data/chanserv.example.conf
+msgid "Allowed to manage the automatic user limit"
+msgstr "Puede gestionar el límite automático de usuarios"
 
 #: ../data/chanserv.example.conf
 msgid "Allowed to modify channel badwords list"
@@ -5345,7 +5349,7 @@ msgid ""
 "\n"
 "DEL stops it and removes the limit. SHOW shows the settings. A mode lock on the limit (+l or -l) takes precedence.\n"
 "\n"
-"You need the SET privilege on the channel."
+"You need the AUTOLIMIT privilege on the channel (see LEVELS)."
 msgstr ""
 "Mantiene el límite de usuarios del canal (+l) un poco por encima del número de usuarios, para frenar una avalancha de entradas sin impedir que la gente entre. Cada intervalo el límite pasa a ser el número de usuarios más la cantidad, pero solo cuando eso lo cambia.\n"
 "\n"
@@ -5353,7 +5357,7 @@ msgstr ""
 "\n"
 "DEL lo desactiva y quita el límite. SHOW muestra la configuración. Un mode lock sobre el límite (+l o -l) tiene prioridad.\n"
 "\n"
-"Necesitas el privilegio SET en el canal."
+"Necesitas el privilegio AUTOLIMIT en el canal (consulta LEVELS)."
 
 #: ../modules/nickserv/ns_ajoin.cpp
 msgid "Key"

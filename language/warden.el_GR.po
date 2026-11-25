@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-24 23:47+0100\n"
+"POT-Creation-Date: 2026-11-25 01:07+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -2534,6 +2534,10 @@ msgstr "Επιτρέπεται να βλέπει την πλήρη έξοδο τ
 #: ../data/chanserv.example.conf
 msgid "Allowed to issue commands restricted to channel founders"
 msgstr "Επιτρέπεται να εκτελεί εντολές που περιορίζονται στους founders του καναλιού"
+
+#: ../data/chanserv.example.conf
+msgid "Allowed to manage the automatic user limit"
+msgstr "Επιτρέπεται η διαχείριση του αυτόματου ορίου χρηστών"
 
 #: ../data/chanserv.example.conf
 msgid "Allowed to modify channel badwords list"
@@ -5343,7 +5347,7 @@ msgid ""
 "\n"
 "DEL stops it and removes the limit. SHOW shows the settings. A mode lock on the limit (+l or -l) takes precedence.\n"
 "\n"
-"You need the SET privilege on the channel."
+"You need the AUTOLIMIT privilege on the channel (see LEVELS)."
 msgstr ""
 "Διατηρεί το όριο χρηστών του καναλιού (+l) λίγο πάνω από το πλήθος των χρηστών του, ώστε ένα κύμα εισόδων να συγκρατείται ενώ οι άνθρωποι μπορούν ακόμα να μπουν. Κάθε διάστημα το όριο γίνεται το πλήθος χρηστών συν την ποσότητα, αλλά μόνο όταν αυτό το αλλάζει.\n"
 "\n"
@@ -5351,7 +5355,7 @@ msgstr ""
 "\n"
 "Το DEL το σταματά και αφαιρεί το όριο. Το SHOW δείχνει τις ρυθμίσεις. Ένα mode lock στο όριο (+l ή -l) έχει προτεραιότητα.\n"
 "\n"
-"Χρειάζεστε το προνόμιο SET στο κανάλι."
+"Χρειάζεστε το προνόμιο AUTOLIMIT στο κανάλι (δείτε το LEVELS)."
 
 #: ../modules/nickserv/ns_ajoin.cpp
 msgid "Key"
