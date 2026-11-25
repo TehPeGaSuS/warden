@@ -749,17 +749,33 @@ public:
 			),
 			source.command.nobreak().c_str());
 
-		typedef std::multimap<char, Warden::string, ci::less> reverse_map;
-		reverse_map reverse;
-		for (auto &[priv, flag] : defaultFlags)
-			reverse.emplace(flag, priv);
-
-		for (auto &[flag, priv] : reverse)
+		// One line per flag, sorted A a B b ..., with every privilege that
+		// flag gives under it (e.g. a: protect others, protect yourself).
+		const auto byletter = [](char x, char y) {
+			const auto lx = tolower(static_cast<unsigned char>(x)), ly = tolower(static_cast<unsigned char>(y));
+			return lx != ly ? lx < ly : x < y;
+		};
+		std::map<char, std::vector<const Privilege *>, decltype(byletter)> byflag(byletter);
+		for (const auto &p : PrivilegeManager::GetPrivileges())
 		{
-			Privilege *p = PrivilegeManager::FindPrivilege(priv);
-			if (p == NULL)
-				continue;
-			source.Reply("  %c - %s", flag, source.Translate(p->desc.c_str()));
+			auto it = defaultFlags.find(p.name);
+			if (it != defaultFlags.end())
+				byflag[it->second].push_back(&p);
+		}
+
+		for (auto &[flag, privs] : byflag)
+		{
+			// The most powerful first (e.g. protect others, then yourself).
+			std::stable_sort(privs.begin(), privs.end(), [](const auto *x, const auto *y) { return x->rank > y->rank; });
+			auto first = true;
+			for (const auto *p : privs)
+			{
+				if (first)
+					source.Reply("  %c - %s", flag, source.Translate(p->desc.c_str()));
+				else
+					source.Reply("      %s", source.Translate(p->desc.c_str()));
+				first = false;
+			}
 		}
 
 		return true;

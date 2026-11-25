@@ -4,6 +4,8 @@ Warden 1.0.1
 Not released yet.
 
 ### Enhancements:
+* `HELP FLAGS` lists each flag once, sorted A a B b ..., with every privilege it
+  gives under it, instead of repeating letters that several privileges share.
 * `SET RECOVERYKEY` and `SASET RECOVERYKEY` are only listed in `HELP SET` /
   `HELP SASET` when recovery keys are in use (`registration = "code"`).
 * `ChanServ AUTOLIMIT` (`cs_autolimit`, based on Fill's third-party module) keeps
