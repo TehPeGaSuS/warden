@@ -34,6 +34,7 @@ Mail::Message::Message(const Warden::string &sf, const Warden::string &mailto, c
 	, eol(Config->GetBlock("mail").Get<bool>("dontincludecr") ? "\n" : "\r\n")
 {
 	// These are a safe UTF-8 default if nothing else has been specified.
+	this->headers.emplace("MIME-Version", "1.0");
 	this->headers.emplace("Content-Transfer-Encoding", "8bit");
 	this->headers.emplace("Content-Type", "text/plain; charset=UTF-8");
 }

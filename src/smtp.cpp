@@ -463,6 +463,7 @@ void Mail::SendSMTP(const Warden::string &send_from, const Warden::string &mail_
 	const auto at = envelope.find('@');
 	const auto domain = at == Warden::string::npos ? Config->GetBlock("serverinfo").Get<const Warden::string>("name") : envelope.substr(at + 1);
 
+	headers.emplace("MIME-Version", "1.0");
 	headers.emplace("Content-Transfer-Encoding", "8bit");
 	headers.emplace("Content-Type", "text/plain; charset=UTF-8");
 	headers.emplace("Date", MailDate());

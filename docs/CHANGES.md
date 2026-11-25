@@ -71,6 +71,8 @@ Not released yet.
   certificate and hostname checking against the system's CAs.
 
 ### Fixes:
+* Mails had no `MIME-Version: 1.0` header, so spam filters scored them higher
+  and the text/HTML (multipart) mails were not valid MIME (also in Anope).
 * `ChanServ AUTOLIMIT SHOW` was open to anyone; it now needs the same
   `AUTOLIMIT` privilege as SET and DEL.
 * rpc_data reported each nickname's `registered` time as the account's, so
