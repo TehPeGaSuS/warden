@@ -24,6 +24,7 @@
 
 #include <libpq-fe.h>
 
+#include <atomic>
 #include <condition_variable>
 #include <mutex>
 
@@ -40,6 +41,34 @@ using namespace SQL;
  */
 
 class PostgreSQLService;
+
+/** Watches the listening connection's socket for notifications. */
+class NotifySocket final
+	: public Socket
+{
+	PostgreSQLService *service;
+
+public:
+	NotifySocket(PostgreSQLService *s, int fd) : Socket(fd), service(s) { }
+
+	bool ProcessRead() override;
+
+	bool ProcessWrite() override { return true; }
+
+	void ProcessError() override;
+};
+
+/** Tries to bring a lost listening connection back. */
+class ListenReconnectTimer final
+	: public Timer
+{
+	PostgreSQLService *service;
+
+public:
+	ListenReconnectTimer(Module *m, PostgreSQLService *s) : Timer(m, 5), service(s) { }
+
+	bool Tick() override;
+};
 
 struct QueryRequest final
 {
@@ -101,6 +130,20 @@ class PostgreSQLService final
 
 	PGconn *sql = nullptr;
 
+	/* The backend process of the query connection. Notifications it causes
+	 * are not passed on to listeners.
+	 */
+	std::atomic<int> backend_pid = 0;
+
+	/* A second connection, used only for LISTEN. */
+	PGconn *listen_conn = nullptr;
+	NotifySocket *listen_socket = nullptr;
+	ListenReconnectTimer *listen_timer = nullptr;
+	std::map<SQL::Listener *, Warden::string> listeners;
+
+	bool ConnectListener();
+	void DropListener();
+
 	/** Escape a string. The lock must be held. */
 	Warden::string Escape(const Warden::string &str);
 
@@ -127,6 +170,19 @@ public:
 	Warden::string FromUnixtime(time_t) override;
 
 	Warden::string GetDriver() const override { return "postgresql"; }
+
+	bool Listen(const Warden::string &channel, SQL::Listener *listener) override;
+
+	void Unlisten(SQL::Listener *listener) override;
+
+	/** Reads waiting notifications and passes them on. */
+	bool ReadNotifications();
+
+	/** The listening connection failed. */
+	void ListenFailed();
+
+	/** Called by the reconnect timer. */
+	bool RetryListener();
 
 	void Connect();
 
@@ -334,6 +390,10 @@ PostgreSQLService::PostgreSQLService(Module *o, const Warden::string &n, const W
 
 PostgreSQLService::~PostgreSQLService()
 {
+	this->DropListener();
+	delete this->listen_timer;
+	this->listen_timer = nullptr;
+
 	me->DThread->mutex.lock();
 	this->Lock.lock();
 	if (this->sql)
@@ -592,6 +652,7 @@ void PostgreSQLService::Connect()
 	// Keep NOTICE messages (e.g. "relation already exists, skipping") off stderr.
 	PQsetNoticeProcessor(this->sql, [](void *, const char *) { }, nullptr);
 	PQsetClientEncoding(this->sql, "UTF8");
+	this->backend_pid = PQbackendPID(this->sql);
 
 	Log(LOG_DEBUG) << "Successfully connected to PostgreSQL service " << this->name << " at " << this->display;
 }
@@ -641,6 +702,158 @@ Warden::string PostgreSQLService::BuildQuery(const Query &q)
 Warden::string PostgreSQLService::FromUnixtime(time_t t)
 {
 	return "to_timestamp(" + Warden::ToString(t) + ")";
+}
+
+bool PostgreSQLService::ConnectListener()
+{
+	this->DropListener();
+
+	this->listen_conn = PQconnectdb(this->conninfo.c_str());
+	if (!this->listen_conn || PQstatus(this->listen_conn) != CONNECTION_OK)
+	{
+		Warden::string error = this->listen_conn ? PQerrorMessage(this->listen_conn) : "out of memory";
+		error.trim();
+		Log(LOG_NORMAL, "postgresql") << "PostgreSQL: Unable to open the listening connection for " << this->name << ": " << error;
+		this->DropListener();
+		return false;
+	}
+	PQsetNoticeProcessor(this->listen_conn, [](void *, const char *) { }, nullptr);
+
+	std::set<Warden::string> channels;
+	for (const auto &[_, channel] : this->listeners)
+		channels.insert(channel);
+	for (const auto &channel : channels)
+	{
+		char *quoted = PQescapeIdentifier(this->listen_conn, channel.c_str(), channel.length());
+		PGresult *res = PQexec(this->listen_conn, (Warden::string("LISTEN ") + (quoted ? quoted : "")).c_str());
+		const auto ok = res && PQresultStatus(res) == PGRES_COMMAND_OK;
+		if (res)
+			PQclear(res);
+		if (quoted)
+			PQfreemem(quoted);
+		if (!ok)
+		{
+			Log(LOG_NORMAL, "postgresql") << "PostgreSQL: Unable to listen on " << channel << ": " << PQerrorMessage(this->listen_conn);
+			this->DropListener();
+			return false;
+		}
+	}
+
+	PQsetnonblocking(this->listen_conn, 1);
+	const int fd = dup(PQsocket(this->listen_conn));
+	if (fd < 0)
+	{
+		this->DropListener();
+		return false;
+	}
+	this->listen_socket = new NotifySocket(this, fd);
+	Log(LOG_DEBUG) << "postgresql: listening for notifications on " << this->name;
+	return true;
+}
+
+void PostgreSQLService::DropListener()
+{
+	delete this->listen_socket;
+	this->listen_socket = nullptr;
+	if (this->listen_conn)
+		PQfinish(this->listen_conn);
+	this->listen_conn = nullptr;
+}
+
+bool PostgreSQLService::Listen(const Warden::string &channel, SQL::Listener *listener)
+{
+	this->listeners[listener] = channel;
+	if (this->listen_timer)
+		return true; // Reconnecting; LISTEN is sent once it is back.
+	if (this->ConnectListener())
+		return true;
+	this->listen_timer = new ListenReconnectTimer(this->owner, this);
+	return true;
+}
+
+void PostgreSQLService::Unlisten(SQL::Listener *listener)
+{
+	this->listeners.erase(listener);
+	if (this->listeners.empty())
+	{
+		this->DropListener();
+		delete this->listen_timer;
+		this->listen_timer = nullptr;
+	}
+}
+
+bool PostgreSQLService::ReadNotifications()
+{
+	if (!this->listen_conn || !PQconsumeInput(this->listen_conn))
+		return false;
+
+	std::map<Warden::string, std::vector<Warden::string>> batches;
+	const int own = this->backend_pid;
+	while (PGnotify *notify = PQnotifies(this->listen_conn))
+	{
+		if (notify->be_pid != own)
+			batches[notify->relname].push_back(notify->extra ? notify->extra : "");
+		PQfreemem(notify);
+	}
+
+	for (const auto &[channel, payloads] : batches)
+	{
+		// A listener may unlisten while being called.
+		std::vector<SQL::Listener *> targets;
+		for (const auto &[listener, lchannel] : this->listeners)
+			if (lchannel == channel)
+				targets.push_back(listener);
+		for (auto *listener : targets)
+			if (this->listeners.count(listener))
+				listener->OnNotifications(payloads);
+	}
+	return true;
+}
+
+void PostgreSQLService::ListenFailed()
+{
+	Log(LOG_NORMAL, "postgresql") << "PostgreSQL: Lost the listening connection for " << this->name << ", reconnecting";
+	// The socket engine deletes the socket after this returns.
+	this->listen_socket = nullptr;
+	if (this->listen_conn)
+		PQfinish(this->listen_conn);
+	this->listen_conn = nullptr;
+	if (!this->listen_timer)
+		this->listen_timer = new ListenReconnectTimer(this->owner, this);
+}
+
+bool PostgreSQLService::RetryListener()
+{
+	if (this->listeners.empty() || !this->ConnectListener())
+		return !this->listeners.empty();
+
+	Log(LOG_NORMAL, "postgresql") << "PostgreSQL: Listening connection for " << this->name << " is back";
+	this->listen_timer = nullptr; // Deleted by the timer manager when Tick returns false.
+	std::vector<SQL::Listener *> targets;
+	for (const auto &[listener, _] : this->listeners)
+		targets.push_back(listener);
+	for (auto *listener : targets)
+		if (this->listeners.count(listener))
+			listener->OnListenResync();
+	return false;
+}
+
+bool NotifySocket::ProcessRead()
+{
+	if (this->service->ReadNotifications())
+		return true;
+	this->service->ListenFailed();
+	return false;
+}
+
+void NotifySocket::ProcessError()
+{
+	this->service->ListenFailed();
+}
+
+bool ListenReconnectTimer::Tick()
+{
+	return this->service->RetryListener();
 }
 
 void DispatcherThread::Run()

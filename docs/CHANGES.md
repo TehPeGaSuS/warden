@@ -23,6 +23,12 @@ Not released yet.
   chanstats, `sql_authentication`, `sql_oper` and `sql_log`. MySQL stays
   supported. The wiki explains how to move an existing MySQL database over.
 * Chanstats works with MySQL, PostgreSQL and SQLite.
+* `db_sql_live` on PostgreSQL uses LISTEN/NOTIFY: each table gets a trigger
+  that reports inserts, updates and deletes, Warden reads only the rows that
+  changed, and lookups no longer query the database. Changes made by websites
+  or webchats show up within moments, plain `DELETE`s work, and if the
+  notification connection drops Warden reconnects and catches up on what it
+  missed. MySQL and SQLite keep the old polling.
 
 ### Changes:
 * Chanstats no longer uses MySQL stored procedures or the MySQL event
@@ -39,6 +45,8 @@ Not released yet.
   `postgresql` or `sqlite`, for queries whose syntax differs between them.
   Queries keep quoting names with backticks; the PostgreSQL module turns them
   into double quotes.
+* `SQL::Provider::Listen()` / `Unlisten()` and `SQL::Listener` deliver
+  notifications from providers that support them (PostgreSQL).
 
 ### Fixes:
 * `ChanServ TOP`/`TOP10`/`GTOP` and `STATS`/`GSTATS` said nothing when the

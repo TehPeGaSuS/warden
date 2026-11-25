@@ -171,6 +171,25 @@ namespace SQL
 		virtual void OnError(const Result &r) = 0;
 	};
 
+	/** Receives notifications from a provider that supports them (PostgreSQL
+	 * LISTEN/NOTIFY). Called on the main thread.
+	 */
+	class Listener
+	{
+	public:
+		virtual ~Listener() = default;
+
+		/** Notifications that arrived together, in the order they were sent.
+		 * Notifications caused by the provider's own queries are left out.
+		 */
+		virtual void OnNotifications(const std::vector<Warden::string> &payloads) = 0;
+
+		/** The listening connection was lost and is back. Notifications sent
+		 * in between were missed, so anything cached should be checked again.
+		 */
+		virtual void OnListenResync() = 0;
+	};
+
 	/** Class providing the SQL service, modules call this to execute queries
 	 */
 	class Provider
@@ -196,6 +215,14 @@ namespace SQL
 		 * differ (e.g. upserts).
 		 */
 		virtual Warden::string GetDriver() const = 0;
+
+		/** Starts delivering notifications sent on a channel to a listener.
+		 * @return false if this provider can not do that.
+		 */
+		virtual bool Listen(const Warden::string &channel, Listener *listener) { return false; }
+
+		/** Stops delivering notifications to a listener. */
+		virtual void Unlisten(Listener *listener) { }
 	};
 
 
