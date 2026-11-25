@@ -11,7 +11,7 @@ Lists all accounts that exist on the network.
 
 Index | Description
 ----- | -----------
-0     | If specified then the level of detail to retrieve. Can be set to "full" to retrieve all information or "name" to just retrieve the account names. Defaults to "name".
+0     | If specified then the level of detail to retrieve. Can be set to "full" to retrieve all information, "nicks" to retrieve the account names with their nicknames, or "name" to just retrieve the account names. Defaults to "name".
 
 ### Errors
 
@@ -23,12 +23,20 @@ Code   | Description
 
 If the detail level is not specified or is "name" then an array of account names.
 
+If the detail level is "nicks" then a mapping of account names to an array of the nicknames grouped to the account.
+
 If the detail level is "full" then a mapping of account names to information about the account. See `warden.account` for more information on the data structure.
 
 #### Example
 
 ```json
 ["account1", "account2", "account3"]
+```
+
+With "nicks":
+
+```json
+{"account1": ["account1", "account1_away"], "account2": ["account2"]}
 ```
 
 ## `warden.account`

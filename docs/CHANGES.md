@@ -4,6 +4,8 @@ Warden 1.0.1
 Not released yet.
 
 ### Enhancements:
+* `warden.listAccounts "nicks"` (rpc_data) lists each account with just its
+  nicknames, without the rest of the "full" details (anope/anope#632).
 * `memoserv:mail = no` stops MemoServ from mailing new memos, so mail can be
   kept for registration and password resets (anope/anope#631). `SET NOTIFY MAIL`
   says it is disabled, users' settings are kept, and a warning is logged when
@@ -63,6 +65,8 @@ Not released yet.
   certificate and hostname checking against the system's CAs.
 
 ### Fixes:
+* rpc_data reported each nickname's `registered` time as the account's, so
+  nicks grouped later showed the wrong date.
 * `ChanServ TOP`/`TOP10`/`GTOP` and `STATS`/`GSTATS` said nothing when the
   stats query failed; they now say the stats are unavailable and log the
   reason (also in Anope).

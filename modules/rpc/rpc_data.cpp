@@ -114,7 +114,7 @@ public:
 		{
 			auto &nick = nicks.ReplyMap(na->nick);
 			nick.Reply("lastseen", na->last_seen)
-				.Reply("registered", nc->registered);
+				.Reply("registered", na->registered);
 
 			SaveData::Serialize(na, na, nick.ReplyMap("extensions"));
 			if (na->HasVHost())
@@ -164,6 +164,16 @@ public:
 			auto &root = request.Root<RPC::Array>();
 			for (auto &[_, nc] : *NickCoreList)
 				root.Reply(nc->display);
+		}
+		else if (detail.equals_ci("nicks"))
+		{
+			auto &root = request.Root<RPC::Map>();
+			for (auto &[_, nc] : *NickCoreList)
+			{
+				auto &nicks = root.ReplyArray(nc->display);
+				for (const auto *na : *nc->aliases)
+					nicks.Reply(na->nick);
+			}
 		}
 		else if (detail.equals_ci("full"))
 		{
