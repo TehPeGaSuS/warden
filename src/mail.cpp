@@ -80,8 +80,15 @@ void Mail::Message::Run()
 }
 
 /* Sends through mail:smtpserver when it is set, sendmail otherwise. */
-static void Dispatch(const Warden::string &sf, const Warden::string &mailto, const Warden::string &addr, const Warden::string &subject, const Warden::string &message, const Mail::HeaderMap &hm)
+static void Dispatch(const Warden::string &sf, const Warden::string &mailto, const Warden::string &addr, const Warden::string &subject, const Warden::string &message, Mail::HeaderMap hm)
 {
+	// mail:replyto is where replies go, e.g. a support address when sending
+	// through Gmail. Line breaks are dropped so it can't add other headers.
+	auto replyto = Config->GetBlock("mail").Get<Warden::string>("replyto");
+	replyto = replyto.replace_all_cs("\r", "").replace_all_cs("\n", "").trim();
+	if (!replyto.empty())
+		hm.emplace("Reply-To", replyto);
+
 	if (Mail::UseSMTP())
 	{
 		Mail::SendSMTP(sf, mailto, addr, subject, message, hm);
