@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-25 01:07+0100\n"
+"POT-Creation-Date: 2026-11-26 00:11+0100\n"
 "PO-Revision-Date: 2014-02-24 20:45+0100\n"
 "Last-Translator: Isaac Fontal <i_fontal@hotmail.com>\n"
 "Language-Team: Spanish\n"
@@ -226,7 +226,8 @@ msgstr "%s deshabilitado en el canal %s."
 msgid "%s does not wish to be added to channel access lists (NEVEROP is on)."
 msgstr "%s no desea ser añadido a listas de acceso de canales (NEVEROP está activado)."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_xop.cpp
 #, c-format
 msgid "%s does not wish to be added to channel access lists."
 msgstr "%s no desea ser añadido a listas de acceso de canales."
@@ -351,6 +352,21 @@ msgstr "%s ya está en la lista de memos ignorados de %s."
 #, c-format
 msgid "%s is already suspended."
 msgstr "%s ya está suspendido."
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "%s is given to %s and above, and to FLAGS entries with +%s."
+msgstr "%s se otorga a %s y superiores, y a las entradas FLAGS con +%s."
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "%s is given to %s and above."
+msgstr "%s se otorga a %s y superiores."
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "%s is given to FLAGS entries with +%s."
+msgstr "%s se otorga a las entradas FLAGS con +%s."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -791,7 +807,10 @@ msgstr "dirección"
 msgid "botname {ON|OFF}"
 msgstr "nombre-de-bot {ON|OFF}"
 
-#: ../modules/botserv/bs_assign.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_fantasy_top.cpp ../modules/chanserv/cs_getkey.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_suspend.cpp ../modules/chanserv/cs_sync.cpp
+#: ../modules/botserv/bs_assign.cpp ../modules/chanfix/chanfix.cpp
+#: ../modules/chanserv/cs_fantasy_top.cpp ../modules/chanserv/cs_getkey.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_log.cpp
+#: ../modules/chanserv/cs_suspend.cpp ../modules/chanserv/cs_sync.cpp
 msgid "channel"
 msgstr "canal"
 
@@ -867,7 +886,10 @@ msgstr "canal ADD {nick | máscara} [razón]"
 msgid "channel APPEND topic"
 msgstr "canal APPEND topic"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp
+#: ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_xop.cpp
 msgid "channel CLEAR"
 msgstr "canal CLEAR"
 
@@ -903,7 +925,8 @@ msgstr "canal DEL {palabra | num-entrada | lista}"
 msgid "channel ENFORCE"
 msgstr "canal ENFORCE"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_entrymsg.cpp
+#: ../modules/chanserv/cs_topichistory.cpp
 msgid "channel LIST"
 msgstr "canal LIST"
 
@@ -930,6 +953,10 @@ msgstr "canal LOCK {ADD|DEL|SET|LIST} [que]"
 #: ../modules/chanserv/cs_flags.cpp
 msgid "channel MIGRATE [mask]"
 msgstr "canal MIGRATE [máscara]"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel MODES modes"
+msgstr "canal MODES modos"
 
 #: ../modules/chanserv/cs_set_joinflood.cpp
 msgid "channel OFF"
@@ -996,7 +1023,8 @@ msgstr "canal [cantidad]"
 msgid "channel [description]"
 msgstr "canal [descripción]"
 
-#: ../modules/chanserv/cs_invite.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_unban.cpp
+#: ../modules/chanserv/cs_invite.cpp ../modules/chanserv/cs_set.cpp
+#: ../modules/chanserv/cs_unban.cpp
 msgid "channel [nick]"
 msgstr "canal [nick]"
 
@@ -1068,7 +1096,9 @@ msgstr "canal {ON razón | OFF}"
 msgid "channel {ON | LEVEL | OFF}"
 msgstr "canal {ON | LEVEL | OFF}"
 
-#: ../modules/botserv/bs_kick.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_topic.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanstats.cpp
+#: ../modules/botserv/bs_kick.cpp ../modules/chanserv/cs_list.cpp
+#: ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_topic.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/chanstats.cpp
 msgid "channel {ON | OFF}"
 msgstr "canal {ON | OFF}"
 
@@ -1100,7 +1130,9 @@ msgstr "nuevo-display"
 msgid "new-password"
 msgstr "nueva-contraseña"
 
-#: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_seen.cpp ../modules/hostserv/hs_del.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_check.cpp
+#: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_seen.cpp
+#: ../modules/hostserv/hs_del.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/memoserv/ms_check.cpp
 msgid "nick"
 msgstr "nick"
 
@@ -1193,7 +1225,10 @@ msgstr "nick {FIXED | FLEXIBLE | MONOSPACE}"
 msgid "nickname {ON | delay | OFF}"
 msgstr "nick {ON | retraso | OFF}"
 
-#: ../modules/chanstats.cpp ../modules/nickserv/ns_cert.cpp ../modules/nickserv/ns_list.cpp ../modules/nickserv/ns_set.cpp ../modules/nickserv/ns_set_keepmodes.cpp ../modules/nickserv/ns_set_message.cpp ../modules/nickserv/ns_set_op.cpp
+#: ../modules/chanstats.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/nickserv/ns_list.cpp ../modules/nickserv/ns_set.cpp
+#: ../modules/nickserv/ns_set_keepmodes.cpp
+#: ../modules/nickserv/ns_set_message.cpp ../modules/nickserv/ns_set_op.cpp
 msgid "nickname {ON | OFF}"
 msgstr "nick {ON | OFF}"
 
@@ -1553,7 +1588,8 @@ msgstr "%s ahora puede ser añadido a listas de acceso de canales."
 msgid "%s cannot be the successor on channel %s as they are the founder."
 msgstr "%s no puede ser el sucesor en el canal %s ya que es el fundador."
 
-#: ../modules/global/global.cpp ../modules/hostserv/hostserv.cpp ../modules/operserv/operserv.cpp
+#: ../modules/global/global.cpp ../modules/hostserv/hostserv.cpp
+#: ../modules/operserv/operserv.cpp
 #, c-format
 msgid "%s commands:"
 msgstr "Comandos para %s:"
@@ -2183,7 +2219,8 @@ msgstr "Lista de acceso de %s:"
 msgid "Access to this command requires the permission %s to be present in your opertype."
 msgstr "El acceso a este comando requiere que el permiso %s esté presente en tu tipo de oper."
 
-#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_info.cpp
+#: ../modules/nickserv/ns_list.cpp
 msgid "Account"
 msgstr "Cuenta"
 
@@ -2230,46 +2267,16 @@ msgid "Activates the vhost currently assigned to the nick in use. When you use t
 msgstr "Activa el vhost actualmente asignado al nick en uso. Cuando uses este comando cualquier usuario que te haga un /whois verá el vhost en vez de tu host/IP real."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Add "
-"smeg"
-" to the bad word list of "
-"#channel"
-". If a user says only this word in a message they will be kicked."
-msgstr ""
-"Añade "
-"smeg"
-" a la lista de bad words de "
-"#channel"
-". Si un usuario dice solo esta palabra en un mensaje será kickeado."
+msgid "Add smeg to the bad word list of #channel. If a user says only this word in a message they will be kicked."
+msgstr "Añade smeg a la lista de bad words de #channel. Si un usuario dice solo esta palabra en un mensaje será kickeado."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Add "
-"smeg"
-" to the bad word list of "
-"#channel"
-". If a user says this word anywhere in a message they will be kicked."
-msgstr ""
-"Añade "
-"smeg"
-" a la lista de bad words de "
-"#channel"
-". Si un usuario dice esta palabra en cualquier parte de un mensaje será kickeado."
+msgid "Add smeg to the bad word list of #channel. If a user says this word anywhere in a message they will be kicked."
+msgstr "Añade smeg a la lista de bad words de #channel. Si un usuario dice esta palabra en cualquier parte de un mensaje será kickeado."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Add "
-"smeg"
-" to the bad word list of "
-"#channel"
-". If a user says this word at the start of a message they will be kicked."
-msgstr ""
-"Añade "
-"smeg"
-" a la lista de bad words de "
-"#channel"
-". Si un usuario dice esta palabra al principio de un mensaje será kickeado."
+msgid "Add smeg to the bad word list of #channel. If a user says this word at the start of a message they will be kicked."
+msgstr "Añade smeg a la lista de bad words de #channel. Si un usuario dice esta palabra al principio de un mensaje será kickeado."
 
 #: ../modules/nickserv/ns_group.cpp
 msgid "Add a nick to an account"
@@ -2364,26 +2371,8 @@ msgid "Adds a mode lock on the moderated, no external messages, topic lock flag 
 msgstr "Añade un bloqueo de modos para los modos moderado, sin mensajes externos y bloqueo de topic, así como un ban a *!*@*.example.com."
 
 #: ../modules/botserv/bs_bot.cpp
-msgid ""
-"Adds a new bot with the nickname "
-"Chii"
-", username "
-"chobit"
-", hostname "
-"persocom.test"
-", and realname "
-"Chii Motosuwa"
-"."
-msgstr ""
-"Añade un nuevo bot con el nick "
-"Chii"
-", nombre de usuario "
-"chobit"
-", host "
-"persocom.test"
-" y nombre real "
-"Chii Motosuwa"
-"."
+msgid "Adds a new bot with the nickname Chii, username chobit, hostname persocom.test, and realname Chii Motosuwa."
+msgstr "Añade un nuevo bot con el nick Chii, nombre de usuario chobit, host persocom.test y nombre real Chii Motosuwa."
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Adds the specified fingerprint to the certificate list of nickname."
@@ -3334,30 +3323,8 @@ msgstr ""
 "  VHOST [vhost|OFF] - un vhost que los miembros con +v pueden tomar; puede usar {account} y {nick}"
 
 #: ../modules/botserv/bs_bot.cpp
-msgid ""
-"Changes all of the information of the bot called "
-"Chii"
-". The new nickname will be "
-"Mahoro"
-", the new username will be "
-"saint"
-", the new hostname will be "
-"vesper.test"
-", and the new realname will be "
-"Mahoro Andou"
-"."
-msgstr ""
-"Cambia toda la información del bot llamado "
-"Chii"
-". El nuevo nick será "
-"Mahoro"
-", el nuevo nombre de usuario será "
-"saint"
-", el nuevo host será "
-"vesper.test"
-" y el nuevo nombre real será "
-"Mahoro Andou"
-"."
+msgid "Changes all of the information of the bot called Chii. The new nickname will be Mahoro, the new username will be saint, the new hostname will be vesper.test, and the new realname will be Mahoro Andou."
+msgstr "Cambia toda la información del bot llamado Chii. El nuevo nick será Mahoro, el nuevo nombre de usuario será saint, el nuevo host será vesper.test y el nuevo nombre real será Mahoro Andou."
 
 #: ../modules/nickserv/ns_group.cpp
 msgid "Changes the display nickname used to refer to the account. The new displaynickname must already be associated with the account."
@@ -3372,18 +3339,8 @@ msgid "Changes the founder of a channel. The new nickname must be a registered o
 msgstr "Cambia el fundador de un canal. El nuevo nick debe estar registrado."
 
 #: ../modules/greet.cpp
-msgid ""
-"Changes the greet message of "
-"alien"
-" to "
-"I come in peace"
-"."
-msgstr ""
-"Cambia el mensaje de saludo de "
-"alien"
-" a "
-"Vengo en son de paz"
-"."
+msgid "Changes the greet message of alien to I come in peace."
+msgstr "Cambia el mensaje de saludo de alien a Vengo en son de paz."
 
 #: ../modules/greet.cpp
 msgid "Changes the greet message of the specified nickname. This message will be displayed when joining a channel that has GREET option enabled, provided that the user has the necessary access on it."
@@ -3442,14 +3399,8 @@ msgid "Changes when you will be notified about new memos (only for nicknames)"
 msgstr "Cambia cuándo serás notificado de nuevos memos (solo para nicks)"
 
 #: ../modules/greet.cpp
-msgid ""
-"Changes your greet message to "
-"I come in peace"
-"."
-msgstr ""
-"Cambia tu mensaje de saludo a "
-"Vengo en son de paz"
-"."
+msgid "Changes your greet message to I come in peace."
+msgstr "Cambia tu mensaje de saludo a Vengo en son de paz."
 
 #: ../modules/greet.cpp
 msgid "Changes your greet message. This message will be displayed when joining a channel that has GREET option enabled, provided that you have the necessary access on it."
@@ -3465,7 +3416,8 @@ msgstr "Cambiando tus modos de usuario a %s"
 msgid "Changing your vhost to %s"
 msgstr "Cambiando tu vhost a %s"
 
-#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
+#: ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
 msgid "Channel"
 msgstr "Canal"
 
@@ -3588,7 +3540,8 @@ msgstr "Estadísticas de canal para %s en %s:"
 msgid "Channels expiring within %s:"
 msgstr "Canales que expiran dentro de %s:"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_xop.cpp
 msgid "Channels may not be on access lists."
 msgstr "Los canales no pueden estar en las listas de acceso."
 
@@ -3642,14 +3595,8 @@ msgid "Cleared info from %s."
 msgstr "Borrada información de %s"
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Clears all bad word entries set on "
-"#channel"
-"."
-msgstr ""
-"Borra todas las bad words establecidas en "
-"#channel"
-"."
+msgid "Clears all bad word entries set on #channel."
+msgstr "Borra todas las bad words establecidas en #channel."
 
 #: ../modules/chanserv/cs_mode.cpp
 msgid "Clears all extended bans that start with channel:."
@@ -3851,11 +3798,24 @@ msgstr "Copia toda la configuración, accesos, akicks, etc. de canal al canal 
 msgid "Copy all settings from one channel to another"
 msgstr "Copia toda la configuración de un canal a otro"
 
-#: ../modules/botserv/bs_info.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/chanfix/chanfix.cpp
+#: ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp
+#: ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp
+#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Created"
 msgstr "Creado"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp
+#: ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp
+#: ../modules/hostserv/hs_offer.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp
+#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_news.cpp
+#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Creator"
 msgstr "Creador"
 
@@ -4159,56 +4119,24 @@ msgid "Deleted info from %s."
 msgstr "Borrada información de %s."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Deletes "
-"heck"
-" from the bad word list of "
-"#channel"
-"."
-msgstr ""
-"Borra "
-"heck"
-" de la lista de bad words de "
-"#canal"
-"."
+msgid "Deletes heck from the bad word list of #channel."
+msgstr "Borra heck de la lista de bad words de #canal."
 
 #: ../modules/botserv/bs_bot.cpp
-msgid ""
-"Deletes a bot called "
-"Mahoro"
-"."
-msgstr ""
-"Borra un bot llamado "
-"Mahoro"
-"."
+msgid "Deletes a bot called Mahoro."
+msgstr "Borra un bot llamado Mahoro."
 
 #: ../modules/memoserv/ms_del.cpp
 msgid "Deletes all of your memos."
 msgstr "Borra todos tus memos."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Deletes bad word entries set on "
-"#channel"
-" numbered 2 through 5 and 7 through 9."
-msgstr ""
-"Borra las entradas de bad words de "
-"#canal"
-" numeradas del 2 al 5 y del 7 al 9."
+msgid "Deletes bad word entries set on #channel numbered 2 through 5 and 7 through 9."
+msgstr "Borra las entradas de bad words de #canal numeradas del 2 al 5 y del 7 al 9."
 
 #: ../modules/botserv/bs_bot.cpp
-msgid ""
-"Deletes every bot except "
-"Chii"
-", "
-"Mahoro"
-" and the bots defined in the configuration."
-msgstr ""
-"Borra todos los bots excepto "
-"Chii"
-", "
-"Mahoro"
-" y los bots definidos en la configuración."
+msgid "Deletes every bot except Chii, Mahoro and the bots defined in the configuration."
+msgstr "Borra todos los bots excepto Chii, Mahoro y los bots definidos en la configuración."
 
 #: ../modules/memoserv/ms_del.cpp
 msgid "Deletes memos numbered 2 through 5 and 7 through 9."
@@ -4239,7 +4167,10 @@ msgstr "Borra tu último memo."
 msgid "Depooled %s."
 msgstr "%s sacado del pool dns."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_xop.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_list.cpp
+#: ../modules/chanserv/cs_xop.cpp ../modules/groupserv/groupserv.cpp
+#: ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_cert.cpp
 msgid "Description"
 msgstr "Descripción"
 
@@ -4682,7 +4613,12 @@ msgstr "Fin de la lista - %zu usuario(s)."
 msgid "End of list - %zu/%zu shown, soonest first."
 msgstr "Fin de la lista - %zu/%zu mostrados, los más próximos primero."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_mode.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/memoserv/ms_ignore.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_dns.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_log.cpp
+#: ../modules/chanserv/cs_mode.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/global/gl_queue.cpp ../modules/memoserv/ms_ignore.cpp
+#: ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp
+#: ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_dns.cpp
+#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp
 msgid "End of list."
 msgstr "Fin de la lista."
 
@@ -4814,7 +4750,12 @@ msgstr "Ejemplos:"
 msgid "Exception for %s has been updated to %d."
 msgstr "La excepción para %s ha sido actualizada a %d."
 
-#: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp
+#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Expires"
 msgstr "Expira"
 
@@ -4902,7 +4843,8 @@ msgstr "Marca"
 msgid "Flag templates:"
 msgstr "Plantillas de marcas:"
 
-#: ../modules/chanserv/cs_flags.cpp ../modules/groupserv/groupserv.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/groupserv/groupserv.cpp
+#: ../modules/operserv/os_notify.cpp
 msgid "Flags"
 msgstr "Marcas"
 
@@ -4993,7 +4935,8 @@ msgstr "Fuerza la salida de un usuario del canal."
 msgid "Forcefully part a user from a channel."
 msgstr "Fuerza la salida de un usuario del canal."
 
-#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_alist.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp
+#: ../modules/nickserv/ns_alist.cpp
 msgid "Founder"
 msgstr "Fundador"
 
@@ -5025,6 +4968,10 @@ msgstr "Indica al menos 2 entradas, y tiempos como 10s o 2m."
 #: ../modules/hostserv/hs_nethost.cpp
 msgid "Give every account its default vhost"
 msgstr "Dar a cada cuenta su vhost predeterminado"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Give the modes to set, such as +R or +mR."
+msgstr "Indica los modos a establecer, como +R o +mR."
 
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
@@ -5090,10 +5037,25 @@ msgstr "Grupos"
 msgid "Groups matching %s:"
 msgstr "Grupos que coinciden con %s:"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_xop.cpp
 #, c-format
 msgid "Groups such as %s can't be put on access lists on this network."
 msgstr "Los grupos como %s no se pueden poner en listas de acceso en esta red."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid ""
+"Helps against join floods by unidentified users. When joins of them join within time, the channel gets the join flood modes for duration and the ops are told. Nobody is kicked or banned: what to do next is up to the ops. Afterwards only the modes it set are removed, and modes locked off with MODE LOCK are never set.\n"
+"\n"
+"MODES chooses the modes, e.g. +mR (moderated and registered-only). Only modes without a parameter can be used. The default is +R, or +m on networks without +R.\n"
+"\n"
+"The defaults are 3 joins within 10 seconds, for 60 seconds. Times can be given as seconds or like 10s, 2m or 1h. SHOW shows the current settings."
+msgstr ""
+"Ayuda contra floods de entradas de usuarios no identificados. Cuando entradas de ellos se producen en tiempo, el canal recibe los modos de flood de entradas durante duración y se avisa a los ops. No se expulsa ni banea a nadie: qué hacer después lo deciden los ops. Después solo se quitan los modos que puso, y los modos bloqueados como desactivados con MODE LOCK nunca se establecen.\n"
+"\n"
+"MODES elige los modos, p. ej. +mR (moderado y solo para registrados). Solo se pueden usar modos sin parámetro. El valor por defecto es +R, o +m en redes sin +R.\n"
+"\n"
+"Por defecto son 3 entradas en 10 segundos, durante 60 segundos. Los tiempos se pueden dar en segundos o como 10s, 2m o 1h. SHOW muestra la configuración actual."
 
 #: ../modules/nickserv/ns_info.cpp
 msgid "Hide certain pieces of nickname information"
@@ -5194,7 +5156,9 @@ msgstr "Dirección de email incorrecta."
 msgid "Incorrect flags character(s) given."
 msgstr "Carácter(es) de flags incorrecto(s)."
 
-#: ../modules/chanserv/cs_list.cpp ../modules/hostserv/hs_list.cpp ../modules/nickserv/ns_list.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_list.cpp ../modules/hostserv/hs_list.cpp
+#: ../modules/nickserv/ns_list.cpp ../modules/operserv/os_forbid.cpp
+#: ../modules/operserv/os_list.cpp
 msgid "Incorrect range specified. The correct syntax is from-to."
 msgstr "Rango especificado incorrecto. La sintaxis correcta es desde-hasta."
 
@@ -5297,18 +5261,23 @@ msgstr "La protección contra flood de entradas en %s está ahora desactivada
 
 #: ../modules/chanserv/cs_set_joinflood.cpp
 #, c-format
-msgid "Join flood protection in %s is now on: %u joins within %s make it registered-only for %s."
-msgstr "La protección contra flood de entradas en %s está ahora activada: %u entradas en %s lo hacen solo para registrados durante %s."
+msgid "Join flood protection in %s is now on: %u joins within %s set %s for %s."
+msgstr "La protección contra flood de entradas en %s está ahora activada: %u entradas en %s establecen %s durante %s."
 
 #: ../modules/chanserv/cs_set_joinflood.cpp
 #, c-format
-msgid "Join flood protection in %s: %u joins within %s make it registered-only for %s."
-msgstr "Protección contra flood de entradas en %s: %u entradas en %s lo hacen solo para registrados durante %s."
+msgid "Join flood protection in %s: %u joins within %s set %s for %s."
+msgstr "Protección contra flood de entradas en %s: %u entradas en %s establecen %s durante %s."
 
 #: ../modules/chanserv/cs_set_joinflood.cpp
 #, c-format
 msgid "Join flood protection is not enabled for %s."
 msgstr "La protección contra flood de entradas no está activada para %s."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join floods in %s will set +%s."
+msgstr "Los floods de entradas en %s establecerán +%s."
 
 #: ../modules/operserv/os_notinchan.cpp
 #, c-format
@@ -5517,6 +5486,10 @@ msgstr "El nivel para %s en el canal %s cambiado a solo fundador."
 msgid "Level must be between %d and %d inclusive."
 msgstr "El nivel debe estar entre %d y %d inclusive."
 
+#: ../modules/chanserv/cs_access.cpp
+msgid "Levels only apply to entries added with ACCESS. Entries added with VOP, HOP, AOP, SOP or QOP get a fixed set of functions, and FLAGS entries get the functions whose flags they have; DISABLE is the only setting that also applies to them."
+msgstr "Los niveles solo se aplican a las entradas añadidas con ACCESS. Las entradas añadidas con VOP, HOP, AOP, SOP o QOP tienen un conjunto fijo de funciones, y las entradas FLAGS obtienen las funciones cuyos flags tienen; DISABLE es el único ajuste que también se les aplica."
+
 #: ../modules/groupserv/groupserv.cpp
 msgid "Like FLAGS, for services operators: changes anyone's flags in any group, without the usual checks."
 msgstr "Como FLAGS, para operadores de servicios: cambia las flags de cualquiera en cualquier grupo, sin las comprobaciones habituales."
@@ -5678,14 +5651,8 @@ msgstr ""
 "Ten en cuenta que estas opciones están limitadas a Operadores de Servicios."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Lists all bad word entries set on "
-"#channel"
-"."
-msgstr ""
-"Lista todas las entradas de bad words de "
-"#canal"
-"."
+msgid "Lists all bad word entries set on #channel."
+msgstr "Lista todas las entradas de bad words de #canal."
 
 #: ../modules/operserv/os_list.cpp
 msgid ""
@@ -5806,28 +5773,12 @@ msgid "Lists any new memos."
 msgstr "Lista los memos nuevos."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Lists bad word entries set on "
-"#channel"
-" numbered 2 through 5 and 7 through 9."
-msgstr ""
-"Lista las entradas de bad words de "
-"#canal"
-" numeradas del 2 al 5 y del 7 al 9."
+msgid "Lists bad word entries set on #channel numbered 2 through 5 and 7 through 9."
+msgstr "Lista las entradas de bad words de #canal numeradas del 2 al 5 y del 7 al 9."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Lists bad word entries set on "
-"#channel"
-" that match "
-"*frack*"
-"."
-msgstr ""
-"Lista las entradas de bad words de "
-"#canal"
-" que concuerdan con "
-"*frack*"
-"."
+msgid "Lists bad word entries set on #channel that match *frack*."
+msgstr "Lista las entradas de bad words de #canal que concuerdan con *frack*."
 
 #: ../modules/operserv/os_modinfo.cpp
 msgid "Lists currently loaded modules."
@@ -6060,10 +6011,6 @@ msgstr "Hacer que el bot haga el equivalente al comando \"/me\""
 msgid "Make the bot say the specified text on the specified channel"
 msgstr "Hacer que el bot diga el texto dado en el canal dado"
 
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "Make the channel registered-only during a join flood"
-msgstr "Hace el canal solo para registrados durante un flood de entradas"
-
 #: ../modules/nickserv/ns_resetpass.cpp
 msgid "Makes a new recovery key for your account and shows it to you once. The old key stops working. Use this if you lost your key or think someone else has seen it."
 msgstr "Crea una nueva clave de recuperación para tu cuenta y te la muestra una vez. La clave antigua deja de funcionar. Usa esto si perdiste tu clave o crees que otra persona la ha visto."
@@ -6121,7 +6068,14 @@ msgstr "Manipula el topic del canal especificado"
 msgid "Marked"
 msgstr "Marcado"
 
-#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_list.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Mask"
 msgstr "Máscara"
 
@@ -6133,7 +6087,8 @@ msgstr "La máscara debe ser al menos user@host o tener un # para máscara
 msgid "Mask must be in the form user@host."
 msgstr "La máscara debe ser en formato usuario@host"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_xop.cpp
 msgid "Masks and unregistered users may not be on access lists."
 msgstr "Las listas de acceso no pueden contener máscaras o usuarios no registrados."
 
@@ -6195,6 +6150,10 @@ msgstr "Límite de memos para %s establecido a %d."
 msgid "Memo limit for %s set to 0."
 msgstr "Límite de memos para %s establecido a 0."
 
+#: ../modules/memoserv/ms_set.cpp
+msgid "Memo notifications by email are disabled on this network."
+msgstr "Las notificaciones de memos por email están desactivadas en esta red."
+
 #: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 #, c-format
 msgid "Memo sent to %s."
@@ -6240,6 +6199,11 @@ msgstr "Contraseñas ausentes: %zu"
 #: ../modules/chanserv/cs_mode.cpp
 msgid "Mode"
 msgstr "Modo"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Mode %c can't be used: only modes without a parameter, like R, i or m."
+msgstr "No se puede usar el modo %c: solo modos sin parámetro, como R, i o m."
 
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
@@ -6359,7 +6323,9 @@ msgstr "NOFIX"
 msgid "NOTICE: In order to register a channel, you must have first registered your nickname."
 msgstr "AVISO: Para registrar un canal, primero debes registrar tu nick."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_list.cpp ../modules/operserv/os_config.cpp ../modules/operserv/os_expiring.cpp ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_list.cpp
+#: ../modules/operserv/os_config.cpp ../modules/operserv/os_expiring.cpp
+#: ../modules/operserv/os_list.cpp
 msgid "Name"
 msgstr "Nombre"
 
@@ -6384,7 +6350,9 @@ msgstr "Nunca"
 msgid "Never op"
 msgstr "Nunca op"
 
-#: ../modules/botserv/bs_botlist.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_group.cpp ../modules/nickserv/ns_list.cpp ../modules/operserv/os_notinchan.cpp
+#: ../modules/botserv/bs_botlist.cpp ../modules/hostserv/hs_list.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_group.cpp
+#: ../modules/nickserv/ns_list.cpp ../modules/operserv/os_notinchan.cpp
 msgid "Nick"
 msgstr "Nick"
 
@@ -6613,7 +6581,8 @@ msgstr "No hay entradas que coincidan en tu cola de mensajes."
 msgid "No matching entries on %s %s list."
 msgstr "No hay entradas que coincidan en la lista de %s de %s."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_xop.cpp
 #, c-format
 msgid "No matching entries on %s access list."
 msgstr "No hay entradas que concuerden en la lista de acceso de %s ."
@@ -6692,7 +6661,8 @@ msgstr "No se encontraron peticiones para el nick %s."
 msgid "No signed kick when SIGNKICK LEVEL is used"
 msgstr "No se firman los kicks cuando se usa SIGNKICK LEVEL"
 
-#: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_fantasy_top.cpp
+#: ../modules/chanserv/cs_fantasy_stats.cpp
+#: ../modules/chanserv/cs_fantasy_top.cpp
 #, c-format
 msgid "No stats for %s."
 msgstr "No hay estadísticas para %s."
@@ -6741,7 +6711,8 @@ msgstr "Nadie más en %s recibe los memos del grupo."
 msgid "Non-status modes cleared on %s."
 msgstr "Modos no-status borrados en %s"
 
-#: ../modules/botserv/bs_info.cpp ../modules/nickserv/ns_resetpass.cpp ../modules/operserv/os_dns.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/nickserv/ns_resetpass.cpp
+#: ../modules/operserv/os_dns.cpp
 msgid "None"
 msgstr "Ninguno"
 
@@ -6779,7 +6750,17 @@ msgstr "No se cambió nada:"
 msgid "Now"
 msgstr "Ahora"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanfix/chanfix.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp
+#: ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_list.cpp
+#: ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp
+#: ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr "Número"
 
@@ -7024,7 +7005,8 @@ msgstr "Por favor, espera %s antes de solicitar un nuevo vhost."
 msgid "Please wait %s before taking a new vhost."
 msgstr "Por favor, espera %s antes de tomar un nuevo vhost."
 
-#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_rsend.cpp
+#: ../modules/memoserv/ms_send.cpp
 #, c-format
 msgid "Please wait %s before using the %s command again."
 msgstr "Por favor, espera %s antes de utilizar el comando %s nuevamente."
@@ -7080,7 +7062,8 @@ msgstr "Evita que el nick expire"
 msgid "Prevents users being kicked by services"
 msgstr "Evita que los usuarios sean kickeados por los servicios"
 
-#: ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_list.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_list.cpp
+#: ../modules/nickserv/ns_list.cpp
 msgid "Private"
 msgstr "Privado"
 
@@ -7152,16 +7135,6 @@ msgstr "La protección ahora está activada tras %lu segundos para %s."
 msgid "Protection is now on for %s."
 msgstr "La protección para %sahora está Activada."
 
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid ""
-"Protects the channel from join floods by unidentified users. When joins of them join within time, the channel is made registered-users-only for duration, and the ops are told. If the IRCd has no such mode, unidentified users who join during that time are banned and kicked instead, and the bans are lifted afterwards.\n"
-"\n"
-"The defaults are 3 joins within 10 seconds, for 60 seconds. Times can be given as seconds or like 10s, 2m or 1h. SHOW shows the current settings."
-msgstr ""
-"Protege el canal contra floods de entradas de usuarios no identificados. Cuando entradas de ellos entran en tiempo, el canal pasa a ser solo para usuarios registrados durante duración, y se avisa a los operadores. Si el IRCd no tiene ese modo, los usuarios no identificados que entren durante ese tiempo son baneados y expulsados, y los bans se retiran después.\n"
-"\n"
-"Por defecto son 3 entradas en 10 segundos, durante 60 segundos. Los tiempos se pueden dar en segundos o como 10s, 2m o 1h. SHOW muestra la configuración actual."
-
 #: ../modules/groupserv/groupserv.cpp
 msgid "Public"
 msgstr "Público"
@@ -7223,7 +7196,10 @@ msgstr "Nombre real"
 msgid "Realname"
 msgstr "Nombre real"
 
-#: ../modules/chanserv/cs_akick.cpp ../modules/hostserv/hs_offer.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/cs_akick.cpp ../modules/hostserv/hs_offer.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp
+#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Reason"
 msgstr "Razón"
 
@@ -7260,7 +7236,8 @@ msgstr "Redefine el significado de los niveles de acceso"
 msgid "Regain control of your nick"
 msgstr "Recuperar el control de tu nick"
 
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Regex is disabled."
 msgstr "Regex está deshabilitado."
 
@@ -7269,7 +7246,9 @@ msgstr "Regex está deshabilitado."
 msgid "Regex matches are also supported using the %s engine. Enclose your mask in // if this is desired."
 msgstr "También se pueden usar expresiones regulares usando el motor %s. Encierra tu máscara entre // si lo deseas."
 
-#: ../modules/chanserv/cs_list.cpp ../modules/nickserv/ns_list.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_list.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_list.cpp
 #, c-format
 msgid "Regex matches are also supported using the %s engine. Enclose your pattern in // if this is desired."
 msgstr "También se pueden usar expresiones regulares usando el motor %s. Encierra tu patrón entre // si lo deseas."
@@ -7295,7 +7274,8 @@ msgstr "Registrar un nick"
 msgid "Register a nickname for someone else"
 msgstr "Registrar un nick para otra persona"
 
-#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_group.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp
+#: ../modules/nickserv/ns_group.cpp
 msgid "Registered"
 msgstr "Registrado"
 
@@ -7461,14 +7441,8 @@ msgid "Removes all entries that were added in the last 30 minutes."
 msgstr "Elimina todas las entradas añadidas en los últimos 30 minutos."
 
 #: ../modules/greet.cpp
-msgid ""
-"Removes the greet message of "
-"zebra"
-"."
-msgstr ""
-"Elimina el mensaje de saludo de "
-"zebra"
-"."
+msgid "Removes the greet message of zebra."
+msgstr "Elimina el mensaje de saludo de zebra."
 
 #: ../modules/nickserv/ns_resetpass.cpp
 msgid "Removes the recovery key of an account, for example if its owner thinks someone else has it. The owner can make a new one with SET RECOVERYKEY."
@@ -7492,18 +7466,8 @@ msgid "Removing %s because %s covers it."
 msgstr "Eliminando %s porque lo cubre %s."
 
 #: ../modules/botserv/bs_bot.cpp
-msgid ""
-"Renames an existing bot called "
-"Elda"
-" to "
-"Chii"
-"."
-msgstr ""
-"Renombra un bot existente llamado "
-"Elda"
-" a "
-"Chii"
-"."
+msgid "Renames an existing bot called Elda to Chii."
+msgstr "Renombra un bot existente llamado Elda a Chii."
 
 #: ../modules/botserv/bs_kick.cpp
 msgid "Repeat kicker"
@@ -7732,18 +7696,8 @@ msgid "Sends a memo to the channel when someone uses the chanserv/xop command on
 msgstr "Envía un memo al canal cuando alguien usa el comando chanserv/xop en #warden."
 
 #: ../modules/botserv/bs_control.cpp
-msgid ""
-"Sends a message to "
-"#chat"
-" saying "
-"hello all"
-"."
-msgstr ""
-"Envía un mensaje a "
-"#chat"
-" diciendo "
-"hello all"
-"."
+msgid "Sends a message to #chat saying hello all."
+msgstr "Envía un mensaje a #chat diciendo hello all."
 
 #: ../modules/chanserv/cs_log.cpp
 msgid "Sends a message to channel operators and above when someone uses the chanserv/access command on #warden."
@@ -7762,18 +7716,8 @@ msgid "Sends all services staff a memo containing memo-text."
 msgstr "Envía a todo el staff de servicios un memo conteniendo texto-memo."
 
 #: ../modules/botserv/bs_control.cpp
-msgid ""
-"Sends an action message to "
-"#chat"
-" saying "
-"is eating pizza"
-"."
-msgstr ""
-"Envía una acción a "
-"#chat"
-" diciendo "
-"is eating pizza"
-"."
+msgid "Sends an action message to #chat saying is eating pizza."
+msgstr "Envía una acción a #chat diciendo is eating pizza."
 
 #: ../modules/memoserv/ms_send.cpp
 msgid "Sends the named nick or channel a memo containing memo-text. When sending to a nickname, the recipient will receive a notice that they have a new memo. The target nickname/channel must be registered."
@@ -8012,6 +7956,10 @@ msgstr "Establecer una opción para cada cuenta registrada"
 msgid "Set an option for every registered channel"
 msgstr "Establecer una opción para cada canal registrado"
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Set channel modes during a join flood"
+msgstr "Establecer modos del canal durante un flood de entradas"
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "Set channel options and information"
 msgstr "Configura opciones e información de un canal"
@@ -8094,18 +8042,8 @@ msgid "Set your nickname password"
 msgstr "Establece la contraseña de tu nick"
 
 #: ../modules/botserv/bs_set.cpp
-msgid ""
-"Sets bot bans on "
-"#wibble"
-" to expire after "
-"15 minutes"
-"."
-msgstr ""
-"Hace que los bans del bot en "
-"#wibble"
-" expiren después de "
-"15 minutos"
-"."
+msgid "Sets bot bans on #wibble to expire after 15 minutes."
+msgstr "Hace que los bans del bot en #wibble expiren después de 15 minutos."
 
 #: ../modules/botserv/bs_kick.cpp
 #, c-format
@@ -8382,24 +8320,12 @@ msgid "Shows information about a group. Its founders and member count are only s
 msgstr "Muestra información sobre un grupo. Sus fundadores y el número de miembros solo se muestran a los miembros, salvo que el grupo sea público (SET PUBLIC)."
 
 #: ../modules/botserv/bs_info.cpp
-msgid ""
-"Shows information about the "
-"ChanServ"
-" bot."
-msgstr ""
-"Muestra información sobre el bot "
-"ChanServ"
-"."
+msgid "Shows information about the ChanServ bot."
+msgstr "Muestra información sobre el bot ChanServ."
 
 #: ../modules/botserv/bs_info.cpp
-msgid ""
-"Shows information about the bot assigned to "
-"#example"
-" and its kickers and options."
-msgstr ""
-"Muestra información sobre el bot asignado a "
-"#example"
-", sus kickers y opciones."
+msgid "Shows information about the bot assigned to #example and its kickers and options."
+msgstr "Muestra información sobre el bot asignado a #example, sus kickers y opciones."
 
 #: ../modules/operserv/os_config.cpp
 msgid "Shows the current server configuration."
@@ -8511,7 +8437,8 @@ msgstr "Suspende un nick dado"
 msgid "Suspend reason"
 msgstr "Razón de la suspensión"
 
-#: ../modules/chanserv/cs_suspend.cpp ../modules/nickserv/ns_list.cpp ../modules/nickserv/ns_suspend.cpp
+#: ../modules/chanserv/cs_suspend.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/nickserv/ns_suspend.cpp
 msgid "Suspended"
 msgstr "Suspendido"
 
@@ -8893,7 +8820,8 @@ msgstr "La cantidad debe estar entre %u y %u."
 msgid "The automatic user limit of %s has been removed."
 msgstr "Se ha eliminado el límite automático de usuarios de %s."
 
-#: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_fantasy_top.cpp
+#: ../modules/chanserv/cs_fantasy_stats.cpp
+#: ../modules/chanserv/cs_fantasy_top.cpp
 msgid "The channel statistics are not available right now."
 msgstr "Las estadísticas del canal no están disponibles en este momento."
 
@@ -9446,6 +9374,11 @@ msgstr "Este comando descarga el módulo llamado nombre-del-módulo."
 msgid "This command will resend a registration confirmation email."
 msgstr "Este comando reenvía un email de confirmación de registro."
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "This network has no channel mode %c."
+msgstr "Esta red no tiene el modo de canal %c."
+
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
 msgid "This nickname has been forbidden: %s"
@@ -9469,6 +9402,18 @@ msgstr "Este nick está suspendido."
 #, c-format
 msgid "This nickname is registered and has protection enabled. If it belongs to you, type %spassword to identify to your account."
 msgstr "Este nick está registrado y tiene la protección activada. Si te pertenece, escribe %scontraseña para identificarte en tu cuenta."
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. FLAGS entries keep their own rules."
+msgstr "Esto solo afecta a las entradas ACCESS. Las entradas FLAGS mantienen sus propias reglas."
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. xOP and FLAGS entries keep their own rules."
+msgstr "Esto solo afecta a las entradas ACCESS. Las entradas xOP y FLAGS mantienen sus propias reglas."
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. xOP entries keep their own rules."
+msgstr "Esto solo afecta a las entradas ACCESS. Las entradas xOP mantienen sus propias reglas."
 
 #: ../modules/botserv/bs_assign.cpp
 msgid "This option makes a channel unassignable. If a bot is already assigned to the channel, it is unassigned automatically when you enable it."
@@ -9680,7 +9625,8 @@ msgstr "Escribe %scomando para obtener ayuda sobre cualquiera de los comand
 msgid "Type %soption for more information on a particular option."
 msgstr "Escribe %sopción para más información sobre una opción concreta."
 
-#: ../modules/memoserv/ms_set.cpp ../modules/nickserv/ns_confirm.cpp ../modules/nickserv/ns_set.cpp
+#: ../modules/memoserv/ms_set.cpp ../modules/nickserv/ns_confirm.cpp
+#: ../modules/nickserv/ns_set.cpp
 #, c-format
 msgid "Type %soption for more information on a specific option."
 msgstr "Escribe %sopción para más información sobre una opción específica."
@@ -9710,7 +9656,8 @@ msgstr "Escribe %sregión para listar las zonas horarias de una región."
 msgid "URL"
 msgstr "URL"
 
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_sxline.cpp
 #, c-format
 msgid "Unable to find regex engine %s."
 msgstr "Imposible encontrar el motor regex %s."
@@ -9924,7 +9871,8 @@ msgstr "Usuarios en ningún canal:"
 msgid "Users list:"
 msgstr "Lista de usuarios:"
 
-#: ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_info.cpp
+#: ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_info.cpp
 msgid "VHost"
 msgstr "VHost"
 
@@ -10207,7 +10155,8 @@ msgstr "Ya eres miembro de %s."
 msgid "You are already a member of the account of %s."
 msgstr "Ya eres miembro de la cuenta de %s."
 
-#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp ../modules/operserv/os_login.cpp
+#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp
+#: ../modules/operserv/os_login.cpp
 msgid "You are already identified."
 msgstr "Ya estás identificado."
 
@@ -10343,7 +10292,8 @@ msgstr "Solo puedes usar flags de entrada que tengas tú."
 msgid "You can't %s yourself!"
 msgstr "¡No puedes %s a ti mismo!"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_xop.cpp
 msgid "You can't add a channel to its own access list."
 msgstr "No puedes añadir un canal a su propia lista de acceso."
 
@@ -11049,7 +10999,8 @@ msgstr "[nick]"
 msgid "[nickname [REVALIDATE]]"
 msgstr "[nick [REVALIDATE]]"
 
-#: ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_group.cpp ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_register.cpp
+#: ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_group.cpp
+#: ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_register.cpp
 msgid "[nickname]"
 msgstr "[nick]"
 
@@ -11205,7 +11156,8 @@ msgstr "{number}: {mask}"
 msgid "{number}: {mask} ({description})"
 msgstr "{number}: {mask} ({description})"
 
-#: ../modules/chanserv/cs_akick.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/cs_akick.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "{number}: {mask} ({reason})"
 msgstr "{number}: {mask} ({reason})"
 

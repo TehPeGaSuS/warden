@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-25 01:07+0100\n"
+"POT-Creation-Date: 2026-11-26 00:11+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -347,6 +347,21 @@ msgstr ""
 #: ../modules/chanserv/cs_suspend.cpp ../modules/nickserv/ns_suspend.cpp
 #, c-format
 msgid "%s is already suspended."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "%s is given to %s and above, and to FLAGS entries with +%s."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "%s is given to %s and above."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "%s is given to FLAGS entries with +%s."
 msgstr ""
 
 #: ../modules/groupserv/groupserv.cpp
@@ -935,6 +950,18 @@ msgstr ""
 msgid "channel MIGRATE [mask]"
 msgstr ""
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel MODES modes"
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel OFF"
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel ON [joins [time [duration]]]"
+msgstr ""
+
 #: ../modules/chanserv/cs_topic.cpp
 msgid "channel PREPEND topic"
 msgstr ""
@@ -957,6 +984,10 @@ msgstr ""
 
 #: ../modules/chanserv/cs_access.cpp
 msgid "channel SET type level"
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel SHOW"
 msgstr ""
 
 #: ../modules/chanserv/cs_flags.cpp
@@ -1304,77 +1335,6 @@ msgstr ""
 #: ../modules/chanserv/cs_seen.cpp
 #, c-format
 msgid " but %s mysteriously dematerialized."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "Give at least 2 joins, and times such as \00210s\002 or \0022m\002."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "Give the modes to set, such as \002+R\002 or \002+mR\002."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "Helps against join floods by unidentified users. When \037joins\037 of them join within \037time\037, the channel gets the join flood modes for \037duration\037 and the ops are told. Nobody is kicked or banned: what to do next is up to the ops. Afterwards only the modes it set are removed, and modes locked off with \002MODE LOCK\002 are never set.\n\n\002MODES\002 chooses the modes, e.g. \002+mR\002 (moderated and registered-only). Only modes without a parameter can be used. The default is \002+R\002, or \002+m\002 on networks without +R.\n\nThe defaults are 3 joins within 10 seconds, for 60 seconds. Times can be given as seconds or like \00210s\002, \0022m\002 or \0021h\002. \002SHOW\002 shows the current settings."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "Join flood protection"
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-#, c-format
-msgid "Join flood protection in \002%s\002 is now \002off\002."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-#, c-format
-msgid "Join flood protection in \002%s\002 is now \002on\002: %u joins within %s set \002%s\002 for %s."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-#, c-format
-msgid "Join flood protection in \002%s\002: %u joins within %s set \002%s\002 for %s."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-#, c-format
-msgid "Join flood protection is not enabled for \002%s\002."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-#, c-format
-msgid "Join floods in \002%s\002 will set \002+%s\002."
-msgstr ""
-
-#: ../modules/chanserv/cs_access.cpp
-msgid "Levels only apply to entries added with \002ACCESS\002. Entries added with \002VOP\002, \002HOP\002, \002AOP\002, \002SOP\002 or \002QOP\002 get a fixed set of functions, and \002FLAGS\002 entries get the functions whose flags they have; \002DISABLE\002 is the only setting that also applies to them."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-#, c-format
-msgid "Mode \002%c\002 can't be used: only modes without a parameter, like \002R\002, \002i\002 or \002m\002."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "Set channel modes during a join flood"
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-#, c-format
-msgid "This network has no channel mode \002%c\002."
-msgstr ""
-
-#: ../modules/chanserv/cs_access.cpp
-msgid "This only affects ACCESS entries. FLAGS entries keep their own rules."
-msgstr ""
-
-#: ../modules/chanserv/cs_access.cpp
-msgid "This only affects ACCESS entries. xOP and FLAGS entries keep their own rules."
-msgstr ""
-
-#: ../modules/chanserv/cs_access.cpp
-msgid "This only affects ACCESS entries. xOP entries keep their own rules."
 msgstr ""
 
 #: ../modules/operserv/os_jupe.cpp
@@ -4845,8 +4805,16 @@ msgstr ""
 msgid "Give a channel's usual ops back"
 msgstr ""
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Give at least 2 joins, and times such as 10s or 2m."
+msgstr ""
+
 #: ../modules/hostserv/hs_nethost.cpp
 msgid "Give every account its default vhost"
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Give the modes to set, such as +R or +mR."
 msgstr ""
 
 #: ../modules/chanserv/cs_mode.cpp
@@ -4917,6 +4885,15 @@ msgstr ""
 #: ../modules/chanserv/cs_xop.cpp
 #, c-format
 msgid "Groups such as %s can't be put on access lists on this network."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid ""
+"Helps against join floods by unidentified users. When joins of them join within time, the channel gets the join flood modes for duration and the ops are told. Nobody is kicked or banned: what to do next is up to the ops. Afterwards only the modes it set are removed, and modes locked off with MODE LOCK are never set.\n"
+"\n"
+"MODES chooses the modes, e.g. +mR (moderated and registered-only). Only modes without a parameter can be used. The default is +R, or +m on networks without +R.\n"
+"\n"
+"The defaults are 3 joins within 10 seconds, for 60 seconds. Times can be given as seconds or like 10s, 2m or 1h. SHOW shows the current settings."
 msgstr ""
 
 #: ../modules/nickserv/ns_info.cpp
@@ -5110,6 +5087,35 @@ msgstr ""
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Join flags must be flags to add, without F or b, e.g. +Ac."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Join flood protection"
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in %s is now off."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in %s is now on: %u joins within %s set %s for %s."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection in %s: %u joins within %s set %s for %s."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join flood protection is not enabled for %s."
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join floods in %s will set +%s."
 msgstr ""
 
 #: ../modules/operserv/os_notinchan.cpp
@@ -5310,6 +5316,10 @@ msgstr ""
 #: ../modules/chanserv/cs_access.cpp
 #, c-format
 msgid "Level must be between %d and %d inclusive."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "Levels only apply to entries added with ACCESS. Entries added with VOP, HOP, AOP, SOP or QOP get a fixed set of functions, and FLAGS entries get the functions whose flags they have; DISABLE is the only setting that also applies to them."
 msgstr ""
 
 #: ../modules/groupserv/groupserv.cpp
@@ -5859,10 +5869,6 @@ msgstr ""
 msgid "Memo %d from %s (%s)."
 msgstr ""
 
-#: ../modules/memoserv/ms_set.cpp
-msgid "Memo notifications by email are disabled on this network."
-msgstr ""
-
 #: ../modules/memoserv/ms_del.cpp
 #, c-format
 msgid "Memo %d has been deleted."
@@ -5891,6 +5897,10 @@ msgstr ""
 #: ../modules/memoserv/ms_set.cpp
 #, c-format
 msgid "Memo limit for %s set to 0."
+msgstr ""
+
+#: ../modules/memoserv/ms_set.cpp
+msgid "Memo notifications by email are disabled on this network."
 msgstr ""
 
 #: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
@@ -5937,6 +5947,11 @@ msgstr ""
 
 #: ../modules/chanserv/cs_mode.cpp
 msgid "Mode"
+msgstr ""
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Mode %c can't be used: only modes without a parameter, like R, i or m."
 msgstr ""
 
 #: ../modules/chanserv/cs_mode.cpp
@@ -7656,6 +7671,10 @@ msgstr ""
 msgid "Set an option for every registered channel"
 msgstr ""
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Set channel modes during a join flood"
+msgstr ""
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "Set channel options and information"
 msgstr ""
@@ -8908,6 +8927,11 @@ msgstr ""
 msgid "This command will resend a registration confirmation email."
 msgstr ""
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "This network has no channel mode %c."
+msgstr ""
+
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
 msgid "This nickname has been forbidden: %s"
@@ -8930,6 +8954,18 @@ msgstr ""
 #: ../modules/nickserv/nickserv.cpp
 #, c-format
 msgid "This nickname is registered and has protection enabled. If it belongs to you, type %spassword to identify to your account."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. FLAGS entries keep their own rules."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. xOP and FLAGS entries keep their own rules."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. xOP entries keep their own rules."
 msgstr ""
 
 #: ../modules/botserv/bs_assign.cpp
@@ -10511,37 +10547,6 @@ msgstr ""
 
 #: ../modules/operserv/os_list.cpp
 msgid "[{pattern | nick}] [SECRET] [from-to]"
-msgstr ""
-
-#: ../modules/chanserv/cs_access.cpp
-#, c-format
-msgid "\002%s\002 is given to FLAGS entries with \002+%s\002."
-msgstr ""
-
-#: ../modules/chanserv/cs_access.cpp
-#, c-format
-msgid "\002%s\002 is given to \002%s\002 and above, and to FLAGS entries with \002+%s\002."
-msgstr ""
-
-#: ../modules/chanserv/cs_access.cpp
-#, c-format
-msgid "\002%s\002 is given to \002%s\002 and above."
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "\037channel\037 MODES \037modes\037"
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "\037channel\037 OFF"
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "\037channel\037 ON [\037joins\037 [\037time\037 [\037duration\037]]]"
-msgstr ""
-
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "\037channel\037 SHOW"
 msgstr ""
 
 #: ../modules/greet.cpp

@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-25 01:07+0100\n"
+"POT-Creation-Date: 2026-11-26 00:11+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -224,7 +224,8 @@ msgstr "Τα #%s# απενεργοποιήθηκαν στο κανάλι %s."
 msgid "%s does not wish to be added to channel access lists (NEVEROP is on)."
 msgstr "Ο/η %s δεν επιθυμεί να προστίθεται σε λίστες πρόσβασης καναλιών (το NEVEROP είναι ενεργό)."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_xop.cpp
 #, c-format
 msgid "%s does not wish to be added to channel access lists."
 msgstr "Ο/η %s δεν επιθυμεί να προστίθεται σε λίστες πρόσβασης καναλιών."
@@ -349,6 +350,21 @@ msgstr "Ο/η %s είναι ήδη στη λίστα αγνόησης memo τ�
 #, c-format
 msgid "%s is already suspended."
 msgstr "Το %s είναι ήδη σε αναστολή."
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "%s is given to %s and above, and to FLAGS entries with +%s."
+msgstr "Το %s δίνεται στο %s και πάνω, καθώς και σε εγγραφές FLAGS με +%s."
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "%s is given to %s and above."
+msgstr "Το %s δίνεται στο %s και πάνω."
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "%s is given to FLAGS entries with +%s."
+msgstr "Το %s δίνεται σε εγγραφές FLAGS με +%s."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -789,7 +805,10 @@ msgstr "διεύθυνση"
 msgid "botname {ON|OFF}"
 msgstr "όνομα-bot {ON|OFF}"
 
-#: ../modules/botserv/bs_assign.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_fantasy_top.cpp ../modules/chanserv/cs_getkey.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_suspend.cpp ../modules/chanserv/cs_sync.cpp
+#: ../modules/botserv/bs_assign.cpp ../modules/chanfix/chanfix.cpp
+#: ../modules/chanserv/cs_fantasy_top.cpp ../modules/chanserv/cs_getkey.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_log.cpp
+#: ../modules/chanserv/cs_suspend.cpp ../modules/chanserv/cs_sync.cpp
 msgid "channel"
 msgstr "DROP #channel#"
 
@@ -865,7 +884,10 @@ msgstr "κανάλι ADD {ψευδώνυμο | μάσκα} [λόγος]"
 msgid "channel APPEND topic"
 msgstr "κανάλι APPEND θέμα"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanserv/cs_access.cpp
+#: ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_xop.cpp
 msgid "channel CLEAR"
 msgstr "κανάλι CLEAR"
 
@@ -901,7 +923,8 @@ msgstr "κανάλι DEL {λέξη | αριθμός-εγγραφής | λ
 msgid "channel ENFORCE"
 msgstr "κανάλι ENFORCE"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_entrymsg.cpp
+#: ../modules/chanserv/cs_topichistory.cpp
 msgid "channel LIST"
 msgstr "κανάλι LIST"
 
@@ -928,6 +951,10 @@ msgstr "κανάλι LOCK {ADD|DEL|SET|LIST} [τι]"
 #: ../modules/chanserv/cs_flags.cpp
 msgid "channel MIGRATE [mask]"
 msgstr "κανάλι MIGRATE [μάσκα]"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "channel MODES modes"
+msgstr "κανάλι MODES modes"
 
 #: ../modules/chanserv/cs_set_joinflood.cpp
 msgid "channel OFF"
@@ -994,7 +1021,8 @@ msgstr "κανάλι [πλήθος]"
 msgid "channel [description]"
 msgstr "Αλλάζει την περιγραφή του καναλιού"
 
-#: ../modules/chanserv/cs_invite.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_unban.cpp
+#: ../modules/chanserv/cs_invite.cpp ../modules/chanserv/cs_set.cpp
+#: ../modules/chanserv/cs_unban.cpp
 msgid "channel [nick]"
 msgstr "UNBAN #κανάλι# [#nick#]"
 
@@ -1066,7 +1094,9 @@ msgstr "κανάλι {ON λόγος | OFF}"
 msgid "channel {ON | LEVEL | OFF}"
 msgstr "κανάλι {ON | LEVEL | OFF}"
 
-#: ../modules/botserv/bs_kick.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_topic.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanstats.cpp
+#: ../modules/botserv/bs_kick.cpp ../modules/chanserv/cs_list.cpp
+#: ../modules/chanserv/cs_set.cpp ../modules/chanserv/cs_topic.cpp
+#: ../modules/chanserv/cs_topichistory.cpp ../modules/chanstats.cpp
 msgid "channel {ON | OFF}"
 msgstr "SET #channel# XOP {ON | OFF}"
 
@@ -1098,7 +1128,9 @@ msgstr "νέο-display"
 msgid "new-password"
 msgstr "νέος-κωδικός"
 
-#: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_seen.cpp ../modules/hostserv/hs_del.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_check.cpp
+#: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_seen.cpp
+#: ../modules/hostserv/hs_del.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/memoserv/ms_check.cpp
 msgid "nick"
 msgstr "ψευδώνυμο"
 
@@ -1191,7 +1223,10 @@ msgstr "ψευδώνυμο {FIXED | FLEXIBLE | MONOSPACE}"
 msgid "nickname {ON | delay | OFF}"
 msgstr "ψευδώνυμο {ON | καθυστέρηση | OFF}"
 
-#: ../modules/chanstats.cpp ../modules/nickserv/ns_cert.cpp ../modules/nickserv/ns_list.cpp ../modules/nickserv/ns_set.cpp ../modules/nickserv/ns_set_keepmodes.cpp ../modules/nickserv/ns_set_message.cpp ../modules/nickserv/ns_set_op.cpp
+#: ../modules/chanstats.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/nickserv/ns_list.cpp ../modules/nickserv/ns_set.cpp
+#: ../modules/nickserv/ns_set_keepmodes.cpp
+#: ../modules/nickserv/ns_set_message.cpp ../modules/nickserv/ns_set_op.cpp
 msgid "nickname {ON | OFF}"
 msgstr "SASET #nickname# AUTOOP {ON | OFF}"
 
@@ -1551,7 +1586,8 @@ msgstr "Ο/η %s μπορεί πλέον να προστεθεί σε λίστε
 msgid "%s cannot be the successor on channel %s as they are the founder."
 msgstr "Ο/η %s δεν μπορεί να είναι ο successor στο κανάλι %s επειδή είναι ο founder."
 
-#: ../modules/global/global.cpp ../modules/hostserv/hostserv.cpp ../modules/operserv/operserv.cpp
+#: ../modules/global/global.cpp ../modules/hostserv/hostserv.cpp
+#: ../modules/operserv/operserv.cpp
 #, c-format
 msgid "%s commands:"
 msgstr "Οι εντολές του %s είναι::"
@@ -2181,7 +2217,8 @@ msgstr "Λίστα πρόσβασης του %s:"
 msgid "Access to this command requires the permission %s to be present in your opertype."
 msgstr "Η πρόσβαση σε αυτή την εντολή χρειάζεται την άδεια #%s# να υπάρχει στο opertype σας."
 
-#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_info.cpp
+#: ../modules/nickserv/ns_list.cpp
 msgid "Account"
 msgstr "Λογαριασμός"
 
@@ -2228,46 +2265,16 @@ msgid "Activates the vhost currently assigned to the nick in use. When you use t
 msgstr "Ενεργοποιεί τη vhost που έχει ανατεθεί στο ψευδώνυμο που χρησιμοποιείτε. Όταν χρησιμοποιείτε αυτή την εντολή, όποιος χρήστης σας κάνει /whois θα βλέπει τη vhost αντί για το πραγματικό host/διεύθυνση IP σας."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Add "
-"smeg"
-" to the bad word list of "
-"#channel"
-". If a user says only this word in a message they will be kicked."
-msgstr ""
-"Προσθέτει το "
-"smeg"
-" στη λίστα badwords του "
-"#channel"
-". Αν ένας χρήστης πει μόνο αυτή τη λέξη σε ένα μήνυμα, θα γίνει kick."
+msgid "Add smeg to the bad word list of #channel. If a user says only this word in a message they will be kicked."
+msgstr "Προσθέτει το smeg στη λίστα badwords του #channel. Αν ένας χρήστης πει μόνο αυτή τη λέξη σε ένα μήνυμα, θα γίνει kick."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Add "
-"smeg"
-" to the bad word list of "
-"#channel"
-". If a user says this word anywhere in a message they will be kicked."
-msgstr ""
-"Προσθέτει το "
-"smeg"
-" στη λίστα badwords του "
-"#channel"
-". Αν ένας χρήστης πει αυτή τη λέξη οπουδήποτε σε ένα μήνυμα, θα γίνει kick."
+msgid "Add smeg to the bad word list of #channel. If a user says this word anywhere in a message they will be kicked."
+msgstr "Προσθέτει το smeg στη λίστα badwords του #channel. Αν ένας χρήστης πει αυτή τη λέξη οπουδήποτε σε ένα μήνυμα, θα γίνει kick."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Add "
-"smeg"
-" to the bad word list of "
-"#channel"
-". If a user says this word at the start of a message they will be kicked."
-msgstr ""
-"Προσθέτει το "
-"smeg"
-" στη λίστα badwords του "
-"#channel"
-". Αν ένας χρήστης πει αυτή τη λέξη στην αρχή ενός μηνύματος, θα γίνει kick."
+msgid "Add smeg to the bad word list of #channel. If a user says this word at the start of a message they will be kicked."
+msgstr "Προσθέτει το smeg στη λίστα badwords του #channel. Αν ένας χρήστης πει αυτή τη λέξη στην αρχή ενός μηνύματος, θα γίνει kick."
 
 #: ../modules/nickserv/ns_group.cpp
 msgid "Add a nick to an account"
@@ -2362,26 +2369,8 @@ msgid "Adds a mode lock on the moderated, no external messages, topic lock flag 
 msgstr "Προσθέτει mode lock στα modes moderated, no external messages και topic lock, καθώς και ban στο *!*@*.example.com."
 
 #: ../modules/botserv/bs_bot.cpp
-msgid ""
-"Adds a new bot with the nickname "
-"Chii"
-", username "
-"chobit"
-", hostname "
-"persocom.test"
-", and realname "
-"Chii Motosuwa"
-"."
-msgstr ""
-"Προσθέτει ένα νέο bot με ψευδώνυμο "
-"Chii"
-", username "
-"chobit"
-", hostname "
-"persocom.test"
-" και realname "
-"Chii Motosuwa"
-"."
+msgid "Adds a new bot with the nickname Chii, username chobit, hostname persocom.test, and realname Chii Motosuwa."
+msgstr "Προσθέτει ένα νέο bot με ψευδώνυμο Chii, username chobit, hostname persocom.test και realname Chii Motosuwa."
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Adds the specified fingerprint to the certificate list of nickname."
@@ -3332,30 +3321,8 @@ msgstr ""
 "  VHOST [vhost|OFF] - ένα vhost που μπορούν να πάρουν τα μέλη με +v· μπορεί να χρησιμοποιεί {account} και {nick}"
 
 #: ../modules/botserv/bs_bot.cpp
-msgid ""
-"Changes all of the information of the bot called "
-"Chii"
-". The new nickname will be "
-"Mahoro"
-", the new username will be "
-"saint"
-", the new hostname will be "
-"vesper.test"
-", and the new realname will be "
-"Mahoro Andou"
-"."
-msgstr ""
-"Αλλάζει όλες τις πληροφορίες του bot "
-"Chii"
-". Το νέο ψευδώνυμο θα είναι "
-"Mahoro"
-", το νέο username "
-"saint"
-", το νέο hostname "
-"vesper.test"
-" και το νέο realname "
-"Mahoro Andou"
-"."
+msgid "Changes all of the information of the bot called Chii. The new nickname will be Mahoro, the new username will be saint, the new hostname will be vesper.test, and the new realname will be Mahoro Andou."
+msgstr "Αλλάζει όλες τις πληροφορίες του bot Chii. Το νέο ψευδώνυμο θα είναι Mahoro, το νέο username saint, το νέο hostname vesper.test και το νέο realname Mahoro Andou."
 
 #: ../modules/nickserv/ns_group.cpp
 msgid "Changes the display nickname used to refer to the account. The new displaynickname must already be associated with the account."
@@ -3370,18 +3337,8 @@ msgid "Changes the founder of a channel. The new nickname must be a registered o
 msgstr "Αλλάζει τον founder ενός καναλιού. Το νέο ψευδώνυμο πρέπει να είναι κατοχυρωμένο."
 
 #: ../modules/greet.cpp
-msgid ""
-"Changes the greet message of "
-"alien"
-" to "
-"I come in peace"
-"."
-msgstr ""
-"Αλλάζει το μήνυμα greet του "
-"alien"
-" σε "
-"I come in peace"
-"."
+msgid "Changes the greet message of alien to I come in peace."
+msgstr "Αλλάζει το μήνυμα greet του alien σε I come in peace."
 
 #: ../modules/greet.cpp
 msgid "Changes the greet message of the specified nickname. This message will be displayed when joining a channel that has GREET option enabled, provided that the user has the necessary access on it."
@@ -3444,14 +3401,8 @@ msgid "Changes when you will be notified about new memos (only for nicknames)"
 msgstr "Αλλάζει πότε θα ειδοποιείστε για νέα memos (μόνο για ψευδώνυμα)"
 
 #: ../modules/greet.cpp
-msgid ""
-"Changes your greet message to "
-"I come in peace"
-"."
-msgstr ""
-"Αλλάζει το μήνυμα greet σας σε "
-"I come in peace"
-"."
+msgid "Changes your greet message to I come in peace."
+msgstr "Αλλάζει το μήνυμα greet σας σε I come in peace."
 
 #: ../modules/greet.cpp
 msgid "Changes your greet message. This message will be displayed when joining a channel that has GREET option enabled, provided that you have the necessary access on it."
@@ -3467,7 +3418,8 @@ msgstr "Αλλαγή των user modes σας σε %s"
 msgid "Changing your vhost to %s"
 msgstr "Αλλαγή της vhost σας σε %s"
 
-#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
+#: ../modules/chanfix/chanfix.cpp ../modules/groupserv/groupserv.cpp
+#: ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp
 msgid "Channel"
 msgstr "Κανάλι"
 
@@ -3590,7 +3542,8 @@ msgstr "Στατιστικά καναλιού για %s στο %s:"
 msgid "Channels expiring within %s:"
 msgstr "Κανάλια που λήγουν εντός %s:"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_xop.cpp
 msgid "Channels may not be on access lists."
 msgstr "Τα κανάλια δεν μπορούν να μπουν σε access lists."
 
@@ -3644,14 +3597,8 @@ msgid "Cleared info from %s."
 msgstr "Οι πληροφορίες του %s διαγράφηκαν."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Clears all bad word entries set on "
-"#channel"
-"."
-msgstr ""
-"Διαγράφει όλες τις απαγορευμένες λέξεις του "
-"#channel"
-"."
+msgid "Clears all bad word entries set on #channel."
+msgstr "Διαγράφει όλες τις απαγορευμένες λέξεις του #channel."
 
 #: ../modules/chanserv/cs_mode.cpp
 msgid "Clears all extended bans that start with channel:."
@@ -3853,11 +3800,24 @@ msgstr "Αντιγράφει όλες τις ρυθμίσεις, την πρόσ
 msgid "Copy all settings from one channel to another"
 msgstr "Αντιγράφει όλες τις ρυθμίσεις από ένα κανάλι σε ένα άλλο."
 
-#: ../modules/botserv/bs_info.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/chanfix/chanfix.cpp
+#: ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp
+#: ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp
+#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Created"
 msgstr "Δημιουργήθηκε"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp
+#: ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp
+#: ../modules/hostserv/hs_offer.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp
+#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_news.cpp
+#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Creator"
 msgstr "Δημιουργός"
 
@@ -4157,56 +4117,24 @@ msgid "Deleted info from %s."
 msgstr "Οι πληροφορίες του %s διαγράφηκαν."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Deletes "
-"heck"
-" from the bad word list of "
-"#channel"
-"."
-msgstr ""
-"Διαγράφει το "
-"heck"
-" από τη λίστα απαγορευμένων λέξεων του "
-"#channel"
-"."
+msgid "Deletes heck from the bad word list of #channel."
+msgstr "Διαγράφει το heck από τη λίστα απαγορευμένων λέξεων του #channel."
 
 #: ../modules/botserv/bs_bot.cpp
-msgid ""
-"Deletes a bot called "
-"Mahoro"
-"."
-msgstr ""
-"Διαγράφει ένα bot με όνομα "
-"Mahoro"
-"."
+msgid "Deletes a bot called Mahoro."
+msgstr "Διαγράφει ένα bot με όνομα Mahoro."
 
 #: ../modules/memoserv/ms_del.cpp
 msgid "Deletes all of your memos."
 msgstr "Διαγράφει όλα τα memos σας."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Deletes bad word entries set on "
-"#channel"
-" numbered 2 through 5 and 7 through 9."
-msgstr ""
-"Διαγράφει τις απαγορευμένες λέξεις του "
-"#channel"
-" με αριθμούς 2 έως 5 και 7 έως 9."
+msgid "Deletes bad word entries set on #channel numbered 2 through 5 and 7 through 9."
+msgstr "Διαγράφει τις απαγορευμένες λέξεις του #channel με αριθμούς 2 έως 5 και 7 έως 9."
 
 #: ../modules/botserv/bs_bot.cpp
-msgid ""
-"Deletes every bot except "
-"Chii"
-", "
-"Mahoro"
-" and the bots defined in the configuration."
-msgstr ""
-"Διαγράφει όλα τα bots εκτός από τα "
-"Chii"
-", "
-"Mahoro"
-" και τα bots που ορίζονται στις ρυθμίσεις."
+msgid "Deletes every bot except Chii, Mahoro and the bots defined in the configuration."
+msgstr "Διαγράφει όλα τα bots εκτός από τα Chii, Mahoro και τα bots που ορίζονται στις ρυθμίσεις."
 
 #: ../modules/memoserv/ms_del.cpp
 msgid "Deletes memos numbered 2 through 5 and 7 through 9."
@@ -4237,7 +4165,10 @@ msgstr "Διαγράφει το τελευταίο σας memo."
 msgid "Depooled %s."
 msgstr "Το %s αφαιρέθηκε από το pool."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_list.cpp ../modules/chanserv/cs_xop.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/chanserv/cs_list.cpp
+#: ../modules/chanserv/cs_xop.cpp ../modules/groupserv/groupserv.cpp
+#: ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_cert.cpp
 msgid "Description"
 msgstr "Περιγραφή"
 
@@ -4680,7 +4611,12 @@ msgstr "Τέλος λίστας - %zu χρήστης(ες)."
 msgid "End of list - %zu/%zu shown, soonest first."
 msgstr "Τέλος λίστας - εμφανίζονται %zu/%zu, τα πλησιέστερα πρώτα."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_mode.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/memoserv/ms_ignore.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_dns.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_log.cpp
+#: ../modules/chanserv/cs_mode.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/global/gl_queue.cpp ../modules/memoserv/ms_ignore.cpp
+#: ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp
+#: ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_dns.cpp
+#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp
 msgid "End of list."
 msgstr "Τέλος λίστας."
 
@@ -4812,7 +4748,12 @@ msgstr "Παραδείγματα:"
 msgid "Exception for %s has been updated to %d."
 msgstr "Exception για #%s# άλλαξε σε %d."
 
-#: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp
+#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Expires"
 msgstr "Λήγει"
 
@@ -4900,7 +4841,8 @@ msgstr "Flag"
 msgid "Flag templates:"
 msgstr "Πρότυπα flags:"
 
-#: ../modules/chanserv/cs_flags.cpp ../modules/groupserv/groupserv.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/groupserv/groupserv.cpp
+#: ../modules/operserv/os_notify.cpp
 msgid "Flags"
 msgstr "Flags"
 
@@ -4991,7 +4933,8 @@ msgstr "Αναγκαστική αποχώρηση χρήστη από κανάλ
 msgid "Forcefully part a user from a channel."
 msgstr "Αναγκαστική αποχώρηση χρήστη από κανάλι."
 
-#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_alist.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp
+#: ../modules/nickserv/ns_alist.cpp
 msgid "Founder"
 msgstr "Ιδρυτής"
 
@@ -5023,6 +4966,10 @@ msgstr "Δώστε τουλάχιστον 2 εισόδους, και χρόνο�
 #: ../modules/hostserv/hs_nethost.cpp
 msgid "Give every account its default vhost"
 msgstr "Δώσε σε κάθε λογαριασμό το προεπιλεγμένο vhost του"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Give the modes to set, such as +R or +mR."
+msgstr "Δώστε τα modes που θα οριστούν, π.χ. +R ή +mR."
 
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
@@ -5088,10 +5035,25 @@ msgstr "Ομάδες"
 msgid "Groups matching %s:"
 msgstr "Ομάδες που ταιριάζουν με το %s:"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_xop.cpp
 #, c-format
 msgid "Groups such as %s can't be put on access lists on this network."
 msgstr "Ομάδες όπως η %s δεν μπορούν να μπουν σε λίστες πρόσβασης σε αυτό το δίκτυο."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid ""
+"Helps against join floods by unidentified users. When joins of them join within time, the channel gets the join flood modes for duration and the ops are told. Nobody is kicked or banned: what to do next is up to the ops. Afterwards only the modes it set are removed, and modes locked off with MODE LOCK are never set.\n"
+"\n"
+"MODES chooses the modes, e.g. +mR (moderated and registered-only). Only modes without a parameter can be used. The default is +R, or +m on networks without +R.\n"
+"\n"
+"The defaults are 3 joins within 10 seconds, for 60 seconds. Times can be given as seconds or like 10s, 2m or 1h. SHOW shows the current settings."
+msgstr ""
+"Βοηθά κατά των flood εισόδων από μη ταυτοποιημένους χρήστες. Όταν εισόδους τους γίνουν μέσα σε χρόνος, το κανάλι παίρνει τα modes flood εισόδων για διάρκεια και ειδοποιούνται οι ops. Κανείς δεν γίνεται kick ή ban: το τι θα γίνει μετά το αποφασίζουν οι ops. Έπειτα αφαιρούνται μόνο τα modes που όρισε, και modes κλειδωμένα ως ανενεργά με MODE LOCK δεν ορίζονται ποτέ.\n"
+"\n"
+"Το MODES επιλέγει τα modes, π.χ. +mR (moderated και μόνο για εγγεγραμμένους). Μπορούν να χρησιμοποιηθούν μόνο modes χωρίς παράμετρο. Η προεπιλογή είναι +R, ή +m σε δίκτυα χωρίς +R.\n"
+"\n"
+"Οι προεπιλογές είναι 3 είσοδοι μέσα σε 10 δευτερόλεπτα, για 60 δευτερόλεπτα. Οι χρόνοι δίνονται σε δευτερόλεπτα ή όπως 10s, 2m ή 1h. Το SHOW δείχνει τις τρέχουσες ρυθμίσεις."
 
 #: ../modules/nickserv/ns_info.cpp
 msgid "Hide certain pieces of nickname information"
@@ -5192,7 +5154,9 @@ msgstr "Λανθασμένη διεύθυνση email."
 msgid "Incorrect flags character(s) given."
 msgstr "Δόθηκαν λανθασμένοι χαρακτήρες flags."
 
-#: ../modules/chanserv/cs_list.cpp ../modules/hostserv/hs_list.cpp ../modules/nickserv/ns_list.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_list.cpp ../modules/hostserv/hs_list.cpp
+#: ../modules/nickserv/ns_list.cpp ../modules/operserv/os_forbid.cpp
+#: ../modules/operserv/os_list.cpp
 msgid "Incorrect range specified. The correct syntax is from-to."
 msgstr "Λανθασμένο εύρος. Η σωστή σύνταξη είναι από-έως."
 
@@ -5295,18 +5259,23 @@ msgstr "Η προστασία από flood εισόδων στο %s είναι
 
 #: ../modules/chanserv/cs_set_joinflood.cpp
 #, c-format
-msgid "Join flood protection in %s is now on: %u joins within %s make it registered-only for %s."
-msgstr "Η προστασία από flood εισόδων στο %s είναι τώρα ενεργή: %u είσοδοι μέσα σε %s το κάνουν μόνο για εγγεγραμμένους για %s."
+msgid "Join flood protection in %s is now on: %u joins within %s set %s for %s."
+msgstr "Η προστασία από flood εισόδων στο %s είναι τώρα ενεργή: %u είσοδοι μέσα σε %s ορίζουν %s για %s."
 
 #: ../modules/chanserv/cs_set_joinflood.cpp
 #, c-format
-msgid "Join flood protection in %s: %u joins within %s make it registered-only for %s."
-msgstr "Προστασία από flood εισόδων στο %s: %u είσοδοι μέσα σε %s το κάνουν μόνο για εγγεγραμμένους για %s."
+msgid "Join flood protection in %s: %u joins within %s set %s for %s."
+msgstr "Προστασία από flood εισόδων στο %s: %u είσοδοι μέσα σε %s ορίζουν %s για %s."
 
 #: ../modules/chanserv/cs_set_joinflood.cpp
 #, c-format
 msgid "Join flood protection is not enabled for %s."
 msgstr "Η προστασία από flood εισόδων δεν είναι ενεργή για το %s."
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Join floods in %s will set +%s."
+msgstr "Τα flood εισόδων στο %s θα ορίζουν +%s."
 
 #: ../modules/operserv/os_notinchan.cpp
 #, c-format
@@ -5515,6 +5484,10 @@ msgstr "Το Level για %s στο κανάλι %s άλλαξε σε founder on
 msgid "Level must be between %d and %d inclusive."
 msgstr "Ο βαθμός πρέπει να είναι μεταξύ %d και %d."
 
+#: ../modules/chanserv/cs_access.cpp
+msgid "Levels only apply to entries added with ACCESS. Entries added with VOP, HOP, AOP, SOP or QOP get a fixed set of functions, and FLAGS entries get the functions whose flags they have; DISABLE is the only setting that also applies to them."
+msgstr "Τα επίπεδα ισχύουν μόνο για εγγραφές που προστέθηκαν με ACCESS. Οι εγγραφές με VOP, HOP, AOP, SOP ή QOP έχουν σταθερό σύνολο λειτουργιών, και οι εγγραφές FLAGS παίρνουν τις λειτουργίες των flags που έχουν· το DISABLE είναι η μόνη ρύθμιση που ισχύει και για αυτές."
+
 #: ../modules/groupserv/groupserv.cpp
 msgid "Like FLAGS, for services operators: changes anyone's flags in any group, without the usual checks."
 msgstr "Όπως το FLAGS, για χειριστές των υπηρεσιών: αλλάζει τα flags οποιουδήποτε σε οποιαδήποτε ομάδα, χωρίς τους συνήθεις ελέγχους."
@@ -5676,14 +5649,8 @@ msgstr ""
 "Σημειώστε ότι αυτές οι επιλογές είναι μόνο για τους Services Operators."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Lists all bad word entries set on "
-"#channel"
-"."
-msgstr ""
-"Εμφανίζει όλες τις κακές λέξεις του "
-"#κανάλι"
-"."
+msgid "Lists all bad word entries set on #channel."
+msgstr "Εμφανίζει όλες τις κακές λέξεις του #κανάλι."
 
 #: ../modules/operserv/os_list.cpp
 msgid ""
@@ -5804,28 +5771,12 @@ msgid "Lists any new memos."
 msgstr "Εμφανίζει τα νέα μηνύματα."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Lists bad word entries set on "
-"#channel"
-" numbered 2 through 5 and 7 through 9."
-msgstr ""
-"Εμφανίζει τις κακές λέξεις του "
-"#κανάλι"
-" με αριθμούς 2 έως 5 και 7 έως 9."
+msgid "Lists bad word entries set on #channel numbered 2 through 5 and 7 through 9."
+msgstr "Εμφανίζει τις κακές λέξεις του #κανάλι με αριθμούς 2 έως 5 και 7 έως 9."
 
 #: ../modules/botserv/bs_badwords.cpp
-msgid ""
-"Lists bad word entries set on "
-"#channel"
-" that match "
-"*frack*"
-"."
-msgstr ""
-"Εμφανίζει τις κακές λέξεις του "
-"#κανάλι"
-" που ταιριάζουν με το "
-"*frack*"
-"."
+msgid "Lists bad word entries set on #channel that match *frack*."
+msgstr "Εμφανίζει τις κακές λέξεις του #κανάλι που ταιριάζουν με το *frack*."
 
 #: ../modules/operserv/os_modinfo.cpp
 msgid "Lists currently loaded modules."
@@ -6058,10 +6009,6 @@ msgstr "Κάνει το bot να εκτελέσει το ισοδύναμο μι
 msgid "Make the bot say the specified text on the specified channel"
 msgstr "Κάνει το bot να πει το κείμενο στο κανάλι"
 
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid "Make the channel registered-only during a join flood"
-msgstr "Κάνει το κανάλι μόνο για εγγεγραμμένους κατά τη διάρκεια flood εισόδων"
-
 #: ../modules/nickserv/ns_resetpass.cpp
 msgid "Makes a new recovery key for your account and shows it to you once. The old key stops working. Use this if you lost your key or think someone else has seen it."
 msgstr "Δημιουργεί νέο κλειδί ανάκτησης για τον λογαριασμό σου και σου το εμφανίζει μία φορά. Το παλιό κλειδί παύει να λειτουργεί. Χρησιμοποίησέ το αν έχασες το κλειδί σου ή πιστεύεις ότι το είδε κάποιος άλλος."
@@ -6119,7 +6066,14 @@ msgstr "Αλλάζει το topic σε ένα κανάλι."
 msgid "Marked"
 msgstr "Σημειωμένο"
 
-#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_botlist.cpp ../modules/botserv/bs_info.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp
+#: ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/memoserv/ms_ignore.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_list.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_notinchan.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Mask"
 msgstr "Μάσκα"
 
@@ -6131,7 +6085,8 @@ msgstr "Η μάσκα πρέπει να είναι τουλάχιστον user
 msgid "Mask must be in the form user@host."
 msgstr "Η μάσκα πρέπει να είναι της μορφής user@host."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_xop.cpp
 msgid "Masks and unregistered users may not be on access lists."
 msgstr "Μάσκες και μη κατοχυρωμένοι χρήστες δεν μπορούν να είναι σε access lists."
 
@@ -6193,6 +6148,10 @@ msgstr "Το όριο μηνυμάτων για τον %s άλλαξε σε #%d#
 msgid "Memo limit for %s set to 0."
 msgstr "Το όριο μηνυμάτων για τον %s άλλαξε σε #0#."
 
+#: ../modules/memoserv/ms_set.cpp
+msgid "Memo notifications by email are disabled on this network."
+msgstr "Οι ειδοποιήσεις memo μέσω email είναι απενεργοποιημένες σε αυτό το δίκτυο."
+
 #: ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
 #, c-format
 msgid "Memo sent to %s."
@@ -6238,6 +6197,11 @@ msgstr "Passwords που λείπουν: %zu"
 #: ../modules/chanserv/cs_mode.cpp
 msgid "Mode"
 msgstr "Mode"
+
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "Mode %c can't be used: only modes without a parameter, like R, i or m."
+msgstr "Το mode %c δεν μπορεί να χρησιμοποιηθεί: μόνο modes χωρίς παράμετρο, όπως R, i ή m."
 
 #: ../modules/chanserv/cs_mode.cpp
 #, c-format
@@ -6357,7 +6321,9 @@ msgstr "NOFIX"
 msgid "NOTICE: In order to register a channel, you must have first registered your nickname."
 msgstr "ΣΗΜΕΙΩΣΗ: Για να κατοχυρώσετε ένα κανάλι, πρέπει πρώτα να έχετε κατοχυρώσει το ψευδώνυμό σας."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_list.cpp ../modules/operserv/os_config.cpp ../modules/operserv/os_expiring.cpp ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_list.cpp
+#: ../modules/operserv/os_config.cpp ../modules/operserv/os_expiring.cpp
+#: ../modules/operserv/os_list.cpp
 msgid "Name"
 msgstr "Όνομα"
 
@@ -6382,7 +6348,9 @@ msgstr "Ποτέ"
 msgid "Never op"
 msgstr "Ποτέ op"
 
-#: ../modules/botserv/bs_botlist.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_group.cpp ../modules/nickserv/ns_list.cpp ../modules/operserv/os_notinchan.cpp
+#: ../modules/botserv/bs_botlist.cpp ../modules/hostserv/hs_list.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_group.cpp
+#: ../modules/nickserv/ns_list.cpp ../modules/operserv/os_notinchan.cpp
 msgid "Nick"
 msgstr "Ψευδώνυμο"
 
@@ -6611,7 +6579,8 @@ msgstr "Καμία θέση στην ουρά μηνυμάτων σας δεν �
 msgid "No matching entries on %s %s list."
 msgstr "Δεν βρέθηκαν θέσεις στην AOP λίστα του %s %s."
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_xop.cpp
 #, c-format
 msgid "No matching entries on %s access list."
 msgstr "Δεν βρέθηκαν θέσεις στου %s στην access list."
@@ -6690,7 +6659,8 @@ msgstr "Δεν βρέθηκε αίτημα για το ψευδώνυμο %s."
 msgid "No signed kick when SIGNKICK LEVEL is used"
 msgstr "Χωρίς υπογεγραμμένο kick όταν χρησιμοποιείται το SIGNKICK LEVEL"
 
-#: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_fantasy_top.cpp
+#: ../modules/chanserv/cs_fantasy_stats.cpp
+#: ../modules/chanserv/cs_fantasy_top.cpp
 #, c-format
 msgid "No stats for %s."
 msgstr "Δεν υπάρχουν στατιστικά για το %s."
@@ -6739,7 +6709,8 @@ msgstr "Κανείς άλλος στο %s δεν λαμβάνει τα μην�
 msgid "Non-status modes cleared on %s."
 msgstr "Τα μη-status modes καθαρίστηκαν στο %s."
 
-#: ../modules/botserv/bs_info.cpp ../modules/nickserv/ns_resetpass.cpp ../modules/operserv/os_dns.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/nickserv/ns_resetpass.cpp
+#: ../modules/operserv/os_dns.cpp
 msgid "None"
 msgstr "Κανένα"
 
@@ -6777,7 +6748,17 @@ msgstr "Δεν άλλαξε τίποτα:"
 msgid "Now"
 msgstr "Τώρα"
 
-#: ../modules/botserv/bs_badwords.cpp ../modules/chanfix/chanfix.cpp ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/botserv/bs_badwords.cpp ../modules/chanfix/chanfix.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp
+#: ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_log.cpp ../modules/chanserv/cs_topichistory.cpp
+#: ../modules/chanserv/cs_xop.cpp ../modules/global/gl_queue.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_list.cpp
+#: ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp
+#: ../modules/nickserv/ns_alist.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_news.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Number"
 msgstr "Αριθμός"
 
@@ -7022,7 +7003,8 @@ msgstr "Παρακαλώ περιμένετε %s πριν ζητήσετε νέ�
 msgid "Please wait %s before taking a new vhost."
 msgstr "Παρακαλώ περιμένετε %s πριν πάρετε νέο vhost."
 
-#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_rsend.cpp ../modules/memoserv/ms_send.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/memoserv/ms_rsend.cpp
+#: ../modules/memoserv/ms_send.cpp
 #, c-format
 msgid "Please wait %s before using the %s command again."
 msgstr "Παρακαλώ περιμένετε %s πριν χρησιμοποιήσετε ξανά την εντολή %s."
@@ -7078,7 +7060,8 @@ msgstr "Κάντε ένα nickname να μη λήγει ποτέ."
 msgid "Prevents users being kicked by services"
 msgstr "Εμποδίζει τα kicks χρηστών από τα services"
 
-#: ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_list.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/botserv/bs_info.cpp ../modules/chanserv/cs_list.cpp
+#: ../modules/nickserv/ns_list.cpp
 msgid "Private"
 msgstr "Μυστικότητα"
 
@@ -7150,16 +7133,6 @@ msgstr "Η προστασία είναι τώρα ενεργή μετά από
 msgid "Protection is now on for %s."
 msgstr "Η προστασία #ενεργοποιήθηκε# για το #%s#."
 
-#: ../modules/chanserv/cs_set_joinflood.cpp
-msgid ""
-"Protects the channel from join floods by unidentified users. When joins of them join within time, the channel is made registered-users-only for duration, and the ops are told. If the IRCd has no such mode, unidentified users who join during that time are banned and kicked instead, and the bans are lifted afterwards.\n"
-"\n"
-"The defaults are 3 joins within 10 seconds, for 60 seconds. Times can be given as seconds or like 10s, 2m or 1h. SHOW shows the current settings."
-msgstr ""
-"Προστατεύει το κανάλι από flood εισόδων από μη ταυτοποιημένους χρήστες. Όταν εισόδους από αυτούς μπαίνουν μέσα σε χρόνος, το κανάλι γίνεται μόνο για εγγεγραμμένους χρήστες για διάρκεια, και ειδοποιούνται οι operators. Αν ο IRCd δεν έχει τέτοιο mode, οι μη ταυτοποιημένοι χρήστες που μπαίνουν σε αυτό το διάστημα παίρνουν ban και kick, και τα bans αφαιρούνται μετά.\n"
-"\n"
-"Οι προεπιλογές είναι 3 είσοδοι μέσα σε 10 δευτερόλεπτα, για 60 δευτερόλεπτα. Οι χρόνοι μπορούν να δοθούν σε δευτερόλεπτα ή όπως 10s, 2m ή 1h. Το SHOW δείχνει τις τρέχουσες ρυθμίσεις."
-
 #: ../modules/groupserv/groupserv.cpp
 msgid "Public"
 msgstr "Δημόσια"
@@ -7221,7 +7194,10 @@ msgstr "Πραγματικό όνομα"
 msgid "Realname"
 msgstr "Realname"
 
-#: ../modules/chanserv/cs_akick.cpp ../modules/hostserv/hs_offer.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/cs_akick.cpp ../modules/hostserv/hs_offer.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp
+#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Reason"
 msgstr "Λόγος"
 
@@ -7258,7 +7234,8 @@ msgstr "Επανακαθορίζει το νόημα των επιπέδων π�
 msgid "Regain control of your nick"
 msgstr "Ανάκτηση του ελέγχου του ψευδωνύμου σας"
 
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Regex is disabled."
 msgstr "Το regex είναι απενεργοποιημένο."
 
@@ -7267,7 +7244,9 @@ msgstr "Το regex είναι απενεργοποιημένο."
 msgid "Regex matches are also supported using the %s engine. Enclose your mask in // if this is desired."
 msgstr "Υποστηρίζονται επίσης regex με τη μηχανή %s. Βάλτε τη μάσκα σας μέσα σε // αν το θέλετε."
 
-#: ../modules/chanserv/cs_list.cpp ../modules/nickserv/ns_list.cpp ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp ../modules/operserv/os_list.cpp
+#: ../modules/chanserv/cs_list.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_list.cpp
 #, c-format
 msgid "Regex matches are also supported using the %s engine. Enclose your pattern in // if this is desired."
 msgstr "Υποστηρίζονται επίσης regex με τη μηχανή %s. Βάλτε το pattern σας μέσα σε // αν το θέλετε."
@@ -7293,7 +7272,8 @@ msgstr "Κατοχυρώνει ένα ψευδώνυμο"
 msgid "Register a nickname for someone else"
 msgstr "Κατοχύρωση ψευδωνύμου για κάποιον άλλο"
 
-#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_group.cpp
+#: ../modules/chanserv/cs_info.cpp ../modules/groupserv/groupserv.cpp
+#: ../modules/nickserv/ns_group.cpp
 msgid "Registered"
 msgstr "Κατοχυρώθηκε"
 
@@ -7459,14 +7439,8 @@ msgid "Removes all entries that were added in the last 30 minutes."
 msgstr "Αφαιρεί όλες τις θέσεις που προστέθηκαν τα τελευταία 30 λεπτά."
 
 #: ../modules/greet.cpp
-msgid ""
-"Removes the greet message of "
-"zebra"
-"."
-msgstr ""
-"Αφαιρεί το μήνυμα χαιρετισμού του "
-"zebra"
-"."
+msgid "Removes the greet message of zebra."
+msgstr "Αφαιρεί το μήνυμα χαιρετισμού του zebra."
 
 #: ../modules/nickserv/ns_resetpass.cpp
 msgid "Removes the recovery key of an account, for example if its owner thinks someone else has it. The owner can make a new one with SET RECOVERYKEY."
@@ -7490,18 +7464,8 @@ msgid "Removing %s because %s covers it."
 msgstr "Αφαιρείται το %s επειδή το καλύπτει το %s."
 
 #: ../modules/botserv/bs_bot.cpp
-msgid ""
-"Renames an existing bot called "
-"Elda"
-" to "
-"Chii"
-"."
-msgstr ""
-"Μετονομάζει ένα υπάρχον bot με όνομα "
-"Elda"
-" σε "
-"Chii"
-"."
+msgid "Renames an existing bot called Elda to Chii."
+msgstr "Μετονομάζει ένα υπάρχον bot με όνομα Elda σε Chii."
 
 #: ../modules/botserv/bs_kick.cpp
 msgid "Repeat kicker"
@@ -7730,18 +7694,8 @@ msgid "Sends a memo to the channel when someone uses the chanserv/xop command on
 msgstr "Στέλνει ένα memo στο κανάλι όταν κάποιος χρησιμοποιεί την εντολή chanserv/xop στο #warden."
 
 #: ../modules/botserv/bs_control.cpp
-msgid ""
-"Sends a message to "
-"#chat"
-" saying "
-"hello all"
-"."
-msgstr ""
-"Στέλνει μήνυμα στο "
-"#chat"
-" λέγοντας "
-"hello all"
-"."
+msgid "Sends a message to #chat saying hello all."
+msgstr "Στέλνει μήνυμα στο #chat λέγοντας hello all."
 
 #: ../modules/chanserv/cs_log.cpp
 msgid "Sends a message to channel operators and above when someone uses the chanserv/access command on #warden."
@@ -7764,18 +7718,8 @@ msgstr ""
 "Στέλνει σε όλο το services staff ένα memo που περιέχει #memo-text#."
 
 #: ../modules/botserv/bs_control.cpp
-msgid ""
-"Sends an action message to "
-"#chat"
-" saying "
-"is eating pizza"
-"."
-msgstr ""
-"Στέλνει ένα μήνυμα ενέργειας (action) στο "
-"#chat"
-" λέγοντας "
-"is eating pizza"
-"."
+msgid "Sends an action message to #chat saying is eating pizza."
+msgstr "Στέλνει ένα μήνυμα ενέργειας (action) στο #chat λέγοντας is eating pizza."
 
 #: ../modules/memoserv/ms_send.cpp
 msgid "Sends the named nick or channel a memo containing memo-text. When sending to a nickname, the recipient will receive a notice that they have a new memo. The target nickname/channel must be registered."
@@ -8014,6 +7958,10 @@ msgstr "Ορίζει μια επιλογή για κάθε κατοχυρωμέ�
 msgid "Set an option for every registered channel"
 msgstr "Ορίζει μια επιλογή για κάθε κατοχυρωμένο κανάλι"
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+msgid "Set channel modes during a join flood"
+msgstr "Ορισμός modes καναλιού κατά τη διάρκεια flood εισόδων"
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "Set channel options and information"
 msgstr "Ρυθμίζει τις επιλογές και τις πληροφορίες του καναλιού"
@@ -8096,18 +8044,8 @@ msgid "Set your nickname password"
 msgstr "Αλλάζει τον κωδικό του ψευδωνύμου σας"
 
 #: ../modules/botserv/bs_set.cpp
-msgid ""
-"Sets bot bans on "
-"#wibble"
-" to expire after "
-"15 minutes"
-"."
-msgstr ""
-"Ορίζει τα bans του bot στο "
-"#wibble"
-" να λήγουν μετά από "
-"15 λεπτά"
-"."
+msgid "Sets bot bans on #wibble to expire after 15 minutes."
+msgstr "Ορίζει τα bans του bot στο #wibble να λήγουν μετά από 15 λεπτά."
 
 #: ../modules/botserv/bs_kick.cpp
 #, c-format
@@ -8387,24 +8325,12 @@ msgid "Shows information about a group. Its founders and member count are only s
 msgstr "Εμφανίζει πληροφορίες για μια ομάδα. Οι ιδρυτές της και ο αριθμός μελών εμφανίζονται μόνο στα μέλη, εκτός αν η ομάδα είναι δημόσια (SET PUBLIC)."
 
 #: ../modules/botserv/bs_info.cpp
-msgid ""
-"Shows information about the "
-"ChanServ"
-" bot."
-msgstr ""
-"Εμφανίζει πληροφορίες για το bot "
-"ChanServ"
-"."
+msgid "Shows information about the ChanServ bot."
+msgstr "Εμφανίζει πληροφορίες για το bot ChanServ."
 
 #: ../modules/botserv/bs_info.cpp
-msgid ""
-"Shows information about the bot assigned to "
-"#example"
-" and its kickers and options."
-msgstr ""
-"Εμφανίζει πληροφορίες για το bot που έχει ανατεθεί στο "
-"#example"
-", τους kickers και τις επιλογές του."
+msgid "Shows information about the bot assigned to #example and its kickers and options."
+msgstr "Εμφανίζει πληροφορίες για το bot που έχει ανατεθεί στο #example, τους kickers και τις επιλογές του."
 
 #: ../modules/operserv/os_config.cpp
 msgid "Shows the current server configuration."
@@ -8516,7 +8442,8 @@ msgstr "Κανει suspend ένα nick."
 msgid "Suspend reason"
 msgstr "Λόγος αναστολής"
 
-#: ../modules/chanserv/cs_suspend.cpp ../modules/nickserv/ns_list.cpp ../modules/nickserv/ns_suspend.cpp
+#: ../modules/chanserv/cs_suspend.cpp ../modules/nickserv/ns_list.cpp
+#: ../modules/nickserv/ns_suspend.cpp
 msgid "Suspended"
 msgstr "Σε αναστολή"
 
@@ -8898,7 +8825,8 @@ msgstr "Η ποσότητα πρέπει να είναι από %u έως %u."
 msgid "The automatic user limit of %s has been removed."
 msgstr "Το αυτόματο όριο χρηστών του %s αφαιρέθηκε."
 
-#: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_fantasy_top.cpp
+#: ../modules/chanserv/cs_fantasy_stats.cpp
+#: ../modules/chanserv/cs_fantasy_top.cpp
 msgid "The channel statistics are not available right now."
 msgstr "Τα στατιστικά του καναλιού δεν είναι διαθέσιμα αυτή τη στιγμή."
 
@@ -9451,6 +9379,11 @@ msgstr "Αυτή η εντολή αποφορτώνει το module με όνο�
 msgid "This command will resend a registration confirmation email."
 msgstr "Αυτή η εντολή στέλνει ξανά το email επιβεβαίωσης κατοχύρωσης."
 
+#: ../modules/chanserv/cs_set_joinflood.cpp
+#, c-format
+msgid "This network has no channel mode %c."
+msgstr "Αυτό το δίκτυο δεν έχει mode καναλιού %c."
+
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
 msgid "This nickname has been forbidden: %s"
@@ -9474,6 +9407,18 @@ msgstr "Αυτό το nick είναι σε αναστολή."
 #, c-format
 msgid "This nickname is registered and has protection enabled. If it belongs to you, type %spassword to identify to your account."
 msgstr "Αυτό το nick είναι κατοχυρωμένο και έχει ενεργή προστασία. Αν σας ανήκει, γράψτε %sκωδικός για να αναγνωριστείτε στον λογαριασμό σας."
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. FLAGS entries keep their own rules."
+msgstr "Αυτό επηρεάζει μόνο εγγραφές ACCESS. Οι εγγραφές FLAGS κρατούν τους δικούς τους κανόνες."
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. xOP and FLAGS entries keep their own rules."
+msgstr "Αυτό επηρεάζει μόνο εγγραφές ACCESS. Οι εγγραφές xOP και FLAGS κρατούν τους δικούς τους κανόνες."
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. xOP entries keep their own rules."
+msgstr "Αυτό επηρεάζει μόνο εγγραφές ACCESS. Οι εγγραφές xOP κρατούν τους δικούς τους κανόνες."
 
 #: ../modules/botserv/bs_assign.cpp
 msgid "This option makes a channel unassignable. If a bot is already assigned to the channel, it is unassigned automatically when you enable it."
@@ -9685,7 +9630,8 @@ msgstr "Γράψτε %sεντολή για βοήθεια σχετικά μ
 msgid "Type %soption for more information on a particular option."
 msgstr "Γράψτε %sεπιλογή για περισσότερες πληροφορίες σχετικά με μια συγκεκριμένη επιλογή."
 
-#: ../modules/memoserv/ms_set.cpp ../modules/nickserv/ns_confirm.cpp ../modules/nickserv/ns_set.cpp
+#: ../modules/memoserv/ms_set.cpp ../modules/nickserv/ns_confirm.cpp
+#: ../modules/nickserv/ns_set.cpp
 #, c-format
 msgid "Type %soption for more information on a specific option."
 msgstr "Γράψτε %sεπιλογή για περισσότερες πληροφορίες σχετικά με μια συγκεκριμένη επιλογή."
@@ -9715,7 +9661,8 @@ msgstr "Γράψτε %sπεριοχή για να εμφανίσετε τι
 msgid "URL"
 msgstr "URL"
 
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_sxline.cpp
 #, c-format
 msgid "Unable to find regex engine %s."
 msgstr "Δεν βρέθηκε η μηχανή regex %s."
@@ -9929,7 +9876,8 @@ msgstr "Χρήστες σε κανένα κανάλι:"
 msgid "Users list:"
 msgstr "Λίστα χρηστών:"
 
-#: ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_info.cpp
+#: ../modules/hostserv/hs_list.cpp ../modules/hostserv/hs_offer.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/nickserv/ns_info.cpp
 msgid "VHost"
 msgstr "VHost"
 
@@ -10212,7 +10160,8 @@ msgstr "Είσαι ήδη μέλος του %s."
 msgid "You are already a member of the account of %s."
 msgstr "Είστε ήδη μέλος του λογαριασμού του %s."
 
-#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp ../modules/operserv/os_login.cpp
+#: ../modules/nickserv/ns_identify.cpp ../modules/nickserv/ns_recover.cpp
+#: ../modules/operserv/os_login.cpp
 msgid "You are already identified."
 msgstr "Είστε ήδη identified."
 
@@ -10348,7 +10297,8 @@ msgstr "Μπορείτε να χρησιμοποιήσετε μόνο σημαί
 msgid "You can't %s yourself!"
 msgstr "Δεν μπορείτε να κάνετε %s στον εαυτό σας!"
 
-#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp ../modules/chanserv/cs_xop.cpp
+#: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_flags.cpp
+#: ../modules/chanserv/cs_xop.cpp
 msgid "You can't add a channel to its own access list."
 msgstr "Δεν μπορείτε να προσθέσετε ένα κανάλι στη δική του λίστα πρόσβασης."
 
@@ -11054,7 +11004,8 @@ msgstr "[ψευδώνυμο]"
 msgid "[nickname [REVALIDATE]]"
 msgstr "[ψευδώνυμο [REVALIDATE]]"
 
-#: ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_group.cpp ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_register.cpp
+#: ../modules/nickserv/ns_alist.cpp ../modules/nickserv/ns_group.cpp
+#: ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_register.cpp
 msgid "[nickname]"
 msgstr "[ψευδώνυμο]"
 
@@ -11210,7 +11161,8 @@ msgstr "{number}: {mask}"
 msgid "{number}: {mask} ({description})"
 msgstr "{number}: {mask} ({description})"
 
-#: ../modules/chanserv/cs_akick.cpp ../modules/operserv/os_akill.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/chanserv/cs_akick.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "{number}: {mask} ({reason})"
 msgstr "{number}: {mask} ({reason})"
 
