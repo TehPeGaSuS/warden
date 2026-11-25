@@ -119,6 +119,15 @@ public:
 			return;
 		}
 
+		// Its own privilege, or SET with a chanserv.conf from before it existed.
+		const auto *priv = PrivilegeManager::FindPrivilege("AUTOLIMIT") ? "AUTOLIMIT" : "SET";
+		const auto access = source.AccessFor(ci).HasPriv(priv);
+		if (!access && !source.HasPriv("chanserv/administration"))
+		{
+			source.Reply(ACCESS_DENIED);
+			return;
+		}
+
 		const auto option = params[1].upper();
 		if (option == "SHOW")
 		{
@@ -133,15 +142,6 @@ public:
 		if (Warden::ReadOnly)
 		{
 			source.Reply(READ_ONLY_MODE);
-			return;
-		}
-
-		// Its own privilege, or SET with a chanserv.conf from before it existed.
-		const auto *priv = PrivilegeManager::FindPrivilege("AUTOLIMIT") ? "AUTOLIMIT" : "SET";
-		const auto access = source.AccessFor(ci).HasPriv(priv);
-		if (!access && !source.HasPriv("chanserv/administration"))
-		{
-			source.Reply(ACCESS_DENIED);
 			return;
 		}
 

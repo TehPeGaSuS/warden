@@ -65,6 +65,8 @@ Not released yet.
   certificate and hostname checking against the system's CAs.
 
 ### Fixes:
+* `ChanServ AUTOLIMIT SHOW` was open to anyone; it now needs the same
+  `AUTOLIMIT` privilege as SET and DEL.
 * rpc_data reported each nickname's `registered` time as the account's, so
   nicks grouped later showed the wrong date.
 * `ChanServ TOP`/`TOP10`/`GTOP` and `STATS`/`GSTATS` said nothing when the
