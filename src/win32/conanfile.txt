@@ -1,9 +1,10 @@
-# Last updated: 2026-05-16
+# Last updated: 2026-11-25
 
 [requires]
 argon2/20190702
 libgettext/0.26
 libmysqlclient/8.1.0
+libpq/17.11
 openssl/3.6.2
 pcre2/10.44
 sqlite3/3.53.1

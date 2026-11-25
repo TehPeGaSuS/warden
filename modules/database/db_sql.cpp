@@ -71,6 +71,8 @@ class DBSQL final
 	// Whether the default prefix is used, so Anope's tables may be renamed.
 	bool migrate = false;
 	bool import;
+	// The engine to copy everything from when our own database is empty.
+	Warden::string convert_from;
 
 	std::set<Serializable *> updated_items;
 	bool shutting_down = false;
@@ -182,6 +184,7 @@ public:
 		if (this->migrate)
 			this->prefix = "warden21_";
 		this->import = block.Get<bool>("import");
+		this->convert_from = block.Get<const Warden::string>("convert_from");
 	}
 
 	void OnPostInit() override
@@ -214,18 +217,108 @@ public:
 		if (this->migrate)
 			SQL::MigrateAnopeTables(*this->sql, this->name);
 
+		ServiceReference<Provider> source_ref("SQL::Provider", this->convert_from);
+		Provider *source = nullptr;
+		if (!this->convert_from.empty())
+		{
+			if (this->sql->RunQuery(this->sql->GetTables(this->prefix)).Rows() > 0)
+			{
+				Log(this) << this->sql.GetServiceName() << " already has Warden tables, so convert_from is ignored. You can remove it from the configuration.";
+			}
+			else if (!source_ref)
+			{
+				Log(LOG_TERMINAL) << "db_sql: Unable to convert, is SQL (" << this->convert_from << ") configured correctly?";
+				Warden::Quitting = true;
+				Warden::QuitReason = "Unable to convert the database";
+				Warden::ReturnValue = -1;
+				return EVENT_STOP;
+			}
+			else
+			{
+				source = *source_ref;
+				if (this->migrate)
+					SQL::MigrateAnopeTables(source, this->name);
+				Log(LOG_TERMINAL) << "db_sql: Copying the database from " << this->convert_from << " to " << this->sql.GetServiceName() << "...";
+			}
+		}
+
 		this->loading_databases = true;
 
+		size_t copied = 0;
 		for (const auto &type_order : Serialize::Type::GetTypeOrder())
 		{
 			Serialize::Type *sb = Serialize::Type::Find(type_order);
-			this->OnSerializeTypeCreate(sb);
+			if (source)
+				copied += this->LoadType(source, sb, true);
+			else
+				this->OnSerializeTypeCreate(sb);
 		}
 
 		this->loading_databases = false;
 		this->loaded = true;
 
+		if (source)
+			Log(LOG_TERMINAL) << "db_sql: Copied " << copied << " objects. Remove convert_from from the configuration.";
+
 		return EVENT_STOP;
+	}
+
+	/** Reads every row of a type from a database and, when copying, writes them to ours.
+	 * @return the number of objects read
+	 */
+	size_t LoadType(Provider *from, Serialize::Type *sb, bool copy)
+	{
+		const auto table = GetTableName(sb);
+		Query query("SELECT * FROM `" + table + "`");
+		Result res = from->RunQuery(query);
+		if (copy && res.Rows() > 0)
+			this->sql->RunQuery(Query("BEGIN"));
+
+		size_t count = 0;
+		for (int j = 0; j < res.Rows(); ++j)
+		{
+			Data data;
+
+			for (const auto &[key, value] : res.Row(j))
+				data.StoreInternal(key, value);
+
+			Serializable *obj = sb->Unserialize(NULL, data);
+			if (obj)
+			{
+				++count;
+				auto oid = Warden::TryConvert<Serializable::Id>(res.Get(j, "id"));
+				if (oid.has_value())
+					obj->object_id = oid.value();
+				else
+					Log(this) << "Unable to convert id for object #" << j << " of type " << sb->GetName();
+
+				/* The Unserialize operation is destructive so rebuild the data for UpdateCache.
+				 * Also the old data may contain columns that we don't use, so we reserialize the
+				 * object to know for sure our cache is consistent
+				 */
+
+				Data data2;
+				sb->Serialize(obj, data2);
+				obj->UpdateCache(data2); /* We know this is the most up to date copy */
+
+				if (copy)
+				{
+					Data data3;
+					sb->Serialize(obj, data3);
+					for (const auto &create : this->sql->CreateTable(table, data3))
+						this->sql->RunQuery(create);
+					Result r = this->sql->RunQuery(this->sql->BuildInsert(table, obj->object_id, data3));
+					if (!r.GetError().empty())
+						Log(LOG_TERMINAL) << "db_sql: Unable to copy " << sb->GetName() << " #" << obj->object_id << ": " << r.GetError();
+					else if (r.GetID() > 0)
+						obj->object_id = r.GetID();
+				}
+			}
+		}
+
+		if (copy && res.Rows() > 0)
+			this->sql->RunQuery(Query("COMMIT"));
+		return count;
 	}
 
 	void OnSerializableConstruct(Serializable *obj) override
@@ -263,35 +356,7 @@ public:
 		if (!this->loading_databases && !this->loaded)
 			return;
 
-		Query query("SELECT * FROM `" + GetTableName(sb) + "`");
-		Result res = this->sql->RunQuery(query);
-
-		for (int j = 0; j < res.Rows(); ++j)
-		{
-			Data data;
-
-			for (const auto &[key, value] : res.Row(j))
-				data.StoreInternal(key, value);
-
-			Serializable *obj = sb->Unserialize(NULL, data);
-			if (obj)
-			{
-				auto oid = Warden::TryConvert<Serializable::Id>(res.Get(j, "id"));
-				if (oid.has_value())
-					obj->object_id = oid.value();
-				else
-					Log(this) << "Unable to convert id for object #" << j << " of type " << sb->GetName();
-
-				/* The Unserialize operation is destructive so rebuild the data for UpdateCache.
-				 * Also the old data may contain columns that we don't use, so we reserialize the
-				 * object to know for sure our cache is consistent
-				 */
-
-				Data data2;
-				sb->Serialize(obj, data2);
-				obj->UpdateCache(data2); /* We know this is the most up to date copy */
-			}
-		}
+		this->LoadType(*this->sql, sb, false);
 	}
 };
 

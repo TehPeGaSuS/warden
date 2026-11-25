@@ -22,6 +22,7 @@ if(WIN32 AND DEFINED CMAKE_TOOLCHAIN_FILE)
 
   enable_extra("enc_argon2" "argon2")
   enable_extra("mysql" "libmysqlclient")
+  enable_extra("postgresql" "PostgreSQL")
   enable_extra("regex_pcre2" "PCRE2")
   enable_extra("regex_posix" "PCRE2")
   enable_extra("sqlite" "SQLite3")

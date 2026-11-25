@@ -21,7 +21,10 @@ Not released yet.
 * [PostgreSQL](https://github.com/TehPeGaSuS/warden/wiki/PostgreSQL) support: the
   new `postgresql` extra module (libpq) works with `db_sql`, `db_sql_live`,
   chanstats, `sql_authentication`, `sql_oper` and `sql_log`. MySQL stays
-  supported. The wiki explains how to move an existing MySQL database over.
+  supported. The Windows installer includes it.
+* `db_sql` and chanstats `convert_from`: copy a whole database from one SQL
+  engine to another (e.g. MySQL to PostgreSQL) in one start, keeping all ids.
+  It only runs when the new database is empty.
 * Chanstats works with MySQL, PostgreSQL and SQLite.
 * `db_sql_live` on PostgreSQL uses LISTEN/NOTIFY: each table gets a trigger
   that reports inserts, updates and deletes, Warden reads only the rows that

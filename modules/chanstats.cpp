@@ -212,6 +212,8 @@ class MChanstats final
 	SQLInterface sqlinterface;
 	SQL::Query query;
 	Warden::string SmileysHappy, SmileysSad, SmileysOther, prefix;
+	// The engine to copy the statistics from when our table is new.
+	Warden::string convert_from;
 
 	/* The counters that are added up for every row. */
 	static const std::vector<Warden::string> &Counters()
@@ -435,7 +437,8 @@ class MChanstats final
 				counters += ", `" + column + "` BIGINT NOT NULL DEFAULT 0";
 		}
 
-		if (!tables.count(table))
+		const bool fresh = !tables.count(table);
+		if (fresh)
 		{
 			if (driver == "mysql")
 			{
@@ -482,7 +485,84 @@ class MChanstats final
 		r = this->sql->RunQuery("SELECT `type`, `period` FROM `" + resets + "`");
 		for (int i = 0; i < r.Rows(); ++i)
 			this->periods[r.Get(i, "type")] = r.Get(i, "period");
+
+		if (!this->convert_from.empty())
+		{
+			if (fresh)
+				this->Convert();
+			else
+				Log(this) << "The statistics table already exists, so convert_from is ignored. You can remove it from the configuration.";
+		}
+
 		this->CheckResets(true);
+	}
+
+	/* Copies the statistics from the convert_from engine into our new
+	 * table. The inserts are queued behind the CREATE TABLE.
+	 */
+	void Convert()
+	{
+		ServiceReference<SQL::Provider> source("SQL::Provider", this->convert_from);
+		if (!source)
+		{
+			Log(this) << "Unable to copy the statistics, is SQL (" << this->convert_from << ") configured correctly?";
+			return;
+		}
+
+		const auto table = prefix + "chanstats";
+		Warden::string columns = "`chan`, `nick`, `type`";
+		for (const auto &column : Counters())
+			columns += ", `" + column + "`";
+
+		const int chunk = 500;
+		size_t copied = 0;
+		for (int offset = 0; ; offset += chunk)
+		{
+			SQL::Result r = source->RunQuery("SELECT " + columns + " FROM `" + table + "` ORDER BY `id` LIMIT " + Warden::ToString(chunk) + " OFFSET " + Warden::ToString(offset));
+			if (!r.GetError().empty())
+			{
+				Log(this) << "Unable to read the statistics from " << this->convert_from << ": " << r.GetError();
+				break;
+			}
+
+			for (int i = 0; i < r.Rows(); i += 100)
+			{
+				SQL::Query ins("INSERT INTO `" + table + "` (" + columns + ") VALUES ");
+				for (int j = i; j < r.Rows() && j < i + 100; ++j)
+				{
+					const auto row = "r" + Warden::ToString(j - i) + "_";
+					ins.query += (j == i ? "(" : ", (");
+					ins.query += "@" + row + "chan@, @" + row + "nick@, @" + row + "type@";
+					ins.SetValue(row + "chan", r.Get(j, "chan"));
+					ins.SetValue(row + "nick", r.Get(j, "nick"));
+					ins.SetValue(row + "type", r.Get(j, "type"));
+					for (const auto &column : Counters())
+					{
+						ins.query += ", @" + row + column + "@";
+						ins.SetValue(row + column, Warden::TryConvert<uint64_t>(r.Get(j, column)).value_or(0));
+					}
+					ins.query += ")";
+					++copied;
+				}
+				this->RunQuery(ins);
+			}
+
+			if (r.Rows() < chunk)
+				break;
+		}
+
+		// Keep the reset periods too, so nothing is reset twice or skipped.
+		SQL::Result r = source->RunQuery("SELECT `type`, `period` FROM `" + prefix + "chanstats_resets`");
+		for (int i = 0; i < r.Rows(); ++i)
+		{
+			SQL::Query mark("INSERT INTO `" + prefix + "chanstats_resets` (`type`, `period`) VALUES (@type@, @period@)");
+			mark.SetValue("type", r.Get(i, "type"));
+			mark.SetValue("period", r.Get(i, "period"));
+			this->RunQuery(mark);
+			this->periods[r.Get(i, "type")] = r.Get(i, "period");
+		}
+
+		Log(this) << "Copied " << copied << " statistics rows from " << this->convert_from << ". You can remove convert_from from the configuration.";
 	}
 
 public:
@@ -510,6 +590,7 @@ public:
 		SmileysHappy = block.Get<const Warden::string>("SmileysHappy");
 		SmileysSad = block.Get<const Warden::string>("SmileysSad");
 		SmileysOther = block.Get<const Warden::string>("SmileysOther");
+		convert_from = block.Get<const Warden::string>("convert_from");
 		this->sql.SetServiceName(block.Get<const Warden::string>("engine"));
 		if (sql)
 		{
