@@ -28,6 +28,20 @@ namespace Mail
 	extern CoreExport bool Send(NickCore *to, const Warden::string &subject, const Warden::string &message, const HeaderMap& hm = {});
 	extern CoreExport bool Validate(const Warden::string &email);
 
+	/** Whether mail:smtpserver is set, so mail goes to an SMTP server instead of sendmail. */
+	extern CoreExport bool UseSMTP();
+
+	/** Sends a mail through mail:smtpserver, retrying temporary failures. */
+	extern CoreExport void SendSMTP(const Warden::string &send_from, const Warden::string &mail_to, const Warden::string &addr, const Warden::string &subject, const Warden::string &message, HeaderMap headers);
+
+	/** Checks the SMTP settings against the loaded modules.
+	 * @return an error message, or an empty string if they are fine
+	 */
+	extern CoreExport Warden::string CheckSMTPConfig(const Configuration::Conf &conf);
+
+	/** Logs warnings about SMTP settings that work but are unsafe. */
+	extern CoreExport void WarnSMTPConfig(const Configuration::Conf &conf);
+
 	/* A email message being sent */
 	class Message final
 		: public Thread

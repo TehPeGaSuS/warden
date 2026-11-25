@@ -44,6 +44,7 @@ public:
 	 * @param s The socket
 	 */
 	void Init(Socket *s) override;
+	void Init(Socket *s, const Warden::string &host, bool verify) override;
 };
 
 class SSLSocketIO final
@@ -52,6 +53,9 @@ class SSLSocketIO final
 public:
 	/* The SSL socket for this socket */
 	SSL *sslsock;
+	/* For outgoing connections other than the uplink: the server name to send and check. */
+	Warden::string host;
+	bool verify = false;
 
 	/** Constructor
 	 */
@@ -125,6 +129,9 @@ public:
 
 		if (!client_ctx || !server_ctx)
 			throw ModuleException("Error initializing SSL CTX");
+
+		// Only used by connections that ask for verification (e.g. SMTP).
+		SSL_CTX_set_default_verify_paths(client_ctx);
 
 		long opts = SSL_OP_NO_SSLv2 | SSL_OP_NO_SSLv3 | SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION | SSL_OP_CIPHER_SERVER_PREFERENCE;
 		SSL_CTX_set_options(client_ctx, opts);
@@ -301,6 +308,14 @@ void MySSLService::Init(Socket *s)
 	s->io = new SSLSocketIO();
 }
 
+void MySSLService::Init(Socket *s, const Warden::string &host, bool verify)
+{
+	this->Init(s);
+	auto *io = warden_dynamic_static_cast<SSLSocketIO *>(s->io);
+	io->host = host;
+	io->verify = verify;
+}
+
 SSLSocketIO::SSLSocketIO()
 {
 	this->sslsock = NULL;
@@ -469,6 +484,16 @@ SocketFlag SSLSocketIO::FinishConnect(ConnectionSocket *s)
 
 		if (!SSL_set_fd(io->sslsock, s->GetFD()))
 			throw SocketException("Unable to set SSL fd");
+
+		if (!io->host.empty())
+		{
+			SSL_set_tlsext_host_name(io->sslsock, io->host.c_str());
+			if (io->verify)
+			{
+				SSL_set_verify(io->sslsock, SSL_VERIFY_PEER, nullptr);
+				SSL_set1_host(io->sslsock, io->host.c_str());
+			}
+		}
 	}
 
 	int ret = SSL_connect(io->sslsock);
@@ -483,7 +508,11 @@ SocketFlag SSLSocketIO::FinishConnect(ConnectionSocket *s)
 		}
 		else
 		{
-			s->OnError(ERR_error_string(ERR_get_error(), NULL));
+			const auto verr = io->verify ? SSL_get_verify_result(io->sslsock) : X509_V_OK;
+			if (verr != X509_V_OK)
+				s->OnError(Warden::string("certificate check failed: ") + X509_verify_cert_error_string(verr));
+			else
+				s->OnError(ERR_error_string(ERR_get_error(), NULL));
 			s->flags[SF_CONNECTING] = false;
 			s->flags[SF_DEAD] = true;
 			return SF_DEAD;

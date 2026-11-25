@@ -15,6 +15,7 @@
 
 #include "services.h"
 #include "config.h"
+#include "mail.h"
 #include "users.h"
 #include "protocol.h"
 #include "bots.h"
@@ -556,6 +557,17 @@ bool Warden::Init(int ac, char **av)
 			return false;
 		}
 	}
+
+	// The mail block is read before the modules load, so check it now.
+	const auto smtperr = Mail::CheckSMTPConfig(*Config);
+	if (!smtperr.empty())
+	{
+		Log(LOG_TERMINAL) << smtperr;
+		Log(LOG_TERMINAL) << "You must fix this issue before Warden will start.";
+		Warden::ReturnValue = EXIT_FAILURE;
+		return false;
+	}
+	Mail::WarnSMTPConfig(*Config);
 
 #ifndef _WIN32
 	/* If we're root, issue a warning now */

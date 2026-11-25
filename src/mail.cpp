@@ -79,6 +79,19 @@ void Mail::Message::Run()
 	SetExitState();
 }
 
+/* Sends through mail:smtpserver when it is set, sendmail otherwise. */
+static void Dispatch(const Warden::string &sf, const Warden::string &mailto, const Warden::string &addr, const Warden::string &subject, const Warden::string &message, const Mail::HeaderMap &hm)
+{
+	if (Mail::UseSMTP())
+	{
+		Mail::SendSMTP(sf, mailto, addr, subject, message, hm);
+		return;
+	}
+
+	auto *t = new Mail::Message(sf, mailto, addr, subject, message, hm);
+	t->Start();
+}
+
 Mail::Template::Template(const Warden::string &c)
 	: config(c)
 {
@@ -301,8 +314,7 @@ bool Mail::Send(User *u, NickCore *nc, BotInfo *service, const Warden::string &s
 			return false;
 
 		nc->lastmail = Warden::CurTime;
-		auto *t = new Mail::Message(b.Get<const Warden::string>("sendfrom"), nc->display, nc->email, subject, message, hm);
-		t->Start();
+		Dispatch(b.Get<const Warden::string>("sendfrom"), nc->display, nc->email, subject, message, hm);
 		return true;
 	}
 	else
@@ -319,8 +331,7 @@ bool Mail::Send(User *u, NickCore *nc, BotInfo *service, const Warden::string &s
 		else
 		{
 			u->lastmail = nc->lastmail = Warden::CurTime;
-			auto *t = new Mail::Message(b.Get<const Warden::string>("sendfrom"), nc->display, nc->email, subject, message, hm);
-			t->Start();
+			Dispatch(b.Get<const Warden::string>("sendfrom"), nc->display, nc->email, subject, message, hm);
 			return true;
 		}
 
@@ -335,8 +346,7 @@ bool Mail::Send(NickCore *nc, const Warden::string &subject, const Warden::strin
 		return false;
 
 	nc->lastmail = Warden::CurTime;
-	auto *t = new Mail::Message(b.Get<const Warden::string>("sendfrom"), nc->display, nc->email, subject, message, hm);
-	t->Start();
+	Dispatch(b.Get<const Warden::string>("sendfrom"), nc->display, nc->email, subject, message, hm);
 
 	return true;
 }

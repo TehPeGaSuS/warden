@@ -22,6 +22,10 @@ Not released yet.
   new `postgresql` extra module (libpq) works with `db_sql`, `db_sql_live`,
   chanstats, `sql_authentication`, `sql_oper` and `sql_log`. MySQL stays
   supported. The Windows installer includes it.
+* Mail can go straight to an SMTP server (`mail:smtpserver`) instead of
+  sendmail: STARTTLS or implicit TLS with certificate checking, AUTH PLAIN or
+  LOGIN, the server's reply logged for each mail, and retries after 1, 5 and
+  15 minutes on temporary errors (Discussion #5).
 * `db_sql` and chanstats `convert_from`: copy a whole database from one SQL
   engine to another (e.g. MySQL to PostgreSQL) in one start, keeping all ids.
   It only runs when the new database is empty.
@@ -50,6 +54,9 @@ Not released yet.
   into double quotes.
 * `SQL::Provider::Listen()` / `Unlisten()` and `SQL::Listener` deliver
   notifications from providers that support them (PostgreSQL).
+* `SSLService::Init(socket, host, verify)` starts TLS on an outgoing socket
+  (also one that is already connected, for STARTTLS) with SNI and, if asked,
+  certificate and hostname checking against the system's CAs.
 
 ### Fixes:
 * `ChanServ TOP`/`TOP10`/`GTOP` and `STATS`/`GSTATS` said nothing when the

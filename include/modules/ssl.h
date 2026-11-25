@@ -22,4 +22,11 @@ public:
 	SSLService(Module *o, const Warden::string &n) : Service(o, "SSLService", n) { }
 
 	virtual void Init(Socket *s) = 0;
+
+	/** Makes an outgoing socket use TLS and check the server's certificate.
+	 * @param s The socket, which may already be connected (for STARTTLS)
+	 * @param host The server's hostname, sent with SNI and checked against the certificate
+	 * @param verify Whether the certificate must be valid for host and signed by a trusted CA
+	 */
+	virtual void Init(Socket *s, const Warden::string &host, bool verify) = 0;
 };

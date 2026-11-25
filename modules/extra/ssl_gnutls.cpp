@@ -43,6 +43,7 @@ public:
 	 * @param s The socket
 	 */
 	void Init(Socket *s) override;
+	void Init(Socket *s, const Warden::string &host, bool verify) override;
 };
 
 class SSLSocketIO final
@@ -51,6 +52,9 @@ class SSLSocketIO final
 public:
 	gnutls_session_t sess = nullptr;
 	GnuTLS::X509CertCredentials *mycreds;
+	/* For outgoing connections other than the uplink: the server name to send and check. */
+	Warden::string host;
+	bool verify = false;
 
 	/** Constructor
 	 */
@@ -267,6 +271,8 @@ namespace GnuTLS
 			}
 
 			gnutls_certificate_set_retrieve_function(cred, cert_callback);
+			// Only used by connections that ask for verification (e.g. SMTP).
+			gnutls_certificate_set_x509_system_trust(cred);
 		}
 
 		~X509CertCredentials()
@@ -450,6 +456,14 @@ void MySSLService::Init(Socket *s)
 		throw CoreException("Socket initializing SSL twice");
 
 	s->io = new SSLSocketIO();
+}
+
+void MySSLService::Init(Socket *s, const Warden::string &host, bool verify)
+{
+	this->Init(s);
+	auto *io = warden_dynamic_static_cast<SSLSocketIO *>(s->io);
+	io->host = host;
+	io->verify = verify;
 }
 
 ssize_t SSLSocketIO::Recv(Socket *s, char *buf, size_t sz)
@@ -637,6 +651,13 @@ SocketFlag SSLSocketIO::FinishConnect(ConnectionSocket *s)
 			throw SocketException("Unable to initialize SSL socket");
 		me->cred->SetupSession(io->sess);
 		gnutls_transport_set_ptr(io->sess, reinterpret_cast<gnutls_transport_ptr_t>(s->GetFD()));
+
+		if (!io->host.empty())
+		{
+			gnutls_server_name_set(io->sess, GNUTLS_NAME_DNS, io->host.c_str(), io->host.length());
+			if (io->verify)
+				gnutls_session_set_verify_cert(io->sess, io->host.c_str(), 0);
+		}
 	}
 
 	int ret = gnutls_handshake(io->sess);
@@ -661,7 +682,18 @@ SocketFlag SSLSocketIO::FinishConnect(ConnectionSocket *s)
 		}
 		else
 		{
-			s->OnError(Warden::string(gnutls_strerror(ret)));
+			Warden::string error = gnutls_strerror(ret);
+			if (ret == GNUTLS_E_CERTIFICATE_VERIFICATION_ERROR)
+			{
+				gnutls_datum_t out;
+				const auto status = gnutls_session_get_verify_cert_status(io->sess);
+				if (gnutls_certificate_verification_status_print(status, GNUTLS_CRT_X509, &out, 0) == GNUTLS_E_SUCCESS)
+				{
+					error = "certificate check failed: " + Warden::string(reinterpret_cast<const char *>(out.data), out.size).trim();
+					gnutls_free(out.data);
+				}
+			}
+			s->OnError(error);
 			s->flags[SF_CONNECTING] = false;
 			s->flags[SF_DEAD] = true;
 			return SF_DEAD;

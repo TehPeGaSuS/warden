@@ -15,6 +15,7 @@
 
 #include "services.h"
 #include "config.h"
+#include "mail.h"
 #include "bots.h"
 #include "access.h"
 #include "opertype.h"
@@ -574,6 +575,13 @@ void Configuration::Conf::Post(Configuration::Conf *old)
 		if (std::find(old->ModulesAutoLoad.begin(), old->ModulesAutoLoad.end(), mod) == old->ModulesAutoLoad.end())
 			ModuleManager::LoadModule(mod, NULL);
 	}
+
+	// A bad SMTP setup only warns on reload; each mail then fails with the
+	// same message until it is fixed.
+	const auto smtperr = Mail::CheckSMTPConfig(*this);
+	if (!smtperr.empty())
+		Log() << "Warning: " << smtperr << ". Mail will fail until this is fixed.";
+	Mail::WarnSMTPConfig(*this);
 
 	/* Apply opertype changes, as non-conf opers still point to the old oper types */
 	for (unsigned i = Oper::opers.size(); i > 0; --i)
