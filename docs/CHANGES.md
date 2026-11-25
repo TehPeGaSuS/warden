@@ -12,6 +12,8 @@ Not released yet.
   actually changes and respects mode locks. Who may use it is the new
   `AUTOLIMIT` channel privilege (default level 10 / SOP / flag `l`, see
   `LEVELS`); without that privilege block in `chanserv.conf` it uses `SET`.
+  FLAGS entries made before 1.0.1 that already had every other SOP flag get
+  `l` once at startup, so SOPs and QOPs keep matching their template.
 * `docs/unrealircd/warden.conf`: UnrealIRCd command aliases (like its
   `aliases/anope.conf`) including `/GS` (GroupServ) and `/CF` (ChanFix).
 

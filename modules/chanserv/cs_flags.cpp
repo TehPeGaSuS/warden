@@ -780,6 +780,58 @@ public:
 
 	}
 
+	void OnPostInit() override
+	{
+		// A privilege added in a later version (e.g. AUTOLIMIT in 1.0.1) is in
+		// the built-in templates but not in FLAGS entries made before it. An
+		// entry with every other flag of a template is that template, so it
+		// gets the new flag too; others are left for the founder to change.
+		static const std::vector<std::pair<Warden::string, Warden::string>> added = {
+			{ "SOP", "AUTOLIMIT" },
+		};
+
+		unsigned upgraded = 0;
+		for (const auto &[tname, pname] : added)
+		{
+			const auto *tflags = FindTemplate(tname);
+			auto flag = defaultFlags.find(pname);
+			if (!tflags || flag == defaultFlags.end() || tflags->find(flag->second) == Warden::string::npos)
+				continue;
+
+			for (const auto &[_, ci] : *RegisteredChannelList)
+			{
+				for (unsigned i = 0; i < ci->GetAccessCount(); ++i)
+				{
+					auto *access = ci->GetAccess(i);
+					if (access->provider != &accessprovider)
+						continue;
+					auto *fa = warden_dynamic_static_cast<FlagsChanAccess *>(access);
+					if (fa->flags.count(flag->second))
+						continue;
+
+					auto has_rest = true;
+					for (const auto f : *tflags)
+					{
+						if (f != flag->second && !fa->flags.count(f))
+						{
+							has_rest = false;
+							break;
+						}
+					}
+					if (!has_rest)
+						continue;
+
+					fa->flags.insert(flag->second);
+					fa->QueueUpdate();
+					++upgraded;
+				}
+			}
+		}
+
+		if (upgraded)
+			Log(this) << "Gave the flags of newer privileges to " << upgraded << " access entries that already had the rest of their template";
+	}
+
 	void OnReload(Configuration::Conf &conf) override
 	{
 		defaultFlags.clear();
