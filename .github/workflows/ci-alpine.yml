@@ -25,6 +25,7 @@ jobs:
             gettext \
             git \
             gnutls-dev \
+            libpq-dev \
             mariadb-dev \
             openldap-dev \
             openssl-dev \
@@ -34,7 +35,7 @@ jobs:
 
       - name: Enable extras
         run: |-
-          for MODULE in enc_argon2 enc_posix ldap mysql regex_pcre2 regex_posix sqlite ssl_gnutls ssl_openssl
+          for MODULE in enc_argon2 enc_posix ldap mysql postgresql regex_pcre2 regex_posix sqlite ssl_gnutls ssl_openssl
           do
             ln -s $PWD/modules/extra/$MODULE.cpp $PWD/modules
           done

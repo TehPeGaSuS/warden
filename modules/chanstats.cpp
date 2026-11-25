@@ -154,11 +154,11 @@ public:
 	}
 };
 
-class MySQLInterface final
+class SQLInterface final
 	: public SQL::Interface
 {
 public:
-	MySQLInterface(Module *o) : SQL::Interface(o) { }
+	SQLInterface(Module *o) : SQL::Interface(o) { }
 
 	void OnResult(const SQL::Result &r) override
 	{
@@ -173,6 +173,31 @@ public:
 	}
 };
 
+/** Runs a follow-up query once the first one succeeded, then deletes itself. */
+class MergeInterface final
+	: public SQL::Interface
+{
+	ServiceReference<SQL::Provider> sql;
+	SQL::Query next;
+	SQL::Interface *after;
+
+public:
+	MergeInterface(Module *o, const ServiceReference<SQL::Provider> &s, const SQL::Query &n, SQL::Interface *a) : SQL::Interface(o), sql(s), next(n), after(a) { }
+
+	void OnResult(const SQL::Result &r) override
+	{
+		if (sql)
+			sql->Run(after, next);
+		delete this;
+	}
+
+	void OnError(const SQL::Result &r) override
+	{
+		Log(this->owner) << "Unable to move the statistics to the new display name, the old rows were kept: " << r.GetError();
+		delete this;
+	}
+};
+
 class MChanstats final
 	: public Module
 {
@@ -184,10 +209,47 @@ class MChanstats final
 	CommandNSSASetChanstats commandnssasetchanstats;
 
 	ServiceReference<SQL::Provider> sql;
-	MySQLInterface sqlinterface;
+	SQLInterface sqlinterface;
 	SQL::Query query;
 	Warden::string SmileysHappy, SmileysSad, SmileysOther, prefix;
-	std::vector<Warden::string> TableList, ProcedureList, EventList;
+
+	/* The counters that are added up for every row. */
+	static const std::vector<Warden::string> &Counters()
+	{
+		static std::vector<Warden::string> counters;
+		if (counters.empty())
+		{
+			counters = { "letters", "words", "line", "actions", "smileys_happy", "smileys_sad",
+				"smileys_other", "kicks", "kicked", "modes", "topics" };
+			for (int i = 0; i < 24; ++i)
+				counters.push_back("time" + Warden::ToString(i));
+		}
+		return counters;
+	}
+
+	/* The period each reset type is currently in, as last written to the
+	 * resets table. A reset happens when the current period differs.
+	 */
+	std::map<Warden::string, Warden::string> periods;
+
+	class ResetTimer final
+		: public Timer
+	{
+		MChanstats *mod;
+
+	public:
+		ResetTimer(MChanstats *m) : Timer(m, 60), mod(m)
+		{
+			this->SetSecs(60);
+		}
+
+		bool Tick() override
+		{
+			mod->CheckResets(false);
+			return true;
+		}
+	};
+	ResetTimer *resettimer = nullptr;
 
 	void RunQuery(const SQL::Query &q)
 	{
@@ -224,277 +286,204 @@ class MChanstats final
 			return "";
 	}
 
-	void GetTables()
+	Warden::string Driver()
 	{
-		TableList.clear();
-		ProcedureList.clear();
-		EventList.clear();
+		return sql ? sql->GetDriver() : "";
+	}
+
+	/** Builds "INSERT ... that skips rows that already exist". */
+	Warden::string InsertIgnore(const Warden::string &table, const Warden::string &rest)
+	{
+		if (Driver() == "mysql")
+			return "INSERT IGNORE INTO `" + table + "` " + rest;
+		return "INSERT INTO `" + table + "` " + rest + " ON CONFLICT DO NOTHING";
+	}
+
+	/** Adds the given amounts to the channel, the user and the user's global rows. */
+	void Update(const Warden::string &channel, const Warden::string &nick, const std::map<Warden::string, size_t> &values)
+	{
 		if (!sql)
 			return;
 
-		SQL::Result r = this->sql->RunQuery(this->sql->GetTables(prefix));
-		for (int i = 0; i < r.Rows(); ++i)
+		const auto table = prefix + "chanstats";
+
+		// Make sure all the rows exist.
+		SQL::Query ins(InsertIgnore(table, "(`nick`, `chan`, `type`) VALUES "
+			"('', @chan@, 'total'), ('', @chan@, 'monthly'), ('', @chan@, 'weekly'), ('', @chan@, 'daily')"));
+		ins.SetValue("chan", channel);
+		this->RunQuery(ins);
+
+		if (!nick.empty())
 		{
-			const std::map<Warden::string, Warden::string> &map = r.Row(i);
-			for (auto it = map.begin(); it != map.end(); ++it)
-				TableList.push_back(it->second);
+			ins = InsertIgnore(table, "(`nick`, `chan`, `type`) VALUES "
+				"(@nick@, @chan@, 'total'), (@nick@, @chan@, 'monthly'), (@nick@, @chan@, 'weekly'), (@nick@, @chan@, 'daily'), "
+				"(@nick@, '', 'total'), (@nick@, '', 'monthly'), (@nick@, '', 'weekly'), (@nick@, '', 'daily')");
+			ins.SetValue("chan", channel);
+			ins.SetValue("nick", nick);
+			this->RunQuery(ins);
 		}
-		query = "SHOW PROCEDURE STATUS WHERE `Db` = Database();";
-		r = this->sql->RunQuery(query);
-		for (int i = 0; i < r.Rows(); ++i)
+
+		Warden::string set;
+		for (const auto &[column, value] : values)
 		{
-			ProcedureList.push_back(r.Get(i, "Name"));
+			if (!set.empty())
+				set += ", ";
+			set += "`" + column + "` = `" + column + "` + " + Warden::ToString(value);
 		}
-		query = "SHOW EVENTS WHERE `Db` = Database();";
-		r = this->sql->RunQuery(query);
-		for (int i = 0; i < r.Rows(); ++i)
+		if (set.empty())
+			return;
+
+		SQL::Query upd("UPDATE `" + table + "` SET " + set + " WHERE (`nick` = '' OR `nick` = @nick@) AND (`chan` = '' OR `chan` = @chan@)");
+		upd.SetValue("chan", channel);
+		upd.SetValue("nick", nick);
+		this->RunQuery(upd);
+	}
+
+	static Warden::string HourColumn()
+	{
+		const time_t now = Warden::CurTime;
+		return "time" + Warden::ToString(localtime(&now)->tm_hour);
+	}
+
+	/** The period that a reset type is in right now, in local time. Weeks
+	 * start on Sunday, like the MySQL events Anope used to create.
+	 */
+	static Warden::string CurrentPeriod(const Warden::string &type)
+	{
+		time_t now = Warden::CurTime;
+		struct tm tm = *localtime(&now);
+		char buf[32];
+		if (type == "monthly")
+			strftime(buf, sizeof(buf), "%Y-%m", &tm);
+		else if (type == "weekly")
 		{
-			EventList.push_back(r.Get(i, "Name"));
+			now -= tm.tm_wday * 86400;
+			tm = *localtime(&now);
+			strftime(buf, sizeof(buf), "%Y-%m-%d", &tm);
+		}
+		else
+			strftime(buf, sizeof(buf), "%Y-%m-%d", &tm);
+		return buf;
+	}
+
+	/** Zeroes the daily, weekly and monthly rows when their period changed,
+	 * including any period that passed while Warden was not running.
+	 */
+	void CheckResets(bool startup)
+	{
+		if (!sql)
+			return;
+
+		const auto table = prefix + "chanstats";
+		const auto resets = prefix + "chanstats_resets";
+		for (const auto *type : { "daily", "weekly", "monthly" })
+		{
+			const auto period = CurrentPeriod(type);
+			auto it = this->periods.find(type);
+			if (it != this->periods.end() && it->second == period)
+				continue;
+
+			// The first time (a new table, or one that MySQL events used to
+			// reset) only records the period.
+			if (it != this->periods.end())
+			{
+				Warden::string set;
+				for (const auto &column : Counters())
+					set += (set.empty() ? "`" : ", `") + column + "` = 0";
+				SQL::Query reset("UPDATE `" + table + "` SET " + set + " WHERE `type` = @type@");
+				reset.SetValue("type", Warden::string(type));
+				this->RunQuery(reset);
+				Log(LOG_DEBUG) << "chanstats: " << type << " statistics reset (" << it->second << " -> " << period << ")";
+			}
+			else if (!startup)
+				continue;
+
+			SQL::Query mark;
+			if (Driver() == "postgresql")
+				mark = "INSERT INTO `" + resets + "` (`type`, `period`) VALUES (@type@, @period@) ON CONFLICT (`type`) DO UPDATE SET `period` = EXCLUDED.`period`";
+			else
+				mark = "REPLACE INTO `" + resets + "` (`type`, `period`) VALUES (@type@, @period@)";
+			mark.SetValue("type", Warden::string(type));
+			mark.SetValue("period", period);
+			this->RunQuery(mark);
+
+			this->periods[type] = period;
 		}
 	}
-
-	bool HasTable(const Warden::string &table)
-	{
-		for (auto it = TableList.begin(); it != TableList.end(); ++it)
-			if (*it == table)
-				return true;
-		return false;
-	}
-
-	bool HasProcedure(const Warden::string &table)
-	{
-		for (auto it = ProcedureList.begin(); it != ProcedureList.end(); ++it)
-			if (*it == table)
-				return true;
-		return false;
-	}
-
-	bool HasEvent(const Warden::string &table)
-	{
-		for (auto it = EventList.begin(); it != EventList.end(); ++it)
-			if (*it == table)
-				return true;
-		return false;
-	}
-
 
 	void CheckTables()
 	{
-		this->GetTables();
-		if (!this->HasTable(prefix +"chanstats"))
-		{
-			query = "CREATE TABLE `" + prefix + "chanstats` ("
-				"`id` int NOT NULL AUTO_INCREMENT,"
-				"`chan` varchar(64) NOT NULL DEFAULT '',"
-				"`nick` varchar(64) NOT NULL DEFAULT '',"
-				"`type` ENUM('total', 'monthly', 'weekly', 'daily') NOT NULL,"
-				"`letters` bigint unsigned NOT NULL DEFAULT '0',"
-				"`words` bigint unsigned NOT NULL DEFAULT '0',"
-				"`line` int unsigned NOT NULL DEFAULT '0',"
-				"`actions` int unsigned NOT NULL DEFAULT '0',"
-				"`smileys_happy` int unsigned NOT NULL DEFAULT '0',"
-				"`smileys_sad` int unsigned NOT NULL DEFAULT '0',"
-				"`smileys_other` int unsigned NOT NULL DEFAULT '0',"
-				"`kicks` int unsigned NOT NULL DEFAULT '0',"
-				"`kicked` int unsigned NOT NULL DEFAULT '0',"
-				"`modes` int unsigned NOT NULL DEFAULT '0',"
-				"`topics` int unsigned NOT NULL DEFAULT '0',"
-				"`time0` int unsigned NOT NULL default '0',"
-				"`time1` int unsigned NOT NULL default '0',"
-				"`time2` int unsigned NOT NULL default '0',"
-				"`time3` int unsigned NOT NULL default '0',"
-				"`time4` int unsigned NOT NULL default '0',"
-				"`time5` int unsigned NOT NULL default '0',"
-				"`time6` int unsigned NOT NULL default '0',"
-				"`time7` int unsigned NOT NULL default '0',"
-				"`time8` int unsigned NOT NULL default '0',"
-				"`time9` int unsigned NOT NULL default '0',"
-				"`time10` int unsigned NOT NULL default '0',"
-				"`time11` int unsigned NOT NULL default '0',"
-				"`time12` int unsigned NOT NULL default '0',"
-				"`time13` int unsigned NOT NULL default '0',"
-				"`time14` int unsigned NOT NULL default '0',"
-				"`time15` int unsigned NOT NULL default '0',"
-				"`time16` int unsigned NOT NULL default '0',"
-				"`time17` int unsigned NOT NULL default '0',"
-				"`time18` int unsigned NOT NULL default '0',"
-				"`time19` int unsigned NOT NULL default '0',"
-				"`time20` int unsigned NOT NULL default '0',"
-				"`time21` int unsigned NOT NULL default '0',"
-				"`time22` int unsigned NOT NULL default '0',"
-				"`time23` int unsigned NOT NULL default '0',"
-				"PRIMARY KEY (`id`),"
-				"UNIQUE KEY `chan` (`chan`,`nick`,`type`),"
-				"KEY `nick` (`nick`),"
-				"KEY `chan_` (`chan`),"
-				"KEY `type` (`type`)"
-				") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
-			this->RunQuery(query);
-		}
-		/* There is no CREATE OR REPLACE PROCEDURE in MySQL */
-		if (this->HasProcedure(prefix + "chanstats_proc_update"))
-		{
-			query = "DROP PROCEDURE " + prefix + "chanstats_proc_update";
-			this->RunQuery(query);
-		}
-		query = "CREATE PROCEDURE `" + prefix + "chanstats_proc_update`"
-			"(chan_ VARCHAR(255), nick_ VARCHAR(255), line_ int, letters_ int,"
-			"words_ int, actions_ int, sm_h_ int, sm_s_ int, sm_o_ int,"
-			"kicks_ int, kicked_ int, modes_ int, topics_ int)"
-			"BEGIN "
-				"DECLARE time_ VARCHAR(20);"
-				"SET time_ = CONCAT('time', hour(now()));"
-				"INSERT IGNORE INTO `" + prefix + "chanstats` (`nick`,`chan`, `type`) VALUES "
-					"('', chan_, 'total'), ('', chan_, 'monthly'),"
-					"('', chan_, 'weekly'), ('', chan_, 'daily');"
-				"IF nick_ != '' THEN "
-					"INSERT IGNORE INTO `" + prefix + "chanstats` (`nick`,`chan`, `type`) VALUES "
-						"(nick_, chan_, 'total'), (nick_, chan_, 'monthly'),"
-						"(nick_, chan_, 'weekly'),(nick_, chan_, 'daily'),"
-						"(nick_, '', 'total'), (nick_, '', 'monthly'),"
-						"(nick_, '', 'weekly'), (nick_, '', 'daily');"
-				"END IF;"
-				"SET @echan = chan_;"
-				"SET @enick = nick_;"
-				"SET @update_query = CONCAT('UPDATE `" + prefix + "chanstats` SET line=line+', line_, ',"
-				"letters=letters+', letters_, ' , words=words+', words_, ', actions=actions+', actions_, ', "
-				"smileys_happy=smileys_happy+', sm_h_, ', smileys_sad=smileys_sad+', sm_s_, ', "
-				"smileys_other=smileys_other+', sm_o_, ', kicks=kicks+', kicks_, ', kicked=kicked+', kicked_, ', "
-				"modes=modes+', modes_, ', topics=topics+', topics_, ', ', time_ , '=', time_, '+', line_ ,' "
-				"WHERE (nick='''' OR nick=?) AND (chan='''' OR chan=?)');"
-				"PREPARE update_query FROM @update_query;"
-				"EXECUTE update_query using @enick, @echan;"
-				"DEALLOCATE PREPARE update_query;"
-			"END";
-		this->RunQuery(query);
+		const auto driver = Driver();
+		const auto table = prefix + "chanstats";
+		const auto resets = prefix + "chanstats_resets";
 
-		if (this->HasProcedure(prefix + "chanstats_proc_chgdisplay"))
+		std::set<Warden::string> tables;
+		SQL::Result r = this->sql->RunQuery(this->sql->GetTables(prefix));
+		for (int i = 0; i < r.Rows(); ++i)
 		{
-			query = "DROP PROCEDURE " + prefix + "chanstats_proc_chgdisplay;";
-			this->RunQuery(query);
+			for (const auto &[_, name] : r.Row(i))
+				tables.insert(name);
 		}
-		query = "CREATE PROCEDURE `" + prefix + "chanstats_proc_chgdisplay`"
-			"(old_nick varchar(255), new_nick varchar(255))"
-			"BEGIN "
-			"DECLARE res_count int unsigned;"
-			"SELECT COUNT(nick) INTO res_count FROM `" + prefix + "chanstats` WHERE nick = new_nick;"
-			"IF res_count = 0 THEN "
-				"UPDATE `" + prefix + "chanstats` SET `nick` = new_nick WHERE `nick` = old_nick;"
-			"ELSE "
-			"my_cursor: BEGIN "
-				"DECLARE no_more_rows BOOLEAN DEFAULT FALSE;"
-				"DECLARE chan_ VARCHAR(255);"
-				"DECLARE type_ ENUM('total', 'monthly', 'weekly', 'daily');"
-				"DECLARE letters_, words_, line_, actions_, smileys_happy_,"
-					"smileys_sad_, smileys_other_, kicks_, kicked_, modes_, topics_,"
-					"time0_, time1_, time2_, time3_, time4_, time5_, time6_, time7_, time8_, time9_,"
-					"time10_, time11_, time12_, time13_, time14_, time15_, time16_, time17_, time18_,"
-					"time19_, time20_, time21_, time22_, time23_ int unsigned;"
-				"DECLARE stats_cursor CURSOR FOR "
-					"SELECT chan, type, letters, words, line, actions, smileys_happy,"
-						"smileys_sad, smileys_other, kicks, kicked, modes, topics, time0, time1,"
-						"time2, time3, time4, time5, time6, time7, time8, time9, time10, time11,"
-						"time12, time13, time14, time15, time16, time17, time18, time19, time20,"
-						"time21, time22, time23 "
-					"FROM `" + prefix + "chanstats` "
-					"WHERE `nick` = old_nick;"
-				"DECLARE CONTINUE HANDLER FOR NOT FOUND "
-					"SET no_more_rows = TRUE;"
-				"OPEN stats_cursor;"
-				"the_loop: LOOP "
-					"FETCH stats_cursor "
-					"INTO chan_, type_, letters_, words_, line_, actions_, smileys_happy_,"
-						"smileys_sad_, smileys_other_, kicks_, kicked_, modes_, topics_,"
-						"time0_, time1_, time2_, time3_, time4_, time5_, time6_, time7_, time8_,"
-						"time9_, time10_, time11_, time12_, time13_, time14_, time15_, time16_,"
-						"time17_, time18_, time19_, time20_, time21_, time22_, time23_;"
-					"IF no_more_rows THEN "
-						"CLOSE stats_cursor;"
-						"LEAVE the_loop;"
-					"END IF;"
-					"INSERT INTO `" + prefix + "chanstats` "
-						"(chan, nick, type, letters, words, line, actions, smileys_happy, "
-						"smileys_sad, smileys_other, kicks, kicked, modes, topics, time0, time1, "
-						"time2, time3, time4, time5, time6, time7, time8, time9, time10, time11,"
-						"time12, time13, time14, time15, time16, time17, time18, time19, time20,"
-						"time21, time22, time23)"
-					"VALUES (chan_, new_nick, type_, letters_, words_, line_, actions_, smileys_happy_,"
-						"smileys_sad_, smileys_other_, kicks_, kicked_, modes_, topics_,"
-						"time0_, time1_, time2_, time3_, time4_, time5_, time6_, time7_, time8_, "
-						"time9_, time10_, time11_, time12_, time13_, time14_, time15_, time16_, "
-						"time17_, time18_, time19_, time20_, time21_, time22_, time23_)"
-					"ON DUPLICATE KEY UPDATE letters=letters+VALUES(letters), words=words+VALUES(words),"
-						"line=line+VALUES(line), actions=actions+VALUES(actions),"
-						"smileys_happy=smileys_happy+VALUES(smileys_happy),"
-						"smileys_sad=smileys_sad+VALUES(smileys_sad),"
-						"smileys_other=smileys_other+VALUES(smileys_other),"
-						"kicks=kicks+VALUES(kicks), kicked=kicked+VALUES(kicked),"
-						"modes=modes+VALUES(modes), topics=topics+VALUES(topics),"
-						"time1=time1+VALUES(time1), time2=time2+VALUES(time2), time3=time3+VALUES(time3),"
-						"time4=time4+VALUES(time4), time5=time5+VALUES(time5), time6=time6+VALUES(time6),"
-						"time7=time7+VALUES(time7), time8=time8+VALUES(time8), time9=time9+VALUES(time9),"
-						"time10=time10+VALUES(time10), time11=time11+VALUES(time11), time12=time12+VALUES(time12),"
-						"time13=time13+VALUES(time13), time14=time14+VALUES(time14), time15=time15+VALUES(time15),"
-						"time16=time16+VALUES(time16), time17=time17+VALUES(time17), time18=time18+VALUES(time18),"
-						"time19=time19+VALUES(time19), time20=time20+VALUES(time20), time21=time21+VALUES(time21),"
-						"time22=time22+VALUES(time22), time23=time23+VALUES(time23);"
-				"END LOOP;"
-				"DELETE FROM `" + prefix + "chanstats` WHERE `nick` = old_nick;"
-			"END my_cursor;"
-			"END IF;"
-			"END;";
-		this->RunQuery(query);
 
-		/* don't prepend any database prefix to events so we can always delete/change old events */
-		if (this->HasEvent("chanstats_event_cleanup_daily"))
+		Warden::string counters;
+		for (const auto &column : Counters())
 		{
-			query = "DROP EVENT chanstats_event_cleanup_daily";
-			this->RunQuery(query);
+			const auto big = column == "letters" || column == "words";
+			if (driver == "mysql")
+				counters += ", `" + column + "` " + (big ? "bigint" : "int") + " unsigned NOT NULL DEFAULT '0'";
+			else
+				counters += ", `" + column + "` BIGINT NOT NULL DEFAULT 0";
 		}
-		query = "CREATE EVENT `chanstats_event_cleanup_daily` "
-			"ON SCHEDULE EVERY 1 DAY STARTS CURRENT_DATE "
-			"DO UPDATE `" + prefix + "chanstats` SET letters=0, words=0, line=0, actions=0, smileys_happy=0,"
-				"smileys_sad=0, smileys_other=0, kicks=0, modes=0, topics=0, time0=0, time1=0, time2=0,"
-				"time3=0, time4=0, time5=0, time6=0, time7=0, time8=0, time9=0, time10=0, time11=0,"
-				"time12=0, time13=0, time14=0, time15=0, time16=0, time17=0, time18=0, time19=0,"
-				"time20=0, time21=0, time22=0, time23=0 "
-			"WHERE type='daily';";
-		this->RunQuery(query);
 
-		if (this->HasEvent("chanstats_event_cleanup_weekly"))
+		if (!tables.count(table))
 		{
-			query = "DROP EVENT `chanstats_event_cleanup_weekly`";
-			this->RunQuery(query);
+			if (driver == "mysql")
+			{
+				this->RunQuery("CREATE TABLE `" + table + "` ("
+					"`id` int NOT NULL AUTO_INCREMENT,"
+					"`chan` varchar(64) NOT NULL DEFAULT '',"
+					"`nick` varchar(64) NOT NULL DEFAULT '',"
+					"`type` ENUM('total', 'monthly', 'weekly', 'daily') NOT NULL" + counters + ","
+					"PRIMARY KEY (`id`),"
+					"UNIQUE KEY `chan` (`chan`,`nick`,`type`),"
+					"KEY `nick` (`nick`),"
+					"KEY `chan_` (`chan`),"
+					"KEY `type` (`type`)"
+					") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+			}
+			else
+			{
+				const Warden::string id = driver == "postgresql" ? "`id` BIGSERIAL PRIMARY KEY" : "`id` INTEGER PRIMARY KEY";
+				this->RunQuery("CREATE TABLE `" + table + "` (" + id + ","
+					"`chan` TEXT NOT NULL DEFAULT '',"
+					"`nick` TEXT NOT NULL DEFAULT '',"
+					"`type` VARCHAR(16) NOT NULL CHECK (`type` IN ('total', 'monthly', 'weekly', 'daily'))" + counters + ","
+					"UNIQUE (`chan`, `nick`, `type`))");
+				this->RunQuery("CREATE INDEX `" + table + "_nick` ON `" + table + "` (`nick`)");
+				this->RunQuery("CREATE INDEX `" + table + "_type` ON `" + table + "` (`type`)");
+			}
 		}
-		query = "CREATE EVENT `chanstats_event_cleanup_weekly` "
-			"ON SCHEDULE EVERY 1 WEEK STARTS ADDDATE(CURDATE(), INTERVAL 1-DAYOFWEEK(CURDATE()) DAY) "
-			"DO UPDATE `" + prefix + "chanstats` SET letters=0, words=0, line=0, actions=0, smileys_happy=0,"
-				"smileys_sad=0, smileys_other=0, kicks=0, modes=0, topics=0, time0=0, time1=0, time2=0,"
-				"time3=0, time4=0, time5=0, time6=0, time7=0, time8=0, time9=0, time10=0, time11=0,"
-				"time12=0, time13=0, time14=0, time15=0, time16=0, time17=0, time18=0, time19=0,"
-				"time20=0, time21=0, time22=0, time23=0 "
-			"WHERE type='weekly';";
-		this->RunQuery(query);
 
-		if (this->HasEvent("chanstats_event_cleanup_monthly"))
+		if (!tables.count(resets))
+			this->RunQuery("CREATE TABLE `" + resets + "` (`type` VARCHAR(16) NOT NULL PRIMARY KEY, `period` VARCHAR(16) NOT NULL)");
+
+		if (driver == "mysql")
 		{
-			query = "DROP EVENT `chanstats_event_cleanup_monthly`;";
-			this->RunQuery(query);
+			// Anope used stored procedures and MySQL events; Warden does the
+			// same work itself, so remove them (the events would reset the
+			// statistics a second time).
+			for (const auto *event : { "chanstats_event_cleanup_daily", "chanstats_event_cleanup_weekly", "chanstats_event_cleanup_monthly" })
+				this->RunQuery(Warden::string("DROP EVENT IF EXISTS `") + event + "`");
+			for (const auto *proc : { "chanstats_proc_update", "chanstats_proc_chgdisplay" })
+				this->RunQuery("DROP PROCEDURE IF EXISTS `" + prefix + proc + "`");
 		}
-		query = "CREATE EVENT `chanstats_event_cleanup_monthly` "
-			"ON SCHEDULE EVERY 1 MONTH STARTS LAST_DAY(CURRENT_TIMESTAMP) + INTERVAL 1 DAY "
-			"DO BEGIN "
-			"UPDATE `" + prefix + "chanstats` SET letters=0, words=0, line=0, actions=0, smileys_happy=0,"
-				"smileys_sad=0, smileys_other=0, kicks=0, modes=0, topics=0, time0=0, time1=0, time2=0,"
-				"time3=0, time4=0, time5=0, time6=0, time7=0, time8=0, time9=0, time10=0, time11=0,"
-				"time12=0, time13=0, time14=0, time15=0, time16=0, time17=0, time18=0, time19=0, "
-				"time20=0, time21=0, time22=0, time23=0 "
-			"WHERE type='monthly';"
-			"OPTIMIZE TABLE `" + prefix + "chanstats`;"
-			"END;";
-		this->RunQuery(query);
+
+		this->periods.clear();
+		r = this->sql->RunQuery("SELECT `type`, `period` FROM `" + resets + "`");
+		for (int i = 0; i < r.Rows(); ++i)
+			this->periods[r.Get(i, "type")] = r.Get(i, "period");
+		this->CheckResets(true);
 	}
-
 
 public:
 	MChanstats(const Warden::string &modname, const Warden::string &creator)
@@ -509,6 +498,11 @@ public:
 	{
 	}
 
+	~MChanstats()
+	{
+		delete this->resettimer;
+	}
+
 	void OnReload(Configuration::Conf &conf) override
 	{
 		const auto &block = conf.GetModule(this);
@@ -518,7 +512,11 @@ public:
 		SmileysOther = block.Get<const Warden::string>("SmileysOther");
 		this->sql.SetServiceName(block.Get<const Warden::string>("engine"));
 		if (sql)
+		{
 			this->CheckTables();
+			if (!this->resettimer)
+				this->resettimer = new ResetTimer(this);
+		}
 		else
 			Log(this) << "no database connection to " << this->sql.GetServiceName();
 	}
@@ -543,10 +541,7 @@ public:
 	{
 		if (!source || !source->IsIdentified() || !c->ci || !cs_stats.HasExt(c->ci))
 			return;
-		query = "CALL " + prefix + "chanstats_proc_update(@channel@, @nick@, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1);";
-		query.SetValue("channel", c->name);
-		query.SetValue("nick", GetDisplay(source));
-		this->RunQuery(query);
+		this->Update(c->name, GetDisplay(source), { { "topics", 1 } });
 	}
 
 	EventReturn OnChannelModeSet(Channel *c, MessageSource &setter, ChannelMode *mode, const ModeData &data) override
@@ -567,10 +562,7 @@ private:
 		if (!u || !u->IsIdentified() || !c->ci || !cs_stats.HasExt(c->ci))
 			return;
 
-		query = "CALL " + prefix + "chanstats_proc_update(@channel@, @nick@, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0);";
-		query.SetValue("channel", c->name);
-		query.SetValue("nick", GetDisplay(u));
-		this->RunQuery(query);
+		this->Update(c->name, GetDisplay(u), { { "modes", 1 } });
 	}
 
 public:
@@ -579,15 +571,8 @@ public:
 		if (!memb->chan->ci || !cs_stats.HasExt(memb->chan->ci))
 			return;
 
-		query = "CALL " + prefix + "chanstats_proc_update(@channel@, @nick@, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0);";
-		query.SetValue("channel", memb->chan->name);
-		query.SetValue("nick", GetDisplay(memb->user));
-		this->RunQuery(query);
-
-		query = "CALL " + prefix + "chanstats_proc_update(@channel@, @nick@, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0);";
-		query.SetValue("channel", memb->chan->name);
-		query.SetValue("nick", GetDisplay(source.GetUser()));
-		this->RunQuery(query);
+		this->Update(memb->chan->name, GetDisplay(memb->user), { { "kicked", 1 } });
+		this->Update(memb->chan->name, GetDisplay(source.GetUser()), { { "kicks", 1 } });
 	}
 
 	void OnPrivmsg(User *u, Channel *c, Warden::string &msg, const Warden::map<Warden::string> &tags) override
@@ -618,17 +603,16 @@ public:
 		else
 			words = words - smileys;
 
-		query = "CALL " + prefix + "chanstats_proc_update(@channel@, @nick@, 1, @letters@, @words@, @action@, "
-		"@smileys_happy@, @smileys_sad@, @smileys_other@, '0', '0', '0', '0');";
-		query.SetValue("channel", c->name);
-		query.SetValue("nick", GetDisplay(u));
-		query.SetValue("letters", letters);
-		query.SetValue("words", words);
-		query.SetValue("action", action);
-		query.SetValue("smileys_happy", smileys_happy);
-		query.SetValue("smileys_sad", smileys_sad);
-		query.SetValue("smileys_other", smileys_other);
-		this->RunQuery(query);
+		this->Update(c->name, GetDisplay(u), {
+			{ "line", 1 },
+			{ HourColumn(), 1 },
+			{ "letters", letters },
+			{ "words", words },
+			{ "actions", action },
+			{ "smileys_happy", smileys_happy },
+			{ "smileys_sad", smileys_sad },
+			{ "smileys_other", smileys_other },
+		});
 	}
 
 	void OnDelCore(NickCore *nc) override
@@ -640,10 +624,37 @@ public:
 
 	void OnChangeCoreDisplay(NickCore *nc, const Warden::string &newdisplay) override
 	{
-		query = "CALL " + prefix + "chanstats_proc_chgdisplay(@old_display@, @new_display@);";
+		if (!sql)
+			return;
+
+		// Move the old display's rows to the new one, adding them to any rows
+		// the new display already has.
+		const auto table = prefix + "chanstats";
+		Warden::string columns, update;
+		for (const auto &column : Counters())
+		{
+			columns += ", `" + column + "`";
+			if (!update.empty())
+				update += ", ";
+			if (Driver() == "mysql")
+				update += "`" + column + "` = `" + table + "`.`" + column + "` + VALUES(`" + column + "`)";
+			else
+				update += "`" + column + "` = `" + table + "`.`" + column + "` + EXCLUDED.`" + column + "`";
+		}
+
+		query = "INSERT INTO `" + table + "` (`chan`, `nick`, `type`" + columns + ") "
+			"SELECT `chan`, @new_display@, `type`" + columns + " FROM `" + table + "` AS `src` WHERE `nick` = @old_display@";
+		if (Driver() == "mysql")
+			query.query += " ON DUPLICATE KEY UPDATE " + update;
+		else
+			query.query += " ON CONFLICT (`chan`, `nick`, `type`) DO UPDATE SET " + update;
 		query.SetValue("old_display", nc->display);
 		query.SetValue("new_display", newdisplay);
-		this->RunQuery(query);
+
+		// Only delete the old rows once they have been copied.
+		SQL::Query del("DELETE FROM `" + table + "` WHERE `nick` = @old_display@");
+		del.SetValue("old_display", nc->display);
+		sql->Run(new MergeInterface(this, sql, del, &sqlinterface), query);
 	}
 
 	void OnDelChan(ChannelInfo *ci) override

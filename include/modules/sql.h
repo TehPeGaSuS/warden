@@ -190,6 +190,12 @@ namespace SQL
 		virtual Query GetTables(const Warden::string &prefix) = 0;
 
 		virtual Warden::string FromUnixtime(time_t) = 0;
+
+		/** The kind of database behind this provider: "mysql", "sqlite" or
+		 * "postgresql". Lets modules pick the right syntax where SQL dialects
+		 * differ (e.g. upserts).
+		 */
+		virtual Warden::string GetDriver() const = 0;
 	};
 
 
@@ -227,9 +233,9 @@ namespace SQL
 
 		// SQLite tables have a timestamp trigger that names the table, and SQLite
 		// checks every trigger on each rename. Drop them all first and create
-		// them again afterwards. On MySQL this query fails and there are none.
+		// them again afterwards.
 		std::set<Warden::string> triggers;
-		auto res = sql->RunQuery(Query("SELECT `name` FROM `sqlite_master` WHERE `type` = 'trigger' AND `name` LIKE '" + oldprefix + "%'"));
+		auto res = sql->GetDriver() != "sqlite" ? Result() : sql->RunQuery(Query("SELECT `name` FROM `sqlite_master` WHERE `type` = 'trigger' AND `name` LIKE '" + oldprefix + "%'"));
 		for (int i = 0; res && i < res.Rows(); ++i)
 		{
 			const auto &name = res.Row(i).begin()->second;

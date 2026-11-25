@@ -6,6 +6,7 @@ modules/enc_argon2.cpp
 modules/enc_posix.cpp
 modules/ldap.cpp
 modules/mysql.cpp
+modules/postgresql.cpp
 modules/regex_pcre2.cpp
 modules/regex_posix.cpp
 modules/sqlite.cpp

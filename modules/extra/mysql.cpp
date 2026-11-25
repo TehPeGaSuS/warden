@@ -173,6 +173,8 @@ public:
 
 	Warden::string FromUnixtime(time_t) override;
 
+	Warden::string GetDriver() const override { return "mysql"; }
+
 	const char* GetColumnDefault(Serialize::DataType dt)
 	{
 		switch (dt)

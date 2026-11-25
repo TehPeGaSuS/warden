@@ -78,6 +78,8 @@ public:
 
 	Warden::string FromUnixtime(time_t) override;
 
+	Warden::string GetDriver() const override { return "sqlite"; }
+
 	Warden::string GetColumnType(Serialize::DataType dt)
 	{
 		switch (dt)

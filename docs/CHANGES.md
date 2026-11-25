@@ -18,6 +18,27 @@ Not released yet.
   `l` once at startup, so SOPs and QOPs keep matching their template.
 * `docs/unrealircd/warden.conf`: UnrealIRCd command aliases (like its
   `aliases/anope.conf`) including `/GS` (GroupServ) and `/CF` (ChanFix).
+* [PostgreSQL](https://github.com/TehPeGaSuS/warden/wiki/PostgreSQL) support: the
+  new `postgresql` extra module (libpq) works with `db_sql`, `db_sql_live`,
+  chanstats, `sql_authentication`, `sql_oper` and `sql_log`. MySQL stays
+  supported. The wiki explains how to move an existing MySQL database over.
+* Chanstats works with MySQL, PostgreSQL and SQLite.
+
+### Changes:
+* Chanstats no longer uses MySQL stored procedures or the MySQL event
+  scheduler. Warden updates the statistics with plain queries and resets the
+  daily, weekly and monthly statistics itself at local midnight, catching up on
+  resets missed while it was not running. On MySQL the old
+  `chanstats_event_cleanup_*` events and `chanstats_proc_*` procedures are
+  removed at startup, so the statistics are not reset twice; existing
+  statistics are kept. The new `chanstats21_chanstats_resets` table records the
+  last reset of each kind.
+
+### Developers:
+* `SQL::Provider` has a new `GetDriver()` method that returns `mysql`,
+  `postgresql` or `sqlite`, for queries whose syntax differs between them.
+  Queries keep quoting names with backticks; the PostgreSQL module turns them
+  into double quotes.
 
 ### Fixes:
 * `ChanServ TOP`/`TOP10`/`GTOP` and `STATS`/`GSTATS` said nothing when the
@@ -32,6 +53,9 @@ Not released yet.
   so `systemctl --user enable warden` starts it at boot (also in Anope).
 * The Windows installer was built for a release but could not be attached to it
   (missing workflow permission).
+* Chanstats: changing an account's display name moved its statistics with a
+  stored procedure that skipped the `time0` column; the daily, weekly and
+  monthly resets skipped `kicked` (also in Anope).
 
 Warden 1.0.0
 ============
