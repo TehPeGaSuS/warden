@@ -4,6 +4,10 @@ Warden 1.0.1
 Not released yet.
 
 ### Enhancements:
+* `ChanServ LEVELS SET` and `LEVELS RESET` say when the channel also has xOP or
+  FLAGS entries, which levels don't change, and who those give the privilege
+  to (e.g. "AUTOLIMIT is given to SOP and above, and to FLAGS entries with
+  +l"). `HELP LEVELS` explains it too.
 * `warden.listAccounts "nicks"` (rpc_data) lists each account with just its
   nicknames, without the rest of the "full" details (anope/anope#632).
 * `memoserv:mail = no` stops MemoServ from mailing new memos, so mail can be

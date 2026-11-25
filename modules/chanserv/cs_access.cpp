@@ -790,8 +790,59 @@ class CommandCSLevels final
 					source.Reply(_("Level for %s on channel %s changed to founder only."), p->name.c_str(), ci->name.c_str());
 				else
 					source.Reply(_("Level for \002%s\002 on channel %s changed to \002%d\002."), p->name.c_str(), ci->name.c_str(), level);
+				ExplainOtherEntries(source, ci, p);
 			}
 		}
+	}
+
+	// LEVELS only applies to numeric ACCESS entries. When the channel also
+	// has xOP or FLAGS entries, say who those give the privilege to.
+	static void ExplainOtherEntries(CommandSource &source, const ChannelInfo *ci, const Privilege *p)
+	{
+		bool has_xop = false, has_flags = false;
+		for (unsigned i = 0; i < ci->GetAccessCount(); ++i)
+		{
+			const auto &provider = ci->GetAccess(i)->provider->name;
+			has_xop |= provider == "access/xop";
+			has_flags |= provider == "access/flags";
+		}
+		if (!has_xop && !has_flags)
+			return;
+
+		const char *lead;
+		if (has_xop && has_flags)
+			lead = _("This only affects ACCESS entries. xOP and FLAGS entries keep their own rules.");
+		else if (has_xop)
+			lead = _("This only affects ACCESS entries. xOP entries keep their own rules.");
+		else
+			lead = _("This only affects ACCESS entries. FLAGS entries keep their own rules.");
+
+		Warden::string xop, flag;
+		for (auto *provider : AccessProvider::GetProviders())
+		{
+			if (!p)
+				break;
+
+			Warden::map<Warden::string> info;
+			provider->GetAccess(source, p, info);
+			if (has_xop && provider->name == "access/xop" && info.count("XOP"))
+				xop = info["XOP"];
+			else if (has_flags && provider->name == "access/flags" && info.count("Flag"))
+				flag = info["Flag"];
+		}
+
+		Warden::string detail;
+		if (!xop.empty() && !flag.empty())
+			detail = Warden::Format(source.Translate(_("\002%s\002 is given to \002%s\002 and above, and to FLAGS entries with \002+%s\002.")), p->name.c_str(), xop.c_str(), flag.c_str());
+		else if (!xop.empty())
+			detail = Warden::Format(source.Translate(_("\002%s\002 is given to \002%s\002 and above.")), p->name.c_str(), xop.c_str());
+		else if (!flag.empty())
+			detail = Warden::Format(source.Translate(_("\002%s\002 is given to FLAGS entries with \002+%s\002.")), p->name.c_str(), flag.c_str());
+
+		if (detail.empty())
+			source.Reply(lead);
+		else
+			source.Reply("%s %s", source.Translate(lead), detail.c_str());
 	}
 
 	void DoDisable(CommandSource &source, ChannelInfo *ci, const std::vector<Warden::string> &params)
@@ -855,6 +906,7 @@ class CommandCSLevels final
 		FOREACH_MOD(OnLevelChange, (source, ci, "ALL", 0));
 
 		source.Reply(_("Access levels for \002%s\002 reset to defaults."), ci->name.c_str());
+		ExplainOtherEntries(source, ci, nullptr);
 	}
 
 public:
@@ -964,6 +1016,13 @@ public:
 				source.command.nobreak().c_str(),
 				source.command.nobreak().c_str(),
 				source.command.nobreak().c_str());
+			source.Reply(" ");
+			source.Reply(_(
+				"Levels only apply to entries added with \002ACCESS\002. Entries added with "
+				"\002VOP\002, \002HOP\002, \002AOP\002, \002SOP\002 or \002QOP\002 get a fixed set "
+				"of functions, and \002FLAGS\002 entries get the functions whose flags they "
+				"have; \002DISABLE\002 is the only setting that also applies to them."
+			));
 		}
 		return true;
 	}

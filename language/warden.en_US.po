@@ -1318,6 +1318,22 @@ msgstr ""
 msgid " but %s mysteriously dematerialized."
 msgstr ""
 
+#: ../modules/chanserv/cs_access.cpp
+msgid "Levels only apply to entries added with \002ACCESS\002. Entries added with \002VOP\002, \002HOP\002, \002AOP\002, \002SOP\002 or \002QOP\002 get a fixed set of functions, and \002FLAGS\002 entries get the functions whose flags they have; \002DISABLE\002 is the only setting that also applies to them."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. FLAGS entries keep their own rules."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. xOP and FLAGS entries keep their own rules."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+msgid "This only affects ACCESS entries. xOP entries keep their own rules."
+msgstr ""
+
 #: ../modules/operserv/os_jupe.cpp
 msgid "\"Jupiter\" a server"
 msgstr ""
@@ -10491,6 +10507,21 @@ msgstr ""
 
 #: ../modules/operserv/os_list.cpp
 msgid "[{pattern | nick}] [SECRET] [from-to]"
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "\002%s\002 is given to FLAGS entries with \002+%s\002."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "\002%s\002 is given to \002%s\002 and above, and to FLAGS entries with \002+%s\002."
+msgstr ""
+
+#: ../modules/chanserv/cs_access.cpp
+#, c-format
+msgid "\002%s\002 is given to \002%s\002 and above."
 msgstr ""
 
 #: ../modules/greet.cpp
