@@ -5,7 +5,7 @@ Not released yet.
 
 ### Enhancements:
 * `mail:replyto` sets the address replies go to (Reply-To), e.g. a support
-  address when sending through Gmail.
+  address on the same domain as `sendfrom`.
 * `ChanServ LEVELS SET` and `LEVELS RESET` say when the channel also has xOP or
   FLAGS entries, which levels don't change, and who those give the privilege
   to (e.g. "AUTOLIMIT is given to SOP and above, and to FLAGS entries with
