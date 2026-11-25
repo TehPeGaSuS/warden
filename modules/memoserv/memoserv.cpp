@@ -125,7 +125,7 @@ public:
 			}
 
 			/* let's get out the mail if set in the nickcore - certus */
-			if (nc->HasExt("MEMO_MAIL"))
+			if (nc->HasExt("MEMO_MAIL") && Config->GetModule(this).Get<bool>("mail", "yes"))
 				SendMemoMail(nc, mi, m);
 		}
 
@@ -166,6 +166,19 @@ public:
 
 		MemoServ = bi;
 		memoemail.Reload(conf);
+
+		if (!conf.GetModule(this).Get<bool>("mail", "yes"))
+		{
+			spacesepstream sep(conf.GetModule("nickserv").Get<const Warden::string>("defaults"));
+			for (Warden::string token; sep.GetToken(token); )
+			{
+				if (token.equals_ci("memo_mail"))
+				{
+					Log() << "Warning: nickserv:defaults has memo_mail, but memoserv:mail is off, so no memo mails are sent.";
+					break;
+				}
+			}
+		}
 	}
 
 	void OnNickCoreCreate(NickCore *nc) override

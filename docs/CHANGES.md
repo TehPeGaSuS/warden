@@ -4,6 +4,10 @@ Warden 1.0.1
 Not released yet.
 
 ### Enhancements:
+* `memoserv:mail = no` stops MemoServ from mailing new memos, so mail can be
+  kept for registration and password resets (anope/anope#631). `SET NOTIFY MAIL`
+  says it is disabled, users' settings are kept, and a warning is logged when
+  `nickserv:defaults` still has `memo_mail`.
 * `HELP FLAGS` lists each flag once, sorted A a B b ..., with every privilege it
   gives under it, instead of repeating letters that several privileges share.
 * `SET RECOVERYKEY` and `SASET RECOVERYKEY` are only listed in `HELP SET` /

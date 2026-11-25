@@ -48,7 +48,9 @@ private:
 		}
 		else if (param.equals_ci("MAIL"))
 		{
-			if (!nc->email.empty())
+			if (!Config->GetModule("memoserv").Get<bool>("mail", "yes"))
+				source.Reply(_("Memo notifications by email are disabled on this network."));
+			else if (!nc->email.empty())
 			{
 				nc->Extend<bool>("MEMO_MAIL");
 				source.Reply(_("You will now be informed about new memos via email."));

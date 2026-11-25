@@ -38,7 +38,7 @@ class CSExpireNotice final
 	}
 
 	// Sends a memo and/or an email. The email is skipped when MemoServ will
-	// already mail the memo to the user (MEMO_MAIL).
+	// already mail the memo to the user (MEMO_MAIL, with memoserv:mail on).
 	void Notify(NickCore *nc, const Mail::Template &tmpl, const Warden::map<Warden::string> &vars, const char *client, const Warden::string &memotext, bool memo_ok) const
 	{
 		bool memo_mailed = false;
@@ -46,7 +46,7 @@ class CSExpireNotice final
 		if (this->memo && memo_ok && MemoServ::service && bi)
 		{
 			if (MemoServ::service->Send(bi->nick, nc->display, memotext, true) == MemoServ::MEMO_SUCCESS)
-				memo_mailed = nc->HasExt("MEMO_MAIL");
+				memo_mailed = nc->HasExt("MEMO_MAIL") && Config->GetModule("memoserv").Get<bool>("mail", "yes");
 		}
 		if (this->mail && !memo_mailed && !nc->email.empty())
 			tmpl.Send(nc, vars);

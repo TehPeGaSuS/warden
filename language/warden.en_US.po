@@ -5832,6 +5832,10 @@ msgstr ""
 msgid "Memo %d from %s (%s)."
 msgstr ""
 
+#: ../modules/memoserv/ms_set.cpp
+msgid "Memo notifications by email are disabled on this network."
+msgstr ""
+
 #: ../modules/memoserv/ms_del.cpp
 #, c-format
 msgid "Memo %d has been deleted."

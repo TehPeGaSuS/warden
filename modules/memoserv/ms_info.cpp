@@ -175,7 +175,7 @@ public:
 			else
 				source.Reply(_("You have no limit on the number of memos you may keep."));
 
-			bool memo_mail = nc->HasExt("MEMO_MAIL");
+			bool memo_mail = nc->HasExt("MEMO_MAIL") && Config->GetModule("memoserv").Get<bool>("mail", "yes");
 			if (nc->HasExt("MEMO_RECEIVE") && nc->HasExt("MEMO_SIGNON"))
 			{
 				if (memo_mail)
