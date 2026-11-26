@@ -1,3 +1,8 @@
+Warden 1.0.2
+============
+
+Not released yet.
+
 Warden 1.0.1
 ============
 
