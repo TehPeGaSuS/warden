@@ -86,6 +86,9 @@ Not released yet.
   certificate and hostname checking against the system's CAs.
 
 ### Fixes:
+* `modules.example.conf` did not load: the example jsonrpc `token` line had
+  an unclosed quote (`token = "`), so the config parser failed with
+  "Unexpected word" further down the file. It is now `token = ""`.
 * Windows: the Start-menu shortcuts that use `warden.bat` failed with
   "'warden.exe' is not recognized" because they start in the install folder.
   The script now changes to its own `bin\` folder first and passes every
