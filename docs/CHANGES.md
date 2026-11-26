@@ -57,6 +57,10 @@ Not released yet.
   missed. MySQL and SQLite keep the old polling.
 
 ### Changes:
+* The example `chanserv.conf` sets `always_lower_ts = yes`, so users who join
+  an empty registered channel can no longer set modes before ChanServ deops
+  them. Without the line it still defaults to no; turning it on for a running
+  network resets every registered channel in use once (see the comment).
 * `options:servicealias` now defaults to yes, and the example service blocks
   set short aliases (`NS`, `CS`, `MS`, ...), so services tell users
   `/NS IDENTIFY` instead of `/msg NickServ IDENTIFY`. Set
