@@ -87,26 +87,28 @@ Not released yet.
   The script now changes to its own `bin\` folder first and passes every
   argument on (anope/anope#612).
 * Mails had no `MIME-Version: 1.0` header, so spam filters scored them higher
-  and the text/HTML (multipart) mails were not valid MIME (also in Anope).
+  and the text/HTML (multipart) mails were not valid MIME (bug inherited from
+  Anope).
 * `ChanServ AUTOLIMIT SHOW` was open to anyone; it now needs the same
   `AUTOLIMIT` privilege as SET and DEL.
 * rpc_data reported each nickname's `registered` time as the account's, so
   nicks grouped later showed the wrong date.
 * `ChanServ TOP`/`TOP10`/`GTOP` and `STATS`/`GSTATS` said nothing when the
   stats query failed; they now say the stats are unavailable and log the
-  reason (also in Anope).
+  reason (bug inherited from Anope).
 * The MySQL module's startup line compared the headers' *server* version
   with the client library's, so MariaDB always looked mismatched (also in
   Anope).
 * `ChanServ SET CHANSTATS` names the channel in its reply instead of "this
   channel".
 * The systemd unit is wanted by `default.target` instead of `multi-user.target`,
-  so `systemctl --user enable warden` starts it at boot (also in Anope).
+  so `systemctl --user enable warden` starts it at boot (bug inherited from
+  Anope).
 * The Windows installer was built for a release but could not be attached to it
   (missing workflow permission).
 * Chanstats: changing an account's display name moved its statistics with a
   stored procedure that skipped the `time0` column; the daily, weekly and
-  monthly resets skipped `kicked` (also in Anope).
+  monthly resets skipped `kicked` (bug inherited from Anope).
 
 Warden 1.0.0
 ============
@@ -191,13 +193,13 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
 
 ### Fixes:
 * Security: with no RPC `token` configured, anyone who could reach httpd could
-  use every RPC method (also in Anope). `jsonrpc` now requires at least one
-  `token { }` block and refuses to load without one, and refuses the public
-  token from Anope's example config. The example token block is now empty and
-  read-only. A rehash that would leave no token is rejected and RPC keeps
-  working.
+  use every RPC method (bug inherited from Anope). `jsonrpc` now requires at
+  least one `token { }` block and refuses to load without one, and refuses the
+  public token from Anope's example config. The example token block is now
+  empty and read-only. A rehash that would leave no token is rejected and RPC
+  keeps working.
 * A password reset did not confirm accounts with `registration = "mail"`: the
-  setting was read from the wrong block (also in Anope).
+  setting was read from the wrong block (bug inherited from Anope).
 * A password change now logs the account out of the web panel.
 * Security: an emailed password-reset link kept working after the reset was
   finished on IRC, the password was changed, or a recovery key was used, and
@@ -218,12 +220,12 @@ Third-party modules must be updated (`Anope::` is now `Warden::`) and rebuilt.
   changes are now saved with the live database module (db_sql_live).
 * `db_json` writes to a temporary file and renames it, and refuses to start if
   the database exists but can't be read, instead of replacing it with an empty
-  one on the next save (also in Anope).
+  one on the next save (bug inherited from Anope).
 * RPC no longer sends email confirmation codes, recovery-key hashes or DNS
   validation tokens, and refused RPC requests no longer leak memory.
 * LIST ranges: a pattern such as `10-net.*` is no longer taken as a range.
 * Session limits: users exempt when they connected were still taken off the
-  count when they quit (also in Anope).
+  count when they quit (bug inherited from Anope).
 * webcpanel without `allowed_origins` accepted forms posted from any site.
   It now only accepts them from its own address (Origin matching Host or
   X-Forwarded-Host), which works behind Apache with ProxyPreserveHost and
