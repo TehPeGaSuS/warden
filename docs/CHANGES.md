@@ -88,7 +88,9 @@ Not released yet.
 ### Fixes:
 * `modules.example.conf` did not load: the example jsonrpc `token` line had
   an unclosed quote (`token = "`), so the config parser failed with
-  "Unexpected word" further down the file. It is now `token = ""`.
+  "Unexpected word" further down the file. It now has an example token with a
+  comment to replace it; jsonrpc refuses to load with that example token, as
+  it does with Anope's.
 * Windows: the Start-menu shortcuts that use `warden.bat` failed with
   "'warden.exe' is not recognized" because they start in the install folder.
   The script now changes to its own `bin\` folder first and passes every

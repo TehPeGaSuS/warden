@@ -319,8 +319,8 @@ public:
 		{
 			RPC::Token token;
 			token.token = block.Get<const Warden::string>("token");
-			// The token Anope's example config shipped with is public.
-			if (token.token.equals_cs("BmcxTaiYjoBtayfnxCFq"))
+			// The tokens in Anope's and Warden's example configs are public.
+			if (token.token.equals_cs("BmcxTaiYjoBtayfnxCFq") || token.token.equals_cs("6801440b085705c0baec6d571a22ef87162cc693fac98a0ff9cbb75b95917d20"))
 				throw ConfigException("jsonrpc: the example token from the documentation is public; set your own");
 			if (!token.token.empty())
 			{
