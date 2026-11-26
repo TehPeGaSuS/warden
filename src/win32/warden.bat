@@ -1,3 +1,5 @@
 @ECHO OFF
-warden.exe %1 %2 %3 %4 %5
-pause
+REM Run from bin\ so warden.exe is found whatever folder the shortcut starts in.
+CD /D "%~dp0"
+warden.exe %*
+PAUSE

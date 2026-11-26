@@ -78,6 +78,10 @@ Not released yet.
   certificate and hostname checking against the system's CAs.
 
 ### Fixes:
+* Windows: the Start-menu shortcuts that use `warden.bat` failed with
+  "'warden.exe' is not recognized" because they start in the install folder.
+  The script now changes to its own `bin\` folder first and passes every
+  argument on (anope/anope#612).
 * Mails had no `MIME-Version: 1.0` header, so spam filters scored them higher
   and the text/HTML (multipart) mails were not valid MIME (also in Anope).
 * `ChanServ AUTOLIMIT SHOW` was open to anyone; it now needs the same
