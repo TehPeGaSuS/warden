@@ -57,6 +57,10 @@ Not released yet.
   missed. MySQL and SQLite keep the old polling.
 
 ### Changes:
+* `options:servicealias` now defaults to yes, and the example service blocks
+  set short aliases (`NS`, `CS`, `MS`, ...), so services tell users
+  `/NS IDENTIFY` instead of `/msg NickServ IDENTIFY`. Set
+  `servicealias = no` if your IRCd has no services aliases.
 * Chanstats no longer uses MySQL stored procedures or the MySQL event
   scheduler. Warden updates the statistics with plain queries and resets the
   daily, weekly and monthly statistics itself at local midnight, catching up on

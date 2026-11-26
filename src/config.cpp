@@ -202,7 +202,7 @@ Configuration::Conf::Conf() : Configuration::Block("")
 		ValidateNotEmpty("mail", "sendfrom", mail.Get<const Warden::string>("sendfrom"));
 
 	this->ReadTimeout = options.Get<time_t>("readtimeout");
-	this->ServiceAlias = options.Get<bool>("servicealias");
+	this->ServiceAlias = options.Get<bool>("servicealias", "yes");
 	{
 		std::vector<Warden::string> defaults;
 		spacesepstream(this->GetModule("nickserv").Get<const Warden::string>("defaults")).GetTokens(defaults);
