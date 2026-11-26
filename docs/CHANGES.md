@@ -57,6 +57,13 @@ Not released yet.
   missed. MySQL and SQLite keep the old polling.
 
 ### Changes:
+* `NickServ RESETPASS` is refused for accounts whose registration is not
+  confirmed yet, and a password reset no longer confirms an account (Anope's
+  `registration = "mail"` shortcut): someone who cannot confirm the
+  registration mail has not shown the address is theirs. Use `RESEND` to get
+  the confirmation again.
+* The NickServ `registermessage` is sent when the registration is confirmed,
+  not right after REGISTER (unchanged when no confirmation is needed).
 * The example `chanserv.conf` sets `always_lower_ts = yes`, so users who join
   an empty registered channel can no longer set modes before ChanServ deops
   them. Without the line it still defaults to no; turning it on for a running

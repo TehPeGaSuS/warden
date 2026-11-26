@@ -218,6 +218,14 @@ public:
 
 using NickServ::ResetInfo;
 
+// Only a confirmed account can be reset: until then its owner has not shown
+// they can read its email (or keep its recovery key).
+static void ReplyUnconfirmed(CommandSource &source, NickAlias *na)
+{
+	source.Reply(_("The registration of \002%s\002 has not been confirmed yet. Confirm it first; to get the confirmation again, identify and type %s."),
+		na->nick.c_str(), source.service->GetQueryCommand("nickserv/resend").c_str());
+}
+
 class CommandNSResetPass final
 	: public Command
 {
@@ -282,6 +290,8 @@ public:
 			source.Reply(NICK_X_NOT_REGISTERED, params[0].c_str());
 		else if (na->nc->HasExt("NS_SUSPENDED"))
 			source.Reply(NICK_X_SUSPENDED, na->nc->display.c_str());
+		else if (na->nc->HasExt("UNCONFIRMED"))
+			ReplyUnconfirmed(source, na);
 		else if (withkey)
 			ResetWithKey(source, na, params[1]);
 		else if (!na->nc->email.equals_ci(params[1]))
@@ -376,6 +386,14 @@ public:
 			return;
 		}
 
+		// A reset requested before Warden refused them for unconfirmed accounts.
+		if (nc->HasExt("UNCONFIRMED"))
+		{
+			reset.Unset(nc);
+			ReplyUnconfirmed(source, na);
+			return;
+		}
+
 		auto *ri = reset.Get(nc);
 		if (!ri)
 		{
@@ -399,9 +417,6 @@ public:
 		}
 
 		reset.Unset(nc);
-
-		if (Config->GetModule("ns_register").Get<const Warden::string>("registration").equals_ci("mail"))
-			nc->Shrink<bool>("UNCONFIRMED");
 
 		if (source.GetUser())
 			source.GetUser()->Identify(na);

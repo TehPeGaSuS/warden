@@ -166,9 +166,10 @@ public:
 
 			FOREACH_MOD(OnNickRegister, (source.GetUser(), na, pass));
 
-			// The network's own welcome text, if it has one.
+			// The network's own welcome text, if it has one. An account that
+			// must be confirmed gets it from CONFIRM REGISTER instead.
 			const auto &regmsg = Config->GetModule(this->owner).Get<const Warden::string>("registermessage");
-			if (!regmsg.empty())
+			if (!regmsg.empty() && !nc->HasExt("UNCONFIRMED"))
 				source.Reply("%s", regmsg.c_str());
 
 			if (u)
@@ -335,6 +336,15 @@ public:
 
 		Log(nc == source.GetAccount() ? LOG_COMMAND : LOG_ADMIN, source, this) << "to confirm the registration of " << nc->display;
 		source.Reply(_("Nick \002%s\002 has been confirmed."), na->nick.c_str());
+
+		// The network's welcome text goes to the account's owner once its
+		// registration is confirmed (an offline owner does not get it).
+		const auto &regmsg = Config->GetModule(this->owner).Get<const Warden::string>("registermessage");
+		if (!regmsg.empty())
+		{
+			for (auto *u : nc->users)
+				u->SendMessage(source.service, regmsg);
+		}
 	}
 
 	bool OnHelp(CommandSource &source, const Warden::string &) override

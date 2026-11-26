@@ -283,6 +283,11 @@ bool WebCPanel::Verify::OnRequest(HTTP::Provider *server, const Warden::string &
 				replacements["MESSAGES"] = Warden::Format(Language::Translate(NICK_X_SUSPENDED), na->nick.c_str());
 				return serve();
 			}
+			if (nc->HasExt("UNCONFIRMED"))
+			{
+				replacements["MESSAGES"] = "This account's registration has not been confirmed yet. Confirm it first.";
+				return serve();
+			}
 
 			const auto pass = WebPanel::GetRequestData(message.post_data, "password");
 			if (pass.empty() || pass != WebPanel::GetRequestData(message.post_data, "password2"))
@@ -292,18 +297,13 @@ bool WebCPanel::Verify::OnRequest(HTTP::Provider *server, const Warden::string &
 			}
 
 			// The token proves the request came from the account's email. The
-			// new password ends the pending reset (ns_resetpass), and, as a
-			// confirmed reset does, confirms an address-confirmed account.
+			// new password ends the pending reset (ns_resetpass).
 			const auto old_pass = nc->pass;
 			params.push_back(pass);
 			WebPanel::RunCommand(client, na->nick, nc, "NickServ", "nickserv/set/password", params, replacements);
 			done = nc->pass != old_pass;
 			if (done)
-			{
-				if (Config->GetModule("ns_register").Get<const Warden::string>("registration").equals_ci("mail"))
-					nc->Shrink<bool>("UNCONFIRMED");
 				replacements["MESSAGES"] = "Your password has been changed. You can now identify with it on IRC.";
-			}
 			break;
 		}
 	}

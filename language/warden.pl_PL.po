@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-26 00:11+0100\n"
+"POT-Creation-Date: 2026-11-26 22:44+0100\n"
 "PO-Revision-Date: 2024-02-22 16:42+0000\n"
 "Last-Translator: k4be <k4be@pirc.pl>\n"
 "Language-Team: Polish\n"
@@ -9136,6 +9136,11 @@ msgstr "Podany klucz odzyskiwania dla %s jest nieprawidłowy."
 #, c-format
 msgid "The registration confirmation code you specified for %s is incorrect."
 msgstr "Podany kod potwierdzający rejestrację dla %s jest nieprawidłowy."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "The registration of %s has not been confirmed yet. Confirm it first; to get the confirmation again, identify and type %s."
+msgstr "Rejestracja %s nie została jeszcze potwierdzona. Najpierw ją potwierdź; aby ponownie otrzymać potwierdzenie, zidentyfikuj się i wpisz %s."
 
 #: ../modules/nickserv/ns_register.cpp
 #, c-format

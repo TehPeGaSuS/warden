@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-26 00:11+0100\n"
+"POT-Creation-Date: 2026-11-26 22:44+0100\n"
 "PO-Revision-Date: 2024-02-22 16:38+0000\n"
 "Last-Translator: Dragone2 <dragone2@risposteinformatiche.it>\n"
 "Language-Team: Italian\n"
@@ -9097,6 +9097,11 @@ msgstr "La chiave di recupero specificata per %s non è corretta."
 #, c-format
 msgid "The registration confirmation code you specified for %s is incorrect."
 msgstr "Il codice di conferma della registrazione che hai specificato per %s non è corretto."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "The registration of %s has not been confirmed yet. Confirm it first; to get the confirmation again, identify and type %s."
+msgstr "La registrazione di %s non è ancora stata confermata. Confermala prima; per ricevere di nuovo la conferma, identificati e digita %s."
 
 #: ../modules/nickserv/ns_register.cpp
 #, c-format

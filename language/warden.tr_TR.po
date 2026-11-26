@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-26 00:11+0100\n"
+"POT-Creation-Date: 2026-11-26 22:44+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -9106,6 +9106,11 @@ msgstr "%s için belirttiğiniz kurtarma anahtarı yanlış."
 #, c-format
 msgid "The registration confirmation code you specified for %s is incorrect."
 msgstr "%s için belirttiğiniz kayıt onay kodu hatalı."
+
+#: ../modules/nickserv/ns_resetpass.cpp
+#, c-format
+msgid "The registration of %s has not been confirmed yet. Confirm it first; to get the confirmation again, identify and type %s."
+msgstr "%s kaydı henüz onaylanmadı. Önce onaylayın; onayı yeniden almak için kimliğinizi doğrulayın ve %s yazın."
 
 #: ../modules/nickserv/ns_register.cpp
 #, c-format
