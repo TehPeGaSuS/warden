@@ -1,7 +1,7 @@
 Warden 1.0.1
 ============
 
-Not released yet.
+Released on 2026-11-26.
 
 ### Enhancements:
 * `ChanServ SET JOINFLOOD #chan MODES +mR` chooses the modes set during a join
