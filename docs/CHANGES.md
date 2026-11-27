@@ -3,6 +3,12 @@ Warden 1.0.2
 
 Not released yet.
 
+### Enhancements:
+* `OperServ FORCEID nick` (`os_forceid`, not loaded by default) identifies an
+  online user to the registered nick they are using, without its password.
+  Based on the third-party module by DukePyrolator and Andromeda. Suspended
+  nicks and unconfirmed registrations are refused.
+
 Warden 1.0.1
 ============
 

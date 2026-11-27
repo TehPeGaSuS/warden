@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-26 22:44+0100\n"
+"POT-Creation-Date: 2026-11-27 15:44+0100\n"
 "PO-Revision-Date: 2023-04-21 22:04+0200\n"
 "Last-Translator: henk\n"
 "Language-Team: German\n"
@@ -329,6 +329,11 @@ msgstr ""
 msgid "%s is already a member of %s."
 msgstr "%s ist bereits Mitglied von %s."
 
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "%s is already identified to %s."
+msgstr "%s ist bereits als %s identifiziert."
+
 #: ../modules/chanserv/cs_invite.cpp
 #, c-format
 msgid "%s is already in %s!"
@@ -438,6 +443,11 @@ msgstr "%s ist nicht in %s."
 #, c-format
 msgid "%s is not on the memo ignore list of %s."
 msgstr "%s ist nicht auf der Memo-Ignore-Liste von %s."
+
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "%s is now identified to %s."
+msgstr "%s ist jetzt als %s identifiziert."
 
 #: ../modules/chanserv/cs_status.cpp
 #, c-format
@@ -1135,7 +1145,7 @@ msgstr "Neues Passwort"
 
 #: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_seen.cpp
 #: ../modules/hostserv/hs_del.cpp ../modules/hostserv/hs_request.cpp
-#: ../modules/memoserv/ms_check.cpp
+#: ../modules/memoserv/ms_check.cpp ../modules/operserv/os_forceid.cpp
 msgid "nick"
 msgstr "Nickname"
 
@@ -5126,6 +5136,14 @@ msgstr "IP %s existiert bereits für %s."
 msgid "IP %s does not exist for %s."
 msgstr "IP %s existiert nicht für %s."
 
+#: ../modules/operserv/os_forceid.cpp
+msgid "Identifies an online user to the registered nick they are using, without asking for its password, e.g. for a user who can't log in. The user is told it was done by a services operator. Suspended nicks and registrations that are not confirmed yet are refused."
+msgstr "Identifiziert einen Benutzer, der online ist, für den registrierten Nick, den er gerade benutzt, ohne nach dessen Passwort zu fragen, z. B. für einen Benutzer, der sich nicht anmelden kann. Dem Benutzer wird mitgeteilt, dass dies ein Services-Operator getan hat. Gesperrte Nicks und noch nicht bestätigte Registrierungen werden abgelehnt."
+
+#: ../modules/operserv/os_forceid.cpp
+msgid "Identify a user to their nick without a password"
+msgstr "Einen Benutzer ohne Passwort für seinen Nick identifizieren"
+
 #: ../modules/nickserv/ns_identify.cpp
 msgid "Identify yourself with your password"
 msgstr "Melde dich mit deinem Passwort an"
@@ -9106,6 +9124,11 @@ msgstr "Der angegebene Wiederherstellungsschlüssel für %s ist falsch."
 msgid "The registration confirmation code you specified for %s is incorrect."
 msgstr "Der angegebene Registrierungs-Bestätigungscode für %s ist falsch."
 
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "The registration of %s has not been confirmed yet."
+msgstr "Die Registrierung von %s wurde noch nicht bestätigt."
+
 #: ../modules/nickserv/ns_resetpass.cpp
 #, c-format
 msgid "The registration of %s has not been confirmed yet. Confirm it first; to get the confirmation again, identify and type %s."
@@ -10415,6 +10438,11 @@ msgstr "Du hast Dein Limit von %d Channels bereits überschritten."
 #, c-format
 msgid "You have already reached your limit of %d channels."
 msgstr "Du hast Dein Limit von %d Channels bereits erreicht."
+
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "You have been identified to %s by a services operator."
+msgstr "Du wurdest von einem Services-Operator als %s identifiziert."
 
 #: ../modules/chanserv/cs_invite.cpp
 #, c-format

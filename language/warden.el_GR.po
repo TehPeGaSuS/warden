@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-26 22:44+0100\n"
+"POT-Creation-Date: 2026-11-27 15:44+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -326,6 +326,11 @@ msgstr ""
 msgid "%s is already a member of %s."
 msgstr "Ο/η %s είναι ήδη μέλος του %s."
 
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "%s is already identified to %s."
+msgstr "Ο %s είναι ήδη ταυτοποιημένος ως %s."
+
 #: ../modules/chanserv/cs_invite.cpp
 #, c-format
 msgid "%s is already in %s!"
@@ -435,6 +440,11 @@ msgstr "Ο/η %s δεν είναι στο %s."
 #, c-format
 msgid "%s is not on the memo ignore list of %s."
 msgstr "Ο/η %s δεν είναι στη λίστα αγνόησης memo του %s."
+
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "%s is now identified to %s."
+msgstr "Ο %s είναι πλέον ταυτοποιημένος ως %s."
 
 #: ../modules/chanserv/cs_status.cpp
 #, c-format
@@ -1130,7 +1140,7 @@ msgstr "νέος-κωδικός"
 
 #: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_seen.cpp
 #: ../modules/hostserv/hs_del.cpp ../modules/hostserv/hs_request.cpp
-#: ../modules/memoserv/ms_check.cpp
+#: ../modules/memoserv/ms_check.cpp ../modules/operserv/os_forceid.cpp
 msgid "nick"
 msgstr "ψευδώνυμο"
 
@@ -5125,6 +5135,14 @@ msgstr "Η IP %s υπάρχει ήδη για το %s."
 msgid "IP %s does not exist for %s."
 msgstr "Η IP %s δεν υπάρχει για το %s."
 
+#: ../modules/operserv/os_forceid.cpp
+msgid "Identifies an online user to the registered nick they are using, without asking for its password, e.g. for a user who can't log in. The user is told it was done by a services operator. Suspended nicks and registrations that are not confirmed yet are refused."
+msgstr "Ταυτοποιεί έναν συνδεδεμένο χρήστη στο καταχωρημένο ψευδώνυμο που χρησιμοποιεί, χωρίς να ζητά τον κωδικό του, π.χ. για έναν χρήστη που δεν μπορεί να συνδεθεί. Ο χρήστης ενημερώνεται ότι το έκανε ένας χειριστής υπηρεσιών. Τα ψευδώνυμα σε αναστολή και οι εγγραφές που δεν έχουν επιβεβαιωθεί ακόμα απορρίπτονται."
+
+#: ../modules/operserv/os_forceid.cpp
+msgid "Identify a user to their nick without a password"
+msgstr "Ταυτοποίηση χρήστη στο ψευδώνυμό του χωρίς κωδικό"
+
 #: ../modules/nickserv/ns_identify.cpp
 msgid "Identify yourself with your password"
 msgstr "Σας αναγνωρίζει με τη χρήση κωδικού"
@@ -9108,6 +9126,11 @@ msgstr "Το κλειδί ανάκτησης που έδωσες για το %s
 msgid "The registration confirmation code you specified for %s is incorrect."
 msgstr "Ο κωδικός επιβεβαίωσης κατοχύρωσης που δώσατε για το %s είναι λάθος."
 
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "The registration of %s has not been confirmed yet."
+msgstr "Η εγγραφή του %s δεν έχει επιβεβαιωθεί ακόμα."
+
 #: ../modules/nickserv/ns_resetpass.cpp
 #, c-format
 msgid "The registration of %s has not been confirmed yet. Confirm it first; to get the confirmation again, identify and type %s."
@@ -10415,6 +10438,11 @@ msgstr "Έχετε ήδη ξεπεράσει το όριό σας των %d κ
 #, c-format
 msgid "You have already reached your limit of %d channels."
 msgstr "Έχετε ήδη φτάσει το όριό σας των %d καναλιών."
+
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "You have been identified to %s by a services operator."
+msgstr "Ταυτοποιηθήκατε ως %s από έναν χειριστή υπηρεσιών."
 
 #: ../modules/chanserv/cs_invite.cpp
 #, c-format

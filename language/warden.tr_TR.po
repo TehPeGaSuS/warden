@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-26 22:44+0100\n"
+"POT-Creation-Date: 2026-11-27 15:44+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -326,6 +326,11 @@ msgstr ""
 msgid "%s is already a member of %s."
 msgstr "%s zaten %s grubunun üyesi."
 
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "%s is already identified to %s."
+msgstr "%s zaten %s olarak tanımlı."
+
 #: ../modules/chanserv/cs_invite.cpp
 #, c-format
 msgid "%s is already in %s!"
@@ -435,6 +440,11 @@ msgstr "%s, %s'de değil."
 #, c-format
 msgid "%s is not on the memo ignore list of %s."
 msgstr "%s, %s memo yoksayılanlar listesinde değil."
+
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "%s is now identified to %s."
+msgstr "%s artık %s olarak tanımlı."
 
 #: ../modules/chanserv/cs_status.cpp
 #, c-format
@@ -1130,7 +1140,7 @@ msgstr "yeni-şifre"
 
 #: ../modules/chanserv/cs_fantasy_stats.cpp ../modules/chanserv/cs_seen.cpp
 #: ../modules/hostserv/hs_del.cpp ../modules/hostserv/hs_request.cpp
-#: ../modules/memoserv/ms_check.cpp
+#: ../modules/memoserv/ms_check.cpp ../modules/operserv/os_forceid.cpp
 msgid "nick"
 msgstr "rumuz"
 
@@ -5126,6 +5136,14 @@ msgstr "%s IP adresi %s için zaten mevcut."
 msgid "IP %s does not exist for %s."
 msgstr "%s IP adresi %s için mevcut değil."
 
+#: ../modules/operserv/os_forceid.cpp
+msgid "Identifies an online user to the registered nick they are using, without asking for its password, e.g. for a user who can't log in. The user is told it was done by a services operator. Suspended nicks and registrations that are not confirmed yet are refused."
+msgstr "Çevrimiçi bir kullanıcıyı, kullandığı kayıtlı rumuza şifresini sormadan tanımlar; örneğin giriş yapamayan bir kullanıcı için. Kullanıcıya bunu bir servis operatörünün yaptığı söylenir. Askıya alınmış rumuzlar ve henüz onaylanmamış kayıtlar reddedilir."
+
+#: ../modules/operserv/os_forceid.cpp
+msgid "Identify a user to their nick without a password"
+msgstr "Bir kullanıcıyı şifresiz olarak rumuzuna tanımla"
+
 #: ../modules/nickserv/ns_identify.cpp
 msgid "Identify yourself with your password"
 msgstr "Şifrenizle kendinizi tanıtın"
@@ -9107,6 +9125,11 @@ msgstr "%s için belirttiğiniz kurtarma anahtarı yanlış."
 msgid "The registration confirmation code you specified for %s is incorrect."
 msgstr "%s için belirttiğiniz kayıt onay kodu hatalı."
 
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "The registration of %s has not been confirmed yet."
+msgstr "%s kaydı henüz onaylanmadı."
+
 #: ../modules/nickserv/ns_resetpass.cpp
 #, c-format
 msgid "The registration of %s has not been confirmed yet. Confirm it first; to get the confirmation again, identify and type %s."
@@ -10414,6 +10437,11 @@ msgstr "%d kanal sınırınızı zaten aştınız."
 #, c-format
 msgid "You have already reached your limit of %d channels."
 msgstr "%d kanal sınırınıza zaten ulaştınız."
+
+#: ../modules/operserv/os_forceid.cpp
+#, c-format
+msgid "You have been identified to %s by a services operator."
+msgstr "Bir servis operatörü tarafından %s olarak tanımlandınız."
 
 #: ../modules/chanserv/cs_invite.cpp
 #, c-format
