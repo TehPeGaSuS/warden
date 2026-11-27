@@ -45,9 +45,40 @@ struct SharedData final
 	// The name of the DNS record used for validation.
 	Warden::string validationrecord;
 
+	// Accounts blocked from requesting vhosts: who blocked them, when the
+	// block expires (0 = never) and why.
+	SerializableExtensibleItem<Warden::string> blockedby;
+	SerializableExtensibleItem<time_t> blockexpires;
+	SerializableExtensibleItem<Warden::string> blockreason;
+
 	SharedData(Module *mod)
 		: requestcooldown(mod, "HS_REQUEST_COOLDOWN")
+		, blockedby(mod, "HS_REQUEST_BLOCK_BY")
+		, blockexpires(mod, "HS_REQUEST_BLOCK_EXPIRES")
+		, blockreason(mod, "HS_REQUEST_BLOCK_REASON")
 	{
+	}
+
+	void Unblock(NickCore *nc)
+	{
+		blockedby.Unset(nc);
+		blockexpires.Unset(nc);
+		blockreason.Unset(nc);
+	}
+
+	// Whether nc may not request vhosts, removing a block that has expired.
+	bool IsBlocked(NickCore *nc)
+	{
+		if (!blockedby.HasExt(nc))
+			return false;
+
+		const auto *expires = blockexpires.Get(nc);
+		if (expires && *expires && *expires <= Warden::CurTime && !Warden::NoExpire)
+		{
+			Unblock(nc);
+			return false;
+		}
+		return true;
 	}
 };
 
@@ -242,6 +273,16 @@ public:
 		if (source.GetAccount()->HasExt("UNCONFIRMED"))
 		{
 			source.Reply(_("You must confirm your account before you may request a vhost."));
+			return;
+		}
+
+		if (data.IsBlocked(source.GetAccount()))
+		{
+			const auto *reason = data.blockreason.Get(source.GetAccount());
+			if (reason && !reason->empty())
+				source.Reply(_("You may not request vhosts: %s"), reason->c_str());
+			else
+				source.Reply(_("You may not request vhosts."));
 			return;
 		}
 
@@ -611,6 +652,175 @@ public:
 	}
 };
 
+class CommandHSBlock final
+	: public Command
+{
+private:
+	SharedData &data;
+
+	void DoAdd(CommandSource &source, const std::vector<Warden::string> &params)
+	{
+		if (params.size() < 2)
+		{
+			this->OnSyntaxError(source, "ADD");
+			return;
+		}
+
+		auto *na = NickAlias::Find(params[1]);
+		if (!na)
+		{
+			source.Reply(NICK_X_NOT_REGISTERED, params[1].c_str());
+			return;
+		}
+
+		time_t expires = 0;
+		size_t reasonidx = 2;
+		if (params.size() > 2 && params[2][0] == '+')
+		{
+			expires = Warden::DoTime(params[2]);
+			if (expires < 0)
+			{
+				source.Reply(BAD_EXPIRY_TIME);
+				return;
+			}
+			if (expires)
+				expires += Warden::CurTime;
+			reasonidx = 3;
+		}
+		Warden::string reason;
+		for (auto i = reasonidx; i < params.size(); ++i)
+			reason += (reason.empty() ? "" : " ") + params[i];
+
+		NickCore *nc = na->nc;
+		data.blockedby.Set(nc, source.GetNick());
+		data.blockexpires.Set(nc, expires);
+		data.blockreason.Set(nc, reason);
+
+		// A pending request from the account goes too.
+		unsigned rejected = 0;
+		for (auto *alias : *nc->aliases)
+		{
+			if (HostRequestImpl::Get(alias))
+			{
+				alias->Shrink<HostRequestImpl>(HOSTSERV_HOST_REQUEST_EXT);
+				++rejected;
+			}
+		}
+
+		Log(LOG_ADMIN, source, this) << "to block " << nc->display << " from requesting vhosts"
+			<< (expires ? " until " + Warden::strftime(expires) : "") << (reason.empty() ? "" : ": " + reason);
+		source.Reply(_("\002%s\002 may no longer request vhosts (expires: %s)."), nc->display.c_str(),
+			expires ? Warden::strftime(expires, source.GetAccount()).c_str() : Language::Translate(source.GetAccount(), TIME_NEVER));
+		if (rejected)
+			source.Reply(_("Their pending request was removed."));
+	}
+
+	void DoDel(CommandSource &source, const std::vector<Warden::string> &params)
+	{
+		if (params.size() < 2)
+		{
+			this->OnSyntaxError(source, "DEL");
+			return;
+		}
+
+		auto *na = NickAlias::Find(params[1]);
+		if (!na)
+		{
+			source.Reply(NICK_X_NOT_REGISTERED, params[1].c_str());
+			return;
+		}
+
+		if (!data.IsBlocked(na->nc))
+		{
+			source.Reply(_("\002%s\002 is not blocked from requesting vhosts."), na->nc->display.c_str());
+			return;
+		}
+
+		data.Unblock(na->nc);
+		Log(LOG_ADMIN, source, this) << "to unblock " << na->nc->display << " from requesting vhosts";
+		source.Reply(_("\002%s\002 may request vhosts again."), na->nc->display.c_str());
+	}
+
+	void DoList(CommandSource &source)
+	{
+		ListFormatter list(source.GetAccount());
+		list.AddColumn(_("Account")).AddColumn(_("Creator")).AddColumn(_("Expires")).AddColumn(_("Reason"));
+
+		for (const auto &[_, nc] : *NickCoreList)
+		{
+			if (!data.IsBlocked(nc))
+				continue;
+
+			const auto *expires = data.blockexpires.Get(nc);
+			const auto *reason = data.blockreason.Get(nc);
+			ListFormatter::ListEntry entry;
+			entry["Account"] = nc->display;
+			entry["Creator"] = *data.blockedby.Get(nc);
+			entry["Expires"] = expires && *expires ? Warden::strftime(*expires, source.GetAccount(), true) : Language::Translate(source.GetAccount(), TIME_NEVER);
+			entry["Reason"] = reason ? *reason : "";
+			list.AddEntry(entry);
+		}
+
+		if (list.IsEmpty())
+		{
+			source.Reply(_("No accounts are blocked from requesting vhosts."));
+			return;
+		}
+
+		source.Reply(_("Accounts blocked from requesting vhosts:"));
+		list.SendTo(source);
+		source.Reply(_("End of list."));
+	}
+
+public:
+	CommandHSBlock(Module *creator, SharedData &sd)
+		: Command(creator, "hostserv/block", 1, 4)
+		, data(sd)
+	{
+		this->SetDesc(_("Block accounts from requesting vhosts"));
+		this->SetSyntax(_("ADD \037nick\037 [+\037expiry\037] [\037reason\037]"));
+		this->SetSyntax(_("DEL \037nick\037"));
+		this->SetSyntax("LIST");
+	}
+
+	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
+	{
+		const auto &cmd = params[0];
+		if (cmd.equals_ci("LIST"))
+		{
+			this->DoList(source);
+			return;
+		}
+
+		if (Warden::ReadOnly)
+		{
+			source.Reply(READ_ONLY_MODE);
+			return;
+		}
+
+		if (cmd.equals_ci("ADD"))
+			this->DoAdd(source, params);
+		else if (cmd.equals_ci("DEL"))
+			this->DoDel(source, params);
+		else
+			this->OnSyntaxError(source, "");
+	}
+
+	bool OnHelp(CommandSource &source, const Warden::string &subcommand) override
+	{
+		this->SendSyntax(source);
+		source.Reply(" ");
+		source.Reply(_(
+			"Blocks the account of the given nick from requesting vhosts, e.g. "
+			"for users who keep sending unwanted requests. A pending request "
+			"from the account is removed. The block covers every nick in the "
+			"account and lasts until it expires or is deleted; the user is "
+			"told the reason when they try to request a vhost."
+		));
+		return true;
+	}
+};
+
 class HSRequest final
 	: public Module
 {
@@ -621,6 +831,7 @@ private:
 	CommandHSReject commandhsreject;
 	CommandHSWaiting commandhswaiting;
 	CommandHSValidate commandhsvalidate;
+	CommandHSBlock commandhsblock;
 	ExtensibleItem<HostRequestImpl> hostrequest;
 	HostRequestTypeImpl request_type;
 
@@ -633,6 +844,7 @@ public:
 		, commandhsreject(this, data)
 		, commandhswaiting(this)
 		, commandhsvalidate(this, data)
+		, commandhsblock(this, data)
 		, hostrequest(this, HOSTSERV_HOST_REQUEST_EXT)
 	{
 		if (!IRCD || !IRCD->CanSetVHost)

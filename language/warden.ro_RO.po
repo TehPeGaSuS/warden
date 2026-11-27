@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 15:44+0100\n"
+"POT-Creation-Date: 2026-11-27 19:50+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -427,6 +427,11 @@ msgstr "%s nu este o oră validă. Indică un timestamp Unix sau o dată precu
 msgid "%s is not a valid vhost."
 msgstr "%s nu este o gazdă virtuală validă."
 
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "%s is not blocked from requesting vhosts."
+msgstr "%s nu este blocat de la solicitarea gazdelor virtuale."
+
 #: ../include/language.h
 #, c-format
 msgid "%s is not currently on channel %s."
@@ -491,6 +496,16 @@ msgstr "%s corespunde unei excepții în %s și nu poate fi blocat(ă) până 
 #, c-format
 msgid "%s matches auto kick entry %s on %s (%s)."
 msgstr "%s corespunde intrării de izgonire automată %s în %s (%s)"
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "%s may no longer request vhosts (expires: %s)."
+msgstr "%s nu mai poate solicita gazde virtuale (expiră: %s)."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "%s may request vhosts again."
+msgstr "%s poate solicita din nou gazde virtuale."
 
 #: ../modules/chanserv/cs_xop.cpp
 #, c-format
@@ -637,6 +652,11 @@ msgid "%u entry has been migrated to the %s access system."
 msgid_plural "%u entries have been migrated to the %s access system."
 msgstr[0] "Intrarea %u a fost migrată către sistemul de acces %s."
 msgstr[1] "Intrările %u au fost migrate către sistemul de acces %s."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "%u vhost(s) removed, and %u pending request(s) rejected."
+msgstr "%u gazdă(e) virtuală(e) eliminată(e) și %u cerere(i) în așteptare respinsă(e)."
 
 #: ../modules/botserv/bs_bot.cpp
 msgid "ADD nick user host real"
@@ -1334,6 +1354,11 @@ msgstr "   Furnizare serviciu: %s"
 #: ../modules/operserv/os_oper.cpp
 msgid "   This oper is configured in the configuration file."
 msgstr "   Acest Operator este configurat în fișierul de configurare."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "  ... and %zu more."
+msgstr "  ... și încă %zu."
 
 #: ../include/modules/mset.h
 #, c-format
@@ -2100,6 +2125,10 @@ msgstr "ADD amprentă-digitală"
 msgid "ADD message"
 msgstr "ADD mesaj"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "ADD nick [+expiry] [reason]"
+msgstr "ADD pseudonim [+expirare] [motiv]"
+
 #: ../modules/nickserv/ns_cert.cpp
 msgid "ADD nickname fingerprint"
 msgstr "ADD pseudonim amprentă-digitală"
@@ -2145,8 +2174,8 @@ msgid "ADD [[nickname] fingerprint]"
 msgstr "ADD [[pseudonim] amprentă-digitală]"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [+expiry] entry reason"
-msgstr "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [+expirare] intrare motiv"
+msgid "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [+expiry] entry reason"
+msgstr "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [+expirare] intrare motiv"
 
 #: ../modules/operserv/os_dns.cpp
 msgid "ADDIP server.name ip"
@@ -2228,8 +2257,8 @@ msgstr "Lista de accese aparținând %s:"
 msgid "Access to this command requires the permission %s to be present in your opertype."
 msgstr "Accesul la această comandă necesită ca permisiunea %s să fie prezentă în tipul de Operator al dumneavoastră."
 
-#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_info.cpp
-#: ../modules/nickserv/ns_list.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_list.cpp
 msgid "Account"
 msgstr "Cont"
 
@@ -2246,10 +2275,19 @@ msgstr "Cont înregistrat"
 msgid "Account/Mask"
 msgstr "Cont/Mască"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "Accounts blocked from requesting vhosts:"
+msgstr "Conturi blocate de la solicitarea gazdelor virtuale:"
+
 #: ../modules/nickserv/nickserv.cpp
 #, c-format
 msgid "Accounts that are not used anymore are subject to the automatic expiration, i.e. they will be deleted after %s if not used."
 msgstr "Conturile care nu mai sunt utilizate expiră automat, adică vor fi radiate după %s dacă nu sunt folosite."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Accounts using a matching email: %zu"
+msgstr "Conturi care folosesc un email potrivit: %zu"
 
 #: ../modules/operserv/os_set.cpp
 msgid "Activate or deactivate debug mode"
@@ -3004,6 +3042,14 @@ msgstr "Blocări impuse în %s."
 msgid "Being fixed"
 msgstr "În curs de reparare"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "Block accounts from requesting vhosts"
+msgstr "Blochează conturi de la solicitarea gazdelor virtuale"
+
+#: ../modules/hostserv/hs_request.cpp
+msgid "Blocks the account of the given nick from requesting vhosts, e.g. for users who keep sending unwanted requests. A pending request from the account is removed. The block covers every nick in the account and lasts until it expires or is deleted; the user is told the reason when they try to request a vhost."
+msgstr "Blochează contul pseudonimului dat de la solicitarea gazdelor virtuale, de ex. pentru utilizatorii care trimit în continuu cereri nedorite. O cerere în așteptare a contului este eliminată. Blocarea acoperă toate pseudonimele din cont și durează până când expiră sau este ștearsă; utilizatorului i se comunică motivul când încearcă să solicite o gazdă virtuală."
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Bolds kicker"
 msgstr "Izgonire la îngroșări"
@@ -3197,6 +3243,10 @@ msgstr "De"
 #, c-format
 msgid "By default, the %s command is limited to:"
 msgstr "Implicit, comanda %s este limitată la:"
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
+msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} intrare"
 
 #: ../modules/operserv/os_info.cpp
 msgid "CLEAR target"
@@ -3821,10 +3871,11 @@ msgstr "Creare"
 #: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp
 #: ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp
 #: ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp
-#: ../modules/hostserv/hs_offer.cpp ../modules/nickserv/ns_cert.cpp
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp
-#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_news.cpp
-#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Creator"
 msgstr "Creator"
 
@@ -3879,6 +3930,10 @@ msgstr "DEL număr-intrare"
 msgid "DEL fingerprint"
 msgstr "DEL amprentă-digitală"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "DEL nick"
+msgstr "DEL pseudonim"
+
 #: ../modules/nickserv/ns_cert.cpp
 msgid "DEL nickname fingerprint"
 msgstr "DEL pseudonim amprentă-digitală"
@@ -3920,8 +3975,8 @@ msgid "DEL {vhost | entry-num | list}"
 msgstr "DEL {gazdă-virtuală | număr-intrare | listă}"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER} entry"
-msgstr "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER} intrare"
+msgid "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
+msgstr "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} intrare"
 
 #: ../modules/operserv/os_dns.cpp
 msgid "DELIP server.name ip"
@@ -4618,10 +4673,11 @@ msgstr "Sfârșitul listei - %zu/%zu afișate, cele mai apropiate primele."
 
 #: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_log.cpp
 #: ../modules/chanserv/cs_mode.cpp ../modules/chanserv/cs_xop.cpp
-#: ../modules/global/gl_queue.cpp ../modules/memoserv/ms_ignore.cpp
-#: ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp
-#: ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_dns.cpp
-#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp
+#: ../modules/global/gl_queue.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/memoserv/ms_ignore.cpp ../modules/memoserv/ms_list.cpp
+#: ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/operserv/os_dns.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_session.cpp
 msgid "End of list."
 msgstr "Sfârșitul listei."
 
@@ -4754,11 +4810,11 @@ msgid "Exception for %s has been updated to %d."
 msgstr "Excepția pentru %s a fost actualizată la %d."
 
 #: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp
-#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp
-#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
-#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
-#: ../modules/operserv/os_sxline.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/nickserv/nickserv.cpp
+#: ../modules/nickserv/ns_group.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_expiring.cpp ../modules/operserv/os_forbid.cpp
+#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Expires"
 msgstr "Expiră"
 
@@ -4880,13 +4936,21 @@ msgstr "Izgonire la inundări"
 
 #: ../modules/operserv/os_forbid.cpp
 msgid ""
-"Forbid allows you to forbid usage of certain nicknames, channels, and email addresses. Wildcards are accepted for all entries.\n"
+"Forbid allows you to forbid usage of certain nicknames, channels, email addresses, passwords and vhosts. Wildcards are accepted for all entries.\n"
+"\n"
+"Adding a NICK or CHAN forbid drops the matching registered nicks or channels. Adding a VHOST forbid removes the matching vhosts and rejects the matching pending vhost requests; vhosts that match the vhost_exempt setting, or the network's own default vhosts, are never forbidden. VHOST entries are matched against the host part only.\n"
+"\n"
+"CHECK shows what adding a forbid on an entry would affect, without adding it.\n"
 "\n"
 "When listing forbids, an optional from-to range (eg. 101-210) may be given to page through large forbid lists. Without a range, the default (unranged) list is capped by the listmax configuration option."
 msgstr ""
-"Forbid vă permite să interziceți folosirea anumitor pseudonime, canale și adrese de email. Metacaracterele sunt acceptate pentru toate intrările.\n"
+"Forbid vă permite să interziceți folosirea anumitor pseudonime, canale, adrese de email, parole și gazde virtuale. Metacaracterele sunt acceptate pentru toate intrările.\n"
 "\n"
-"La listarea interdicțiilor poate fi precizat un interval opțional de-la-până-la (ex. 101-210) pentru a parcurge listele mari. Fără interval, lista este limitată de opțiunea de configurație listmax."
+"Adăugarea unei interdicții NICK sau CHAN șterge pseudonimele sau canalele înregistrate potrivite. Adăugarea unei interdicții VHOST elimină gazdele virtuale potrivite și respinge cererile de gazdă virtuală în așteptare potrivite; gazdele virtuale care se potrivesc cu setarea vhost_exempt, sau gazdele virtuale implicite ale rețelei, nu sunt niciodată interzise. Intrările VHOST sunt comparate doar cu partea de gazdă.\n"
+"\n"
+"CHECK arată ce ar afecta adăugarea unei interdicții pentru o intrare, fără a o adăuga.\n"
+"\n"
+"La listarea interdicțiilor poate fi precizat un interval opțional de-la-până-la (ex. 101-210) pentru a parcurge listele mari. Fără interval, lista implicită (fără interval) este limitată de opțiunea de configurație listmax."
 
 #: ../modules/operserv/os_forbid.cpp
 msgid "Forbid list is empty."
@@ -4907,8 +4971,8 @@ msgid "Forbid on %s was not found."
 msgstr "Interzicerea pentru %s nu a fost găsită."
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "Forbid usage of nicknames, channels, and emails"
-msgstr "Interzice utilizarea pseudonimelor, canalelor și adreselor de email"
+msgid "Forbid usage of nicknames, channels, emails, passwords and vhosts"
+msgstr "Interzice utilizarea pseudonimelor, canalelor, adreselor de email, parolelor și gazdelor virtuale"
 
 #: ../modules/operserv/os_update.cpp
 msgid "Force the services databases to be updated immediately"
@@ -5417,8 +5481,8 @@ msgid "LIST [vhost-mask | entry-num | list]"
 msgstr "LIST [mască-virtuală | număr-intrare | listă]"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [from-to]"
-msgstr "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [de-la-până-la]"
+msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [from-to]"
+msgstr "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [de-la-până-la]"
 
 #: ../modules/nickserv/ns_set_language.cpp
 #, c-format
@@ -6110,6 +6174,11 @@ msgstr "Corespundeți și returnați toți utilizatorii care s-au înregistrat f
 msgid "Matches for %s:"
 msgstr "Corespunderile pentru %s sunt după cum urmează:"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Matching vhosts kept because they are exempt: %zu"
+msgstr "Gazde virtuale potrivite păstrate deoarece sunt exceptate: %zu"
+
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Maximum users: %zu (%s)"
@@ -6517,6 +6586,10 @@ msgstr "Nu"
 msgid "No access list limit"
 msgstr "Fără limită pentru lista de accese"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "No accounts are blocked from requesting vhosts."
+msgstr "Niciun cont nu este blocat de la solicitarea gazdelor virtuale."
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Fără operare automată"
@@ -6751,6 +6824,10 @@ msgstr "Note"
 msgid "Nothing to do."
 msgstr "Nu este nimic de făcut."
 
+#: ../modules/operserv/os_forbid.cpp
+msgid "Nothing was changed. Use ADD to add the forbid."
+msgstr "Nu s-a modificat nimic. Folosiți ADD pentru a adăuga interdicția."
+
 #: ../include/modules/mset.h
 msgid "Nothing was changed:"
 msgstr "Nu a fost modificat nimic:"
@@ -6816,6 +6893,11 @@ msgstr "Gazdă virtuală oferită"
 msgid "Online from"
 msgstr "Conectat(ă) din"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Online users whose nick would be taken away: %zu"
+msgstr "Utilizatori conectați cărora li s-ar lua pseudonimul: %zu"
+
 #: ../modules/groupserv/groupserv.cpp
 msgid "Only a founder can change a founder's flags."
 msgstr "Doar un fondator poate schimba flag-urile unui fondator."
@@ -6845,6 +6927,11 @@ msgstr "Doar membrii %s pot intra pe acest canal."
 #: ../modules/groupserv/groupserv.cpp
 msgid "Open"
 msgstr "Deschis"
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Open channels that would be cleared (users): %zu"
+msgstr "Canale deschise care ar fi golite (utilizatori): %zu"
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Open groups have been disabled by the network."
@@ -6915,6 +7002,11 @@ msgstr "Operatori urmăriți"
 msgid "Options"
 msgstr "Opțiuni"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "PASSWORD forbids can't be checked against existing accounts: passwords are stored hashed (%s), so they can't be read back. The forbid applies when a password is set (REGISTER, SET PASSWORD), and users who identify with a forbidden password are told to change it."
+msgstr "Interdicțiile PASSWORD nu pot fi verificate pentru conturile existente: parolele sunt stocate criptate (%s), deci nu pot fi citite. Interdicția se aplică la setarea unei parole (REGISTER, SET PASSWORD), iar utilizatorilor care se identifică cu o parolă interzisă li se cere să o schimbe."
+
 #: ../modules/operserv/os_dns.cpp
 msgid "POOL server.name"
 msgstr "POOL nume.server"
@@ -6968,6 +7060,11 @@ msgstr "Opțiunea de pace pentru %s este acum activată."
 #, c-format
 msgid "Pending fingerprint %s deleted from %s's certificate list."
 msgstr "Amprenta digitală în așteptare %s a fost înlăturată din lista de certificate aparținând %s."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Pending requests that would be rejected: %zu"
+msgstr "Cereri în așteptare care ar fi respinse: %zu"
 
 #: ../modules/nickserv/ns_cert.cpp
 #, c-format
@@ -7206,9 +7303,10 @@ msgid "Realname"
 msgstr "Nume real"
 
 #: ../modules/chanserv/cs_akick.cpp ../modules/hostserv/hs_offer.cpp
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp
-#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp
-#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Reason"
 msgstr "Motiv"
 
@@ -7293,6 +7391,11 @@ msgstr "Înregistrat"
 msgid "Registered accounts: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Conturi înregistrate: %zu intrări, %zu compartimente, cel mai lung lanț este %zu"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Registered channels that would be dropped: %zu"
+msgstr "Canale înregistrate care ar fi șterse: %zu"
+
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Registered channels: %zu entries, %zu buckets, longest chain is %zu"
@@ -7302,6 +7405,16 @@ msgstr "Canale înregistrate: %zu intrări, %zu compartimente, cel mai lung lan�
 #, c-format
 msgid "Registered nicknames: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Pseudonime înregistrate: %zu intrări, %zu compartimente, cel mai lung lanț este %zu"
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Registered nicks and channels that match: %zu"
+msgstr "Pseudonime și canale înregistrate care se potrivesc: %zu"
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Registered nicks that would be dropped: %zu"
+msgstr "Pseudonime înregistrate care ar fi șterse: %zu"
 
 #: ../modules/chanserv/cs_enforce.cpp
 #, c-format
@@ -9165,6 +9278,10 @@ msgstr "Utilizatorul cu pseudonimul dumneavoastră a fost înlăturat. Folosiți
 msgid "The vhost of %s has been cleared."
 msgstr "Gazda virtuală a %s a fost ștearsă."
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "Their pending request was removed."
+msgstr "Cererea sa în așteptare a fost eliminată."
+
 #: ../modules/botserv/bs_botlist.cpp
 msgid "There are no bots available at this time. Ask a Services Operator to create one!"
 msgstr "Nu există boți disponibili în acest moment. Puteți solicita de la un Operator de Servicii să creeze unul!"
@@ -9262,6 +9379,14 @@ msgstr "Nu este nimic de modificat."
 #: ../modules/memoserv/ms_set.cpp
 msgid "There's no email address set for your nick."
 msgstr "Nu a fost setată nicio adresă de email pentru pseudonimul dumneavoastră."
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "These accounts are not changed; the email can no longer be used to register or in SET EMAIL."
+msgstr "Aceste conturi nu sunt modificate; emailul nu mai poate fi folosit la înregistrare sau în SET EMAIL."
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "These are not changed; matching names can no longer be registered."
+msgstr "Acestea nu sunt modificate; numele potrivite nu mai pot fi înregistrate."
 
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
@@ -9441,6 +9566,10 @@ msgstr "Această opțiune împiedică asocierea unui bot într-un canal. Dacă u
 #: ../modules/botserv/bs_set.cpp
 msgid "This option prevents a bot from being assigned to a channel by users that aren't Services Operators."
 msgstr "Această opțiune împiedică asocierea unui bot într-un canal de către utilizatorii care nu sunt Operatori de Servicii."
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "This vhost is not allowed, choose a different one."
+msgstr "Această gazdă virtuală nu este permisă, alegeți una diferită."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -9900,6 +10029,11 @@ msgstr "Gazdă virtuală"
 msgid "VHost %s has been requested by %s."
 msgstr "Gazda virtuală %s a fost solicitată de %s."
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "VHost %s is forbidden by %s (%s): %s"
+msgstr "Gazda virtuală %s este interzisă de %s (%s): %s"
+
 #: ../modules/hostserv/hs_del.cpp
 #, c-format
 msgid "VHost for %s removed."
@@ -9934,6 +10068,11 @@ msgstr "Gazda virtuală pentru contul %s a fost setată la %s."
 #, c-format
 msgid "VHosts for account %s have been removed."
 msgstr "Gazda virtuală pentru contul %s a fost înlăturată."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "VHosts that would be removed: %zu"
+msgstr "Gazde virtuale care ar fi eliminate: %zu"
 
 #: ../modules/operserv/os_session.cpp
 msgid "VIEW host"
@@ -10525,6 +10664,15 @@ msgstr "Nu aveți dreptul să radiați pseudonimele altor Operatori de Servicii.
 msgid "You may not remove the last founder of %s."
 msgstr "Nu puteți înlătura ultimul fondator al %s."
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "You may not request vhosts."
+msgstr "Nu puteți solicita gazde virtuale."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "You may not request vhosts: %s"
+msgstr "Nu puteți solicita gazde virtuale: %s"
+
 #: ../modules/nickserv/ns_suspend.cpp
 msgid "You may not suspend other Services Operators' nicknames."
 msgstr "Nu aveți dreptul să suspendați pseudonimele altor Operatori de Servicii."
@@ -10814,6 +10962,11 @@ msgstr "Vechea ta cheie de recuperare nu mai funcționează."
 #: ../modules/operserv/os_login.cpp
 msgid "Your oper block doesn't require logging in."
 msgstr "Blocul de operare al dumneavoastră nu necesită autentificare."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Your password is on this network's list of forbidden passwords because it is considered too weak. Please change it with %s, for your own security."
+msgstr "Parola dumneavoastră se află pe lista de parole interzise a acestei rețele deoarece este considerată prea slabă. Vă rugăm să o schimbați cu %s, pentru propria siguranță."
 
 #: ../modules/nickserv/nickserv.cpp
 #, c-format
@@ -11288,9 +11441,6 @@ msgstr "{number}: {text} -- creat de {creator} pe {created}"
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "{number}: {topic} -- set by {by} at {set}"
 msgstr "{number}: {topic} -- setat de {by} la {set}"
-
-#~ msgid "DEL nick"
-#~ msgstr "DEL pseudonim"
 
 #~ msgid "Chanstats statistics are now disabled for this channel."
 #~ msgstr "Statisticile Chanstats sunt dezactivate acum pentru acest canal."

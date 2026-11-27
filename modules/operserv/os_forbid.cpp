@@ -17,6 +17,7 @@
 
 #include "module.h"
 #include "modules/chanserv/service.h"
+#include "modules/hostserv/request.h"
 #include "modules/nickserv/service.h"
 #include "modules/operserv/forbid.h"
 
@@ -63,6 +64,8 @@ namespace
 				return "REGISTER";
 			case OperServ::FT_PASSWORD:
 				return "PASSWORD";
+			case OperServ::FT_VHOST:
+				return "VHOST";
 			default:
 				return "UNKNOWN"; // Should never happen.
 		}
@@ -80,8 +83,72 @@ namespace
 			return OperServ::FT_REGISTER;
 		if (ft.equals_ci("PASSWORD"))
 			return OperServ::FT_PASSWORD;
+		if (ft.equals_ci("VHOST"))
+			return OperServ::FT_VHOST;
 
 		return OperServ::FT_SIZE; // Should never happen.
+	}
+
+	// The host part of a vhost mask (ident@host).
+	Warden::string VHostHost(const Warden::string &mask)
+	{
+		const auto at = mask.find('@');
+		return at == Warden::string::npos ? mask : mask.substr(at + 1);
+	}
+
+	// Whether a vhost is never forbidden: it matches vhost_exempt, or it has
+	// the shape of the network's own hs_nethost vhosts (prefix...suffix).
+	bool IsVHostExempt(const Warden::string &host)
+	{
+		spacesepstream exempts(Config->GetModule("os_forbid").Get<const Warden::string>("vhost_exempt"));
+		for (Warden::string exempt; exempts.GetToken(exempt); )
+		{
+			if (Warden::Match(host, exempt))
+				return true;
+		}
+
+		if (ModuleManager::FindModule("hs_nethost"))
+		{
+			const auto &nethost = Config->GetModule("hs_nethost");
+			const auto &prefix = nethost.Get<const Warden::string>("prefix");
+			const auto &suffix = nethost.Get<const Warden::string>("suffix");
+			if ((!prefix.empty() || !suffix.empty()) && host.length() > prefix.length() + suffix.length()
+				&& host.substr(0, prefix.length()).equals_ci(prefix)
+				&& host.substr(host.length() - suffix.length()).equals_ci(suffix))
+				return true;
+		}
+
+		return false;
+	}
+
+	// The VHOST forbid that applies to a vhost mask, if any.
+	OperServ::ForbidData *FindVHostForbid(const Warden::string &mask)
+	{
+		if (!OperServ::forbid_service)
+			return nullptr;
+
+		const auto host = VHostHost(mask);
+		if (host.empty() || IsVHostExempt(host))
+			return nullptr;
+		return OperServ::forbid_service->FindForbid(host, OperServ::FT_VHOST);
+	}
+
+	// Removes a vhost, resetting the host of the user using it.
+	void RemoveForbiddenVHost(NickAlias *na)
+	{
+		Log(LOG_NORMAL, "forbid", Config->GetClient("OperServ")) << "Removing forbidden vhost " << na->GetVHostMask() << " from " << na->nick;
+		FOREACH_MOD(OnDeleteVHost, (na));
+		na->RemoveVHost();
+	}
+
+	// Sends up to max of items as a list under a heading, and how many more there are.
+	void SendMatches(CommandSource &source, const char *heading, const std::vector<Warden::string> &items, unsigned max)
+	{
+		source.Reply(heading, items.size());
+		for (size_t i = 0; i < items.size() && (!max || i < max); ++i)
+			source.Reply("  %s", items[i].c_str());
+		if (max && items.size() > max)
+			source.Reply(_("  ... and %zu more."), items.size() - max);
 	}
 }
 
@@ -264,12 +331,124 @@ public:
 	CommandOSForbid(Module *creator)
 		: Command(creator, "operserv/forbid", 1, 5)
 	{
-		this->SetDesc(_("Forbid usage of nicknames, channels, and emails"));
-		this->SetSyntax(_("ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [+\037expiry\037] \037entry\037 \037reason\037"));
-		this->SetSyntax(_("DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER} \037entry\037"));
-		this->SetSyntax(_("LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [\037from\037-\037to\037]"));
+		this->SetDesc(_("Forbid usage of nicknames, channels, emails, passwords and vhosts"));
+		this->SetSyntax(_("ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [+\037expiry\037] \037entry\037 \037reason\037"));
+		this->SetSyntax(_("DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} \037entry\037"));
+		this->SetSyntax(_("LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [\037from\037-\037to\037]"));
+		this->SetSyntax(_("CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} \037entry\037"));
 	}
 
+	// Shows what adding a forbid on entry would affect, without adding it.
+	void DoCheck(CommandSource &source, OperServ::ForbidType ftype, const Warden::string &entry)
+	{
+		const auto max = Config->GetModule(this->owner).Get<unsigned>("listmax", "50");
+		auto matches = [&entry](const Warden::string &str) { return Warden::Match(str, entry, false, true); };
+
+		switch (ftype)
+		{
+			case OperServ::FT_NICK:
+			{
+				std::vector<Warden::string> nicks, users;
+				for (const auto &[_, na] : *NickAliasList)
+				{
+					if (matches(na->nick))
+						nicks.push_back(na->nick);
+				}
+				for (const auto &[_, u] : UserListByNick)
+				{
+					if (u->server != Me && !u->HasMode("OPER") && matches(u->nick))
+						users.push_back(u->nick);
+				}
+				SendMatches(source, _("Registered nicks that would be dropped: \002%zu\002"), nicks, max);
+				SendMatches(source, _("Online users whose nick would be taken away: \002%zu\002"), users, max);
+				break;
+			}
+			case OperServ::FT_CHAN:
+			{
+				std::vector<Warden::string> registered, open;
+				for (const auto &[_, ci] : *RegisteredChannelList)
+				{
+					if (matches(ci->name))
+						registered.push_back(ci->name);
+				}
+				for (const auto &[_, c] : ChannelList)
+				{
+					if (matches(c->name))
+						open.push_back(Warden::Format("%s (%zu)", c->name.c_str(), c->users.size()));
+				}
+				SendMatches(source, _("Registered channels that would be dropped: \002%zu\002"), registered, max);
+				SendMatches(source, _("Open channels that would be cleared (users): \002%zu\002"), open, max);
+				break;
+			}
+			case OperServ::FT_EMAIL:
+			{
+				std::vector<Warden::string> accounts;
+				for (const auto &[_, nc] : *NickCoreList)
+				{
+					if (!nc->email.empty() && matches(nc->email))
+						accounts.push_back(Warden::Format("%s (%s)", nc->display.c_str(), nc->email.c_str()));
+				}
+				SendMatches(source, _("Accounts using a matching email: \002%zu\002"), accounts, max);
+				source.Reply(_("These accounts are not changed; the email can no longer be used to register or in SET EMAIL."));
+				break;
+			}
+			case OperServ::FT_REGISTER:
+			{
+				std::vector<Warden::string> names;
+				for (const auto &[_, na] : *NickAliasList)
+				{
+					if (matches(na->nick))
+						names.push_back(na->nick);
+				}
+				for (const auto &[_, ci] : *RegisteredChannelList)
+				{
+					if (matches(ci->name))
+						names.push_back(ci->name);
+				}
+				SendMatches(source, _("Registered nicks and channels that match: \002%zu\002"), names, max);
+				source.Reply(_("These are not changed; matching names can no longer be registered."));
+				break;
+			}
+			case OperServ::FT_PASSWORD:
+			{
+				auto *enc = ModuleManager::FindFirstOf(ENCRYPTION);
+				source.Reply(_(
+						"PASSWORD forbids can't be checked against existing accounts: passwords are stored "
+						"hashed (%s), so they can't be read back. The forbid applies when a password is set "
+						"(REGISTER, SET PASSWORD), and users who identify with a forbidden password are told "
+						"to change it."
+					),
+					enc ? enc->name.c_str() : "?");
+				break;
+			}
+			case OperServ::FT_VHOST:
+			{
+				std::vector<Warden::string> removed, exempt, requests;
+				for (const auto &[_, na] : *NickAliasList)
+				{
+					if (na->HasVHost() && matches(na->GetVHostHost()))
+					{
+						auto &list = IsVHostExempt(na->GetVHostHost()) ? exempt : removed;
+						list.push_back(Warden::Format("%s (%s)", na->GetVHostMask().c_str(), na->nick.c_str()));
+					}
+
+					auto *req = na->GetExt<HostServ::HostRequest>(HOSTSERV_HOST_REQUEST_EXT);
+					if (req && matches(req->host) && !IsVHostExempt(req->host))
+						requests.push_back(Warden::Format("%s (%s)", req->host.c_str(), na->nick.c_str()));
+				}
+				SendMatches(source, _("VHosts that would be removed: \002%zu\002"), removed, max);
+				SendMatches(source, _("Matching vhosts kept because they are exempt: \002%zu\002"), exempt, max);
+				SendMatches(source, _("Pending requests that would be rejected: \002%zu\002"), requests, max);
+				break;
+			}
+			default:
+				break;
+		}
+
+		source.Reply(_("Nothing was changed. Use ADD to add the forbid."));
+	}
+
+public:
 	void Execute(CommandSource &source, const std::vector<Warden::string> &params_) override
 	{
 		if (!OperServ::forbid_service)
@@ -440,11 +619,35 @@ public:
 
 					break;
 				}
+				case OperServ::FT_VHOST:
+				{
+					unsigned vhosts = 0, requests = 0;
+					for (const auto &[_, na] : *NickAliasList)
+					{
+						if (na->HasVHost() && FindVHostForbid(na->GetVHostMask()))
+						{
+							RemoveForbiddenVHost(na);
+							++vhosts;
+						}
+
+						auto *req = na->GetExt<HostServ::HostRequest>(HOSTSERV_HOST_REQUEST_EXT);
+						if (req && FindVHostForbid(req->host))
+						{
+							na->Shrink<HostServ::HostRequest>(HOSTSERV_HOST_REQUEST_EXT);
+							++requests;
+						}
+					}
+
+					source.Reply(_("\002%u\002 vhost(s) removed, and \002%u\002 pending request(s) rejected."), vhosts, requests);
+					break;
+				}
 				default:
 					break;
 			}
 
 		}
+		else if (command.equals_ci("CHECK") && params.size() > 2 && ftype != OperServ::FT_SIZE)
+			this->DoCheck(source, ftype, params[2]);
 		else if (command.equals_ci("DEL") && params.size() > 2 && ftype != OperServ::FT_SIZE)
 		{
 			const Warden::string &entry = params[2];
@@ -569,7 +772,17 @@ public:
 		source.Reply(" ");
 		source.Reply(_(
 			"Forbid allows you to forbid usage of certain nicknames, channels, "
-			"and email addresses. Wildcards are accepted for all entries."
+			"email addresses, passwords and vhosts. Wildcards are accepted for "
+			"all entries."
+			"\n\n"
+			"Adding a NICK or CHAN forbid drops the matching registered nicks or "
+			"channels. Adding a VHOST forbid removes the matching vhosts and "
+			"rejects the matching pending vhost requests; vhosts that match the "
+			"vhost_exempt setting, or the network's own default vhosts, are never "
+			"forbidden. VHOST entries are matched against the host part only."
+			"\n\n"
+			"\002CHECK\002 shows what adding a forbid on an entry would affect, "
+			"without adding it."
 			"\n\n"
 			"When listing forbids, an optional \037from\037-\037to\037 range "
 			"(eg. \002101-210\002) may be given to page through large forbid "
@@ -601,6 +814,7 @@ private:
 	CommandOSForbid commandosforbid;
 	std::vector<OperServ::ForbidData *> fileforbids;
 	ExtensibleItem<bool> nohold;
+	PrimitiveExtensibleItem<time_t> weakpass;
 
 public:
 	OSForbid(const Warden::string &modname, const Warden::string &creator)
@@ -608,6 +822,7 @@ public:
 		, forbidService(this)
 		, commandosforbid(this)
 		, nohold(this, "FORBID_NOHOLD")
+		, weakpass(this, "FORBID_WEAKPASS")
 	{
 	}
 
@@ -722,6 +937,61 @@ public:
 		return EVENT_CONTINUE;
 	}
 
+	// Catches forbidden vhosts set any other way (offers, groups, DNS
+	// validation of a request made before the forbid).
+	void OnSetVHost(NickAlias *na) override
+	{
+		if (FindVHostForbid(na->GetVHostMask()))
+			RemoveForbiddenVHost(na);
+	}
+
+	static void WarnWeakPassword(User *u)
+	{
+		auto *NickServ = Config->GetClient("NickServ");
+		if (NickServ)
+		{
+			u->SendMessage(NickServ, _("Your password is on this network's list of forbidden passwords because it is considered too weak. Please change it with \002%s\002, for your own security."),
+				NickServ->GetQueryCommand("nickserv/set/password").c_str());
+		}
+	}
+
+	// A password can only be compared with PASSWORD forbids while it is in
+	// plain text, during the login. The encryption modules may log the user
+	// in before this runs: then warn right away. A SASL login (no user yet)
+	// completes when the user connects, so remember it until then.
+	void OnCheckAuthentication(User *u, IdentifyRequest *req) override
+	{
+		auto *na = NickAlias::Find(req->GetAccount());
+		if (!na)
+			return;
+
+		const auto weak = this->forbidService.FindForbid(req->GetPassword(), OperServ::FT_PASSWORD) != nullptr;
+		if (u)
+		{
+			if (weak && u->Account() == na->nc)
+				WarnWeakPassword(u);
+			return;
+		}
+
+		if (weak)
+			weakpass.Set(na->nc, Warden::CurTime);
+		else
+			weakpass.Unset(na->nc);
+	}
+
+	void OnUserLogin(User *u) override
+	{
+		auto *nc = u->Account();
+		const auto *when = nc ? weakpass.Get(nc) : nullptr;
+		if (!when)
+			return;
+
+		const auto recent = Warden::CurTime - *when < 300;
+		weakpass.Unset(nc);
+		if (recent)
+			WarnWeakPassword(u);
+	}
+
 	EventReturn OnPasswordValidate(CommandSource &source, NickCore *nc, const Warden::string &pass) override
 	{
 		const auto* forbid = this->forbidService.FindForbid(pass, OperServ::FT_PASSWORD);
@@ -759,6 +1029,33 @@ public:
 					source.Reply(_("Channel \002%s\002 is forbidden by %s: %s"), params[0].c_str(), d->creator.c_str(), d->reason.c_str());
 				else
 					source.Reply(_("Channel \002%s\002 is forbidden."), params[0].c_str());
+				return EVENT_STOP;
+			}
+		}
+		else if ((command->name == "hostserv/request" && !params.empty())
+			|| (command->name == "hostserv/set" && params.size() > 1)
+			|| (command->name == "hostserv/activate" && !params.empty()))
+		{
+			Warden::string mask;
+			if (command->name == "hostserv/request")
+				mask = params[0];
+			else if (command->name == "hostserv/set")
+				mask = params[1];
+			else
+			{
+				auto *na = NickAlias::Find(params[0]);
+				auto *req = na ? na->GetExt<HostServ::HostRequest>(HOSTSERV_HOST_REQUEST_EXT) : nullptr;
+				if (req)
+					mask = req->host;
+			}
+
+			auto *d = FindVHostForbid(mask);
+			if (d != NULL)
+			{
+				if (source.IsOper())
+					source.Reply(_("VHost \002%s\002 is forbidden by %s (%s): %s"), VHostHost(mask).c_str(), d->creator.c_str(), d->mask.c_str(), d->reason.c_str());
+				else
+					source.Reply(_("This vhost is not allowed, choose a different one."));
 				return EVENT_STOP;
 			}
 		}

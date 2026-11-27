@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 15:44+0100\n"
+"POT-Creation-Date: 2026-11-27 19:50+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -426,6 +426,11 @@ msgstr "%s δεν είναι έγκυρη ώρα. Δώσε ένα Unix timesta
 msgid "%s is not a valid vhost."
 msgstr "Το %s δεν είναι έγκυρο vhost."
 
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "%s is not blocked from requesting vhosts."
+msgstr "Ο/Η %s δεν είναι αποκλεισμένος/η από αιτήματα vhost."
+
 #: ../include/language.h
 #, c-format
 msgid "%s is not currently on channel %s."
@@ -490,6 +495,16 @@ msgstr "Ο/η %s ταιριάζει με ένα except στο %s και δεν
 #, c-format
 msgid "%s matches auto kick entry %s on %s (%s)."
 msgstr "Ο/η %s ταιριάζει με την εγγραφή auto kick %s στο %s (%s)."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "%s may no longer request vhosts (expires: %s)."
+msgstr "Ο/Η %s δεν μπορεί πλέον να ζητά vhost (λήγει: %s)."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "%s may request vhosts again."
+msgstr "Ο/Η %s μπορεί ξανά να ζητά vhost."
 
 #: ../modules/chanserv/cs_xop.cpp
 #, c-format
@@ -636,6 +651,11 @@ msgid "%u entry has been migrated to the %s access system."
 msgid_plural "%u entries have been migrated to the %s access system."
 msgstr[0] "%u εγγραφή μεταφέρθηκε στο σύστημα πρόσβασης %s."
 msgstr[1] "%u εγγραφές μεταφέρθηκαν στο σύστημα πρόσβασης %s."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "%u vhost(s) removed, and %u pending request(s) rejected."
+msgstr "Αφαιρέθηκαν %u vhost και απορρίφθηκαν %u εκκρεμή αιτήματα."
 
 #: ../modules/botserv/bs_bot.cpp
 msgid "ADD nick user host real"
@@ -1333,6 +1353,11 @@ msgstr "   Παρέχει υπηρεσία: %s"
 #: ../modules/operserv/os_oper.cpp
 msgid "   This oper is configured in the configuration file."
 msgstr "   Αυτός ο oper έχει οριστεί στο αρχείο ρυθμίσεων."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "  ... and %zu more."
+msgstr "  ... και %zu ακόμη."
 
 #: ../include/modules/mset.h
 #, c-format
@@ -2099,6 +2124,10 @@ msgstr "ADD αποτύπωμα"
 msgid "ADD message"
 msgstr "ADD μήνυμα"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "ADD nick [+expiry] [reason]"
+msgstr "ADD ψευδώνυμο [+λήξη] [λόγος]"
+
 #: ../modules/nickserv/ns_cert.cpp
 msgid "ADD nickname fingerprint"
 msgstr "ADD ψευδώνυμο αποτύπωμα"
@@ -2144,8 +2173,8 @@ msgid "ADD [[nickname] fingerprint]"
 msgstr "ADD [[ψευδώνυμο] αποτύπωμα]"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [+expiry] entry reason"
-msgstr "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [+λήξη] καταχώριση λόγος"
+msgid "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [+expiry] entry reason"
+msgstr "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [+λήξη] καταχώριση λόγος"
 
 #: ../modules/operserv/os_dns.cpp
 msgid "ADDIP server.name ip"
@@ -2227,8 +2256,8 @@ msgstr "Λίστα πρόσβασης του %s:"
 msgid "Access to this command requires the permission %s to be present in your opertype."
 msgstr "Η πρόσβαση σε αυτή την εντολή χρειάζεται την άδεια #%s# να υπάρχει στο opertype σας."
 
-#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_info.cpp
-#: ../modules/nickserv/ns_list.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_list.cpp
 msgid "Account"
 msgstr "Λογαριασμός"
 
@@ -2245,10 +2274,19 @@ msgstr "Ο λογαριασμός κατοχυρώθηκε"
 msgid "Account/Mask"
 msgstr "Λογαριασμός/Μάσκα"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "Accounts blocked from requesting vhosts:"
+msgstr "Λογαριασμοί αποκλεισμένοι από αιτήματα vhost:"
+
 #: ../modules/nickserv/nickserv.cpp
 #, c-format
 msgid "Accounts that are not used anymore are subject to the automatic expiration, i.e. they will be deleted after %s if not used."
 msgstr "Οι λογαριασμοί που δεν χρησιμοποιούνται πλέον υπόκεινται σε αυτόματη λήξη, δηλ. θα διαγράφονται μετά από %s αν δεν χρησιμοποιούνται."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Accounts using a matching email: %zu"
+msgstr "Λογαριασμοί με email που ταιριάζει: %zu"
 
 #: ../modules/operserv/os_set.cpp
 msgid "Activate or deactivate debug mode"
@@ -3003,6 +3041,14 @@ msgstr "Τα bans εφαρμόστηκαν στο %s."
 msgid "Being fixed"
 msgstr "Υπό διόρθωση"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "Block accounts from requesting vhosts"
+msgstr "Αποκλείει λογαριασμούς από αιτήματα vhost"
+
+#: ../modules/hostserv/hs_request.cpp
+msgid "Blocks the account of the given nick from requesting vhosts, e.g. for users who keep sending unwanted requests. A pending request from the account is removed. The block covers every nick in the account and lasts until it expires or is deleted; the user is told the reason when they try to request a vhost."
+msgstr "Αποκλείει τον λογαριασμό του δοσμένου ψευδωνύμου από αιτήματα vhost, π.χ. για χρήστες που στέλνουν συνεχώς ανεπιθύμητα αιτήματα. Ένα εκκρεμές αίτημα του λογαριασμού αφαιρείται. Ο αποκλεισμός καλύπτει όλα τα ψευδώνυμα του λογαριασμού και ισχύει μέχρι να λήξει ή να διαγραφεί· ο χρήστης ενημερώνεται για τον λόγο όταν προσπαθεί να ζητήσει vhost."
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Bolds kicker"
 msgstr "Kicker για έντονους χαρακτήρες"
@@ -3196,6 +3242,10 @@ msgstr "Από"
 #, c-format
 msgid "By default, the %s command is limited to:"
 msgstr "Από προεπιλογή, η εντολή %s περιορίζεται σε:"
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
+msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} καταχώριση"
 
 #: ../modules/operserv/os_info.cpp
 msgid "CLEAR target"
@@ -3824,10 +3874,11 @@ msgstr "Δημιουργήθηκε"
 #: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp
 #: ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp
 #: ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp
-#: ../modules/hostserv/hs_offer.cpp ../modules/nickserv/ns_cert.cpp
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp
-#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_news.cpp
-#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Creator"
 msgstr "Δημιουργός"
 
@@ -3882,6 +3933,10 @@ msgstr "DEL αριθμός-εγγραφής"
 msgid "DEL fingerprint"
 msgstr "DEL αποτύπωμα"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "DEL nick"
+msgstr "DEL ψευδώνυμο"
+
 #: ../modules/nickserv/ns_cert.cpp
 msgid "DEL nickname fingerprint"
 msgstr "DEL ψευδώνυμο αποτύπωμα"
@@ -3923,8 +3978,8 @@ msgid "DEL {vhost | entry-num | list}"
 msgstr "DEL {vhost | αριθμός-εγγραφής | λίστα}"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER} entry"
-msgstr "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER} εγγραφή"
+msgid "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
+msgstr "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} καταχώριση"
 
 #: ../modules/operserv/os_dns.cpp
 msgid "DELIP server.name ip"
@@ -4623,10 +4678,11 @@ msgstr "Τέλος λίστας - εμφανίζονται %zu/%zu, τα πλη�
 
 #: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_log.cpp
 #: ../modules/chanserv/cs_mode.cpp ../modules/chanserv/cs_xop.cpp
-#: ../modules/global/gl_queue.cpp ../modules/memoserv/ms_ignore.cpp
-#: ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp
-#: ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_dns.cpp
-#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp
+#: ../modules/global/gl_queue.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/memoserv/ms_ignore.cpp ../modules/memoserv/ms_list.cpp
+#: ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/operserv/os_dns.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_session.cpp
 msgid "End of list."
 msgstr "Τέλος λίστας."
 
@@ -4759,11 +4815,11 @@ msgid "Exception for %s has been updated to %d."
 msgstr "Exception για #%s# άλλαξε σε %d."
 
 #: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp
-#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp
-#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
-#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
-#: ../modules/operserv/os_sxline.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/nickserv/nickserv.cpp
+#: ../modules/nickserv/ns_group.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_expiring.cpp ../modules/operserv/os_forbid.cpp
+#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Expires"
 msgstr "Λήγει"
 
@@ -4885,13 +4941,21 @@ msgstr "Kicker flood"
 
 #: ../modules/operserv/os_forbid.cpp
 msgid ""
-"Forbid allows you to forbid usage of certain nicknames, channels, and email addresses. Wildcards are accepted for all entries.\n"
+"Forbid allows you to forbid usage of certain nicknames, channels, email addresses, passwords and vhosts. Wildcards are accepted for all entries.\n"
+"\n"
+"Adding a NICK or CHAN forbid drops the matching registered nicks or channels. Adding a VHOST forbid removes the matching vhosts and rejects the matching pending vhost requests; vhosts that match the vhost_exempt setting, or the network's own default vhosts, are never forbidden. VHOST entries are matched against the host part only.\n"
+"\n"
+"CHECK shows what adding a forbid on an entry would affect, without adding it.\n"
 "\n"
 "When listing forbids, an optional from-to range (eg. 101-210) may be given to page through large forbid lists. Without a range, the default (unranged) list is capped by the listmax configuration option."
 msgstr ""
-"Το forbid σας επιτρέπει να απαγορεύσετε τη χρήση ορισμένων ψευδωνύμων, καναλιών και διευθύνσεων email. Επιτρέπονται wildcards σε όλες τις εγγραφές.\n"
+"Το FORBID σας επιτρέπει να απαγορεύσετε τη χρήση συγκεκριμένων ψευδωνύμων, καναλιών, διευθύνσεων email, κωδικών και vhost. Τα wildcards επιτρέπονται σε όλες τις καταχωρίσεις.\n"
 "\n"
-"Κατά την εμφάνιση των απαγορεύσεων, μπορεί να δοθεί προαιρετικό εύρος από-έως (π.χ. 101-210) για σελιδοποίηση μεγάλων λιστών. Χωρίς εύρος, η προεπιλεγμένη λίστα περιορίζεται από την επιλογή ρυθμίσεων listmax."
+"Η προσθήκη forbid NICK ή CHAN διαγράφει τα αντίστοιχα κατοχυρωμένα ψευδώνυμα ή κανάλια. Η προσθήκη forbid VHOST αφαιρεί τα αντίστοιχα vhost και απορρίπτει τα αντίστοιχα εκκρεμή αιτήματα vhost· τα vhost που ταιριάζουν με τη ρύθμιση vhost_exempt, ή τα προεπιλεγμένα vhost του δικτύου, δεν απαγορεύονται ποτέ. Οι καταχωρίσεις VHOST συγκρίνονται μόνο με το τμήμα host.\n"
+"\n"
+"Το CHECK δείχνει τι θα επηρέαζε η προσθήκη forbid σε μια καταχώριση, χωρίς να την προσθέσει.\n"
+"\n"
+"Κατά την εμφάνιση της λίστας, μπορεί να δοθεί προαιρετικό εύρος από-έως (π.χ. 101-210) για σελιδοποίηση μεγάλων λιστών forbid. Χωρίς εύρος, η προεπιλεγμένη λίστα περιορίζεται από την επιλογή ρύθμισης listmax."
 
 #: ../modules/operserv/os_forbid.cpp
 msgid "Forbid list is empty."
@@ -4912,8 +4976,8 @@ msgid "Forbid on %s was not found."
 msgstr "Η απαγόρευση για το %s δεν βρέθηκε."
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "Forbid usage of nicknames, channels, and emails"
-msgstr "Απαγόρευση χρήσης ψευδωνύμων, καναλιών και emails"
+msgid "Forbid usage of nicknames, channels, emails, passwords and vhosts"
+msgstr "Απαγορεύει τη χρήση ψευδωνύμων, καναλιών, email, κωδικών και vhost"
 
 #: ../modules/operserv/os_update.cpp
 msgid "Force the services databases to be updated immediately"
@@ -5422,8 +5486,8 @@ msgid "LIST [vhost-mask | entry-num | list]"
 msgstr "LIST [vhost-μάσκα | αριθμός-θέσης | list]"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [from-to]"
-msgstr "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [από-έως]"
+msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [from-to]"
+msgstr "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [από-έως]"
 
 #: ../modules/nickserv/ns_set_language.cpp
 #, c-format
@@ -6117,6 +6181,11 @@ msgstr "Εύρεση και εμφάνιση όλων των χρηστών πο
 msgid "Matches for %s:"
 msgstr "Αποτελέσματα για το %s:"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Matching vhosts kept because they are exempt: %zu"
+msgstr "Vhost που ταιριάζουν αλλά διατηρούνται λόγω εξαίρεσης: %zu"
+
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Maximum users: %zu (%s)"
@@ -6524,6 +6593,10 @@ msgstr "Όχι"
 msgid "No access list limit"
 msgstr "Χωρίς όριο λίστας πρόσβασης"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "No accounts are blocked from requesting vhosts."
+msgstr "Κανένας λογαριασμός δεν είναι αποκλεισμένος από αιτήματα vhost."
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Χωρίς auto-op"
@@ -6758,6 +6831,10 @@ msgstr "Σημειώσεις"
 msgid "Nothing to do."
 msgstr "Δεν υπάρχει τίποτα να γίνει."
 
+#: ../modules/operserv/os_forbid.cpp
+msgid "Nothing was changed. Use ADD to add the forbid."
+msgstr "Δεν άλλαξε τίποτα. Χρησιμοποιήστε ADD για να προσθέσετε το forbid."
+
 #: ../include/modules/mset.h
 msgid "Nothing was changed:"
 msgstr "Δεν άλλαξε τίποτα:"
@@ -6823,6 +6900,11 @@ msgstr "Προσφερόμενο vhost"
 msgid "Online from"
 msgstr "Online από"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Online users whose nick would be taken away: %zu"
+msgstr "Συνδεδεμένοι χρήστες που θα έχαναν το ψευδώνυμό τους: %zu"
+
 #: ../modules/groupserv/groupserv.cpp
 msgid "Only a founder can change a founder's flags."
 msgstr "Μόνο ένας ιδρυτής μπορεί να αλλάξει τις σημαίες ενός ιδρυτή."
@@ -6852,6 +6934,11 @@ msgstr "Μόνο τα μέλη της %s μπορούν να μπουν σε α�
 #: ../modules/groupserv/groupserv.cpp
 msgid "Open"
 msgstr "Ανοιχτή"
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Open channels that would be cleared (users): %zu"
+msgstr "Ανοιχτά κανάλια που θα άδειαζαν (χρήστες): %zu"
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Open groups have been disabled by the network."
@@ -6922,6 +7009,11 @@ msgstr "Παρακολουθούμενοι ops"
 msgid "Options"
 msgstr "Επιλογές"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "PASSWORD forbids can't be checked against existing accounts: passwords are stored hashed (%s), so they can't be read back. The forbid applies when a password is set (REGISTER, SET PASSWORD), and users who identify with a forbidden password are told to change it."
+msgstr "Τα forbid PASSWORD δεν μπορούν να ελεγχθούν σε υπάρχοντες λογαριασμούς: οι κωδικοί αποθηκεύονται κατακερματισμένοι (%s), οπότε δεν μπορούν να ανακτηθούν. Το forbid ισχύει όταν ορίζεται κωδικός (REGISTER, SET PASSWORD), και οι χρήστες που αναγνωρίζονται με απαγορευμένο κωδικό καλούνται να τον αλλάξουν."
+
 #: ../modules/operserv/os_dns.cpp
 msgid "POOL server.name"
 msgstr "POOL όνομα.server"
@@ -6975,6 +7067,11 @@ msgstr "Η Peace επιλογή για το %s  #ΕΝΕΡΓΟΠΟΙΉΘΗΚΕ#."
 #, c-format
 msgid "Pending fingerprint %s deleted from %s's certificate list."
 msgstr "Το εκκρεμές fingerprint %s διαγράφηκε από τη λίστα πιστοποιητικών του %s."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Pending requests that would be rejected: %zu"
+msgstr "Εκκρεμή αιτήματα που θα απορρίπτονταν: %zu"
 
 #: ../modules/nickserv/ns_cert.cpp
 #, c-format
@@ -7213,9 +7310,10 @@ msgid "Realname"
 msgstr "Realname"
 
 #: ../modules/chanserv/cs_akick.cpp ../modules/hostserv/hs_offer.cpp
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp
-#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp
-#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Reason"
 msgstr "Λόγος"
 
@@ -7300,6 +7398,11 @@ msgstr "Κατοχυρώθηκε"
 msgid "Registered accounts: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Κατοχυρωμένοι λογαριασμοί: %zu εγγραφές, %zu buckets, η μεγαλύτερη αλυσίδα είναι %zu"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Registered channels that would be dropped: %zu"
+msgstr "Κατοχυρωμένα κανάλια που θα διαγράφονταν: %zu"
+
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Registered channels: %zu entries, %zu buckets, longest chain is %zu"
@@ -7309,6 +7412,16 @@ msgstr "Κατοχυρωμένα κανάλια: %zu εγγραφές, %zu bucke
 #, c-format
 msgid "Registered nicknames: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Κατοχυρωμένα ψευδώνυμα: %zu εγγραφές, %zu buckets, η μεγαλύτερη αλυσίδα είναι %zu"
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Registered nicks and channels that match: %zu"
+msgstr "Κατοχυρωμένα ψευδώνυμα και κανάλια που ταιριάζουν: %zu"
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Registered nicks that would be dropped: %zu"
+msgstr "Κατοχυρωμένα ψευδώνυμα που θα διαγράφονταν: %zu"
 
 #: ../modules/chanserv/cs_enforce.cpp
 #, c-format
@@ -9179,6 +9292,10 @@ msgstr "Ο χρήστης με το nick σας αφαιρέθηκε. Χρησι
 msgid "The vhost of %s has been cleared."
 msgstr "Το vhost του %s διαγράφηκε."
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "Their pending request was removed."
+msgstr "Το εκκρεμές αίτημά του αφαιρέθηκε."
+
 #: ../modules/botserv/bs_botlist.cpp
 msgid "There are no bots available at this time. Ask a Services Operator to create one!"
 msgstr "Δεν υπάρχουν διαθέσιμα bots αυτή τη στιγμή. Ρώτα τον Services Operator να σου φτιάξει ένα!"
@@ -9276,6 +9393,14 @@ msgstr "Δεν υπάρχει τίποτα να αλλάξει."
 #: ../modules/memoserv/ms_set.cpp
 msgid "There's no email address set for your nick."
 msgstr "Δεν υπάρχει email που να συνδέεται με το nick σας."
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "These accounts are not changed; the email can no longer be used to register or in SET EMAIL."
+msgstr "Αυτοί οι λογαριασμοί δεν αλλάζουν· το email δεν μπορεί πλέον να χρησιμοποιηθεί για εγγραφή ή στο SET EMAIL."
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "These are not changed; matching names can no longer be registered."
+msgstr "Αυτά δεν αλλάζουν· ονόματα που ταιριάζουν δεν μπορούν πλέον να κατοχυρωθούν."
 
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
@@ -9455,6 +9580,10 @@ msgstr "Αυτή η επιλογή κάνει ένα κανάλι να μη δέ
 #: ../modules/botserv/bs_set.cpp
 msgid "This option prevents a bot from being assigned to a channel by users that aren't Services Operators."
 msgstr "Αυτή η επιλογή εμποδίζει την ανάθεση bot σε κανάλι από χρήστες που δεν είναι Services Operators."
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "This vhost is not allowed, choose a different one."
+msgstr "Αυτό το vhost δεν επιτρέπεται, επιλέξτε άλλο."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -9914,6 +10043,11 @@ msgstr "VHost"
 msgid "VHost %s has been requested by %s."
 msgstr "Το VHost %s ζητήθηκε από τον/την %s."
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "VHost %s is forbidden by %s (%s): %s"
+msgstr "Το vhost %s απαγορεύτηκε από τον/την %s (%s): %s"
+
 #: ../modules/hostserv/hs_del.cpp
 #, c-format
 msgid "VHost for %s removed."
@@ -9948,6 +10082,11 @@ msgstr "Το VHost για τον λογαριασμό %s ορίστηκε σε
 #, c-format
 msgid "VHosts for account %s have been removed."
 msgstr "Τα VHosts για τον λογαριασμό %s αφαιρέθηκαν."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "VHosts that would be removed: %zu"
+msgstr "Vhost που θα αφαιρούνταν: %zu"
 
 #: ../modules/operserv/os_session.cpp
 msgid "VIEW host"
@@ -10539,6 +10678,15 @@ msgstr "Δεν μπορείτε να διαγράψετε ψευδώνυμα ά�
 msgid "You may not remove the last founder of %s."
 msgstr "Δεν μπορείς να αφαιρέσεις τον τελευταίο ιδρυτή του %s."
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "You may not request vhosts."
+msgstr "Δεν μπορείτε να ζητήσετε vhost."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "You may not request vhosts: %s"
+msgstr "Δεν μπορείτε να ζητήσετε vhost: %s"
+
 #: ../modules/nickserv/ns_suspend.cpp
 msgid "You may not suspend other Services Operators' nicknames."
 msgstr "Δεν μπορείτε να αναστείλετε ψευδώνυμα άλλων Χειριστών Υπηρεσιών."
@@ -10828,6 +10976,11 @@ msgstr "Το παλιό σου κλειδί ανάκτησης δεν λειτο
 #: ../modules/operserv/os_login.cpp
 msgid "Your oper block doesn't require logging in."
 msgstr "To oper block σας δεν χρειάζεται login."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Your password is on this network's list of forbidden passwords because it is considered too weak. Please change it with %s, for your own security."
+msgstr "Ο κωδικός σας βρίσκεται στη λίστα απαγορευμένων κωδικών αυτού του δικτύου, επειδή θεωρείται πολύ αδύναμος. Παρακαλούμε αλλάξτε τον με %s, για τη δική σας ασφάλεια."
 
 #: ../modules/nickserv/nickserv.cpp
 #, c-format
@@ -11310,9 +11463,6 @@ msgstr "{number}: {topic} -- ορίστηκε από {by} στις {set}"
 #, fuzzy, c-format
 #~ msgid "%s not found on %s's access list."
 #~ msgstr "Ο/η #%s# δεν βρέθηκε στην access list του %s"
-
-#~ msgid "DEL nick"
-#~ msgstr "DEL #<nick>#."
 
 #, fuzzy
 #~ msgid "channel channel"

@@ -8,6 +8,16 @@ Not released yet.
   online user to the registered nick they are using, without its password.
   Based on the third-party module by DukePyrolator and Andromeda. Suspended
   nicks and unconfirmed registrations are refused.
+* `OperServ FORBID ADD VHOST` forbids vhosts: matching vhosts are refused in
+  `HostServ REQUEST`, `SET` and `ACTIVATE`, and adding the forbid removes the
+  matching vhosts and pending requests. `os_forbid:vhost_exempt` lists hosts it
+  never applies to; the `hs_nethost` default vhosts are always exempt.
+* `OperServ FORBID CHECK <type> <entry>` shows what adding a forbid would
+  affect, without adding it.
+* Users who log in with a password matching a `FORBID PASSWORD` entry are told
+  it is too weak and to change it (IDENTIFY and SASL).
+* `HostServ BLOCK ADD/DEL/LIST` stops an account from requesting vhosts. The
+  block follows the account, so grouping or `SET DISPLAY` doesn't avoid it.
 
 Warden 1.0.1
 ============

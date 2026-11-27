@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 15:44+0100\n"
+"POT-Creation-Date: 2026-11-27 19:50+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -428,6 +428,11 @@ msgstr "%s не является допустимым временем. Ука
 msgid "%s is not a valid vhost."
 msgstr "%s не является допустимым виртуальным хостом."
 
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "%s is not blocked from requesting vhosts."
+msgstr "%s не заблокирован для запросов виртуальных хостов."
+
 #: ../include/language.h
 #, c-format
 msgid "%s is not currently on channel %s."
@@ -492,6 +497,16 @@ msgstr "%s попадает под исключение на %s и не може
 #, c-format
 msgid "%s matches auto kick entry %s on %s (%s)."
 msgstr "%s соответствует записи автокика %s на %s (%s)."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "%s may no longer request vhosts (expires: %s)."
+msgstr "%s больше не может запрашивать виртуальные хосты (истекает: %s)."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "%s may request vhosts again."
+msgstr "%s снова может запрашивать виртуальные хосты."
 
 #: ../modules/chanserv/cs_xop.cpp
 #, c-format
@@ -641,6 +656,11 @@ msgid_plural "%u entries have been migrated to the %s access system."
 msgstr[0] "%u запись была перенесена в систему доступа %s."
 msgstr[1] "%u записи были перенесены в систему доступа %s."
 msgstr[2] "%u записей были перенесены в систему доступа %s."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "%u vhost(s) removed, and %u pending request(s) rejected."
+msgstr "Удалено виртуальных хостов: %u, отклонено ожидающих запросов: %u."
 
 #: ../modules/botserv/bs_bot.cpp
 msgid "ADD nick user host real"
@@ -1339,6 +1359,11 @@ msgstr " Предоставляемая услуга: %s"
 #: ../modules/operserv/os_oper.cpp
 msgid "   This oper is configured in the configuration file."
 msgstr " Этот оператор настроен в файле конфигурации."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "  ... and %zu more."
+msgstr "  ... и еще %zu."
 
 #: ../include/modules/mset.h
 #, c-format
@@ -2113,6 +2138,10 @@ msgstr "ADD отпечаток"
 msgid "ADD message"
 msgstr "ДОБАВИТЬ сообщение "
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "ADD nick [+expiry] [reason]"
+msgstr "ADD никнейм [+срок] [причина]"
+
 #: ../modules/nickserv/ns_cert.cpp
 msgid "ADD nickname fingerprint"
 msgstr "ДОБАВИТЬ ник отпечаток "
@@ -2158,8 +2187,8 @@ msgid "ADD [[nickname] fingerprint]"
 msgstr "ADD [[ник] отпечаток]"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [+expiry] entry reason"
-msgstr "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [+срок] запись причина "
+msgid "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [+expiry] entry reason"
+msgstr "ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [+срок] запись причина"
 
 #: ../modules/operserv/os_dns.cpp
 msgid "ADDIP server.name ip"
@@ -2241,8 +2270,8 @@ msgstr "Список доступа %s:"
 msgid "Access to this command requires the permission %s to be present in your opertype."
 msgstr "Доступ к этой команде требует наличия разрешения %s в вашем opertype."
 
-#: ../modules/groupserv/groupserv.cpp ../modules/nickserv/ns_info.cpp
-#: ../modules/nickserv/ns_list.cpp
+#: ../modules/groupserv/groupserv.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/nickserv/ns_info.cpp ../modules/nickserv/ns_list.cpp
 msgid "Account"
 msgstr "Аккаунт"
 
@@ -2259,10 +2288,19 @@ msgstr "Аккаунт зарегистрирован"
 msgid "Account/Mask"
 msgstr "Аккаунт/Маска"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "Accounts blocked from requesting vhosts:"
+msgstr "Учетные записи, заблокированные для запросов виртуальных хостов:"
+
 #: ../modules/nickserv/nickserv.cpp
 #, c-format
 msgid "Accounts that are not used anymore are subject to the automatic expiration, i.e. they will be deleted after %s if not used."
 msgstr "Аккаунты, которые больше не используются, подлежат автоматическому истечению срока действия, то есть они будут удалены через %s, если не будут использоваться."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Accounts using a matching email: %zu"
+msgstr "Учетных записей с совпадающим email: %zu"
 
 #: ../modules/operserv/os_set.cpp
 msgid "Activate or deactivate debug mode"
@@ -3017,6 +3055,14 @@ msgstr "Баны принудительно применены на %s."
 msgid "Being fixed"
 msgstr "Исправляется"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "Block accounts from requesting vhosts"
+msgstr "Блокировать учетным записям запросы виртуальных хостов"
+
+#: ../modules/hostserv/hs_request.cpp
+msgid "Blocks the account of the given nick from requesting vhosts, e.g. for users who keep sending unwanted requests. A pending request from the account is removed. The block covers every nick in the account and lasts until it expires or is deleted; the user is told the reason when they try to request a vhost."
+msgstr "Запрещает учетной записи указанного ника запрашивать виртуальные хосты, например для пользователей, которые постоянно отправляют нежелательные запросы. Ожидающий запрос от этой учетной записи удаляется. Блокировка распространяется на все ники учетной записи и действует, пока не истечет или не будет удалена; при попытке запросить виртуальный хост пользователю сообщается причина."
+
 #: ../modules/botserv/bs_kick.cpp
 msgid "Bolds kicker"
 msgstr "Кикер жирного шрифта"
@@ -3210,6 +3256,10 @@ msgstr "Кем"
 #, c-format
 msgid "By default, the %s command is limited to:"
 msgstr "По умолчанию команда %s ограничена:"
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
+msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} запись"
 
 #: ../modules/operserv/os_info.cpp
 msgid "CLEAR target"
@@ -3834,10 +3884,11 @@ msgstr "Создано"
 #: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_akick.cpp
 #: ../modules/chanserv/cs_entrymsg.cpp ../modules/chanserv/cs_flags.cpp
 #: ../modules/chanserv/cs_mode.cpp ../modules/hostserv/hs_list.cpp
-#: ../modules/hostserv/hs_offer.cpp ../modules/nickserv/ns_cert.cpp
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp
-#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_news.cpp
-#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/hostserv/hs_offer.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_news.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Creator"
 msgstr "Создатель"
 
@@ -3892,6 +3943,10 @@ msgstr "DEL номер_записи "
 msgid "DEL fingerprint"
 msgstr "DEL отпечаток "
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "DEL nick"
+msgstr "DEL никнейм"
+
 #: ../modules/nickserv/ns_cert.cpp
 msgid "DEL nickname fingerprint"
 msgstr "DEL ник отпечаток "
@@ -3933,8 +3988,8 @@ msgid "DEL {vhost | entry-num | list}"
 msgstr "DEL {виртуальный_хост | номер_записи | список}"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER} entry"
-msgstr "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER} запись "
+msgid "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
+msgstr "DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} запись"
 
 #: ../modules/operserv/os_dns.cpp
 msgid "DELIP server.name ip"
@@ -4640,10 +4695,11 @@ msgstr "Конец списка - показано %zu/%zu, ближайшие �
 
 #: ../modules/chanserv/cs_access.cpp ../modules/chanserv/cs_log.cpp
 #: ../modules/chanserv/cs_mode.cpp ../modules/chanserv/cs_xop.cpp
-#: ../modules/global/gl_queue.cpp ../modules/memoserv/ms_ignore.cpp
-#: ../modules/memoserv/ms_list.cpp ../modules/nickserv/ns_ajoin.cpp
-#: ../modules/nickserv/ns_cert.cpp ../modules/operserv/os_dns.cpp
-#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_session.cpp
+#: ../modules/global/gl_queue.cpp ../modules/hostserv/hs_request.cpp
+#: ../modules/memoserv/ms_ignore.cpp ../modules/memoserv/ms_list.cpp
+#: ../modules/nickserv/ns_ajoin.cpp ../modules/nickserv/ns_cert.cpp
+#: ../modules/operserv/os_dns.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_session.cpp
 msgid "End of list."
 msgstr "Конец списка."
 
@@ -4776,11 +4832,11 @@ msgid "Exception for %s has been updated to %d."
 msgstr "Исключение для %s было обновлено на %d."
 
 #: ../modules/chanserv/chanserv.cpp ../modules/hostserv/hs_offer.cpp
-#: ../modules/nickserv/nickserv.cpp ../modules/nickserv/ns_group.cpp
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_expiring.cpp
-#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
-#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
-#: ../modules/operserv/os_sxline.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/nickserv/nickserv.cpp
+#: ../modules/nickserv/ns_group.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_expiring.cpp ../modules/operserv/os_forbid.cpp
+#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp
+#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
 msgid "Expires"
 msgstr "Истекает"
 
@@ -4902,11 +4958,19 @@ msgstr "Кикер флуда"
 
 #: ../modules/operserv/os_forbid.cpp
 msgid ""
-"Forbid allows you to forbid usage of certain nicknames, channels, and email addresses. Wildcards are accepted for all entries.\n"
+"Forbid allows you to forbid usage of certain nicknames, channels, email addresses, passwords and vhosts. Wildcards are accepted for all entries.\n"
+"\n"
+"Adding a NICK or CHAN forbid drops the matching registered nicks or channels. Adding a VHOST forbid removes the matching vhosts and rejects the matching pending vhost requests; vhosts that match the vhost_exempt setting, or the network's own default vhosts, are never forbidden. VHOST entries are matched against the host part only.\n"
+"\n"
+"CHECK shows what adding a forbid on an entry would affect, without adding it.\n"
 "\n"
 "When listing forbids, an optional from-to range (eg. 101-210) may be given to page through large forbid lists. Without a range, the default (unranged) list is capped by the listmax configuration option."
 msgstr ""
-"Forbid позволяет запретить использование определенных ников, каналов и адресов электронной почты. Для всех записей допускаются подстановочные знаки.\n"
+"Forbid позволяет запретить использование определенных ников, каналов, адресов электронной почты, паролей и виртуальных хостов. Для всех записей допускаются подстановочные знаки.\n"
+"\n"
+"Добавление запрета NICK или CHAN удаляет совпадающие зарегистрированные ники или каналы. Добавление запрета VHOST удаляет совпадающие виртуальные хосты и отклоняет совпадающие ожидающие запросы виртуальных хостов; виртуальные хосты, подпадающие под параметр vhost_exempt, а также стандартные виртуальные хосты самой сети никогда не запрещаются. Записи VHOST сравниваются только с частью хоста.\n"
+"\n"
+"CHECK показывает, на что повлияет добавление запрета для записи, не добавляя его.\n"
 "\n"
 "При просмотре запретов можно указать необязательный диапазон от-до (например, 101-210) для постраничного просмотра больших списков. Без диапазона список по умолчанию ограничен параметром конфигурации listmax."
 
@@ -4929,8 +4993,8 @@ msgid "Forbid on %s was not found."
 msgstr "Запрет на %s не найден."
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "Forbid usage of nicknames, channels, and emails"
-msgstr "Запретить использование ников, каналов и email"
+msgid "Forbid usage of nicknames, channels, emails, passwords and vhosts"
+msgstr "Запрет использования ников, каналов, адресов электронной почты, паролей и виртуальных хостов"
 
 #: ../modules/operserv/os_update.cpp
 msgid "Force the services databases to be updated immediately"
@@ -5439,8 +5503,8 @@ msgid "LIST [vhost-mask | entry-num | list]"
 msgstr "LIST [маска_виртуального_хоста | номер_записи | список]"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [from-to]"
-msgstr "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER} [от-до]"
+msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [from-to]"
+msgstr "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [от-до]"
 
 #: ../modules/nickserv/ns_set_language.cpp
 #, c-format
@@ -6134,6 +6198,11 @@ msgstr "Найти и вернуть всех пользователей, зар
 msgid "Matches for %s:"
 msgstr "Совпадения для %s:"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Matching vhosts kept because they are exempt: %zu"
+msgstr "Совпадающих виртуальных хостов сохранено как исключения: %zu"
+
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Maximum users: %zu (%s)"
@@ -6541,6 +6610,10 @@ msgstr "Нет"
 msgid "No access list limit"
 msgstr "Без ограничения списка доступа"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "No accounts are blocked from requesting vhosts."
+msgstr "Нет учетных записей, заблокированных для запросов виртуальных хостов."
+
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Без авто-опа"
@@ -6775,6 +6848,10 @@ msgstr "Заметки"
 msgid "Nothing to do."
 msgstr "Нечего делать."
 
+#: ../modules/operserv/os_forbid.cpp
+msgid "Nothing was changed. Use ADD to add the forbid."
+msgstr "Ничего не изменено. Используйте ADD, чтобы добавить запрет."
+
 #: ../include/modules/mset.h
 msgid "Nothing was changed:"
 msgstr "Ничего не изменено:"
@@ -6840,6 +6917,11 @@ msgstr "Предложенный виртуальный хост"
 msgid "Online from"
 msgstr "В сети с"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Online users whose nick would be taken away: %zu"
+msgstr "Пользователей в сети, которые лишились бы ника: %zu"
+
 #: ../modules/groupserv/groupserv.cpp
 msgid "Only a founder can change a founder's flags."
 msgstr "Только основатель может изменять флаги основателя."
@@ -6869,6 +6951,11 @@ msgstr "Только участники %s могут заходить на эт
 #: ../modules/groupserv/groupserv.cpp
 msgid "Open"
 msgstr "Открытая"
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Open channels that would be cleared (users): %zu"
+msgstr "Открытых каналов, которые были бы очищены (пользователей): %zu"
 
 #: ../modules/groupserv/groupserv.cpp
 msgid "Open groups have been disabled by the network."
@@ -6939,6 +7026,11 @@ msgstr "Отслеживаемых операторов"
 msgid "Options"
 msgstr "Параметры"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "PASSWORD forbids can't be checked against existing accounts: passwords are stored hashed (%s), so they can't be read back. The forbid applies when a password is set (REGISTER, SET PASSWORD), and users who identify with a forbidden password are told to change it."
+msgstr "Запреты PASSWORD нельзя проверить по существующим учетным записям: пароли хранятся в виде хешей (%s), поэтому их невозможно прочитать. Запрет применяется при установке пароля (REGISTER, SET PASSWORD), а пользователям, идентифицирующимся с запрещенным паролем, предлагается его сменить."
+
 #: ../modules/operserv/os_dns.cpp
 msgid "POOL server.name"
 msgstr "POOL имя_сервера "
@@ -6992,6 +7084,11 @@ msgstr "Опция мира для %s теперь включена."
 #, c-format
 msgid "Pending fingerprint %s deleted from %s's certificate list."
 msgstr "Ожидающий отпечаток %s удален из списка сертификатов %s."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Pending requests that would be rejected: %zu"
+msgstr "Ожидающих запросов, которые были бы отклонены: %zu"
 
 #: ../modules/nickserv/ns_cert.cpp
 #, c-format
@@ -7230,9 +7327,10 @@ msgid "Realname"
 msgstr "Реальное имя"
 
 #: ../modules/chanserv/cs_akick.cpp ../modules/hostserv/hs_offer.cpp
-#: ../modules/operserv/os_akill.cpp ../modules/operserv/os_forbid.cpp
-#: ../modules/operserv/os_ignore.cpp ../modules/operserv/os_notify.cpp
-#: ../modules/operserv/os_session.cpp ../modules/operserv/os_sxline.cpp
+#: ../modules/hostserv/hs_request.cpp ../modules/operserv/os_akill.cpp
+#: ../modules/operserv/os_forbid.cpp ../modules/operserv/os_ignore.cpp
+#: ../modules/operserv/os_notify.cpp ../modules/operserv/os_session.cpp
+#: ../modules/operserv/os_sxline.cpp
 msgid "Reason"
 msgstr "Причина"
 
@@ -7317,6 +7415,11 @@ msgstr "Зарегистрирован"
 msgid "Registered accounts: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Зарегистрированные аккаунты: %zu записей, %zu корзин, самая длинная цепочка — %zu"
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Registered channels that would be dropped: %zu"
+msgstr "Зарегистрированных каналов, которые были бы удалены: %zu"
+
 #: ../modules/operserv/os_stats.cpp
 #, c-format
 msgid "Registered channels: %zu entries, %zu buckets, longest chain is %zu"
@@ -7326,6 +7429,16 @@ msgstr "Зарегистрированные каналы: %zu записей, %
 #, c-format
 msgid "Registered nicknames: %zu entries, %zu buckets, longest chain is %zu"
 msgstr "Зарегистрированные ники: %zu записей, %zu корзин, самая длинная цепочка — %zu"
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Registered nicks and channels that match: %zu"
+msgstr "Совпадающих зарегистрированных ников и каналов: %zu"
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Registered nicks that would be dropped: %zu"
+msgstr "Зарегистрированных ников, которые были бы удалены: %zu"
 
 #: ../modules/chanserv/cs_enforce.cpp
 #, c-format
@@ -9192,6 +9305,10 @@ msgstr "Пользователь с вашим ником был удален. �
 msgid "The vhost of %s has been cleared."
 msgstr "Виртуальный хост %s очищен."
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "Their pending request was removed."
+msgstr "Ожидающий запрос пользователя удален."
+
 #: ../modules/botserv/bs_botlist.cpp
 msgid "There are no bots available at this time. Ask a Services Operator to create one!"
 msgstr "В настоящее время нет доступных ботов. Попросите оператора сервисов создать одного!"
@@ -9290,6 +9407,14 @@ msgstr "Нечего изменять."
 #: ../modules/memoserv/ms_set.cpp
 msgid "There's no email address set for your nick."
 msgstr "Для вашего ника не установлен адрес электронной почты."
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "These accounts are not changed; the email can no longer be used to register or in SET EMAIL."
+msgstr "Эти учетные записи не изменяются; email больше нельзя использовать для регистрации или в SET EMAIL."
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "These are not changed; matching names can no longer be registered."
+msgstr "Они не изменяются; совпадающие имена больше нельзя зарегистрировать."
 
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
@@ -9469,6 +9594,10 @@ msgstr "Эта опция делает канал неназначаемым. Е
 #: ../modules/botserv/bs_set.cpp
 msgid "This option prevents a bot from being assigned to a channel by users that aren't Services Operators."
 msgstr "Эта опция запрещает назначение бота на канал пользователями, не являющимися операторами сервисов."
+
+#: ../modules/operserv/os_forbid.cpp
+msgid "This vhost is not allowed, choose a different one."
+msgstr "Этот виртуальный хост не разрешен, выберите другой."
 
 #: ../modules/groupserv/groupserv.cpp
 #, c-format
@@ -9928,6 +10057,11 @@ msgstr "Виртуальный хост"
 msgid "VHost %s has been requested by %s."
 msgstr "Виртуальный хост %s был запрошен %s."
 
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "VHost %s is forbidden by %s (%s): %s"
+msgstr "Виртуальный хост %s запрещен %s (%s): %s"
+
 #: ../modules/hostserv/hs_del.cpp
 #, c-format
 msgid "VHost for %s removed."
@@ -9962,6 +10096,11 @@ msgstr "Виртуальный хост для аккаунта %s устано�
 #, c-format
 msgid "VHosts for account %s have been removed."
 msgstr "Виртуальные хосты для аккаунта %s были удалены."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "VHosts that would be removed: %zu"
+msgstr "Виртуальных хостов, которые были бы удалены: %zu"
 
 #: ../modules/operserv/os_session.cpp
 msgid "VIEW host"
@@ -10556,6 +10695,15 @@ msgstr "Вы не можете удалить ники других операт
 msgid "You may not remove the last founder of %s."
 msgstr "Нельзя удалить последнего основателя %s."
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "You may not request vhosts."
+msgstr "Вы не можете запрашивать виртуальные хосты."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "You may not request vhosts: %s"
+msgstr "Вы не можете запрашивать виртуальные хосты: %s"
+
 #: ../modules/nickserv/ns_suspend.cpp
 msgid "You may not suspend other Services Operators' nicknames."
 msgstr "Вы не можете заморозить ники других операторов сервисов."
@@ -10845,6 +10993,11 @@ msgstr "Ваш старый ключ восстановления больше �
 #: ../modules/operserv/os_login.cpp
 msgid "Your oper block doesn't require logging in."
 msgstr "Ваш опер-блок не требует входа в систему."
+
+#: ../modules/operserv/os_forbid.cpp
+#, c-format
+msgid "Your password is on this network's list of forbidden passwords because it is considered too weak. Please change it with %s, for your own security."
+msgstr "Ваш пароль находится в списке запрещенных паролей этой сети, так как считается слишком слабым. Пожалуйста, ради вашей же безопасности смените его с помощью %s."
 
 #: ../modules/nickserv/nickserv.cpp
 #, c-format
@@ -11319,9 +11472,6 @@ msgstr "{number}: {text} -- создан {creator} {created}"
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "{number}: {topic} -- set by {by} at {set}"
 msgstr "{number}: {topic} -- установил(а) {by} в {set}"
-
-#~ msgid "DEL nick"
-#~ msgstr "УДАЛИТЬ <ник>"
 
 #~ msgid "Chanstats statistics are now disabled for this channel."
 #~ msgstr "Статистика Chanstats теперь отключена для этого канала."

@@ -30,6 +30,7 @@ namespace OperServ
 		FT_EMAIL,
 		FT_REGISTER,
 		FT_PASSWORD,
+		FT_VHOST,
 		FT_SIZE
 	};
 
