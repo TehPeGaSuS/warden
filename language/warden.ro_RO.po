@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 19:50+0100\n"
+"POT-Creation-Date: 2026-11-27 20:19+0100\n"
 "PO-Revision-Date: 2026-09-27 17:00+0100\n"
 "Last-Translator: Cristian Anghel <kidprotect-cristian@yahoo.com>\n"
 "Language-Team: Romanian\n"
@@ -1357,8 +1357,8 @@ msgstr "   Acest Operator este configurat în fișierul de configurare."
 
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
-msgid "  ... and %zu more."
-msgstr "  ... și încă %zu."
+msgid "  ... and %zu more. Give a range (e.g. %u-%u) to see them."
+msgstr "  ... și încă %zu. Indicați un interval (de ex. %u-%u) pentru a le vedea."
 
 #: ../include/modules/mset.h
 #, c-format
@@ -3245,8 +3245,8 @@ msgid "By default, the %s command is limited to:"
 msgstr "Implicit, comanda %s este limitată la:"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
-msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} intrare"
+msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry [from-to]"
+msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} intrare [de-la-până-la]"
 
 #: ../modules/operserv/os_info.cpp
 msgid "CLEAR target"
@@ -4940,7 +4940,7 @@ msgid ""
 "\n"
 "Adding a NICK or CHAN forbid drops the matching registered nicks or channels. Adding a VHOST forbid removes the matching vhosts and rejects the matching pending vhost requests; vhosts that match the vhost_exempt setting, or the network's own default vhosts, are never forbidden. VHOST entries are matched against the host part only.\n"
 "\n"
-"CHECK shows what adding a forbid on an entry would affect, without adding it.\n"
+"CHECK shows what adding a forbid on an entry would affect, without adding it. Each list shows its first listmax entries; give a from-to range (eg. 101-200) to see others.\n"
 "\n"
 "When listing forbids, an optional from-to range (eg. 101-210) may be given to page through large forbid lists. Without a range, the default (unranged) list is capped by the listmax configuration option."
 msgstr ""
@@ -4948,7 +4948,7 @@ msgstr ""
 "\n"
 "Adăugarea unei interdicții NICK sau CHAN șterge pseudonimele sau canalele înregistrate potrivite. Adăugarea unei interdicții VHOST elimină gazdele virtuale potrivite și respinge cererile de gazdă virtuală în așteptare potrivite; gazdele virtuale care se potrivesc cu setarea vhost_exempt, sau gazdele virtuale implicite ale rețelei, nu sunt niciodată interzise. Intrările VHOST sunt comparate doar cu partea de gazdă.\n"
 "\n"
-"CHECK arată ce ar afecta adăugarea unei interdicții pentru o intrare, fără a o adăuga.\n"
+"CHECK arată ce ar afecta adăugarea unei interdicții pentru o intrare, fără a o adăuga. Fiecare listă afișează primele listmax intrări; indicați un interval de-la-până-la (de ex. 101-200) pentru a le vedea pe celelalte.\n"
 "\n"
 "La listarea interdicțiilor poate fi precizat un interval opțional de-la-până-la (ex. 101-210) pentru a parcurge listele mari. Fără interval, lista implicită (fără interval) este limitată de opțiunea de configurație listmax."
 
@@ -11441,6 +11441,10 @@ msgstr "{number}: {text} -- creat de {creator} pe {created}"
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "{number}: {topic} -- set by {by} at {set}"
 msgstr "{number}: {topic} -- setat de {by} la {set}"
+
+#, c-format
+#~ msgid "  ... and %zu more."
+#~ msgstr "  ... și încă %zu."
 
 #~ msgid "Chanstats statistics are now disabled for this channel."
 #~ msgstr "Statisticile Chanstats sunt dezactivate acum pentru acest canal."

@@ -141,14 +141,24 @@ namespace
 		na->RemoveVHost();
 	}
 
-	// Sends up to max of items as a list under a heading, and how many more there are.
-	void SendMatches(CommandSource &source, const char *heading, const std::vector<Warden::string> &items, unsigned max)
+	// Sends items, sorted, under a heading: entries from-to when a range is
+	// given, otherwise the first max of them and how many more there are.
+	void SendMatches(CommandSource &source, const char *heading, std::vector<Warden::string> items, unsigned max, unsigned from, unsigned to)
 	{
+		std::sort(items.begin(), items.end(), ci::less());
 		source.Reply(heading, items.size());
+
+		if (from || to)
+		{
+			for (size_t i = std::max(from, 1u); i <= to && i <= items.size(); ++i)
+				source.Reply("  %zu. %s", i, items[i - 1].c_str());
+			return;
+		}
+
 		for (size_t i = 0; i < items.size() && (!max || i < max); ++i)
-			source.Reply("  %s", items[i].c_str());
+			source.Reply("  %zu. %s", i + 1, items[i].c_str());
 		if (max && items.size() > max)
-			source.Reply(_("  ... and %zu more."), items.size() - max);
+			source.Reply(_("  ... and %zu more. Give a range (e.g. %u-%u) to see them."), items.size() - max, max + 1, max * 2);
 	}
 }
 
@@ -335,11 +345,11 @@ public:
 		this->SetSyntax(_("ADD {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [+\037expiry\037] \037entry\037 \037reason\037"));
 		this->SetSyntax(_("DEL {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} \037entry\037"));
 		this->SetSyntax(_("LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [\037from\037-\037to\037]"));
-		this->SetSyntax(_("CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} \037entry\037"));
+		this->SetSyntax(_("CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} \037entry\037 [\037from\037-\037to\037]"));
 	}
 
 	// Shows what adding a forbid on entry would affect, without adding it.
-	void DoCheck(CommandSource &source, OperServ::ForbidType ftype, const Warden::string &entry)
+	void DoCheck(CommandSource &source, OperServ::ForbidType ftype, const Warden::string &entry, unsigned from, unsigned to)
 	{
 		const auto max = Config->GetModule(this->owner).Get<unsigned>("listmax", "50");
 		auto matches = [&entry](const Warden::string &str) { return Warden::Match(str, entry, false, true); };
@@ -359,8 +369,8 @@ public:
 					if (u->server != Me && !u->HasMode("OPER") && matches(u->nick))
 						users.push_back(u->nick);
 				}
-				SendMatches(source, _("Registered nicks that would be dropped: \002%zu\002"), nicks, max);
-				SendMatches(source, _("Online users whose nick would be taken away: \002%zu\002"), users, max);
+				SendMatches(source, _("Registered nicks that would be dropped: \002%zu\002"), nicks, max, from, to);
+				SendMatches(source, _("Online users whose nick would be taken away: \002%zu\002"), users, max, from, to);
 				break;
 			}
 			case OperServ::FT_CHAN:
@@ -376,8 +386,8 @@ public:
 					if (matches(c->name))
 						open.push_back(Warden::Format("%s (%zu)", c->name.c_str(), c->users.size()));
 				}
-				SendMatches(source, _("Registered channels that would be dropped: \002%zu\002"), registered, max);
-				SendMatches(source, _("Open channels that would be cleared (users): \002%zu\002"), open, max);
+				SendMatches(source, _("Registered channels that would be dropped: \002%zu\002"), registered, max, from, to);
+				SendMatches(source, _("Open channels that would be cleared (users): \002%zu\002"), open, max, from, to);
 				break;
 			}
 			case OperServ::FT_EMAIL:
@@ -388,7 +398,7 @@ public:
 					if (!nc->email.empty() && matches(nc->email))
 						accounts.push_back(Warden::Format("%s (%s)", nc->display.c_str(), nc->email.c_str()));
 				}
-				SendMatches(source, _("Accounts using a matching email: \002%zu\002"), accounts, max);
+				SendMatches(source, _("Accounts using a matching email: \002%zu\002"), accounts, max, from, to);
 				source.Reply(_("These accounts are not changed; the email can no longer be used to register or in SET EMAIL."));
 				break;
 			}
@@ -405,7 +415,7 @@ public:
 					if (matches(ci->name))
 						names.push_back(ci->name);
 				}
-				SendMatches(source, _("Registered nicks and channels that match: \002%zu\002"), names, max);
+				SendMatches(source, _("Registered nicks and channels that match: \002%zu\002"), names, max, from, to);
 				source.Reply(_("These are not changed; matching names can no longer be registered."));
 				break;
 			}
@@ -436,9 +446,9 @@ public:
 					if (req && matches(req->host) && !IsVHostExempt(req->host))
 						requests.push_back(Warden::Format("%s (%s)", req->host.c_str(), na->nick.c_str()));
 				}
-				SendMatches(source, _("VHosts that would be removed: \002%zu\002"), removed, max);
-				SendMatches(source, _("Matching vhosts kept because they are exempt: \002%zu\002"), exempt, max);
-				SendMatches(source, _("Pending requests that would be rejected: \002%zu\002"), requests, max);
+				SendMatches(source, _("VHosts that would be removed: \002%zu\002"), removed, max, from, to);
+				SendMatches(source, _("Matching vhosts kept because they are exempt: \002%zu\002"), exempt, max, from, to);
+				SendMatches(source, _("Pending requests that would be rejected: \002%zu\002"), requests, max, from, to);
 				break;
 			}
 			default:
@@ -466,7 +476,8 @@ public:
 		 */
 		std::vector<Warden::string> params = params_;
 		Warden::string rangearg;
-		if (params.size() > 1 && params[0].equals_ci("LIST") && params.back().find('-') != Warden::string::npos)
+		if (((params.size() > 1 && params[0].equals_ci("LIST")) || (params.size() > 3 && params[0].equals_ci("CHECK")))
+			&& params.back().find('-') != Warden::string::npos)
 		{
 			Warden::string n1, n2;
 			sepstream(params.back(), '-').GetToken(n1, 0);
@@ -647,7 +658,18 @@ public:
 
 		}
 		else if (command.equals_ci("CHECK") && params.size() > 2 && ftype != OperServ::FT_SIZE)
-			this->DoCheck(source, ftype, params[2]);
+		{
+			unsigned from = 0, to = 0;
+			if (!rangearg.empty())
+			{
+				Warden::string n1, n2;
+				sepstream(rangearg, '-').GetToken(n1, 0);
+				sepstream(rangearg, '-').GetToken(n2, 1);
+				from = Warden::Convert<unsigned>(n1, 0);
+				to = Warden::Convert<unsigned>(n2, 0);
+			}
+			this->DoCheck(source, ftype, params[2], from, to);
+		}
 		else if (command.equals_ci("DEL") && params.size() > 2 && ftype != OperServ::FT_SIZE)
 		{
 			const Warden::string &entry = params[2];
@@ -782,7 +804,8 @@ public:
 			"forbidden. VHOST entries are matched against the host part only."
 			"\n\n"
 			"\002CHECK\002 shows what adding a forbid on an entry would affect, "
-			"without adding it."
+			"without adding it. Each list shows its first listmax entries; give "
+			"a \037from\037-\037to\037 range (eg. \002101-200\002) to see others."
 			"\n\n"
 			"When listing forbids, an optional \037from\037-\037to\037 range "
 			"(eg. \002101-210\002) may be given to page through large forbid "

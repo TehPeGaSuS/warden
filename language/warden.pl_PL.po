@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 19:50+0100\n"
+"POT-Creation-Date: 2026-11-27 20:19+0100\n"
 "PO-Revision-Date: 2024-02-22 16:42+0000\n"
 "Last-Translator: k4be <k4be@pirc.pl>\n"
 "Language-Team: Polish\n"
@@ -1366,8 +1366,8 @@ msgstr "  Ten oper jest ustawiony w pliku konfiguracyjnym."
 
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
-msgid "  ... and %zu more."
-msgstr "  ... i jeszcze %zu."
+msgid "  ... and %zu more. Give a range (e.g. %u-%u) to see them."
+msgstr "  ... i %zu więcej. Podaj zakres (np. %u-%u), aby je zobaczyć."
 
 #: ../include/modules/mset.h
 #, c-format
@@ -3268,8 +3268,8 @@ msgid "By default, the %s command is limited to:"
 msgstr "Domyślnie komenda %s jest ograniczona do:"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
-msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} wpis"
+msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry [from-to]"
+msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} wpis [od-do]"
 
 #: ../modules/operserv/os_info.cpp
 msgid "CLEAR target"
@@ -4972,7 +4972,7 @@ msgid ""
 "\n"
 "Adding a NICK or CHAN forbid drops the matching registered nicks or channels. Adding a VHOST forbid removes the matching vhosts and rejects the matching pending vhost requests; vhosts that match the vhost_exempt setting, or the network's own default vhosts, are never forbidden. VHOST entries are matched against the host part only.\n"
 "\n"
-"CHECK shows what adding a forbid on an entry would affect, without adding it.\n"
+"CHECK shows what adding a forbid on an entry would affect, without adding it. Each list shows its first listmax entries; give a from-to range (eg. 101-200) to see others.\n"
 "\n"
 "When listing forbids, an optional from-to range (eg. 101-210) may be given to page through large forbid lists. Without a range, the default (unranged) list is capped by the listmax configuration option."
 msgstr ""
@@ -4980,7 +4980,7 @@ msgstr ""
 "\n"
 "Dodanie forbidu NICK lub CHAN usuwa pasujące zarejestrowane nicki lub kanały. Dodanie forbidu VHOST usuwa pasujące vhosty i odrzuca pasujące oczekujące prośby o vhost; vhosty pasujące do ustawienia vhost_exempt oraz domyślne vhosty samej sieci nigdy nie są zabraniane. Wpisy VHOST są porównywane tylko z częścią hosta.\n"
 "\n"
-"CHECK pokazuje, na co wpłynęłoby dodanie forbidu dla wpisu, bez dodawania go.\n"
+"CHECK pokazuje, na co wpłynęłoby dodanie forbidu dla wpisu, bez dodawania go. Każda lista pokazuje pierwsze listmax wpisów; podaj zakres od-do (np. 101-200), aby zobaczyć pozostałe.\n"
 "\n"
 "Przy wyświetlaniu forbidów można podać opcjonalny zakres od-do (np. 101-210), aby przeglądać duże listy. Bez zakresu domyślna lista jest ograniczona opcją konfiguracji listmax."
 
@@ -11562,6 +11562,10 @@ msgstr "{number}: {topic} -- ustawiony przez {by} o {set}"
 #~ "użytkowników pasujących do aktualnej maski AKICK.\n"
 #~ " \n"
 #~ "Polecenie AKICK CLEAR usuwa wszystkie wpisy z listy AKICK."
+
+#, c-format
+#~ msgid "  ... and %zu more."
+#~ msgstr "  ... i jeszcze %zu."
 
 #, c-format
 #~ msgid "\"/msg %s\" is no longer supported.  Use \"/msg %s@%s\" or \"/%s\" instead."

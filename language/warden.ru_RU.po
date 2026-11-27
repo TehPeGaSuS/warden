@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 19:50+0100\n"
+"POT-Creation-Date: 2026-11-27 20:19+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -1362,8 +1362,8 @@ msgstr " Этот оператор настроен в файле конфигу
 
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
-msgid "  ... and %zu more."
-msgstr "  ... и еще %zu."
+msgid "  ... and %zu more. Give a range (e.g. %u-%u) to see them."
+msgstr "  ... и ещё %zu. Укажите диапазон (например, %u-%u), чтобы увидеть их."
 
 #: ../include/modules/mset.h
 #, c-format
@@ -3258,8 +3258,8 @@ msgid "By default, the %s command is limited to:"
 msgstr "По умолчанию команда %s ограничена:"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
-msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} запись"
+msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry [from-to]"
+msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} запись [от-до]"
 
 #: ../modules/operserv/os_info.cpp
 msgid "CLEAR target"
@@ -4962,7 +4962,7 @@ msgid ""
 "\n"
 "Adding a NICK or CHAN forbid drops the matching registered nicks or channels. Adding a VHOST forbid removes the matching vhosts and rejects the matching pending vhost requests; vhosts that match the vhost_exempt setting, or the network's own default vhosts, are never forbidden. VHOST entries are matched against the host part only.\n"
 "\n"
-"CHECK shows what adding a forbid on an entry would affect, without adding it.\n"
+"CHECK shows what adding a forbid on an entry would affect, without adding it. Each list shows its first listmax entries; give a from-to range (eg. 101-200) to see others.\n"
 "\n"
 "When listing forbids, an optional from-to range (eg. 101-210) may be given to page through large forbid lists. Without a range, the default (unranged) list is capped by the listmax configuration option."
 msgstr ""
@@ -4970,7 +4970,7 @@ msgstr ""
 "\n"
 "Добавление запрета NICK или CHAN удаляет совпадающие зарегистрированные ники или каналы. Добавление запрета VHOST удаляет совпадающие виртуальные хосты и отклоняет совпадающие ожидающие запросы виртуальных хостов; виртуальные хосты, подпадающие под параметр vhost_exempt, а также стандартные виртуальные хосты самой сети никогда не запрещаются. Записи VHOST сравниваются только с частью хоста.\n"
 "\n"
-"CHECK показывает, на что повлияет добавление запрета для записи, не добавляя его.\n"
+"CHECK показывает, на что повлияет добавление запрета для записи, не добавляя его. Каждый список показывает первые listmax записей; укажите диапазон от-до (например, 101-200), чтобы увидеть остальные.\n"
 "\n"
 "При просмотре запретов можно указать необязательный диапазон от-до (например, 101-210) для постраничного просмотра больших списков. Без диапазона список по умолчанию ограничен параметром конфигурации listmax."
 
@@ -11472,6 +11472,10 @@ msgstr "{number}: {text} -- создан {creator} {created}"
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "{number}: {topic} -- set by {by} at {set}"
 msgstr "{number}: {topic} -- установил(а) {by} в {set}"
+
+#, c-format
+#~ msgid "  ... and %zu more."
+#~ msgstr "  ... и еще %zu."
 
 #~ msgid "Chanstats statistics are now disabled for this channel."
 #~ msgstr "Статистика Chanstats теперь отключена для этого канала."

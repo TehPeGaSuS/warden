@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 19:50+0100\n"
+"POT-Creation-Date: 2026-11-27 20:19+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -1356,8 +1356,8 @@ msgstr "   Αυτός ο oper έχει οριστεί στο αρχείο ρυθ
 
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
-msgid "  ... and %zu more."
-msgstr "  ... και %zu ακόμη."
+msgid "  ... and %zu more. Give a range (e.g. %u-%u) to see them."
+msgstr "  ... και %zu ακόμα. Δώστε ένα εύρος (π.χ. %u-%u) για να τις δείτε."
 
 #: ../include/modules/mset.h
 #, c-format
@@ -3244,8 +3244,8 @@ msgid "By default, the %s command is limited to:"
 msgstr "Από προεπιλογή, η εντολή %s περιορίζεται σε:"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
-msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} καταχώριση"
+msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry [from-to]"
+msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} καταχώριση [από-έως]"
 
 #: ../modules/operserv/os_info.cpp
 msgid "CLEAR target"
@@ -4945,7 +4945,7 @@ msgid ""
 "\n"
 "Adding a NICK or CHAN forbid drops the matching registered nicks or channels. Adding a VHOST forbid removes the matching vhosts and rejects the matching pending vhost requests; vhosts that match the vhost_exempt setting, or the network's own default vhosts, are never forbidden. VHOST entries are matched against the host part only.\n"
 "\n"
-"CHECK shows what adding a forbid on an entry would affect, without adding it.\n"
+"CHECK shows what adding a forbid on an entry would affect, without adding it. Each list shows its first listmax entries; give a from-to range (eg. 101-200) to see others.\n"
 "\n"
 "When listing forbids, an optional from-to range (eg. 101-210) may be given to page through large forbid lists. Without a range, the default (unranged) list is capped by the listmax configuration option."
 msgstr ""
@@ -4953,7 +4953,7 @@ msgstr ""
 "\n"
 "Η προσθήκη forbid NICK ή CHAN διαγράφει τα αντίστοιχα κατοχυρωμένα ψευδώνυμα ή κανάλια. Η προσθήκη forbid VHOST αφαιρεί τα αντίστοιχα vhost και απορρίπτει τα αντίστοιχα εκκρεμή αιτήματα vhost· τα vhost που ταιριάζουν με τη ρύθμιση vhost_exempt, ή τα προεπιλεγμένα vhost του δικτύου, δεν απαγορεύονται ποτέ. Οι καταχωρίσεις VHOST συγκρίνονται μόνο με το τμήμα host.\n"
 "\n"
-"Το CHECK δείχνει τι θα επηρέαζε η προσθήκη forbid σε μια καταχώριση, χωρίς να την προσθέσει.\n"
+"Το CHECK δείχνει τι θα επηρέαζε η προσθήκη forbid σε μια καταχώριση, χωρίς να την προσθέσει. Κάθε λίστα εμφανίζει τις πρώτες listmax καταχωρίσεις της· δώστε ένα εύρος από-έως (π.χ. 101-200) για να δείτε τις υπόλοιπες.\n"
 "\n"
 "Κατά την εμφάνιση της λίστας, μπορεί να δοθεί προαιρετικό εύρος από-έως (π.χ. 101-210) για σελιδοποίηση μεγάλων λιστών forbid. Χωρίς εύρος, η προεπιλεγμένη λίστα περιορίζεται από την επιλογή ρύθμισης listmax."
 
@@ -11529,6 +11529,10 @@ msgstr "{number}: {topic} -- ορίστηκε από {by} στις {set}"
 #~ "Η εντολή _AKILL CLEAR_ καθαρίζει όλες τις θέσεις της λίστας AKILL.\n"
 #~ "Μόνο για τους #Services operators#.\t\n"
 #~ "    "
+
+#, c-format
+#~ msgid "  ... and %zu more."
+#~ msgstr "  ... και %zu ακόμη."
 
 #, c-format
 #~ msgid "\"/msg %s\" is no longer supported.  Use \"/msg %s@%s\" or \"/%s\" instead."

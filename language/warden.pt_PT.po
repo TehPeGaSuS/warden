@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 19:50+0100\n"
+"POT-Creation-Date: 2026-11-27 20:19+0100\n"
 "PO-Revision-Date: 2026-08-15 19:55+0200\n"
 "Last-Translator: PeGaSuS <25697531+TehPeGaSuS@users.noreply.github.com>\n"
 "Language-Team: Portuguese (Portugal)\n"
@@ -1357,8 +1357,8 @@ msgstr "   Este oper está configurado no ficheiro de configuração."
 
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
-msgid "  ... and %zu more."
-msgstr "  ... e mais %zu."
+msgid "  ... and %zu more. Give a range (e.g. %u-%u) to see them."
+msgstr "  ... e mais %zu. Indica um intervalo (ex. %u-%u) para os veres."
 
 #: ../include/modules/mset.h
 #, c-format
@@ -3245,8 +3245,8 @@ msgid "By default, the %s command is limited to:"
 msgstr "Por predefinição, o comando %s está limitado a:"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
-msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entrada"
+msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry [from-to]"
+msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entrada [de-até]"
 
 #: ../modules/operserv/os_info.cpp
 msgid "CLEAR target"
@@ -4940,7 +4940,7 @@ msgid ""
 "\n"
 "Adding a NICK or CHAN forbid drops the matching registered nicks or channels. Adding a VHOST forbid removes the matching vhosts and rejects the matching pending vhost requests; vhosts that match the vhost_exempt setting, or the network's own default vhosts, are never forbidden. VHOST entries are matched against the host part only.\n"
 "\n"
-"CHECK shows what adding a forbid on an entry would affect, without adding it.\n"
+"CHECK shows what adding a forbid on an entry would affect, without adding it. Each list shows its first listmax entries; give a from-to range (eg. 101-200) to see others.\n"
 "\n"
 "When listing forbids, an optional from-to range (eg. 101-210) may be given to page through large forbid lists. Without a range, the default (unranged) list is capped by the listmax configuration option."
 msgstr ""
@@ -4948,7 +4948,7 @@ msgstr ""
 "\n"
 "Adicionar um forbid NICK ou CHAN elimina os nicks ou canais registados correspondentes. Adicionar um forbid VHOST remove os vhosts correspondentes e rejeita os pedidos de vhost pendentes correspondentes; os vhosts que correspondem à opção vhost_exempt, ou os vhosts predefinidos da própria rede, nunca são proibidos. As entradas VHOST são comparadas apenas com a parte do host.\n"
 "\n"
-"CHECK mostra o que seria afetado ao adicionar um forbid numa entrada, sem o adicionar.\n"
+"CHECK mostra o que seria afetado ao adicionar um forbid numa entrada, sem o adicionar. Cada lista mostra as primeiras listmax entradas; indica um intervalo de-até (ex. 101-200) para veres as restantes.\n"
 "\n"
 "Ao listar proibições, pode ser indicado um intervalo opcional de-até (ex. 101-210) para percorrer listas grandes. Sem intervalo, a lista predefinida é limitada pela opção de configuração listmax."
 
@@ -11443,6 +11443,10 @@ msgstr "{number}: {text} -- criado por {creator} a {created}"
 #: ../modules/chanserv/cs_topichistory.cpp
 msgid "{number}: {topic} -- set by {by} at {set}"
 msgstr "{number}: {topic} -- definido por {by} em {set}"
+
+#, c-format
+#~ msgid "  ... and %zu more."
+#~ msgstr "  ... e mais %zu."
 
 #~ msgid "Chanstats statistics are now disabled for this channel."
 #~ msgstr "As estatísticas do Chanstats estão agora desativadas para este canal."

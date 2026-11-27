@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 19:50+0100\n"
+"POT-Creation-Date: 2026-11-27 20:19+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -1356,8 +1356,8 @@ msgstr "   Bu oper yapılandırma dosyasında yapılandırılmıştır."
 
 #: ../modules/operserv/os_forbid.cpp
 #, c-format
-msgid "  ... and %zu more."
-msgstr "  ... ve %zu tane daha."
+msgid "  ... and %zu more. Give a range (e.g. %u-%u) to see them."
+msgstr "  ... ve %zu tane daha. Görmek için bir aralık verin (örn. %u-%u)."
 
 #: ../include/modules/mset.h
 #, c-format
@@ -3251,8 +3251,8 @@ msgid "By default, the %s command is limited to:"
 msgstr "Varsayılan olarak %s komutu şunlarla sınırlıdır:"
 
 #: ../modules/operserv/os_forbid.cpp
-msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry"
-msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} girdi"
+msgid "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} entry [from-to]"
+msgstr "CHECK {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} girdi [başlangıç-bitiş]"
 
 #: ../modules/operserv/os_info.cpp
 msgid "CLEAR target"
@@ -4946,7 +4946,7 @@ msgid ""
 "\n"
 "Adding a NICK or CHAN forbid drops the matching registered nicks or channels. Adding a VHOST forbid removes the matching vhosts and rejects the matching pending vhost requests; vhosts that match the vhost_exempt setting, or the network's own default vhosts, are never forbidden. VHOST entries are matched against the host part only.\n"
 "\n"
-"CHECK shows what adding a forbid on an entry would affect, without adding it.\n"
+"CHECK shows what adding a forbid on an entry would affect, without adding it. Each list shows its first listmax entries; give a from-to range (eg. 101-200) to see others.\n"
 "\n"
 "When listing forbids, an optional from-to range (eg. 101-210) may be given to page through large forbid lists. Without a range, the default (unranged) list is capped by the listmax configuration option."
 msgstr ""
@@ -4954,7 +4954,7 @@ msgstr ""
 "\n"
 "Bir NICK veya CHAN yasağı eklemek, eşleşen kayıtlı rumuzları veya kanalları siler. Bir VHOST yasağı eklemek, eşleşen vhostları kaldırır ve eşleşen bekleyen vhost taleplerini reddeder; vhost_exempt ayarıyla eşleşen vhostlar veya ağın kendi varsayılan vhostları asla yasaklanmaz. VHOST girdileri yalnızca host kısmıyla karşılaştırılır.\n"
 "\n"
-"CHECK, bir girdiye yasak eklemenin neyi etkileyeceğini, yasağı eklemeden gösterir.\n"
+"CHECK, bir girdiye yasak eklemenin neyi etkileyeceğini, yasağı eklemeden gösterir. Her liste ilk listmax girdisini gösterir; diğerlerini görmek için bir başlangıç-bitiş aralığı verin (örn. 101-200).\n"
 "\n"
 "Yasaklar listelenirken, büyük yasak listelerinde sayfa sayfa gezinmek için isteğe bağlı bir başlangıç-bitiş aralığı (örn. 101-210) verilebilir. Aralık verilmezse varsayılan (aralıksız) liste listmax yapılandırma seçeneğiyle sınırlanır."
 
@@ -11469,6 +11469,10 @@ msgstr "{number}: {topic} -- {by} tarafından {set} tarihinde ayarlandı"
 
 #~ msgid "nickname [parameter]"
 #~ msgstr "rumuz [parametre]"
+
+#, c-format
+#~ msgid "  ... and %zu more."
+#~ msgstr "  ... ve %zu tane daha."
 
 #, c-format
 #~ msgid "%-8s %s"
