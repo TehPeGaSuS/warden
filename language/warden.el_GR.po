@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 20:19+0100\n"
+"POT-Creation-Date: 2026-11-28 01:09+0100\n"
 "PO-Revision-Date: 2010-09-19 20:34-0400\n"
 "Last-Translator: VisioN <vision@myirc.us>\n"
 "Language-Team: Greek\n"
@@ -2427,6 +2427,11 @@ msgstr "Προσθέτει το δοσμένο αποτύπωμα στη λί�
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Adds your current fingerprint to your certificate list."
 msgstr "Προσθέτει το τρέχον αποτύπωμά σας στη λίστα πιστοποιητικών σας."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "All %u vhost request block(s) have been removed."
+msgstr "Αφαιρέθηκαν και οι %u αποκλεισμοί αιτημάτων vhost."
 
 #: ../modules/operserv/os_noop.cpp
 #, c-format
@@ -5465,6 +5470,10 @@ msgstr "LIST ψευδώνυμο"
 msgid "LIST threshold"
 msgstr "LIST όριο"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST [from-to]"
+msgstr "LIST [από-έως]"
+
 #: ../modules/operserv/os_notify.cpp
 msgid "LIST [mask | entry-num | list]"
 msgstr "LIST [μάσκα | αριθμός-θέσης | λίστα]"
@@ -5484,6 +5493,10 @@ msgstr "LIST [ψευδώνυμο]"
 #: ../modules/hostserv/hs_offer.cpp
 msgid "LIST [vhost-mask | entry-num | list]"
 msgstr "LIST [vhost-μάσκα | αριθμός-θέσης | list]"
+
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST shows every blocked account, numbered in order of account name. Give a range (e.g. 1-20) to see only those entries. CLEAR removes every block."
+msgstr "Το LIST εμφανίζει όλους τους αποκλεισμένους λογαριασμούς, αριθμημένους κατά όνομα λογαριασμού. Δώστε ένα εύρος (π.χ. 1-20) για να δείτε μόνο αυτές τις καταχωρίσεις. Το CLEAR αφαιρεί όλους τους αποκλεισμούς."
 
 #: ../modules/operserv/os_forbid.cpp
 msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [from-to]"
@@ -6600,6 +6613,11 @@ msgstr "Κανένας λογαριασμός δεν είναι αποκλεισ
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Χωρίς auto-op"
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "No blocked accounts in that range (there are %zu)."
+msgstr "Δεν υπάρχουν αποκλεισμένοι λογαριασμοί σε αυτό το εύρος (υπάρχουν %zu)."
 
 #: ../modules/botserv/bs_assign.cpp
 msgid "No bot"

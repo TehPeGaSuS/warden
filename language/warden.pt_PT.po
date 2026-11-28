@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 20:19+0100\n"
+"POT-Creation-Date: 2026-11-28 01:09+0100\n"
 "PO-Revision-Date: 2026-08-15 19:55+0200\n"
 "Last-Translator: PeGaSuS <25697531+TehPeGaSuS@users.noreply.github.com>\n"
 "Language-Team: Portuguese (Portugal)\n"
@@ -2428,6 +2428,11 @@ msgstr "Adiciona a impressão digital especificada à lista de certificados de
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Adds your current fingerprint to your certificate list."
 msgstr "Adiciona a tua impressão digital atual à tua lista de certificados."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "All %u vhost request block(s) have been removed."
+msgstr "Foram removidos todos os %u bloqueios de pedidos de vhost."
 
 #: ../modules/operserv/os_noop.cpp
 #, c-format
@@ -5460,6 +5465,10 @@ msgstr "LIST nickname"
 msgid "LIST threshold"
 msgstr "LIST limiar"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST [from-to]"
+msgstr "LIST [de-até]"
+
 #: ../modules/operserv/os_notify.cpp
 msgid "LIST [mask | entry-num | list]"
 msgstr "LIST [máscara | número-entrada | lista]"
@@ -5479,6 +5488,10 @@ msgstr "LIST [nickname]"
 #: ../modules/hostserv/hs_offer.cpp
 msgid "LIST [vhost-mask | entry-num | list]"
 msgstr "LIST [máscara-vhost | num-entrada | lista]"
+
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST shows every blocked account, numbered in order of account name. Give a range (e.g. 1-20) to see only those entries. CLEAR removes every block."
+msgstr "O LIST mostra todas as contas bloqueadas, numeradas por ordem do nome da conta. Indica um intervalo (ex. 1-20) para veres só essas entradas. O CLEAR remove todos os bloqueios."
 
 #: ../modules/operserv/os_forbid.cpp
 msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [from-to]"
@@ -6595,6 +6608,11 @@ msgstr "Nenhuma conta está bloqueada de solicitar vhosts."
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Sem auto-op"
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "No blocked accounts in that range (there are %zu)."
+msgstr "Não há contas bloqueadas nesse intervalo (há %zu)."
 
 #: ../modules/botserv/bs_assign.cpp
 msgid "No bot"

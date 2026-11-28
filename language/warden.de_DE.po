@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 20:19+0100\n"
+"POT-Creation-Date: 2026-11-28 01:09+0100\n"
 "PO-Revision-Date: 2023-04-21 22:04+0200\n"
 "Last-Translator: henk\n"
 "Language-Team: German\n"
@@ -2432,6 +2432,11 @@ msgstr "Fügt den angegebenen Fingerabdruck zur Zertifikatsliste von Nickname
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Adds your current fingerprint to your certificate list."
 msgstr "Fügt Deinen aktuellen Fingerabdruck zu Deiner Zertifikatsliste hinzu."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "All %u vhost request block(s) have been removed."
+msgstr "Alle %u Sperren für Vhost-Anfragen wurden entfernt."
 
 #: ../modules/operserv/os_noop.cpp
 #, c-format
@@ -5468,6 +5473,10 @@ msgstr "LIST Nickname"
 msgid "LIST threshold"
 msgstr "LIST Schwellwert"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST [from-to]"
+msgstr "LIST [von-bis]"
+
 #: ../modules/operserv/os_notify.cpp
 msgid "LIST [mask | entry-num | list]"
 msgstr "LIST [Maske | Nummer | Liste]"
@@ -5487,6 +5496,10 @@ msgstr "LIST [Nickname]"
 #: ../modules/hostserv/hs_offer.cpp
 msgid "LIST [vhost-mask | entry-num | list]"
 msgstr "LIST [vHost-Maske | Nummer | Liste]"
+
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST shows every blocked account, numbered in order of account name. Give a range (e.g. 1-20) to see only those entries. CLEAR removes every block."
+msgstr "LIST zeigt alle gesperrten Konten, nummeriert nach Kontoname. Gib einen Bereich an (z. B. 1-20), um nur diese Einträge zu sehen. CLEAR entfernt alle Sperren."
 
 #: ../modules/operserv/os_forbid.cpp
 msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [from-to]"
@@ -6603,6 +6616,11 @@ msgstr "Keine Accounts sind für vHost-Anfragen gesperrt."
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Kein Auto-Op"
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "No blocked accounts in that range (there are %zu)."
+msgstr "Keine gesperrten Konten in diesem Bereich (es gibt %zu)."
 
 #: ../modules/botserv/bs_assign.cpp
 msgid "No bot"

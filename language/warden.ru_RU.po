@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 20:19+0100\n"
+"POT-Creation-Date: 2026-11-28 01:09+0100\n"
 "PO-Revision-Date: 2026-10-22 19:40+0500\n"
 "Last-Translator: buzgbuzg@mail.ru\n"
 "Language-Team: Russian bugz irccity.ru\n"
@@ -2441,6 +2441,11 @@ msgstr "Добавляет указанный fingerprint в список сер
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Adds your current fingerprint to your certificate list."
 msgstr "Добавляет ваш текущий отпечаток в ваш список сертификатов."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "All %u vhost request block(s) have been removed."
+msgstr "Все блокировки запросов vhost (%u) удалены."
 
 #: ../modules/operserv/os_noop.cpp
 #, c-format
@@ -5482,6 +5487,10 @@ msgstr "LIST ник "
 msgid "LIST threshold"
 msgstr "LIST порог "
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST [from-to]"
+msgstr "LIST [от-до]"
+
 #: ../modules/operserv/os_notify.cpp
 msgid "LIST [mask | entry-num | list]"
 msgstr "LIST [маска | номер_записи | список]"
@@ -5501,6 +5510,10 @@ msgstr "LIST [ник]"
 #: ../modules/hostserv/hs_offer.cpp
 msgid "LIST [vhost-mask | entry-num | list]"
 msgstr "LIST [маска_виртуального_хоста | номер_записи | список]"
+
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST shows every blocked account, numbered in order of account name. Give a range (e.g. 1-20) to see only those entries. CLEAR removes every block."
+msgstr "LIST показывает все заблокированные учётные записи, пронумерованные по имени учётной записи. Укажите диапазон (например, 1-20), чтобы увидеть только эти записи. CLEAR удаляет все блокировки."
 
 #: ../modules/operserv/os_forbid.cpp
 msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [from-to]"
@@ -6617,6 +6630,11 @@ msgstr "Нет учетных записей, заблокированных д�
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Без авто-опа"
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "No blocked accounts in that range (there are %zu)."
+msgstr "В этом диапазоне нет заблокированных учётных записей (всего их %zu)."
 
 #: ../modules/botserv/bs_assign.cpp
 msgid "No bot"

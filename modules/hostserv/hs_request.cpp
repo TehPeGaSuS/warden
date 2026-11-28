@@ -741,19 +741,71 @@ private:
 		source.Reply(_("\002%s\002 may request vhosts again."), na->nc->display.c_str());
 	}
 
-	void DoList(CommandSource &source)
+	void DoClear(CommandSource &source)
 	{
-		ListFormatter list(source.GetAccount());
-		list.AddColumn(_("Account")).AddColumn(_("Creator")).AddColumn(_("Expires")).AddColumn(_("Reason"));
-
+		unsigned count = 0;
 		for (const auto &[_, nc] : *NickCoreList)
 		{
-			if (!data.IsBlocked(nc))
+			if (data.IsBlocked(nc))
+			{
+				data.Unblock(nc);
+				++count;
+			}
+		}
+
+		if (!count)
+		{
+			source.Reply(_("No accounts are blocked from requesting vhosts."));
+			return;
+		}
+
+		Log(LOG_ADMIN, source, this) << "to clear " << count << " vhost request block(s)";
+		source.Reply(_("All \002%u\002 vhost request block(s) have been removed."), count);
+	}
+
+	void DoList(CommandSource &source, const Warden::string &range)
+	{
+		unsigned from = 0, to = 0;
+		if (!range.empty())
+		{
+			Warden::string n1, n2;
+			sepstream(range, '-').GetToken(n1, 0);
+			sepstream(range, '-').GetToken(n2, 1);
+			auto f = Warden::TryConvert<unsigned>(n1);
+			auto t = Warden::TryConvert<unsigned>(n2);
+			if (!f || !t || !*f || *f > *t)
+			{
+				this->OnSyntaxError(source, "LIST");
+				return;
+			}
+			from = *f;
+			to = *t;
+		}
+
+		std::vector<NickCore *> blocked;
+		for (const auto &[_, nc] : *NickCoreList)
+		{
+			if (data.IsBlocked(nc))
+				blocked.push_back(nc);
+		}
+		std::sort(blocked.begin(), blocked.end(), [](const NickCore *a, const NickCore *b) {
+			return ci::less()(a->display, b->display);
+		});
+
+		ListFormatter list(source.GetAccount());
+		list.AddColumn(_("Number")).AddColumn(_("Account")).AddColumn(_("Creator")).AddColumn(_("Expires")).AddColumn(_("Reason"));
+
+		unsigned number = 0;
+		for (auto *nc : blocked)
+		{
+			++number;
+			if (from && (number < from || number > to))
 				continue;
 
 			const auto *expires = data.blockexpires.Get(nc);
 			const auto *reason = data.blockreason.Get(nc);
 			ListFormatter::ListEntry entry;
+			entry["Number"] = Warden::ToString(number);
 			entry["Account"] = nc->display;
 			entry["Creator"] = *data.blockedby.Get(nc);
 			entry["Expires"] = expires && *expires ? Warden::strftime(*expires, source.GetAccount(), true) : Language::Translate(source.GetAccount(), TIME_NEVER);
@@ -761,9 +813,14 @@ private:
 			list.AddEntry(entry);
 		}
 
-		if (list.IsEmpty())
+		if (blocked.empty())
 		{
 			source.Reply(_("No accounts are blocked from requesting vhosts."));
+			return;
+		}
+		if (list.IsEmpty())
+		{
+			source.Reply(_("No blocked accounts in that range (there are %zu)."), blocked.size());
 			return;
 		}
 
@@ -780,7 +837,8 @@ public:
 		this->SetDesc(_("Block accounts from requesting vhosts"));
 		this->SetSyntax(_("ADD \037nick\037 [+\037expiry\037] [\037reason\037]"));
 		this->SetSyntax(_("DEL \037nick\037"));
-		this->SetSyntax("LIST");
+		this->SetSyntax(_("LIST [\037from\037-\037to\037]"));
+		this->SetSyntax("CLEAR");
 	}
 
 	void Execute(CommandSource &source, const std::vector<Warden::string> &params) override
@@ -788,7 +846,7 @@ public:
 		const auto &cmd = params[0];
 		if (cmd.equals_ci("LIST"))
 		{
-			this->DoList(source);
+			this->DoList(source, params.size() > 1 ? params[1] : "");
 			return;
 		}
 
@@ -802,6 +860,8 @@ public:
 			this->DoAdd(source, params);
 		else if (cmd.equals_ci("DEL"))
 			this->DoDel(source, params);
+		else if (cmd.equals_ci("CLEAR"))
+			this->DoClear(source);
 		else
 			this->OnSyntaxError(source, "");
 	}
@@ -816,6 +876,12 @@ public:
 			"from the account is removed. The block covers every nick in the "
 			"account and lasts until it expires or is deleted; the user is "
 			"told the reason when they try to request a vhost."
+		));
+		source.Reply(" ");
+		source.Reply(_(
+			"LIST shows every blocked account, numbered in order of account "
+			"name. Give a range (e.g. 1-20) to see only those entries. "
+			"CLEAR removes every block."
 		));
 		return true;
 	}

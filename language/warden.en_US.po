@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 20:19+0100\n"
+"POT-Creation-Date: 2026-11-28 01:09+0100\n"
 "PO-Revision-Date: 2026-08-25 16:14+0100\n"
 "Last-Translator: Sadie Powell <sadie@sadiepowell.dev>\n"
 "Language-Team: English\n"
@@ -2411,6 +2411,11 @@ msgstr ""
 
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Adds your current fingerprint to your certificate list."
+msgstr ""
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "All %u vhost request block(s) have been removed."
 msgstr ""
 
 #: ../modules/operserv/os_noop.cpp
@@ -5295,6 +5300,10 @@ msgstr ""
 msgid "LIST threshold"
 msgstr ""
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST [from-to]"
+msgstr ""
+
 #: ../modules/operserv/os_notify.cpp
 msgid "LIST [mask | entry-num | list]"
 msgstr ""
@@ -5313,6 +5322,10 @@ msgstr ""
 
 #: ../modules/hostserv/hs_offer.cpp
 msgid "LIST [vhost-mask | entry-num | list]"
+msgstr ""
+
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST shows every blocked account, numbered in order of account name. Give a range (e.g. 1-20) to see only those entries. CLEAR removes every block."
 msgstr ""
 
 #: ../modules/operserv/os_forbid.cpp
@@ -6346,6 +6359,11 @@ msgstr ""
 
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
+msgstr ""
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "No blocked accounts in that range (there are %zu)."
 msgstr ""
 
 #: ../modules/botserv/bs_assign.cpp

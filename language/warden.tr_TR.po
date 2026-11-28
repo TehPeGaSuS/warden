@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 20:19+0100\n"
+"POT-Creation-Date: 2026-11-28 01:09+0100\n"
 "PO-Revision-Date: 2025-10-21 11:42+0100\n"
 "Last-Translator: CaPaCuL <capacul@gmail.com>\n"
 "Language-Team: Turkish\n"
@@ -2427,6 +2427,11 @@ msgstr "Belirtilen parmak-izi değerini rumuz sertifika listesine ekler."
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Adds your current fingerprint to your certificate list."
 msgstr "Mevcut parmak izinizi sertifika listenize ekler."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "All %u vhost request block(s) have been removed."
+msgstr "Tüm %u vhost isteği engeli kaldırıldı."
 
 #: ../modules/operserv/os_noop.cpp
 #, c-format
@@ -5466,6 +5471,10 @@ msgstr "LIST rumuz"
 msgid "LIST threshold"
 msgstr "LIST eşik"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST [from-to]"
+msgstr "LIST [başlangıç-bitiş]"
+
 #: ../modules/operserv/os_notify.cpp
 msgid "LIST [mask | entry-num | list]"
 msgstr "LIST [maske | girdi-no | liste]"
@@ -5485,6 +5494,10 @@ msgstr "LIST [rumuz]"
 #: ../modules/hostserv/hs_offer.cpp
 msgid "LIST [vhost-mask | entry-num | list]"
 msgstr "LIST [vhost-maskesi | girdi-no | liste]"
+
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST shows every blocked account, numbered in order of account name. Give a range (e.g. 1-20) to see only those entries. CLEAR removes every block."
+msgstr "LIST, engellenen tüm hesapları hesap adına göre numaralandırarak gösterir. Yalnızca o girdileri görmek için bir aralık verin (örn. 1-20). CLEAR tüm engelleri kaldırır."
 
 #: ../modules/operserv/os_forbid.cpp
 msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [from-to]"
@@ -6601,6 +6614,11 @@ msgstr "Vhost talep etmesi engellenen hesap yok."
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Oto-Op yok"
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "No blocked accounts in that range (there are %zu)."
+msgstr "Bu aralıkta engellenen hesap yok (toplam %zu tane var)."
 
 #: ../modules/botserv/bs_assign.cpp
 msgid "No bot"

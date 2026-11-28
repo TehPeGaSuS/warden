@@ -17,8 +17,9 @@ Not released yet.
   with a range.
 * Users who log in with a password matching a `FORBID PASSWORD` entry are told
   it is too weak and to change it (IDENTIFY and SASL).
-* `HostServ BLOCK ADD/DEL/LIST` stops an account from requesting vhosts. The
-  block follows the account, so grouping or `SET DISPLAY` doesn't avoid it.
+* `HostServ BLOCK ADD/DEL/LIST/CLEAR` stops an account from requesting vhosts.
+  The block follows the account, so grouping or `SET DISPLAY` doesn't avoid
+  it. `BLOCK LIST` is numbered and takes a from-to range.
 
 Warden 1.0.1
 ============

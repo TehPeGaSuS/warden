@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Warden\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-27 20:19+0100\n"
+"POT-Creation-Date: 2026-11-28 01:09+0100\n"
 "PO-Revision-Date: 2024-02-22 16:42+0000\n"
 "Last-Translator: k4be <k4be@pirc.pl>\n"
 "Language-Team: Polish\n"
@@ -2449,6 +2449,11 @@ msgstr "Dodaje podany odcisk-palca do listy certyfikatów nicka."
 #: ../modules/nickserv/ns_cert.cpp
 msgid "Adds your current fingerprint to your certificate list."
 msgstr "Dodaje Twój bieżący odcisk palca do Twojej listy certyfikatów."
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "All %u vhost request block(s) have been removed."
+msgstr "Usunięto wszystkie blokady próśb o vhost (%u)."
 
 #: ../modules/operserv/os_noop.cpp
 #, c-format
@@ -5492,6 +5497,10 @@ msgstr "LIST nick"
 msgid "LIST threshold"
 msgstr "LIST wartość-progowa"
 
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST [from-to]"
+msgstr "LIST [od-do]"
+
 #: ../modules/operserv/os_notify.cpp
 msgid "LIST [mask | entry-num | list]"
 msgstr "LIST [maska | numer-wpisu | lista]"
@@ -5511,6 +5520,10 @@ msgstr "LIST [nick]"
 #: ../modules/hostserv/hs_offer.cpp
 msgid "LIST [vhost-mask | entry-num | list]"
 msgstr "LIST [maska-vhosta | numer-wpisu | lista]"
+
+#: ../modules/hostserv/hs_request.cpp
+msgid "LIST shows every blocked account, numbered in order of account name. Give a range (e.g. 1-20) to see only those entries. CLEAR removes every block."
+msgstr "LIST pokazuje wszystkie zablokowane konta, ponumerowane według nazwy konta. Podaj zakres (np. 1-20), aby zobaczyć tylko te wpisy. CLEAR usuwa wszystkie blokady."
 
 #: ../modules/operserv/os_forbid.cpp
 msgid "LIST {CHAN|EMAIL|NICK|PASSWORD|REGISTER|VHOST} [from-to]"
@@ -6629,6 +6642,11 @@ msgstr "Żadne konto nie ma blokady próśb o vhosty."
 #: ../modules/chanserv/cs_set.cpp
 msgid "No auto-op"
 msgstr "Brak AUTOOP"
+
+#: ../modules/hostserv/hs_request.cpp
+#, c-format
+msgid "No blocked accounts in that range (there are %zu)."
+msgstr "Brak zablokowanych kont w tym zakresie (jest ich %zu)."
 
 #: ../modules/botserv/bs_assign.cpp
 msgid "No bot"
